@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Eko-Reçete: Dijital Tarım Simülasyonu</title>
+    <style>
+        body { font-family: sans-serif; background: #f0f7f0; padding: 20px; }
+        .container { max-width: 500px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h2 { color: #2e7d32; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; margin-top: 5px; }
+        button { background: #2e7d32; color: white; border: none; padding: 10px; width: 100%; margin-top: 20px; cursor: pointer; border-radius: 5px; }
+        #result { margin-top: 20px; padding: 15px; border-left: 5px solid #2e7d32; display: none; background: #e8f5e9; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>The Soil’s Silent Cry</h2>
+    <p><i>10. Sınıf Biyoloji - Eko-Reçete Sistemi</i></p>
+    <hr>
+    
+    <label>Toprak pH Değeri (1-14):</label>
+    <input type="number" id="ph" step="0.1" placeholder="Örn: 4.5">
+
+    <label>Azot (N) Seviyesi:</label>
+    <select id="azot">
+        <option value="dusuk">Düşük (Kritik)</option>
+        <option value="normal">Normal</option>
+        <option value="yuksek">Yüksek (Doygun)</option>
+    </select>
+
+    <label>Zararlı Böcek Yoğunluğu:</label>
+    <select id="bocek">
+        <option value="yok">Tespit Edilemedi</option>
+        <option value="az">Az (%10 altı)</option>
+        <option value="cok">Çok (%20 üstü - İstila)</option>
+    </select>
+
+    <button onclick="receteOlustur()">REÇETE OLUŞTUR</button>
+
+    <div id="result">
+        <h3>TIBBİ TARIM REÇETESİ</h3>
+        <p id="output"></p>
+        <small><i>*Bu reçete ekosistemi korumak amacıyla algoritmik olarak oluşturulmuştur.</i></small>
+    </div>
+</div>
+
+<script>
+function receteOlustur() {
+    let ph = document.getElementById('ph').value;
+    let azot = document.getElementById('azot').value;
+    let bocek = document.getElementById('bocek').value;
+    let mesaj = "";
+
+    // pH Analizi
+    if(ph < 5.5) {
+        mesaj += "⚠️ <b>Toprak Aşırı Asidik:</b> Kalsiyum karbonat (kireçleme) uygulanmalı.<br>";
+    } else if(ph > 7.5) {
+        mesaj += "⚠️ <b>Toprak Alkalen:</b> Kükürt uygulaması önerilir.<br>";
+    } else {
+        mesaj += "✅ pH dengesi ideal.<br>";
+    }
+
+    // Azot Döngüsü ve Gübreleme
+    if(azot === "dusuk") {
+        mesaj += "🌱 <b>Besin Eksikliği:</b> Sınırlı miktarda yavaş salınımlı Azot gübresi ekle.<br>";
+    } else if(azot === "yuksek") {
+        mesaj += "❌ <b>DİKKAT:</b> Azot seviyesi çok yüksek! Gübreleme yapma, yer altı sularını kirletebilirsin (Ötrofikasyon riski!).<br>";
+    }
+
+    // Biyolojik Mücadele vs Kimyasal
+    if(bocek === "az") {
+        mesaj += "🐞 <b>Biyolojik Mücadele:</b> Kimyasal ilaç yerine yararlı böcek (uğur böceği vb.) popülasyonunu destekle.<br>";
+    } else if(bocek === "cok") {
+        mesaj += "🛡️ <b>Reçeteli İlaçlama:</b> Sadece etkilenen bölgeye, dozaj kontrollü biyopestisit uygula.<br>";
+    }
+
+    document.getElementById('output').innerHTML = mesaj;
+    document.getElementById('result').style.display = 'block';
+}
+</script>
+
+</body>
+</html>
