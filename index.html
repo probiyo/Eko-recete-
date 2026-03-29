@@ -3,146 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eko-Reçete 2.0 / Eco-Prescription 2.0</title>
+    <title>Çay Doktoru: Zirai Mücadele / Tea Doctor: Pest Control</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 850px; margin: 0 auto; padding: 20px; background-color: #f1f8e9; }
-        .container { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border: 3px solid #2e7d32; position: relative; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background-color: #f0f4f0; }
+        .container { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 3px solid #1b5e20; }
+        .header { text-align: center; border-bottom: 3px solid #1b5e20; margin-bottom: 25px; padding-bottom: 10px; }
+        .section-title { font-weight: bold; color: #1b5e20; margin-bottom: 15px; border-left: 5px solid #1b5e20; padding-left: 10px; }
         
-        /* Böcek ve Doğa Süslemeleri */
-        .bug-decor { position: absolute; font-size: 24px; opacity: 0.8; z-index: 1; }
-        .header { text-align: center; margin-bottom: 25px; border-bottom: 3px double #a5d6a7; padding-bottom: 15px; }
-        h1 { color: #1b5e20; font-size: 28px; margin-bottom: 5px; }
-        
-        .input-group { background: #f9fbe7; padding: 20px; border-radius: 15px; border-left: 8px solid #2e7d32; margin-bottom: 20px; position: relative; z-index: 2; }
-        label { display: block; font-weight: bold; margin-bottom: 10px; color: #1b5e20; font-size: 1.1em; }
-        input[type="number"] { width: 100%; padding: 15px; border: 2px solid #a5d6a7; border-radius: 10px; font-size: 18px; box-sizing: border-box; }
-        
-        /* Yaprak Seçici */
-        .leaf-selector { display: flex; justify-content: space-around; gap: 15px; margin-top: 15px; flex-wrap: wrap; }
-        .leaf-option { flex: 1; min-width: 140px; text-align: center; cursor: pointer; border: 4px solid transparent; border-radius: 15px; padding: 15px; transition: 0.3s; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .leaf-option:hover { transform: scale(1.05); }
-        .leaf-option.selected { border-color: #2e7d32; background-color: #e8f5e9; }
-        .leaf-color-box { width: 100%; height: 70px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #ddd; }
-        
-        button { background: linear-gradient(135deg, #2e7d32, #1b5e20); color: white; padding: 20px; border: none; border-radius: 12px; cursor: pointer; font-size: 22px; width: 100%; font-weight: bold; transition: 0.4s; margin-top: 20px; box-shadow: 0 5px 15px rgba(46,125,50,0.3); }
-        button:hover { background: linear-gradient(135deg, #1b5e20, #0d3311); transform: translateY(-3px); }
-        
-        #result { margin-top: 30px; padding: 30px; border-radius: 20px; display: none; text-align: center; border: 4px dashed #2e7d32; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* Girdi Alanları */
+        .grid-input { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .input-box { background: #e8f5e9; padding: 15px; border-radius: 10px; }
+        select, input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; margin-top: 5px; }
 
-        .academic-footer { font-size: 14px; color: #333; margin-top: 50px; text-align: center; border-top: 3px solid #2e7d32; padding-top: 25px; line-height: 1.6; }
+        /* Zararlı Seçim Butonları */
+        .pest-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .pest-btn { background: white; border: 2px solid #a5d6a7; padding: 10px; border-radius: 8px; cursor: pointer; text-align: center; transition: 0.3s; }
+        .pest-btn:hover { background: #c8e6c9; }
+        .pest-btn.active { border-color: #1b5e20; background: #c8e6c9; font-weight: bold; }
+
+        button.main-btn { background: #1b5e20; color: white; padding: 20px; border: none; border-radius: 10px; cursor: pointer; font-size: 20px; width: 100%; font-weight: bold; margin-top: 10px; }
+        
+        /* Sonuç ve Mücadele Planı */
+        #result { margin-top: 30px; display: none; padding: 25px; border-radius: 15px; border: 2px solid #1b5e20; background: #fff; }
+        .action-plan { background: #fff3e0; padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 5px solid #ff9800; }
+        
+        .footer { font-size: 13px; text-align: center; margin-top: 40px; color: #555; border-top: 1px solid #ddd; padding-top: 20px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="bug-decor" style="top: 10px; left: 20px;">🐞</div>
-    <div class="bug-decor" style="top: 50px; right: 30px;">🐜</div>
-    <div class="bug-decor" style="bottom: 100px; left: 15px;">🐝</div>
-    <div class="bug-decor" style="top: 150px; left: 40px; opacity: 0.3;">🍃</div>
-
     <div class="header">
-        <h1>🌱 Çay Doktoru: Eko-Reçete / Tea Doctor: Eco-Prescription</h1>
-        <div style="color: #43a047; font-weight: bold; font-size: 18px;">Rize Sürdürülebilir Tarım Projesi / Rize Sustainable Agriculture</div>
+        <h1>🌱 Çay Doktoru: Karar Destek Sistemi</h1>
+        <p><strong>Zirai Zararlı Tespiti ve Ekolojik Mücadele / Pest Control & Ecological Action</strong></p>
     </div>
 
-    <div class="input-group">
-        <label>🔍 1. Toprak pH Değerini Girin / Enter Soil pH Value: 🐞</label>
-        <input type="number" id="phInput" step="0.1" placeholder="Örn: 4.8">
-    </div>
-
-    <div class="input-group">
-        <label>🌿 2. Çay Yaprağı Fenotipini Seçin / Select Leaf Phenotype: 🐜</label>
-        <div class="leaf-selector">
-            <div class="leaf-option" onclick="selectLeaf(this, 'healthy')">
-                <div class="leaf-color-box" style="background-color: #1b5e20;"></div>
-                <div style="font-weight: bold;">Koyu Yeşil<br>Dark Green</div>
-            </div>
-            <div class="leaf-option" onclick="selectLeaf(this, 'chlorosis')">
-                <div class="leaf-color-box" style="background-color: #d4e157;"></div>
-                <div style="font-weight: bold;">Sarı/Kloroz<br>Yellow/Chlorosis</div>
-            </div>
-            <div class="leaf-option" onclick="selectLeaf(this, 'necrosis')">
-                <div class="leaf-color-box" style="background-color: #8d6e63;"></div>
-                <div style="font-weight: bold;">Lekeli/Nekroz<br>Spotted/Necrosis</div>
-            </div>
+    <div class="grid-input">
+        <div class="input-box">
+            <label>1. Toprak pH Değeri:</label>
+            <input type="number" id="phInput" step="0.1" placeholder="Örn: 4.5">
         </div>
-        <input type="hidden" id="leafValue">
+        <div class="input-box">
+            <label>2. Yaprak Durumu:</label>
+            <select id="leafInput">
+                <option value="healthy">Koyu Yeşil (Sağlıklı)</option>
+                <option value="yellow">Sarı/Kloroz (Azot Eksikliği)</option>
+                <option value="spots">Kahverengi Lekeli (Nekroz)</option>
+            </select>
+        </div>
     </div>
 
-    <button onclick="calculate()">🔬 Analiz Et ve Böcekleri Gözlemle / Analyze & Observe</button>
+    <div class="section-title">3. Gözlemlenen Zararlıyı Seçin / Select Observed Pest:</div>
+    <div class="pest-grid">
+        <div class="pest-btn" onclick="selectPest(this, 'akar')">🕷️ Kırmızı Örümcek<br>(Red Spider Mite)</div>
+        <div class="pest-btn" onclick="selectPest(this, 'bit')">🌿 Çay Bitlisi<br>(Tea Aphid)</div>
+        <div class="pest-btn" onclick="selectPest(this, 'tırtıl')">🐛 Çay Tırtılı<br>(Tea Geometrid)</div>
+        <div class="pest-btn" onclick="selectPest(this, 'yok')">✅ Zararlı Yok<br>(No Pests)</div>
+    </div>
+    <input type="hidden" id="pestValue" value="">
+
+    <button class="main-btn" onclick="analyze()">🔬 Analiz Et ve Reçete Oluştur</button>
 
     <div id="result">
-        <div id="bugResult" style="font-size: 60px; margin-bottom: 10px;"></div>
-        <h3 id="resTitle"></h3>
-        <p id="resDesc" style="font-size: 18px;"></p>
-        <div style="background: #e8f5e9; padding: 15px; border-radius: 12px; display: inline-block; border: 2px solid #2e7d32;">
-            <strong>💧 Azot Tasarrufu / Nitrogen Saving: </strong> 
-            <span id="saving" style="font-size: 1.8em; color: #1b5e20; font-weight: bold;"></span>
+        <h2 id="resTitle"></h2>
+        <div id="resDesc"></div>
+        <div class="action-plan">
+            <strong>🛠️ Mücadele ve Eylem Planı / Action Plan:</strong>
+            <p id="actionDetails"></p>
         </div>
+        <p style="margin-top:15px;"><strong>💧 Azot Tasarrufu: </strong> <span id="saving" style="font-weight:bold; color:#1b5e20;"></span></p>
     </div>
 
-    <div class="academic-footer">
-        <strong>Academic Foundations:</strong><br>
-        Campbell Biology (12th Ed.) & Raven Biology of Plants (8th Ed.)<br>
-        <em>"Nature never breaks her own laws." - Leonardo da Vinci</em><br>
-        <small style="color: #666;">Scientix 2026 - Rize High School Biology Lab Project</small>
+    <div class="footer">
+        <strong>Akademik Temel:</strong> Campbell Biyoloji (Bitki Beslenmesi) & Raven (Mineral Beslenme)<br>
+        <em>"Doğa asla kendi yasalarını çiğnemez." - Leonardo da Vinci</em><br>
+        Scientix 2026 - Biyoloji Laboratuvar Uygulaması
     </div>
 </div>
 
 <script>
-    function selectLeaf(el, val) {
-        document.querySelectorAll('.leaf-option').forEach(o => o.classList.remove('selected'));
-        el.classList.add('selected');
-        document.getElementById('leafValue').value = val;
+    function selectPest(btn, val) {
+        document.querySelectorAll('.pest-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('pestValue').value = val;
     }
 
-    function calculate() {
+    function analyze() {
         const ph = parseFloat(document.getElementById('phInput').value);
-        const leaf = document.getElementById('leafValue').value;
+        const leaf = document.getElementById('leafInput').value;
+        const pest = document.getElementById('pestValue').value;
         const res = document.getElementById('result');
 
-        if (isNaN(ph) || !leaf) {
-            alert("Lütfen tüm alanları doldurun! / Please fill all fields!");
-            return;
-        }
+        if(isNaN(ph) || !pest) { alert("Lütfen tüm verileri giriniz!"); return; }
 
         res.style.display = 'block';
-        let icon = "🐞";
-        let title = "";
-        let desc = "";
-        let save = "";
+        let title = ""; let desc = ""; let action = ""; let save = "";
 
+        // Temel pH ve Yaprak Analizi
         if (ph < 5.0) {
-            icon = "🐜";
-            if(leaf === 'healthy') {
-                title = "🔴 ASİDİK TOPRAK / ACIDIC SOIL";
-                desc = "Toprak asidik ama çay bitkisi dirençli. Kireçleme önerilir. / Soil is acidic but tea plant is resilient. Liming suggested.";
-                save = "%25";
-            } else {
-                title = "🔴🔴 KRİTİK KLOROZ / CRITICAL CHLOROSIS";
-                desc = "ACİL! Düşük pH azot emilimini engelliyor. (Raven: Mineral Eksikliği). / URGENT! Low pH blocks Nitrogen uptake.";
-                save = "%45";
-            }
-        } else if (ph >= 5.0 && ph <= 6.5) {
-            icon = "🐞";
-            title = "🟢 İDEAL EKOSİSTEM / IDEAL ECOSYSTEM";
-            desc = "Mükemmel denge! Karınca ve uğur böcekleri mutlu. (Campbell: Optimum Beslenme). / Perfect balance! Insects are happy.";
-            save = "%50";
-        } else {
-            icon = "🐝";
-            title = "🟡 ALKALİ RİSK / ALKALINE RISK";
-            desc = "Besin alımı yavaşladı. Arılar için çiçeklenme risk altında! / Nutrient uptake slowed down. Flowering at risk for bees!";
+            title = "🔴 KRİTİK DURUM: Yüksek Asitlik";
+            desc = "Düşük pH, köklerin besin alımını (özellikle azot) engelliyor. Raven referansı: Antagonistik etki.";
             save = "%20";
+            action = "Acil kireçleme (CaCO3) yapın. ";
+        } else {
+            title = "🟢 DENGELİ DURUM";
+            desc = "pH seviyesi çay bitkisi için uygun. Azot emilimi optimize edildi.";
+            save = "%50";
+            action = "Mevcut dengeyi koruyun. ";
         }
 
-        document.getElementById('bugResult').innerHTML = icon;
+        // Zararlı Mücadele Modülü
+        if (pest === 'akar') {
+            action += "Kırmızı örümcek tespiti: Hava sirkülasyonunu artırın, nem dengesini koruyun. Biyolojik mücadele için yırtıcı akarlar kullanılabilir.";
+        } else if (pest === 'bit') {
+            action += "Çay bitlisi tespiti: Azotlu gübreyi sınırlayın (fazla azot bitleri çeker). Doğal sabunlu su solüsyonu uygulayın.";
+        } else if (pest === 'tırtıl') {
+            action += "Çay tırtılı tespiti: El ile toplama veya Bacillus thuringiensis bazlı biyolojik ajanlar önerilir.";
+        } else {
+            action += "Herhangi bir dış zararlı tespit edilmedi. Bitki sağlığı stabil.";
+        }
+
         document.getElementById('resTitle').innerHTML = title;
         document.getElementById('resDesc').innerHTML = desc;
+        document.getElementById('actionDetails').innerHTML = action;
         document.getElementById('saving').innerHTML = save;
         res.scrollIntoView({ behavior: 'smooth' });
     }
 </script>
-
 </body>
 </html>
