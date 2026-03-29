@@ -2,83 +2,90 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Eko-Reçete: Dijital Tarım Simülasyonu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eko-Reçete / Eco-Prescription</title>
     <style>
-        body { font-family: sans-serif; background: #f0f7f0; padding: 20px; }
-        .container { max-width: 500px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        h2 { color: #2e7d32; }
-        label { display: block; margin-top: 10px; font-weight: bold; }
-        input, select { width: 100%; padding: 8px; margin-top: 5px; }
-        button { background: #2e7d32; color: white; border: none; padding: 10px; width: 100%; margin-top: 20px; cursor: pointer; border-radius: 5px; }
-        #result { margin-top: 20px; padding: 15px; border-left: 5px solid #2e7d32; display: none; background: #e8f5e9; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f4f9f4; }
+        .header { text-align: center; border-bottom: 3px solid #2d5a27; padding-bottom: 10px; margin-bottom: 20px; }
+        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #2d5a27; font-size: 24px; margin-bottom: 5px; }
+        .sub-header { color: #666; font-size: 16px; margin-bottom: 20px; }
+        .input-group { margin-bottom: 20px; background: #f9f9f9; padding: 15px; border-radius: 8px; }
+        label { display: block; font-weight: bold; margin-bottom: 10px; color: #2d5a27; }
+        input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
+        button { background-color: #2d5a27; color: white; padding: 15px 25px; border: none; border-radius: 5px; cursor: pointer; font-size: 18px; width: 100%; transition: 0.3s; font-weight: bold; margin-top: 10px; }
+        button:hover { background-color: #1e3d1a; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        #result { margin-top: 25px; padding: 20px; border-radius: 10px; display: none; border: 1px solid #ddd; }
+        .academic-note { font-size: 13px; color: #444; margin-top: 40px; text-align: center; border-top: 2px solid #2d5a27; padding-top: 15px; line-height: 1.5; }
+        .bilingual-hint { font-size: 0.85em; color: #777; font-weight: normal; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>The Soil’s Silent Cry</h2>
-    <p><i>10. Sınıf Biyoloji - Eko-Reçete Sistemi</i></p>
-    <hr>
-    
-    <label>Toprak pH Değeri (1-14):</label>
-    <input type="number" id="ph" step="0.1" placeholder="Örn: 4.5">
+    <div class="header">
+        <h1>Toprağın Sessiz Çığlığı / The Soil's Silent Cry</h1>
+        <div class="sub-header">Dijital Reçete Simülasyonu / Digital Prescription Simulation</div>
+    </div>
 
-    <label>Azot (N) Seviyesi:</label>
-    <select id="azot">
-        <option value="dusuk">Düşük (Kritik)</option>
-        <option value="normal">Normal</option>
-        <option value="yuksek">Yüksek (Doygun)</option>
-    </select>
+    <div class="input-group">
+        <label for="phInput">
+            Toprak pH Değerini Giriniz / Enter Soil pH Value:
+            <br><span class="bilingual-hint">(Laboratuvar sonucunuzu yazın / Enter your lab result)</span>
+        </label>
+        <input type="number" id="phInput" step="0.1" placeholder="Örn: 4.5">
+    </div>
 
-    <label>Zararlı Böcek Yoğunluğu:</label>
-    <select id="bocek">
-        <option value="yok">Tespit Edilemedi</option>
-        <option value="az">Az (%10 altı)</option>
-        <option value="cok">Çok (%20 üstü - İstila)</option>
-    </select>
-
-    <button onclick="receteOlustur()">REÇETE OLUŞTUR</button>
+    <button onclick="calculate()">Reçete Oluştur / Generate Prescription</button>
 
     <div id="result">
-        <h3>TIBBİ TARIM REÇETESİ</h3>
-        <p id="output"></p>
-        <small><i>*Bu reçete ekosistemi korumak amacıyla algoritmik olarak oluşturulmuştur.</i></small>
+        <h3 id="resTitle" style="margin-top: 0;"></h3>
+        <p id="resDesc"></p>
+        <hr>
+        <p><strong>Azot Tasarrufu / Nitrogen Saving: </strong> <span id="saving" style="font-size: 1.2em; color: #2d5a27; font-weight: bold;"></span></p>
+    </div>
+
+    <div class="academic-note">
+        Scientific logic based on <strong>Campbell Biology</strong> & <strong>Raven Biology of Plants</strong>.<br>
+        <em>"Nature never breaks her own laws." - Leonardo da Vinci</em>
     </div>
 </div>
 
 <script>
-function receteOlustur() {
-    let ph = document.getElementById('ph').value;
-    let azot = document.getElementById('azot').value;
-    let bocek = document.getElementById('bocek').value;
-    let mesaj = "";
+    function calculate() {
+        const ph = parseFloat(document.getElementById('phInput').value);
+        const resultDiv = document.getElementById('result');
+        const resTitle = document.getElementById('resTitle');
+        const resDesc = document.getElementById('resDesc');
+        const saving = document.getElementById('saving');
 
-    // pH Analizi
-    if(ph < 5.5) {
-        mesaj += "⚠️ <b>Toprak Aşırı Asidik:</b> Kalsiyum karbonat (kireçleme) uygulanmalı.<br>";
-    } else if(ph > 7.5) {
-        mesaj += "⚠️ <b>Toprak Alkalen:</b> Kükürt uygulaması önerilir.<br>";
-    } else {
-        mesaj += "✅ pH dengesi ideal.<br>";
+        if (isNaN(ph) || ph < 0 || ph > 14) {
+            alert("Lütfen geçerli bir pH değeri giriniz (0-14 arası).\nPlease enter a valid pH value (between 0-14).");
+            return;
+        }
+
+        resultDiv.style.display = 'block';
+
+        if (ph < 5.0) {
+            resTitle.innerHTML = "🔴 KRİTİK ASİTLİK / CRITICAL ACIDITY";
+            resDesc.innerHTML = "Toprak çok asidik. Kalsiyum karbonat (kireçleme) gereklidir. / Soil is too acidic. Calcium carbonate (liming) is required.";
+            saving.innerHTML = "%25 - %30";
+            resultDiv.style.backgroundColor = "#ffebee";
+        } else if (ph >= 5.0 && ph <= 6.5) {
+            resTitle.innerHTML = "🟢 İDEAL DENGEYE YAKIN / NEAR IDEAL BALANCE";
+            resDesc.innerHTML = "Azot emilimi optimize edildi. Minimum gübre yeterlidir. / Nitrogen absorption optimized. Minimum fertilizer is sufficient.";
+            saving.innerHTML = "%40 - %50";
+            resultDiv.style.backgroundColor = "#e8f5e9";
+        } else {
+            resTitle.innerHTML = "🟡 ALKALİ RİSK / ALKALINE RISK";
+            resDesc.innerHTML = "Besin emilimi yavaşlıyor. Amonyum sülfat bazlı gübreleme önerilir. / Nutrient uptake slowing down. Ammonium sulfate based fertilization suggested.";
+            saving.innerHTML = "%15 - %20";
+            resultDiv.style.backgroundColor = "#fffde7";
+        }
+        
+        // Sonuca odaklanması için sayfayı hafifçe aşağı kaydırır
+        resultDiv.scrollIntoView({ behavior: 'smooth' });
     }
-
-    // Azot Döngüsü ve Gübreleme
-    if(azot === "dusuk") {
-        mesaj += "🌱 <b>Besin Eksikliği:</b> Sınırlı miktarda yavaş salınımlı Azot gübresi ekle.<br>";
-    } else if(azot === "yuksek") {
-        mesaj += "❌ <b>DİKKAT:</b> Azot seviyesi çok yüksek! Gübreleme yapma, yer altı sularını kirletebilirsin (Ötrofikasyon riski!).<br>";
-    }
-
-    // Biyolojik Mücadele vs Kimyasal
-    if(bocek === "az") {
-        mesaj += "🐞 <b>Biyolojik Mücadele:</b> Kimyasal ilaç yerine yararlı böcek (uğur böceği vb.) popülasyonunu destekle.<br>";
-    } else if(bocek === "cok") {
-        mesaj += "🛡️ <b>Reçeteli İlaçlama:</b> Sadece etkilenen bölgeye, dozaj kontrollü biyopestisit uygula.<br>";
-    }
-
-    document.getElementById('output').innerHTML = mesaj;
-    document.getElementById('result').style.display = 'block';
-}
 </script>
 
 </body>
