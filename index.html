@@ -3,87 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eko-Reçete / Eco-Prescription</title>
+    <title>Eko-Reçete 2.0 / Eco-Prescription 2.0</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f4f9f4; }
-        .header { text-align: center; border-bottom: 3px solid #2d5a27; padding-bottom: 10px; margin-bottom: 20px; }
-        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { color: #2d5a27; font-size: 24px; margin-bottom: 5px; }
-        .sub-header { color: #666; font-size: 16px; margin-bottom: 20px; }
-        .input-group { margin-bottom: 20px; background: #f9f9f9; padding: 15px; border-radius: 8px; }
-        label { display: block; font-weight: bold; margin-bottom: 10px; color: #2d5a27; }
-        input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
-        button { background-color: #2d5a27; color: white; padding: 15px 25px; border: none; border-radius: 5px; cursor: pointer; font-size: 18px; width: 100%; transition: 0.3s; font-weight: bold; margin-top: 10px; }
-        button:hover { background-color: #1e3d1a; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-        #result { margin-top: 25px; padding: 20px; border-radius: 10px; display: none; border: 1px solid #ddd; }
-        .academic-note { font-size: 13px; color: #444; margin-top: 40px; text-align: center; border-top: 2px solid #2d5a27; padding-top: 15px; line-height: 1.5; }
-        .bilingual-hint { font-size: 0.85em; color: #777; font-weight: normal; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 850px; margin: 0 auto; padding: 20px; background-color: #e8f5e9; }
+        .container { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 3px solid #1b5e20; }
+        .header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #a5d6a7; padding-bottom: 15px; }
+        h1 { color: #1b5e20; font-size: 28px; margin-bottom: 5px; }
+        .input-group { background: #f1f8e9; padding: 20px; border-radius: 12px; border-left: 5px solid #1b5e20; margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 10px; color: #1b5e20; font-size: 1.1em; }
+        input[type="number"] { width: 100%; padding: 15px; border: 2px solid #a5d6a7; border-radius: 8px; font-size: 18px; box-sizing: border-box; }
+        
+        /* Yaprak Rengi Seçimi İçin Stiller */
+        .leaf-selector { display: flex; justify-content: space-around; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+        .leaf-option { flex: 1; min-width: 120px; text-align: center; cursor: pointer; border: 3px solid transparent; border-radius: 10px; padding: 10px; transition: 0.3s; background: white; }
+        .leaf-option:hover { transform: translateY(-3px); box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
+        .leaf-option.selected { border-color: #1b5e20; background-color: #c8e6c9; }
+        .leaf-color-box { width: 100%; height: 60px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #ddd; }
+        .leaf-label { font-size: 12px; font-weight: bold; color: #333; line-height: 1.3; }
+
+        button { background-color: #1b5e20; color: white; padding: 18px; border: none; border-radius: 8px; cursor: pointer; font-size: 20px; width: 100%; font-weight: bold; transition: 0.3s; margin-top: 20px; }
+        button:hover { background-color: #1b3d1a; transform: translateY(-2px); }
+        
+        #result { margin-top: 25px; padding: 25px; border-radius: 15px; display: none; text-align: center; border: 3px dashed #1b5e20; }
+        .academic-section { font-size: 13px; color: #444; margin-top: 40px; text-align: center; border-top: 2px solid #1b5e20; padding-top: 20px; background: #fff; border-radius: 0 0 20px 20px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1>Toprağın Sessiz Çığlığı / The Soil's Silent Cry</h1>
-        <div class="sub-header">Dijital Reçete Simülasyonu / Digital Prescription Simulation</div>
+        <h1>🌱 Eko-Reçete 2.0: Çay Doktoru / Eco-Prescription 2.0</h1>
+        <div style="color: #666; font-weight: bold;">Multidisipliner Bitki Fenotip Analizi / Multidisciplinary Phenotype Analysis</div>
     </div>
 
     <div class="input-group">
         <label for="phInput">
-            Toprak pH Değerini Giriniz / Enter Soil pH Value:
-            <br><span class="bilingual-hint">(Laboratuvar sonucunuzu yazın / Enter your lab result)</span>
+            🔍 1. Toprak pH Değerini Girin / Enter Soil pH Value:
         </label>
-        <input type="number" id="phInput" step="0.1" placeholder="Örn: 4.5">
+        <input type="number" id="phInput" step="0.1" placeholder="Örn: 4.8">
     </div>
 
-    <button onclick="calculate()">Reçete Oluştur / Generate Prescription</button>
+    <div class="input-group">
+        <label>
+            🌿 2. Çay Yaprağı Fenotipini Seçin / Select Tea Leaf Phenotype:
+            <br><span style="font-size: 13px; font-weight: normal; color: #555;">(En yakın rengi seçin / Select the closest color)</span>
+        </label>
+        <div class="leaf-selector" id="leafSelector">
+            <div class="leaf-option" onclick="selectLeaf(this, 'healthy')" id="leafHealthy">
+                <div class="leaf-color-box" style="background-color: #1b5e20;"></div>
+                <div class="leaf-label">Koyu Yeşil<br>Dark Green<br>(Sağlıklı / Healthy)</div>
+            </div>
+            <div class="leaf-option" onclick="selectLeaf(this, 'chlorosis')" id="leafChlorosis">
+                <div class="leaf-color-box" style="background-color: #c5e1a5;"></div>
+                <div class="leaf-label">Açık Yeşil/Sarı<br>Light Green/Yellow<br>(Kloroz / Chlorosis)</div>
+            </div>
+            <div class="leaf-option" onclick="selectLeaf(this, 'necrosis')" id="leafNecrosis">
+                <div class="leaf-color-box" style="background-color: #a1887f;"></div>
+                <div class="leaf-label">Kahverengi/Lekeli<br>Brown/Spotted<br>(Nekroz / Necrosis)</div>
+            </div>
+        </div>
+        <input type="hidden" id="selectedLeafType" value="">
+    </div>
+
+    <button onclick="calculate()">🔬 Analiz Et ve Reçete Oluştur / Analyze & Generate</button>
 
     <div id="result">
-        <h3 id="resTitle" style="margin-top: 0;"></h3>
-        <p id="resDesc"></p>
-        <hr>
-        <p><strong>Azot Tasarrufu / Nitrogen Saving: </strong> <span id="saving" style="font-size: 1.2em; color: #2d5a27; font-weight: bold;"></span></p>
+        <div id="statusIcon" style="font-size: 60px; margin-bottom: 15px;"></div>
+        <h3 id="resTitle" style="margin-top: 0; font-size: 24px;"></h3>
+        <p id="resDesc" style="font-size: 19px; line-height: 1.5;"></p>
+        <div style="background: white; padding: 15px; border-radius: 10px; display: inline-block; margin-top: 15px; border: 1px solid #ddd;">
+            <strong>💧 Potansiyel Azot Tasarrufu / Potential Nitrogen Saving: </strong> 
+            <span id="saving" style="font-size: 1.8em; color: #1b5e20; font-weight: bold;"></span>
+        </div>
     </div>
 
-    <div class="academic-note">
-        Scientific logic based on <strong>Campbell Biology</strong> & <strong>Raven Biology of Plants</strong>.<br>
-        <em>"Nature never breaks her own laws." - Leonardo da Vinci</em>
+    <div class="academic-section">
+        <p><strong>Scientific logic based on:</strong><br>
+        Campbell Biology (12th Ed.) - Chapter 37 (Plant Nutrition)<br>
+        Raven Biology of Plants (8th Ed.) - Chapter 29 (Mineral Nutrition)</p>
+        <p><em>"Nature never breaks her own laws." - Leonardo da Vinci</em></p>
+        <div style="font-size: 11px; color: #777; margin-top: 10px;">Scientix Learning Scenario Project - Rize 2026<br>
+        Future Integration: AI-Powered Phenotypic Analysis</div>
     </div>
 </div>
 
 <script>
+    // Yaprak Seçimi Fonksiyonu
+    function selectLeaf(element, type) {
+        // Önceki seçimi temizle
+        const options = document.querySelectorAll('.leaf-option');
+        options.forEach(opt => opt.classList.remove('selected'));
+        
+        // Yeni seçimi işaretle
+        element.classList.add('selected');
+        document.getElementById('selectedLeafType').value = type;
+    }
+
     function calculate() {
         const ph = parseFloat(document.getElementById('phInput').value);
+        const leafType = document.getElementById('selectedLeafType').value;
         const resultDiv = document.getElementById('result');
         const resTitle = document.getElementById('resTitle');
         const resDesc = document.getElementById('resDesc');
         const saving = document.getElementById('saving');
+        const statusIcon = document.getElementById('statusIcon');
 
+        // Validasyon
         if (isNaN(ph) || ph < 0 || ph > 14) {
-            alert("Lütfen geçerli bir pH değeri giriniz (0-14 arası).\nPlease enter a valid pH value (between 0-14).");
+            alert("Geçerli bir pH değeri giriniz (0-14).\nPlease enter a valid pH value (0-14).");
+            return;
+        }
+        if (leafType === "") {
+            alert("Lütfen bir yaprak fenotipi seçiniz.\nPlease select a leaf phenotype.");
             return;
         }
 
         resultDiv.style.display = 'block';
 
+        // Gelişmiş Multidisipliner Analiz Algoritmamız (Campbell/Raven Uyumlu)
+        let finalStatus = "";
+        let finalSaving = "";
+        let finalDesc = "";
+        let finalIcon = "";
+
+        // ANA ANALİZ: pH ve Yaprak Tipi Birleşimi
         if (ph < 5.0) {
-            resTitle.innerHTML = "🔴 KRİTİK ASİTLİK / CRITICAL ACIDITY";
-            resDesc.innerHTML = "Toprak çok asidik. Kalsiyum karbonat (kireçleme) gereklidir. / Soil is too acidic. Calcium carbonate (liming) is required.";
-            saving.innerHTML = "%25 - %30";
-            resultDiv.style.backgroundColor = "#ffebee";
+            finalIcon = "⚠️";
+            if (leafType === 'healthy') {
+                finalStatus = "🔴 KRİTİK ASİTLİK (KOMPANSE) / CRITICAL ACIDITY (COMPENSATED)";
+                finalDesc = "Toprak çok asidik, ancak bitki henüz kloroz göstermiyor. Kireçleme şart. / Soil is too acidic, but plant is not showing chlorosis yet. Liming is required.";
+                finalSaving = "%25";
+                resultDiv.style.backgroundColor = "#ffebee";
+            } else if (leafType === 'chlorosis') {
+                finalStatus = "🔴🔴 KRİTİK ASİTLİK + KLOROZ / CRITICAL ACIDITY + CHLOROSIS";
+                finalDesc = "ACİL DURUM! Düşük pH nedeniyle azot emilimi engellenmiş. Kloroz (sararma) başlamış. (Raven ref: Mineral Eksikliği). / EMERGENCY! Nitrogen uptake is blocked by low pH. Chlorosis has started. (Raven ref: Mineral Deficiency).";
+                finalSaving = "%40";
+                resultDiv.style.backgroundColor = "#ffcdd2";
+            } else {
+                finalStatus = "🟤 TOKSİSİTE RİSKİ / TOXICITY RISK";
+                finalDesc = "Düşük pH ve kahverengi lekeler, metal toksisitesine işaret edebilir. / Low pH and brown spots may indicate metal toxicity.";
+                finalSaving = "%20";
+                resultDiv.style.backgroundColor = "#d7ccc8";
+            }
         } else if (ph >= 5.0 && ph <= 6.5) {
-            resTitle.innerHTML = "🟢 İDEAL DENGEYE YAKIN / NEAR IDEAL BALANCE";
-            resDesc.innerHTML = "Azot emilimi optimize edildi. Minimum gübre yeterlidir. / Nitrogen absorption optimized. Minimum fertilizer is sufficient.";
-            saving.innerHTML = "%40 - %50";
-            resultDiv.style.backgroundColor = "#e8f5e9";
+            finalIcon = "✨";
+            if (leafType === 'healthy') {
+                finalStatus = "🟢 İDEAL DENGEDE / IDEAL BALANCE";
+                finalDesc = "Tebrikler! Hem toprak hem bitki mükemmel durumda. Minimum gübre yeterlidir. (Campbell ref: Optimum Fotosentez). / Congratulations! Both soil and plant are in excellent condition. Minimum fertilizer is sufficient.";
+                finalSaving = "%50";
+                resultDiv.style.backgroundColor = "#e8f5e9";
+            } else if (leafType === 'chlorosis') {
+                finalStatus = "🟡 PH İYİ, YAPRAK SARI / PH GOOD, LEAF YELLOW";
+                finalDesc = "Toprak dengeli ancak bitki azot eksikliği gösteriyor. Gübre miktarını hafifçe artırın. / Soil is balanced but plant shows nitrogen deficiency. Slightly increase fertilizer amount.";
+                finalSaving = "%35";
+                resultDiv.style.backgroundColor = "#fff9c4";
+            } else {
+                finalStatus = "🟠 PH İYİ, LEKELİ YAPRAK / PH GOOD, SPOTTED LEAF";
+                finalDesc = "pH iyi ancak lekeler var. Mantar hastalığı veya aşırı gübreleme kontrol edilmeli. / pH is good but spots exist. Fungal disease or excessive fertilization should be checked.";
+                finalSaving = "%25";
+                resultDiv.style.backgroundColor = "#ffe0b2";
+            }
         } else {
-            resTitle.innerHTML = "🟡 ALKALİ RİSK / ALKALINE RISK";
-            resDesc.innerHTML = "Besin emilimi yavaşlıyor. Amonyum sülfat bazlı gübreleme önerilir. / Nutrient uptake slowing down. Ammonium sulfate based fertilization suggested.";
-            saving.innerHTML = "%15 - %20";
+            finalIcon = "⚠️";
+            finalStatus = "🟡 ALKALİ RİSK / ALKALINE RISK";
+            finalDesc = "Besin alımı zorlaşıyor. Amonyum sülfat bazlı gübreleme önerilir. / Nutrient uptake slowing down. Ammonium sulfate based fertilization suggested.";
+            finalSaving = "%20";
             resultDiv.style.backgroundColor = "#fffde7";
         }
+
+        // Sonuçları Ekrana Yaz
+        resTitle.innerHTML = finalStatus;
+        resDesc.innerHTML = finalDesc;
+        saving.innerHTML = finalSaving;
+        statusIcon.innerHTML = finalIcon;
         
-        // Sonuca odaklanması için sayfayı hafifçe aşağı kaydırır
         resultDiv.scrollIntoView({ behavior: 'smooth' });
     }
 </script>
