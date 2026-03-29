@@ -11,12 +11,12 @@
         .section-title { font-weight: bold; color: #1b5e20; margin-bottom: 15px; border-left: 5px solid #1b5e20; padding-left: 10px; }
         .grid-input { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
         .input-box { background: #e8f5e9; padding: 15px; border-radius: 10px; }
-        select, input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; margin-top: 5px; }
+        select, input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 15px; margin-top: 5px; }
         .pest-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 20px; }
-        .pest-btn { background: white; border: 2px solid #a5d6a7; padding: 10px; border-radius: 8px; cursor: pointer; text-align: center; transition: 0.3s; font-size: 14px; }
+        .pest-btn { background: white; border: 2px solid #a5d6a7; padding: 10px; border-radius: 8px; cursor: pointer; text-align: center; transition: 0.3s; font-size: 13px; }
         .pest-btn:hover { background: #c8e6c9; }
         .pest-btn.active { border-color: #1b5e20; background: #c8e6c9; font-weight: bold; }
-        button.main-btn { background: #1b5e20; color: white; padding: 20px; border: none; border-radius: 10px; cursor: pointer; font-size: 20px; width: 100%; font-weight: bold; margin-top: 10px; }
+        button.main-btn { background: #1b5e20; color: white; padding: 20px; border: none; border-radius: 10px; cursor: pointer; font-size: 19px; width: 100%; font-weight: bold; margin-top: 10px; }
         #result { margin-top: 30px; display: none; padding: 25px; border-radius: 15px; border: 2px solid #1b5e20; background: #fff; }
         .action-plan { background: #fff3e0; padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 5px solid #ff9800; }
         .footer { font-size: 14px; text-align: center; margin-top: 40px; color: #444; border-top: 2px solid #1b5e20; padding-top: 20px; line-height: 1.8; }
@@ -39,7 +39,7 @@
             <label>2. Yaprak Durumu / Leaf Condition:</label>
             <select id="leafInput">
                 <option value="healthy">Koyu Yeşil (Sağlıklı) / Dark Green (Healthy)</option>
-                <option value="yellow">Sarı/Kloroz (Azot Eksikliği) / Yellow/Chlorosis (N-Deficiency)</option>
+                <option value="yellow">Sarı/Kloroz (Azot Eksikliği) / Yellow/Chlorosis (Nitrogen Deficiency)</option>
                 <option value="spots">Kahverengi Lekeli (Nekroz) / Brown Spotted (Necrosis)</option>
             </select>
         </div>
@@ -90,6 +90,7 @@
         const pest = document.getElementById('pestValue').value;
         const res = document.getElementById('result');
 
+        // UYARI PENCERESİ / ALERT DIALOG
         if(isNaN(ph) || !pest) { 
             alert("Lütfen tüm verileri giriniz! / Please enter all data!"); 
             return; 
