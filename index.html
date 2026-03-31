@@ -6,31 +6,26 @@
     <title>Çay Doktoru / Tea Doctor</title>
     <style>
         :root { --primary: #1b5e20; --secondary: #2e7d32; --danger: #c62828; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f0; margin: 0; padding: 15px; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f4f0; margin: 0; padding: 15px; }
         .container { max-width: 600px; margin: auto; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 25px; border: 3px solid var(--primary); }
         .header { text-align: center; border-bottom: 2px solid #eee; margin-bottom: 20px; padding-bottom: 10px; }
         .header h1 { color: var(--primary); margin: 0; font-size: 26px; }
         .header p { color: #666; margin: 5px 0; font-size: 14px; font-weight: bold; }
         
-        .warning-box { background: #fff5f5; border: 2px dashed var(--danger); color: var(--danger); padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 20px; cursor: pointer; transition: 0.3s; }
-        .warning-box:hover { background: #fee2e2; }
-
+        .warning-box { background: #fff5f5; border: 2px dashed var(--danger); color: var(--danger); padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 20px; cursor: pointer; }
         .input-group { margin-bottom: 15px; }
         label { display: block; font-weight: 600; margin-bottom: 5px; color: var(--primary); }
         input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
 
         .pest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
         .pest-card { border: 2px solid #e0e0e0; padding: 12px; border-radius: 12px; text-align: center; cursor: pointer; transition: 0.3s; background: #fff; }
-        .pest-card.active { border-color: var(--primary); background: #e8f5e9; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .pest-card.active { border-color: var(--primary); background: #e8f5e9; font-weight: bold; }
         .pest-card span { font-size: 24px; display: block; margin-bottom: 5px; }
 
-        .btn-analyze { background: var(--primary); color: white; border: none; width: 100%; padding: 18px; border-radius: 12px; font-size: 18px; font-weight: bold; margin-top: 25px; cursor: pointer; transition: 0.3s; }
-        .btn-analyze:hover { background: var(--secondary); transform: translateY(-2px); }
+        .btn-analyze { background: var(--primary); color: white; border: none; width: 100%; padding: 18px; border-radius: 12px; font-size: 18px; font-weight: bold; margin-top: 25px; cursor: pointer; }
         
-        #result { display: none; margin-top: 25px; padding: 20px; border-radius: 15px; background: #fff; border: 2px solid var(--primary); animation: fadeIn 0.5s; }
-        .recete-box { background: #fff3e0; border-left: 6px solid #ff9800; padding: 15px; margin-top: 15px; font-size: 15px; }
-        
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        #result { display: none; margin-top: 25px; padding: 20px; border-radius: 15px; background: #fff; border: 2px solid var(--primary); }
+        .recete-box { background: #fff3e0; border-left: 6px solid #ff9800; padding: 15px; margin-top: 15px; font-size: 15px; line-height: 1.6; }
         .footer { text-align: center; font-size: 12px; color: #777; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; }
     </style>
 </head>
@@ -42,63 +37,57 @@
         <p>Tea Doctor: Decision Support System</p>
     </div>
 
-    <div class="warning-box" onclick="alert('🚫 Yabancı Ot İlacı (Herbisit) toprağı öldürür! / Herbicide use kills the soil microorganisms!')">
+    <div class="warning-box" onclick="alert('🚫 Herbisit uyarısı! / Herbicide warning!')">
         🚫 YABANCI OT İLACI UYARISI / HERBICIDE WARNING
     </div>
 
     <div class="input-group">
         <label>Toprak pH Değeri / Soil pH Level:</label>
-        <input type="number" id="ph" step="0.1" placeholder="Ex: 4.5">
+        <input type="number" id="ph" step="0.1" placeholder="Örn: 4.5">
     </div>
 
     <div class="input-group">
         <label>Yaprak Durumu / Leaf Condition:</label>
         <select id="leaf">
-            <option value="1">Sağlıklı (Koyu Yeşil) / Healthy (Dark Green)</option>
-            <option value="2">Kloroz (Sararma) / Chlorosis (Yellowing)</option>
-            <option value="3">Nekroz (Kahverengi) / Necrosis (Browning)</option>
+            <option value="1">Sağlıklı (Koyu Yeşil) / Healthy</option>
+            <option value="2">Kloroz (Sararma) / Chlorosis</option>
+            <option value="3">Nekroz (Kahverengi) / Necrosis</option>
         </select>
     </div>
 
-    <label>Zararlı Tespiti (Çoklu Seçim) / Pest Detection (Multiple):</label>
+    <label>Zararlı Tespiti (Çoklu Seçim) / Pest Detection:</label>
     <div class="pest-grid">
-        <div class="pest-card" onclick="togglePest(this, 'vampir')"><span>🪰</span><strong>Vampir Kelebek</strong><br><small>Ricania japonica</small></div>
+        <div class="pest-card" onclick="togglePest(this, 'vampir')"><span>🪰</span><strong>Vampir Kelebek</strong><br><small>Invasive Planthopper</small></div>
         <div class="pest-card" onclick="togglePest(this, 'antenli')"><span>🪲</span><strong>Antenli Böcek</strong><br><small>Longhorned Beetle</small></div>
-        <div class="pest-card" onclick="togglePest(this, 'kosnil')"><span>🛡️</span><strong>Çay Koşnili</strong><br><small>Tea Soft Scale</small></div>
-        <div class="pest-card" onclick="togglePest(this, 'akar')"><span>🕷️</span><strong>Çay Akarı</strong><br><small>Pink Tea Mite</small></div>
+        <div class="pest-card" onclick="togglePest(this, 'kosnil')"><span>🛡️</span><strong>Çay Koşnili</strong><br><small>Soft Scale</small></div>
+        <div class="pest-card" onclick="togglePest(this, 'akar')"><span>🕷️</span><strong>Çay Akarı</strong><br><small>Pink Mite</small></div>
     </div>
 
     <button class="btn-analyze" onclick="calculate()">🔬 Analiz Et / Analyze Now</button>
 
     <div id="result">
-        <h2 id="resTitle" style="margin:0; color:var(--primary);"></h2>
+        <h2 id="resTitle" style="margin:0;"></h2>
         <div style="display: flex; justify-content: space-between; font-weight: bold; margin: 15px 0;">
             <span>Azot Tasarrufu / N-Saving:</span>
             <span id="nSave" style="color: var(--secondary); font-size: 20px;">%0</span>
         </div>
-        <div class="recete-box">
-            <strong id="receteTitle">📋 EKO-REÇETE / ECO-PRESCRIPTION:</strong>
+        <div class="recete-box" id="prescContainer">
+            <strong>📋 EKO-REÇETE / ECO-PRESCRIPTION:</strong>
             <p id="prescText"></p>
         </div>
     </div>
 
     <div class="footer">
         "Sağlıklı Toprak, Zehirsiz Sofra" / "Healthy Soil, Clean Food"<br>
-        <strong>Ref:</strong> Campbell Biology (Plant Nutrition) & Raven (Mineral Deficiency)
+        <strong>Academic Ref:</strong> Campbell Biology & Raven Biology of Plants
     </div>
 </div>
 
 <script>
     let selectedPests = new Set();
-
     function togglePest(el, val) {
-        if (selectedPests.has(val)) {
-            selectedPests.delete(val);
-            el.classList.remove('active');
-        } else {
-            selectedPests.add(val);
-            el.classList.add('active');
-        }
+        if (selectedPests.has(val)) { selectedPests.delete(val); el.classList.remove('active'); }
+        else { selectedPests.add(val); el.classList.add('active'); }
     }
 
     function calculate() {
@@ -106,46 +95,49 @@
         const leaf = document.getElementById('leaf').value;
         const resDiv = document.getElementById('result');
 
-        if(isNaN(ph)) { alert("Lütfen pH değerini girin! / Please enter pH level!"); return; }
-
+        if(isNaN(ph)) { alert("Lütfen pH değerini girin!"); return; }
         resDiv.style.display = 'block';
+
         let nSaving = "0%";
         let diagnosis = "";
+        let recommendation = "";
 
-        // Azot Tasarrufu Analizi
+        // Gelişmiş pH ve Besin Analizi
         if (ph >= 4.5 && ph <= 5.5 && leaf == "1") {
             document.getElementById('resTitle').innerText = "🟢 DENGELİ SİSTEM / BALANCED";
             nSaving = "%50";
-            diagnosis = "Toprak verimliliği optimize edildi. Azotlu gübreyi %50 azaltın. / Optimize soil fertility. Reduce Nitrogen by 50%.";
+            diagnosis = "Toprak verimliliği ideal. Azot emilimi başarılı.";
+            recommendation = "✅ **TAVSİYE:** Azotlu gübrelemeyi %50 oranında AZALTIN. Minimum Yasası'na (Law of Minimum) göre toprak doygunluğa ulaşmıştır. / Reduce Nitrogen by 50%.";
+        } else if (ph < 4.5) {
+            document.getElementById('resTitle').innerText = "🔴 KRİTİK SEVİYE / CRITICAL";
+            nSaving = "%0";
+            diagnosis = "Aşırı asitlik nedeniyle bitki azot emilimini (Bioavailability) yapamıyor. Toprak toksisite riskinde.";
+            recommendation = "❌ **ACİL AKSİYON:** Azotlu gübre eklemeyi DERHAL DURDURUN. Tarım İl Müdürlüğü / Ziraat Mühendisi kontrolünde kireçleme (Liming) planlayın. Gereksiz azot toprağı daha da asitlendirir. / STOP Nitrogen. Consult an expert.";
         } else {
-            document.getElementById('resTitle').innerText = "🔴 KRİTİK DURUM / CRITICAL";
-            nSaving = "%10";
-            diagnosis = "pH dengesizliği azot emilimini (Bioavailability) engelliyor. / pH imbalance blocks N-uptake.";
+            document.getElementById('resTitle').innerText = "🟡 TAKİP GEREKLİ / CAUTION";
+            nSaving = "%20";
+            diagnosis = "pH dengesi bozulmaya başlamış, mineral alımı kısıtlı.";
+            recommendation = "⚠️ **TAVSİYE:** Gübrelemeyi %20 azaltın ve pH stabilize edici organik takviyeler kullanın. / Reduce fertilizer by 20%.";
         }
 
-        // Çoklu Zararlı Analizi
+        // Zararlı Mücadelesi
         let pestAdvice = "";
         const pestData = {
-            'vampir': "🔸 **Vampir Kelebek:** Işık tuzakları ve erken budama. / Use light traps & early pruning.",
-            'antenli': "🔸 **Antenli Böcek:** Karantina ve bulaşık kök imhası. / Quarantine & root destruction.",
-            'kosnil': "🔸 **Çay Koşnili:** Uğur böceği (Biyolojik mücadele) koruyun. / Protect ladybugs for biological control.",
-            'akar': "🔸 **Çay Akarı:** Nem dengesini koruyun, kükürtlü kontrol. / Maintain humidity, sulfur control."
+            'vampir': " <br>🦟 **Vampir Kelebek:** Işık tuzakları ve erken budama. / Light traps & pruning.",
+            'antenli': " <br>🪲 **Antenli Böcek:** Karantina ve bulaşık kök imhası. / Quarantine.",
+            'kosnil': " <br>🛡️ **Çay Koşnili:** Biyolojik mücadele (Uğur böceği) destekle. / Protect ladybugs.",
+            'akar': " <br>🕷️ **Çay Akarı:** Nem kontrolü ve uzman onaylı kükürt. / Sulfur control."
         };
 
         if (selectedPests.size > 0) {
-            pestAdvice = "<br><br><strong>Zararlı Mücadelesi / Pest Control:</strong><br>";
-            selectedPests.forEach(p => {
-                pestAdvice += pestData[p] + "<br>";
-            });
-        } else {
-            pestAdvice += "<br><br>✅ Zararlı Tespiti Yok. / No Pests Detected.";
+            pestAdvice = "<br><br><strong>Zararlı Mücadelesi / Pest Control:</strong>";
+            selectedPests.forEach(p => { pestAdvice += pestData[p]; });
         }
 
         document.getElementById('nSave').innerText = nSaving;
-        document.getElementById('prescText').innerHTML = diagnosis + pestAdvice;
+        document.getElementById('prescText').innerHTML = `<strong>Durum:</strong> ${diagnosis}<br><br>${recommendation}${pestAdvice}`;
         resDiv.scrollIntoView({behavior: 'smooth'});
     }
 </script>
-
 </body>
 </html>
