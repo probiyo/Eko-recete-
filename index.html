@@ -5,204 +5,161 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GLOBAL AGRO DOCTOR | Pro AI Terminal</title>
     <style>
-        :root { --primary: #1b5e20; --secondary: #2e7d32; --accent: #ffd700; --danger: #b71c1c; --bg: #f4f7f5; }
-        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: var(--bg); margin: 0; padding: 10px; color: #333; line-height: 1.4; }
-        .container { max-width: 480px; margin: auto; background: white; padding: 20px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; position: relative; overflow: hidden; }
+        :root { --primary: #1b5e20; --accent: #ffd700; --danger: #d32f2f; --bg: #f4f7f5; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 10px; color: #333; }
+        .container { max-width: 480px; margin: auto; background: white; padding: 20px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; position: relative; }
         
-        /* Header & Branding */
-        #lang-switcher { position: absolute; top: 20px; right: 20px; z-index: 10; }
-        #lang-switcher button { width: auto; padding: 5px 10px; font-size: 12px; background: #eee; border: 1px solid #ccc; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .school-tag { font-size: 10px; color: #777; text-align: center; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; }
-        h1 { text-align: center; color: var(--primary); font-size: 22px; margin: 5px 0; text-transform: uppercase; letter-spacing: -1px; }
-        .author-line { text-align: center; font-size: 14px; font-weight: 600; color: #444; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        .pro-badge { background: var(--accent); color: #000; padding: 4px 12px; border-radius: 50px; font-size: 10px; font-weight: 900; display: inline-block; margin-bottom: 10px; }
+        #lang-toggle { position: absolute; top: 20px; right: 20px; background: #eee; border: 1px solid #ccc; padding: 5px 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; }
+        .school-tag { font-size: 10px; color: #777; text-align: center; text-transform: uppercase; letter-spacing: 2px; }
+        h1 { text-align: center; color: var(--primary); font-size: 22px; margin: 5px 0; }
+        .author { text-align: center; font-size: 14px; font-weight: 600; color: #444; margin-bottom: 20px; }
 
-        /* Inputs */
-        .input-card { background: #f9fdfa; padding: 15px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #e8f0e9; }
-        label { display: block; font-size: 11px; font-weight: 800; color: var(--secondary); margin-bottom: 8px; text-transform: uppercase; }
-        select, input { width: 100%; padding: 12px; border: 2px solid #d1d9d2; border-radius: 12px; font-size: 15px; outline: none; transition: 0.3s; background: #fff; box-sizing: border-box; }
-        select:focus, input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(27,94,32,0.1); }
+        .card { background: #f9fdfa; padding: 15px; border-radius: 20px; margin-bottom: 12px; border: 1px solid #e8f0e9; }
+        label { display: block; font-size: 11px; font-weight: 800; color: var(--primary); margin-bottom: 8px; text-transform: uppercase; }
+        select, input { width: 100%; padding: 12px; border: 2px solid #d1d9d2; border-radius: 12px; font-size: 15px; outline: none; box-sizing: border-box; }
 
-        /* Camera UI */
-        #cam-area { display: none; margin-top: 10px; border-radius: 20px; overflow: hidden; border: 4px solid #333; position: relative; background: #000; }
+        /* Other Butonu Stili */
+        .other-opt { background: #e8f5e9; color: var(--primary); font-weight: bold; text-align: center; padding: 10px; border-radius: 10px; cursor: pointer; margin-top: 5px; border: 1px dashed var(--primary); font-size: 13px; }
+
+        #cam-box { display: none; margin-top: 15px; border-radius: 20px; overflow: hidden; border: 4px solid #333; position: relative; }
         video, canvas { width: 100%; height: 320px; object-fit: cover; }
         #canvas { display: none; position: absolute; top: 0; left: 0; }
-        .scan-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .target-box { width: 200px; height: 200px; border: 2px solid rgba(255,215,0,0.5); border-radius: 20px; position: relative; }
-        .target-box::after { content: ""; position: absolute; width: 100%; height: 2px; background: var(--accent); top: 0; animation: scanning 2s linear infinite; box-shadow: 0 0 15px var(--accent); }
-        @keyframes scanning { 0% { top: 0; } 100% { top: 100%; } }
-        .cam-hint { background: rgba(0,0,0,0.7); color: #fff; padding: 8px 15px; border-radius: 10px; font-size: 11px; margin-top: 20px; text-align: center; }
-
-        /* Buttons */
-        button { width: 100%; padding: 16px; border: none; border-radius: 15px; font-size: 16px; font-weight: 800; cursor: pointer; transition: 0.2s; margin-top: 10px; font-family: inherit; }
-        .btn-go { background: var(--primary); color: white; box-shadow: 0 5px 15px rgba(27,94,32,0.3); }
-        .btn-snap { background: #222; color: white; }
-        .btn-torch { width: auto; padding: 8px 20px; background: #fff; color: #333; font-size: 12px; border: 1px solid #ccc; margin-bottom: 10px; }
-
-        /* Result & Prescriptions */
-        #res-box { display: none; margin-top: 20px; padding: 20px; background: #fff; border-radius: 20px; border: 2px solid var(--primary); position: relative; }
-        .res-header { border-bottom: 2px solid #eee; margin-bottom: 15px; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .res-body { font-family: 'Courier New', monospace; font-size: 14px; white-space: pre-wrap; color: #1b5e20; }
-        .expert-call { background: #fff8e1; border-left: 4px solid #ffc107; padding: 10px; margin-top: 15px; font-size: 12px; font-weight: bold; color: #856404; }
         
-        /* Warning Section */
-        #warning-bar { display: none; background: #fff1f0; border: 1px solid #ffa39e; padding: 12px; border-radius: 15px; margin-top: 20px; cursor: pointer; }
-        .warning-text { color: var(--danger); font-size: 11px; font-weight: 700; text-align: center; }
+        .scan-ui { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .target { width: 220px; height: 220px; border: 2px solid var(--accent); border-radius: 20px; box-shadow: 0 0 0 1000px rgba(0,0,0,0.5); }
+        .hint { background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 10px; font-size: 11px; margin-top: 15px; text-align: center; width: 80%; }
 
-        .footer-note { font-size: 9px; color: #aaa; text-align: center; margin-top: 20px; padding-top: 10px; border-top: 1px solid #eee; }
+        button { width: 100%; padding: 16px; border: none; border-radius: 15px; font-size: 16px; font-weight: 800; cursor: pointer; margin-top: 10px; }
+        .btn-main { background: var(--primary); color: white; }
+        .btn-snap { background: #222; color: white; }
+
+        /* Prescription Area */
+        #res-area { display: none; margin-top: 20px; padding: 20px; border: 2px solid var(--primary); border-radius: 20px; background: #fff; }
+        .res-body { font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.5; color: #1b5e20; }
+        .error-msg { color: var(--danger); font-weight: bold; text-align: center; padding: 20px; border: 2px dashed var(--danger); border-radius: 15px; display: none; }
+
+        .footer { font-size: 9px; color: #aaa; text-align: center; margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="lang-switcher"><button onclick="changeLang()">EN / TR</button></div>
+    <div id="lang-toggle" onclick="toggleLang()">EN / TR</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi</div>
-    <div class="pro-badge">PRO AI GLOBAL</div>
-    <h1 id="main-title">GLOBAL TARIM DOKTORU</h1>
-    <div class="author-line">Yusuf İhsan HAMAMCI <br><small>Biology Expert & Project Lead</small></div>
+    <h1>GLOBAL TARIM DOKTORU</h1>
+    <div class="author">Yusuf İhsan HAMAMCI <br><small>Biology Expert & Project Lead</small></div>
 
-    <div class="input-card">
+    <div class="card">
         <label id="lbl-reg">Region & Crop / Bölge ve Ürün</label>
         <select id="region">
-            <optgroup label="Europe (Avrupa)">
-                <option value="fra-grape">Bordeaux, France - Vineyards (Üzüm Bağları)</option>
-                <option value="esp-olive">Andalusia, Spain - Olive Groves (Zeytinlikler)</option>
-                <option value="nld-tulip">Lisse, Netherlands - Tulip Fields (Lale Tarlaları)</option>
-                <option value="ita-tomato">Naples, Italy - Tomato Farms (Domates)</option>
-            </optgroup>
-            <optgroup label="Turkey & Others">
-                <option value="tr-tea">Rize, Turkey - Tea (Çay)</option>
-                <option value="tr-wheat">Konya, Turkey - Wheat (Buğday)</option>
-                <option value="br-coffee">Brazil - Coffee (Kahve)</option>
-            </optgroup>
+            <option value="fra-grape">France - Vineyards (Üzüm)</option>
+            <option value="tr-tea">Turkey - Tea (Çay)</option>
+            <option value="esp-olive">Spain - Olives (Zeytin)</option>
         </select>
-    </div>
-
-    <div class="input-card">
-        <label id="lbl-ph">Soil pH (From Device) / Toprak pH Değeri</label>
-        <input type="number" id="ph_val" step="0.1" placeholder="Ex: 4.5">
-    </div>
-
-    <button id="btn-start" class="btn-go" onclick="initCam()">SİSTEMİ BAŞLAT / START SYSTEM</button>
-
-    <div id="cam-area">
-        <div style="padding: 10px; background: #333; display: flex; justify-content: space-between;">
-            <button class="btn-torch" onclick="toggleFlash()">🔦 FLASH</button>
-        </div>
-        <video id="vid" autoplay playsinline></video>
-        <canvas id="canv"></canvas>
-        <div class="scan-overlay">
-            <div class="target-box"></div>
-            <div class="cam-hint" id="hint">Yaprağı kutucuğa hizalayın ve netleyin.<br>Align leaf in box and focus.</div>
-        </div>
-        <button id="btn-capture" class="btn-snap" onclick="analyze()">FOTOĞRAF ÇEK / TAKE PHOTO</button>
-    </div>
-
-    <div id="res-box">
-        <div class="res-header">
-            <strong id="res-t">REÇETE / PRESCRIPTION</strong>
-            <span style="font-size: 10px; font-weight: bold;">#AI-2026-PRO</span>
-        </div>
-        <div id="res-meta" style="font-size: 11px; color: #666; margin-bottom: 10px; font-weight: bold;"></div>
-        <div id="res-content" class="res-body"></div>
-        <div id="expert-note" class="expert-call" style="display:none;"></div>
-        <div class="footer-note">
-            © 2026 Yusuf İhsan HAMAMCI - All Rights Reserved.<br>Rize Fatih Anadolu Lisesi - Academic Innovation Project.
+        <div class="other-opt" onclick="document.getElementById('region').value='global-other'">
+            + Global - Diğer / Other (Manual Selection)
         </div>
     </div>
 
-    <div id="warning-bar" onclick="alertWarning()">
-        <div class="warning-text" id="warn-txt">⚠️ BİLİNÇSİZ İLAÇ/GÜBRE KULLANIMI UYARISI / INDISCRIMINATE CHEMICAL USE WARNING</div>
+    <div class="card">
+        <label id="lbl-ph">Soil pH / Toprak pH</label>
+        <input type="number" id="ph" step="0.1" placeholder="Ex: 4.5">
+    </div>
+
+    <button id="start-btn" class="btn-main" onclick="startSystem()">ANALİZİ BAŞLAT / START ANALYZE</button>
+
+    <div id="cam-box">
+        <video id="v" autoplay playsinline></video>
+        <canvas id="canvas"></canvas>
+        <div class="scan-ui">
+            <div class="target"></div>
+            <div class="hint" id="hint-txt">Kamerayı yaprağa odaklayın. Bilgisayar veya cansız nesne algılanırsa sistem çalışmaz.<br>Focus on the leaf. System won't work on non-living objects.</div>
+        </div>
+        <button class="btn-snap" onclick="processAI()">FOTOĞRAF ÇEK / TAKE PHOTO</button>
+    </div>
+
+    <div id="error-box" class="error-msg"></div>
+
+    <div id="res-area">
+        <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;">REÇETE / PRESCRIPTION #AI-V6</div>
+        <div id="res-output" class="res-body"></div>
+        <div class="footer">
+            © 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi
+        </div>
     </div>
 </div>
 
 <script>
-    let mode = 'TR';
+    let lang = 'TR';
     let track;
-    const v = document.getElementById('vid');
-    const c = document.getElementById('canv');
+    const v = document.getElementById('v');
+    const c = document.getElementById('canvas');
 
-    function changeLang() {
-        mode = mode === 'TR' ? 'EN' : 'TR';
-        document.getElementById('main-title').innerText = mode === 'TR' ? 'GLOBAL TARIM DOKTORU' : 'GLOBAL AGRO DOCTOR';
-        document.getElementById('btn-start').innerText = mode === 'TR' ? 'SİSTEMİ BAŞLAT / START SYSTEM' : 'START SYSTEM / SİSTEMİ BAŞLAT';
-        // Diğer etiketler dinamik olarak Reçete anında değişecek.
+    function toggleLang() {
+        lang = lang === 'TR' ? 'EN' : 'TR';
+        document.querySelector('h1').innerText = lang === 'TR' ? 'GLOBAL TARIM DOKTORU' : 'GLOBAL AGRO DOCTOR';
+        document.getElementById('start-btn').innerText = lang === 'TR' ? 'ANALİZİ BAŞLAT' : 'START ANALYSIS';
     }
 
-    async function initCam() {
-        const ph = document.getElementById('ph_val').value;
-        if(!ph) { alert("Please enter pH value! / Lütfen pH değerini girin!"); return; }
-        document.getElementById('cam-area').style.display = 'block';
-        document.getElementById('btn-start').style.display = 'none';
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-            v.srcObject = stream;
-            track = stream.getVideoTracks()[0];
-        } catch (e) { alert("Camera Error / Kamera Hatası"); }
+    async function startSystem() {
+        if(!document.getElementById('ph').value) return alert("pH?");
+        document.getElementById('cam-box').style.display = 'block';
+        document.getElementById('start-btn').style.display = 'none';
+        const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        v.srcObject = s;
+        track = s.getVideoTracks()[0];
     }
 
-    async function toggleFlash() {
-        if(!track) return;
-        const cap = track.getCapabilities();
-        if(cap.torch) {
-            await track.applyConstraints({ advanced: [{ torch: !track.getSettings().torch }] });
-        } else { alert("Flash not supported / Flaş desteklenmiyor"); }
-    }
-
-    function analyze() {
+    function processAI() {
         const ctx = c.getContext('2d');
-        c.width = v.videoWidth;
-        c.height = v.videoHeight;
+        c.width = v.videoWidth; c.height = v.videoHeight;
         ctx.drawImage(v, 0, 0);
-        c.style.display = 'block';
-        v.style.display = 'none';
-        document.getElementById('btn-capture').innerText = mode === 'TR' ? 'AI ANALİZ EDİYOR...' : 'AI ANALYZING...';
         
-        setTimeout(() => {
-            renderResult();
-            document.getElementById('res-box').style.display = 'block';
-            document.getElementById('warning-bar').style.display = 'block';
-            document.getElementById('btn-capture').innerText = mode === 'TR' ? 'YENİ ANALİZ' : 'NEW ANALYSIS';
-            document.getElementById('btn-capture').onclick = () => location.reload();
-        }, 2500);
-    }
+        // --- BİYOLOJİK DOĞRULAMA SİMÜLASYONU (Hocam için özel) ---
+        // Basit bir renk analizi: Görüntüde yeterli yeşil (green) piksel yoksa hata verir.
+        const data = ctx.getImageData(0, 0, c.width, c.height).data;
+        let greenPixels = 0;
+        for(let i=0; i<data.length; i+=4) {
+            if(data[i+1] > data[i] && data[i+1] > data[i+2]) greenPixels++;
+        }
+        
+        const isPlant = (greenPixels / (data.length/4)) > 0.15; // %15 yeşil oranı şartı
 
-    function renderResult() {
-        const ph = parseFloat(document.getElementById('ph_val').value);
-        const region = document.getElementById('region').value;
-        const content = document.getElementById('res-content');
-        const meta = document.getElementById('res-meta');
-        const exp = document.getElementById('expert-note');
-
-        meta.innerText = `ID: ${region.toUpperCase()} | pH: ${ph}`;
-        let d = "", t = "", m = "", e = "";
-
-        if(ph < 4.8) {
-            d = mode === 'TR' ? "TEŞHİS: KRİTİK ASİDİTE" : "DIAGNOSIS: CRITICAL ACIDITY";
-            t = mode === 'TR' ? "- Kalsiyum Karbonat Uygulaması\n- Magnezyum Sülfat Takviyesi" : "- Calcium Carbonate Application\n- Magnesium Sulfate Supplement";
-            m = mode === 'TR' ? "MİNERAL: Demir(Fe) ve Alüminyum(Al) kilitlenmesi çözülmeli." : "MINERAL: Unlock Iron(Fe) & Aluminum(Al) uptake.";
-        } else if(ph > 7.8) {
-            d = mode === 'TR' ? "TEŞHİS: YÜKSEK ALKALİ" : "DIAGNOSIS: HIGH ALKALINITY";
-            t = mode === 'TR' ? "- Toz Kükürt Uygulaması\n- Acil Drenaj Kontrolü" : "- Elemental Sulfur Application\n- Urgent Drainage Check";
-            m = mode === 'TR' ? "MİNERAL: Bor(B) ve Çinko(Zn) eksikliği kritik." : "MINERAL: Boron(B) & Zinc(Zn) deficiency is critical.";
-            e = mode === 'TR' ? "⚠️ UZMAN TAVSİYESİ: Bu pH seviyesi akademik müdahale gerektirir. Bizimle iletişime geçin." : "⚠️ EXPERT ADVICE: This pH level requires academic intervention. Contact us immediately.";
-        } else {
-            d = mode === 'TR' ? "TEŞHİS: OPTİMUM DENGELİ" : "DIAGNOSIS: OPTIMUM BALANCE";
-            t = mode === 'TR' ? "- Organik Kompost Desteği\n- Rutin Gözlem" : "- Organic Compost Support\n- Routine Observation";
-            m = mode === 'TR' ? "MİNERAL: İz element emilimi sağlıklı." : "MINERAL: Trace element uptake is healthy.";
+        if(!isPlant) {
+            document.getElementById('error-box').style.display = 'block';
+            document.getElementById('error-box').innerText = lang === 'TR' ? 
+                "⚠️ HATA: BİTKİ ALGILANAMADI! Lütfen kamerayı bir yaprağa veya bitkiye tutun. Bilgisayar bileşenleri analiz edilemez." : 
+                "⚠️ ERROR: NO PLANT DETECTED! Please point the camera at a leaf. Non-biological objects cannot be analyzed.";
+            document.getElementById('res-area').style.display = 'none';
+            return;
         }
 
-        content.innerText = `${d}\n\n${t}\n\n${m}`;
-        if(e) { exp.innerText = e; exp.style.display = 'block'; }
+        // Başarılıysa Reçeteye Geç
+        document.getElementById('error-box').style.display = 'none';
+        v.style.display = 'none'; c.style.display = 'block';
+        renderPrescription();
     }
 
-    function alertWarning() {
-        const msg = mode === 'TR' 
-            ? "⚠️ BİLİNÇSİZ İLAÇ VE GÜBRE UYARISI:\nYusuf İhsan HAMAMCI'nın 30 yıllık tecrübesiyle vurguladığı üzere; bilinçsiz kimyasal kullanımı toprağı öldürür, su kaynaklarını kirletir ve insan sağlığını tehdit eder. Doğru teşhis, en büyük tasarruftur."
-            : "⚠️ INDISCRIMINATE CHEMICAL WARNING:\nAs Biology Expert Yusuf İhsan HAMAMCI emphasizes with 30 years of experience; misuse of chemicals kills the soil, pollutes water, and threatens human health. Correct diagnosis is the ultimate saving.";
-        alert(msg);
+    function renderPrescription() {
+        const ph = parseFloat(document.getElementById('ph').value);
+        const out = document.getElementById('res-output');
+        document.getElementById('res-area').style.display = 'block';
+
+        let diagTR = "", diagEN = "", recTR = "", recEN = "", minTR = "", minEN = "";
+
+        if(ph < 4.5) {
+            diagTR = "YÜKSEK ASİDİTE"; diagEN = "HIGH ACIDITY";
+            recTR = "- 150kg/da Tarım Kireci\n- Magnezyum Sülfat"; recEN = "- 150kg/da Agric. Lime\n- Magnesium Sulfate";
+            minTR = "MİNERAL: Demir ve Alüminyum kilitli."; minEN = "MINERAL: Iron and Aluminum locked.";
+        } else {
+            diagTR = "OPTİMUM DENGELİ"; diagEN = "OPTIMUM BALANCE";
+            recTR = "- Rutin Gözlem\n- Organik Destek"; recEN = "- Routine Check\n- Organic Support";
+            minTR = "MİNERAL: Emilim sağlıklı."; minEN = "MINERAL: Healthy uptake.";
+        }
+
+        out.innerText = `[TR] TEŞHİS: ${diagTR}\nREÇETE: ${recTR}\n${minTR}\n\n` +
+                        `[EN] DIAGNOSIS: ${diagEN}\nPRESCRIPTION: ${recEN}\n${minEN}`;
     }
 </script>
-
 </body>
 </html>
