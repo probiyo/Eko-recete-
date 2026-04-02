@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GLOBAL AGRO DOCTOR | Scientix & European Edition</title>
+    <title>GLOBAL AGRO DOCTOR | Pro AI Terminal</title>
     <style>
-        :root { --primary: #1b5e20; --accent: #ffd700; --danger: #d32f2f; --bg: #f4f7f5; --eu-blue: #003399; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 10px; color: #333; }
+        :root { --primary: #1b5e20; --accent: #ffd700; --danger: #d32f2f; --bg: #f4f7f5; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 10px; color: #333; }
         .container { max-width: 480px; margin: auto; background: white; padding: 20px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; position: relative; }
         
         #lang-toggle { position: absolute; top: 20px; right: 20px; background: #eee; border: 1px solid #ccc; padding: 5px 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; }
         .school-tag { font-size: 10px; color: #777; text-align: center; text-transform: uppercase; letter-spacing: 2px; }
-        .eu-badge { text-align: center; font-size: 9px; color: var(--eu-blue); font-weight: bold; margin-bottom: 5px; }
         h1 { text-align: center; color: var(--primary); font-size: 22px; margin: 5px 0; }
         .author { text-align: center; font-size: 14px; font-weight: 600; color: #444; margin-bottom: 20px; }
 
@@ -32,11 +31,12 @@
         button { width: 100%; padding: 16px; border: none; border-radius: 15px; font-size: 16px; font-weight: 800; cursor: pointer; margin-top: 10px; }
         .btn-main { background: var(--primary); color: white; }
         .btn-snap { background: #222; color: white; }
+        .btn-reset { background: #555; color: white; display: none; }
 
         #res-area { display: none; margin-top: 20px; padding: 20px; border: 2px solid var(--primary); border-radius: 20px; background: #fff; }
-        .res-body { font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.5; color: #1b5e20; }
-        .expert-msg { background: #fff3e0; border-left: 5px solid #ff9800; padding: 10px; margin-top: 10px; font-size: 12px; font-weight: bold; }
-        .error-msg { color: var(--danger); font-weight: bold; text-align: center; padding: 20px; border: 2px dashed var(--danger); border-radius: 15px; display: none; }
+        .res-body { font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.5; color: #1b5e20; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px; }
+        .expert-msg { background: #fff3e0; border-left: 5px solid #ff9800; padding: 10px; font-size: 12px; font-weight: bold; color: #e65100; }
+        .error-msg { color: var(--danger); font-weight: bold; text-align: center; padding: 20px; border: 2px dashed var(--danger); border-radius: 15px; display: none; margin-top: 10px; }
 
         .footer { font-size: 9px; color: #aaa; text-align: center; margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px; }
     </style>
@@ -46,50 +46,51 @@
 <div class="container">
     <div id="lang-toggle" onclick="toggleLang()">EN / TR</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi</div>
-    <div class="eu-badge">🇪🇺 SCIENTIX BRUSSELS STEM PROJECT</div>
-    <h1>GLOBAL AGRO DOCTOR</h1>
+    <h1>GLOBAL TARIM DOKTORU</h1>
     <div class="author">Yusuf İhsan HAMAMCI <br><small>Biology Expert & Project Lead</small></div>
 
-    <div class="card">
-        <label id="lbl-reg">Region & Crop / Bölge ve Ürün</label>
-        <select id="region">
-            <option value="be-sugar">Brussels, BE - Sugar Beet (Şeker Pancarı)</option>
-            <option value="nl-tulip">Netherlands - Tulips (Lale)</option>
-            <option value="it-tomato">Italy - Tomatoes (Domates)</option>
-            <option value="tr-tea">Turkey, Rize - Tea (Çay)</option>
-            <option value="fr-grape">France - Vineyards (Üzüm)</option>
-        </select>
-        <div class="other-opt" onclick="document.getElementById('region').value='global-other'">
-            + Global - Diğer / Other (Manual Selection)
+    <div id="form-area">
+        <div class="card">
+            <label id="lbl-reg">Region & Crop / Bölge ve Ürün</label>
+            <select id="region">
+                <option value="be-sugar">Brussels, BE - Sugar Beet (Şeker Pancarı)</option>
+                <option value="nl-tulip">Netherlands - Tulips (Lale)</option>
+                <option value="it-tomato">Italy - Tomatoes (Domates)</option>
+                <option value="tr-tea">Turkey, Rize - Tea (Çay)</option>
+                <option value="fr-grape">France - Vineyards (Üzüm)</option>
+            </select>
+            <div class="other-opt" onclick="document.getElementById('region').value='global-other'">
+                + Global - Diğer / Other (Manual Selection)
+            </div>
         </div>
-    </div>
 
-    <div class="card">
-        <label id="lbl-ph">Soil pH / Toprak pH</label>
-        <input type="number" id="ph" step="0.1" placeholder="Ex: 4.5">
-    </div>
+        <div class="card">
+            <label id="lbl-ph">Soil pH / Toprak pH</label>
+            <input type="number" id="ph" step="0.1" placeholder="Ex: 4.5">
+        </div>
 
-    <button id="start-btn" class="btn-main" onclick="startSystem()">ANALİZİ BAŞLAT / START ANALYZE</button>
+        <button id="start-btn" class="btn-main" onclick="startSystem()">ANALİZİ BAŞLAT / START ANALYZE</button>
+    </div>
 
     <div id="cam-box">
         <video id="v" autoplay playsinline></video>
         <canvas id="canvas"></canvas>
         <div class="scan-ui">
             <div class="target"></div>
-            <div class="hint" id="hint-txt">Kamerayı yaprağa odaklayın. Bilgisayar veya cansız nesne algılanırsa sistem çalışmaz.<br>Focus on the leaf. System won't work on non-biological objects.</div>
+            <div class="hint" id="hint-txt">Kamerayı yaprağa odaklayın.<br>Focus on the leaf.</div>
         </div>
-        <button class="btn-snap" onclick="processAI()">FOTOĞRAF ÇEK / TAKE PHOTO</button>
+        <button id="snap-btn" class="btn-snap" onclick="processAI()">FOTOĞRAF ÇEK / TAKE PHOTO</button>
     </div>
 
     <div id="error-box" class="error-msg"></div>
 
     <div id="res-area">
-        <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;">REÇETE / PRESCRIPTION #SCIENTIX-V8</div>
+        <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;">REÇETE / PRESCRIPTION #SCIENTIX-V9</div>
         <div id="res-output" class="res-body"></div>
         <div id="expert-note" class="expert-msg"></div>
+        <button id="reset-btn" class="btn-reset" onclick="resetSystem()">YENİ ANALİZ / NEW ANALYZE</button>
         <div class="footer">
-            © 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi<br>
-            Developed for Scientix & European Schoolnet Projects
+            © 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi
         </div>
     </div>
 </div>
@@ -104,15 +105,18 @@
         lang = lang === 'TR' ? 'EN' : 'TR';
         document.querySelector('h1').innerText = lang === 'TR' ? 'GLOBAL TARIM DOKTORU' : 'GLOBAL AGRO DOCTOR';
         document.getElementById('start-btn').innerText = lang === 'TR' ? 'ANALİZİ BAŞLAT' : 'START ANALYSIS';
+        if(document.getElementById('res-area').style.display === 'block') renderPrescription();
     }
 
     async function startSystem() {
-        if(!document.getElementById('ph').value) return alert("Please enter pH value!");
+        if(!document.getElementById('ph').value) return alert("Please enter pH!");
         document.getElementById('cam-box').style.display = 'block';
         document.getElementById('start-btn').style.display = 'none';
-        const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-        v.srcObject = s;
-        track = s.getVideoTracks()[0];
+        try {
+            const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+            v.srcObject = s;
+            track = s.getVideoTracks()[0];
+        } catch (e) { alert("Camera Error"); }
     }
 
     function processAI() {
@@ -126,19 +130,21 @@
             if(data[i+1] > data[i] && data[i+1] > data[i+2]) greenPixels++;
         }
         
-        const isPlant = (greenPixels / (data.length/4)) > 0.12; // %12 yeşil oranı yeterli
+        const isPlant = (greenPixels / (data.length/4)) > 0.12;
 
         if(!isPlant) {
             document.getElementById('error-box').style.display = 'block';
             document.getElementById('error-box').innerText = lang === 'TR' ? 
                 "⚠️ HATA: BİTKİ ALGILANAMADI! Lütfen kamerayı bir yaprağa tutun." : 
                 "⚠️ ERROR: NO PLANT DETECTED! Please point the camera at a leaf.";
-            document.getElementById('res-area').style.display = 'none';
             return;
         }
 
         document.getElementById('error-box').style.display = 'none';
-        v.style.display = 'none'; c.style.display = 'block';
+        v.style.display = 'none'; 
+        c.style.display = 'block';
+        document.getElementById('snap-btn').style.display = 'none';
+        document.getElementById('reset-btn').style.display = 'block';
         renderPrescription();
     }
 
@@ -152,24 +158,33 @@
 
         if(ph < 4.5) {
             diagTR = "KRİTİK ASİDİTE"; diagEN = "CRITICAL ACIDITY";
-            recTR = "- 150kg/da Tarım Kireci\n- Magnezyum Sülfat Uygulaması"; recEN = "- 150kg/da Agric. Lime\n- Magnesium Sulfate Application";
-            minTR = "MİNERAL: Demir(Fe) ve Alüminyum(Al) toksisitesi riski!"; minEN = "MINERAL: Risk of Iron(Fe) and Aluminum(Al) toxicity!";
-        } else if(ph > 7.8) {
-            diagTR = "YÜKSEK ALKALİNİTE"; diagEN = "HIGH ALKALINITY";
-            recTR = "- Kükürt Uygulaması\n- Amonyum Sülfatlı Gübreleme"; recEN = "- Sulfur Application\n- Ammonium Sulfate Fertilization";
-            minTR = "MİNERAL: Çinko(Zn) ve Bor(B) alımı kilitli."; minEN = "MINERAL: Zinc(Zn) and Boron(B) uptake locked.";
+            recTR = "- 150kg/da Tarım Kireci"; recEN = "- 150kg/da Agric. Lime";
+            minTR = "MİNERAL: Demir(Fe) kilitlenmesi."; minEN = "MINERAL: Iron(Fe) lock.";
         } else {
             diagTR = "OPTİMUM DENGELİ"; diagEN = "OPTIMUM BALANCE";
-            recTR = "- Organik Madde (Kompost) Takviyesi\n- Rutin pH Kontrolü"; recEN = "- Organic Matter (Compost) Supplement\n- Routine pH Control";
-            minTR = "MİNERAL: Besin emilimi ideal seviyede."; minEN = "MINERAL: Nutrient uptake at ideal levels.";
+            recTR = "- Rutin pH Kontrolü"; recEN = "- Routine pH Control";
+            minTR = "MİNERAL: Besin emilimi sağlıklı."; minEN = "MINERAL: Healthy uptake.";
         }
 
         out.innerText = `[TR] TEŞHİS: ${diagTR}\nÖNERİ: ${recTR}\n${minTR}\n\n` +
                         `[EN] DIAGNOSIS: ${diagEN}\nADVICE: ${recEN}\n${minEN}`;
         
+        // ÇİFT DİLLİ UZMAN NOTU (Hocam buraya dikkat)
         exp.innerText = lang === 'TR' ? 
-            "⚠️ UZMAN GÖRÜŞÜ: Çözülemeyen sorunlarda acil akademik destek alınmalıdır." : 
-            "⚠️ EXPERT ADVICE: Seek academic support for unresolved issues.";
+            "⚠️ UZMAN GÖRÜŞÜ: Çözülemeyen sorunlarda acil uzman desteği alınmalıdır." : 
+            "⚠️ EXPERT ADVICE: Seek immediate expert support for unresolved issues.";
+    }
+
+    function resetSystem() {
+        // Kamerayı ve arayüzü sıfırla
+        document.getElementById('res-area').style.display = 'none';
+        document.getElementById('cam-box').style.display = 'none';
+        document.getElementById('snap-btn').style.display = 'block';
+        document.getElementById('reset-btn').style.display = 'none';
+        document.getElementById('start-btn').style.display = 'block';
+        c.style.display = 'none';
+        v.style.display = 'block';
+        if(track) track.stop(); // Eski kamerayı kapat
     }
 </script>
 </body>
