@@ -18,6 +18,8 @@
         label { display: block; font-size: 11px; font-weight: 800; color: var(--primary); margin-bottom: 8px; text-transform: uppercase; }
         select, input { width: 100%; padding: 12px; border: 2px solid #d1d9d2; border-radius: 12px; font-size: 15px; outline: none; box-sizing: border-box; }
 
+        .other-opt { background: #e8f5e9; color: var(--primary); font-weight: bold; text-align: center; padding: 10px; border-radius: 10px; cursor: pointer; margin-top: 5px; border: 1px dashed var(--primary); font-size: 13px; }
+
         #cam-box { display: none; margin-top: 15px; border-radius: 20px; overflow: hidden; border: 4px solid #333; position: relative; }
         video, canvas { width: 100%; height: 320px; object-fit: cover; }
         #canvas { display: none; position: absolute; top: 0; left: 0; }
@@ -32,12 +34,10 @@
         .btn-reset { background: #555; color: white; display: none; }
 
         #res-area { display: none; margin-top: 20px; padding: 20px; border: 2px solid var(--primary); border-radius: 20px; background: #fff; }
-        .res-body { font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.5; color: #1b5e20; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px; }
+        .res-body { font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.5; color: #1b5e20; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px; white-space: pre-wrap; }
         
-        /* Hibrit Analiz Notu Stili */
         .hybrid-note { background: #e3f2fd; border-left: 5px solid #2196f3; padding: 10px; font-size: 12px; margin-bottom: 10px; color: #0d47a1; font-weight: bold; }
         .expert-msg { background: #fff3e0; border-left: 5px solid #ff9800; padding: 10px; font-size: 12px; font-weight: bold; color: #e65100; margin-bottom: 15px; }
-        
         .error-msg { color: var(--danger); font-weight: bold; text-align: center; padding: 20px; border: 2px dashed var(--danger); border-radius: 15px; display: none; margin-top: 10px; font-size: 13px; }
 
         .footer { font-size: 9px; color: #aaa; text-align: center; margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px; }
@@ -55,16 +55,23 @@
         <div class="card">
             <label id="lbl-reg">Region & Crop / Bölge ve Ürün</label>
             <select id="region">
-                <option value="tr-tea">Turkey, Rize - Tea (Çay)</option>
                 <option value="be-sugar">Brussels, BE - Sugar Beet (Şeker Pancarı)</option>
                 <option value="nl-tulip">Netherlands - Tulips (Lale)</option>
                 <option value="it-tomato">Italy - Tomatoes (Domates)</option>
+                <option value="tr-tea">Turkey, Rize - Tea (Çay)</option>
+                <option value="fr-grape">France - Vineyards (Üzüm)</option>
+                <option value="global-other">Global - Diğer / Other</option>
             </select>
+            <div class="other-opt" onclick="document.getElementById('region').value='global-other'">
+                + Global - Diğer / Other (Manual Selection)
+            </div>
         </div>
+
         <div class="card">
             <label id="lbl-ph">Soil pH / Toprak pH</label>
             <input type="number" id="ph" step="0.1" placeholder="Ex: 4.5">
         </div>
+
         <button id="start-btn" class="btn-main" onclick="startSystem()">ANALİZİ BAŞLAT / START ANALYZE</button>
     </div>
 
@@ -73,28 +80,23 @@
         <canvas id="canvas"></canvas>
         <div class="scan-ui">
             <div class="target"></div>
-            <div class="hint" id="hint-txt">Flaş aktif edildi. Yaprağa odaklayın.<br>Flash enabled. Focus on the leaf.</div>
+            <div class="hint" id="hint-txt">Kamerayı yaprağa odaklayın (Flaş Aktif).<br>Focus on the leaf (Flash On).</div>
         </div>
         <button id="snap-btn" class="btn-snap" onclick="processAI()">FOTOĞRAF ÇEK / TAKE PHOTO</button>
     </div>
 
     <div id="error-box" class="error-msg">
-        [TR] ⚠️ HATA: BİTKİ ALGILANAMADI! Lütfen bir yaprak çekin.<br>
-        [EN] ⚠️ ERROR: NO PLANT DETECTED! Please snap a leaf.
+        [TR] ⚠️ HATA: BİTKİ ALGILANAMADI!<br>[EN] ⚠️ ERROR: NO PLANT DETECTED!
     </div>
 
     <div id="res-area">
-        <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;">REÇETE / PRESCRIPTION #SCIENTIX-V10-HYBRID</div>
-        
+        <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;">REÇETE / PRESCRIPTION #SCIENTIX-V11</div>
         <div id="hybrid-output" class="hybrid-note"></div>
-        
         <div id="res-output" class="res-body"></div>
-        
         <div id="expert-note" class="expert-msg">
             [TR] ⚠️ UZMAN GÖRÜŞÜ: Çözülemeyen sorunlarda acil uzman desteği alınmalıdır.<br><br>
             [EN] ⚠️ EXPERT ADVICE: Seek immediate expert support for unresolved issues.
         </div>
-
         <button id="reset-btn" class="btn-reset" onclick="resetSystem()">YENİ ANALİZ / NEW ANALYZE</button>
         <div class="footer">© 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
     </div>
@@ -110,48 +112,37 @@
         lang = lang === 'TR' ? 'EN' : 'TR';
         document.querySelector('h1').innerText = lang === 'TR' ? 'GLOBAL TARIM DOKTORU' : 'GLOBAL AGRO DOCTOR';
         document.getElementById('start-btn').innerText = lang === 'TR' ? 'ANALİZİ BAŞLAT' : 'START ANALYSIS';
-        if(document.getElementById('res-area').style.display === 'block') processAI(true); 
+        if(document.getElementById('res-area').style.display === 'block') processAI(true);
     }
 
     async function startSystem() {
         if(!document.getElementById('ph').value) return alert("Please enter pH!");
         document.getElementById('cam-box').style.display = 'block';
         document.getElementById('start-btn').style.display = 'none';
-        
         try {
-            const s = await navigator.mediaDevices.getUserMedia({ 
-                video: { facingMode: 'environment' } 
-            });
+            const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
             v.srcObject = s;
             track = s.getVideoTracks()[0];
-
-            // FLAŞI AKTİFLEŞTİRME (Destekleyen cihazlarda)
             setTimeout(async () => {
-                const capabilities = track.getCapabilities();
-                if (capabilities.torch) {
-                    await track.applyConstraints({ advanced: [{ torch: true }] });
-                }
+                const caps = track.getCapabilities();
+                if(caps.torch) await track.applyConstraints({ advanced: [{ torch: true }] });
             }, 500);
-
-        } catch (e) { alert("Camera/Flash Error: " + e); }
+        } catch (e) { alert("Camera Error"); }
     }
 
-    function processAI(isOnlyLangSwitch = false) {
+    function processAI(isLangOnly = false) {
         const ctx = c.getContext('2d');
-        if(!isOnlyLangSwitch) {
+        if(!isLangOnly) {
             c.width = v.videoWidth; c.height = v.videoHeight;
             ctx.drawImage(v, 0, 0);
         }
         
         const data = ctx.getImageData(0, 0, c.width, c.height).data;
-        let totalGreen = 0, totalRed = 0, count = 0;
+        let totalG = 0, totalR = 0, count = 0;
 
         for(let i=0; i<data.length; i+=4) {
-            let r = data[i], g = data[i+1], b = data[i+2];
-            if(g > r && g > b) {
-                totalGreen += g;
-                totalRed += r;
-                count++;
+            if(data[i+1] > data[i] && data[i+1] > data[i+2]) {
+                totalG += data[i+1]; totalR += data[i]; count++;
             }
         }
         
@@ -160,55 +151,58 @@
             return;
         }
 
-        // KLOROFİL İNDEKSİ HESABI (Yeşil / Kırmızı oranı)
-        const greenIntensity = totalGreen / count;
-        const redIntensity = totalRed / count;
-        const chlIndex = greenIntensity / (redIntensity + 1);
-
+        const chl = totalG / (totalR + 1);
         document.getElementById('error-box').style.display = 'none';
-        if(!isOnlyLangSwitch) {
-            v.style.display = 'none'; 
-            c.style.display = 'block';
+        if(!isLangOnly) {
+            v.style.display = 'none'; c.style.display = 'block';
             document.getElementById('snap-btn').style.display = 'none';
             document.getElementById('reset-btn').style.display = 'block';
         }
-        
-        renderPrescription(chlIndex);
+        renderResult(chl);
     }
 
-    function renderPrescription(chl) {
+    function renderResult(chl) {
         const ph = parseFloat(document.getElementById('ph').value);
-        const hybridOut = document.getElementById('hybrid-output');
+        const hybrid = document.getElementById('hybrid-output');
         const out = document.getElementById('res-output');
         document.getElementById('res-area').style.display = 'block';
 
-        // Hibrit Analiz Notu
-        let chlStatusTR = chl > 1.4 ? "Optimal Klorofil (Sağlıklı)" : "Düşük Klorofil (Olası Kloroz)";
-        let chlStatusEN = chl > 1.4 ? "Optimal Chlorophyll (Healthy)" : "Low Chlorophyll (Potential Chlorosis)";
-        
-        hybridOut.innerHTML = `🌿 [TR] GÖRSEL ANALİZ: ${chlStatusTR}<br>` +
-                             `🌿 [EN] VISUAL ANALYSIS: ${chlStatusEN}`;
+        // 1. Görsel Klorofil & Azot Tahmini
+        let chlTR = chl > 1.4 ? "Optimal (Yeterli)" : "Düşük (Azot Eksikliği Riski)";
+        let chlEN = chl > 1.4 ? "Optimal (Sufficient)" : "Low (Nitrogen Deficiency Risk)";
+        hybrid.innerHTML = `🌿 [TR] KLOROFİL & AZOT: ${chlTR}<br>🌿 [EN] CHLOROPHYLL & NITROGEN: ${chlEN}`;
 
-        let diagTR = "", diagEN = "", recTR = "", recEN = "";
+        // 2. PH ve Mineral Analizi (Eski veriler geri geldi)
+        let diagTR = "", diagEN = "", recTR = "", recEN = "", minTR = "", minEN = "";
 
         if(ph < 4.5) {
             diagTR = "KRİTİK ASİDİTE"; diagEN = "CRITICAL ACIDITY";
-            recTR = "- 150kg/da Tarım Kireci Uygulayın"; recEN = "- Apply 150kg/da Agric. Lime";
+            recTR = "- 150kg/da Tarım Kireci Uygulayın"; recEN = "- Apply 150kg/da Agricultural Lime";
+            minTR = "- MİNERAL: Demir(Fe) ve Mn kilitlenmesi tespit edildi."; 
+            minEN = "- MINERAL: Iron(Fe) and Mn lockout detected.";
+        } else if(ph > 7.5) {
+            diagTR = "ALKALİ TOPRAK"; diagEN = "ALKALINE SOIL";
+            recTR = "- Kükürt Takviyesi Gerekli"; recEN = "- Sulfur Supplement Required";
+            minTR = "- MİNERAL: Fosfor ve Çinko emilimi kısıtlı."; 
+            minEN = "- MINERAL: Phosphorus and Zinc uptake limited.";
         } else {
             diagTR = "OPTİMUM DENGELİ"; diagEN = "OPTIMUM BALANCE";
-            recTR = "- Düzenli İzleme"; recEN = "- Regular Monitoring";
+            recTR = "- Rutin Takip"; recEN = "- Routine Follow-up";
+            minTR = "- MİNERAL: Besin emilimi sağlıklı seviyede."; 
+            minEN = "- MINERAL: Nutrient uptake at healthy levels.";
         }
 
-        out.innerText = `[TR] TOPRAK TEŞHİSİ: ${diagTR}\n[TR] REÇETE: ${recTR}\n\n` +
-                        `[EN] SOIL DIAGNOSIS: ${diagEN}\n[EN] PRESCRIPTION: ${recEN}`;
+        // Azot (N) İhtiyacı sentezi
+        let nitroTR = chl < 1.4 ? "\n- AZOT: Yaprak rengi açık, N takviyesi önerilir." : "\n- AZOT: Seviye dengeli.";
+        let nitroEN = chl < 1.4 ? "\n- NITROGEN: Light color, N supplement suggested." : "\n- NITROGEN: Levels balanced.";
+
+        out.innerText = `[TR] DURUM: ${diagTR}\n[TR] ÖNERİ: ${recTR}\n${minTR}${nitroTR}\n\n` +
+                        `[EN] STATUS: ${diagEN}\n[EN] ADVICE: ${recEN}\n${minEN}${nitroEN}`;
     }
 
     function resetSystem() {
-        if(track) {
-            track.applyConstraints({ advanced: [{ torch: false }] }); // Flaşı kapat
-            track.stop();
-        }
-        location.reload(); // En temiz sıfırlama için
+        if(track) track.stop();
+        location.reload();
     }
 </script>
 </body>
