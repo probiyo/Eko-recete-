@@ -120,7 +120,7 @@
         
         <!-- Çift Senaryolu Prediktif Stres Simülasyon Grafiği (Chart.js) -->
         <div class="chart-box">
-            <label style="text-align:center; margin-bottom:5px;">📈 Senaryo Bazlı 5 Günlük Stres Trendi</label>
+            <label style="text-align:center; margin-bottom:5px; font-size: 10px;">📈 Senaryo Bazlı 5 Günlük Stres Trendi<br>Scenario-Based 5-Day Stress Trend</label>
             <canvas id="stressChart" style="width:100%; height:160px;"></canvas>
         </div>
 
@@ -131,7 +131,7 @@
         </div>
         
         <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/edit?usp=drive_link" target="_blank" class="btn-excel">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
-        <div class="btn-save" onclick="window.print()">📥 RAPoru YAZDIR / PDF KAYDET</div>
+        <div class="btn-save" onclick="window.print()">📥 RAPORU YAZDIR / PDF KAYDET</div>
 
         <button id="reset-btn" class="btn-reset" onclick="resetSystem()">YENİ ANALİZ / NEW ANALYZE</button>
         <div class="footer">© 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
@@ -290,7 +290,6 @@
     function updateChart(currentStress) {
         const ctxCanvas = document.getElementById('stressChart').getContext('2d');
         
-        // Senaryo 1: Müdahale Edilirse (Yeşil Trend - İyileşen Düşük Stres)
         const greenTrend = [
             Math.max(1, currentStress - 1),
             currentStress,
@@ -299,7 +298,6 @@
             Math.max(1, currentStress - 3)
         ];
 
-        // Senaryo 2: Müdahale Edilmezse (Kırmızı Trend - Artan Yüksek Stres)
         const redTrend = [
             currentStress,
             Math.min(10, currentStress + 1),
@@ -316,7 +314,7 @@
             myChart = new Chart(ctxCanvas, {
                 type: 'line',
                 data: {
-                    labels: ['1. Gün', '2. Gün', '3. Gün (Bugün)', '4. Gün', '5. Gün'],
+                    labels: ['1. Gün / Day 1', '2. Gün / Day 2', '3. Gün / Day 3 (Bugün/Today)', '4. Gün / Day 4', '5. Gün / Day 5'],
                     datasets: [
                         {
                             label: 'Reçete Uygulanırsa (Yeşil / Green Scenario)',
@@ -341,7 +339,7 @@
                 },
                 options: {
                     responsive: true,
-                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } },
+                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 9 } } } },
                     scales: {
                         y: { min: 0, max: 10 }
                     }
