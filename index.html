@@ -146,7 +146,7 @@
 </div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUF_dzAKVvUaj3h96RrqUfhqvRksoLxxiBNaMmDbHQ5mVX5cpeImN5M_ndHBSdDHtN/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby-q8_BHvefzhvaUXLtBXAsKNYZXWKi70FNO8z6SJmZ3ebe5L6qkMvS2ZD8m6-ptZ7O/exec";
 
     let lang = 'TR';
     let track;
@@ -226,12 +226,12 @@
         let carbonReduction = (fertilizerSaving * 2.0).toFixed(1);
         
         document.getElementById('green-deal-output').innerHTML = `🇪🇺 EU GREEN DEAL IMPACT:<br>` +
-                                   `[TR] Entegre Zararlı Yönetimi (IPM) Skoru: %${100 - (stressScore*8)} | Karbon Optimizasyonu: ${carbonReduction} kg CO₂e/da<br>` +
-                                   `[EN] IPM Score: %${100 - (stressScore*8)} | Carbon Optimization: ${carbonReduction} kg CO₂e/da`;
+                                    `[TR] Entegre Zararlı Yönetimi (IPM) Skoru: %${100 - (stressScore*8)} | Karbon Optimizasyonu: ${carbonReduction} kg CO₂e/da<br>` +
+                                    `[EN] IPM Score: %${100 - (stressScore*8)} | Carbon Optimization: ${carbonReduction} kg CO₂e/da`;
 
         document.getElementById('prescription-output').innerHTML = `🌱 AKILLI BİTKİ REÇETESİ / SMART PRESCRIPTION:<br>` +
-                                   `[TR] ${res.prescription_tr}<br>` +
-                                   `[EN] ${res.prescription_en}`;
+                                    `[TR] ${res.prescription_tr}<br>` +
+                                    `[EN] ${res.prescription_en}`;
 
         updateChart(stressScore);
 
