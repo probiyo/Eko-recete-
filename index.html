@@ -35,8 +35,9 @@
         .btn-snap { background: #222; color: white; }
         .btn-reset { background: #555; color: white; display: none; }
         .btn-excel { background: #107c41; color: white; text-decoration: none; display: block; text-align: center; padding: 14px; border-radius: 15px; font-size: 15px; font-weight: 800; margin-top: 10px; }
+        .btn-save { background: #0277bd; color: white; text-decoration: none; display: block; text-align: center; padding: 12px; border-radius: 15px; font-size: 14px; font-weight: 800; margin-top: 10px; cursor: pointer; }
 
-        #res-area { display: none; margin-top: 20px; padding: 20px; border: 2px solid var(--primary); border-radius: 20px; background: #fff; }
+        #res-area { display: none; margin-top: 20px; padding: 20px; border: 2px solid #1b5e20; border-radius: 20px; background: #fff; }
         .res-body { font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4; color: #1b5e20; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px; white-space: pre-wrap; }
         
         .hybrid-note { background: #e3f2fd; border-left: 5px solid #2196f3; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #0d47a1; font-weight: bold; }
@@ -117,10 +118,10 @@
         <div id="green-deal-output" class="green-deal-box"></div>
         <div id="prescription-output" class="prescription-box"></div>
         
-        <!-- Canlı Prediktif Simülasyon Grafiği (Chart.js) -->
+        <!-- Çift Senaryolu Prediktif Stres Simülasyon Grafiği (Chart.js) -->
         <div class="chart-box">
-            <label style="text-align:center; margin-bottom:5px;">📈 3-5 Günlük Canlı Stres Simülasyon Trendi</label>
-            <canvas id="stressChart" style="width:100%; height:150px;"></canvas>
+            <label style="text-align:center; margin-bottom:5px;">📈 Senaryo Bazlı 5 Günlük Stres Trendi</label>
+            <canvas id="stressChart" style="width:100%; height:160px;"></canvas>
         </div>
 
         <div id="res-output" class="res-body"></div>
@@ -130,6 +131,7 @@
         </div>
         
         <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/edit?usp=drive_link" target="_blank" class="btn-excel">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
+        <div class="btn-save" onclick="window.print()">📥 RAPoru YAZDIR / PDF KAYDET</div>
 
         <button id="reset-btn" class="btn-reset" onclick="resetSystem()">YENİ ANALİZ / NEW ANALYZE</button>
         <div class="footer">© 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
@@ -230,7 +232,6 @@
         
         hybrid.innerHTML = `🌿 [TR] KLOROFİL: ${chlTR} | STRES: ${stressScore}/10<br>🌿 [EN] CHLOROPHYLL: ${chlEN} | STRESS: ${stressScore}/10`;
 
-        // Bilimsel Kalibrasyon ve Validasyon Paneli (Jüri Kalkanı)
         calib.innerHTML = `🔬 SPEKTROSKOPİK KALİBRASYON / SPECTROSCOPIC VALIDATION:<br>` +
                           `[TR] Validasyon: Campbell Biology & Fizyoloji Modeli (Sapma Payı: %±2.4)<br>` +
                           `[EN] Validation: Campbell Biology & Physiology Model (Margin: %±2.4)`;
@@ -289,35 +290,58 @@
     function updateChart(currentStress) {
         const ctxCanvas = document.getElementById('stressChart').getContext('2d');
         
-        const trendData = [
+        // Senaryo 1: Müdahale Edilirse (Yeşil Trend - İyileşen Düşük Stres)
+        const greenTrend = [
             Math.max(1, currentStress - 1),
             currentStress,
-            Math.min(10, currentStress + (Math.random() > 0.5 ? 1 : 0)),
             Math.max(1, currentStress - 1),
-            Math.max(1, currentStress - 2)
+            Math.max(1, currentStress - 2),
+            Math.max(1, currentStress - 3)
+        ];
+
+        // Senaryo 2: Müdahale Edilmezse (Kırmızı Trend - Artan Yüksek Stres)
+        const redTrend = [
+            currentStress,
+            Math.min(10, currentStress + 1),
+            Math.min(10, currentStress + 2),
+            Math.min(10, currentStress + 3),
+            Math.min(10, currentStress + 4)
         ];
 
         if (myChart) {
-            myChart.data.datasets[0].data = trendData;
+            myChart.data.datasets[0].data = greenTrend;
+            myChart.data.datasets[1].data = redTrend;
             myChart.update();
         } else {
             myChart = new Chart(ctxCanvas, {
                 type: 'line',
                 data: {
-                    labels: ['1. Gün / Day 1', '2. Gün / Day 2', '3. Gün / Day 3 (Bugün/Today)', '4. Gün / Day 4', '5. Gün / Day 5'],
-                    datasets: [{
-                        label: 'Prediktif Stres Skoru / Predicted Stress Score',
-                        data: trendData,
-                        borderColor: '#1b5e20',
-                        backgroundColor: 'rgba(27, 94, 32, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.3
-                    }]
+                    labels: ['1. Gün', '2. Gün', '3. Gün (Bugün)', '4. Gün', '5. Gün'],
+                    datasets: [
+                        {
+                            label: 'Reçete Uygulanırsa (Yeşil / Green Scenario)',
+                            data: greenTrend,
+                            borderColor: '#2e7d32',
+                            backgroundColor: 'rgba(46, 125, 50, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Müdahale Edilmezse (Kırmızı / Red Scenario)',
+                            data: redTrend,
+                            borderColor: '#d32f2f',
+                            backgroundColor: 'rgba(211, 47, 47, 0.05)',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            fill: false,
+                            tension: 0.3
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
-                    plugins: { legend: { display: false } },
+                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } },
                     scales: {
                         y: { min: 0, max: 10 }
                     }
@@ -332,7 +356,7 @@
             weather: document.getElementById('weather').value,
             region: document.getElementById('region').value,
             stress: stressScore,
-            notes: "Validated via Campbell Biology Model + Eco Prescription",
+            notes: "Dual Scenario Trend Chart + Validated",
             image: imgData
         };
         fetch(SCRIPT_URL, {
