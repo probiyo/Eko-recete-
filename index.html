@@ -295,14 +295,16 @@
     function updateChart(currentStress) {
         const ctxCanvas = document.getElementById('stressChart').getContext('2d');
         
+        // Yeşil Senaryo (Reçete uygulanırsa: Bugünkü stresten başlar, gün gün düşer)
         const greenTrend = [
-            Math.max(1, currentStress - 1),
+            Math.min(10, currentStress + 1),
             currentStress,
-            Math.max(1, currentStress - 1),
+            currentStress,
             Math.max(1, currentStress - 2),
             Math.max(1, currentStress - 3)
         ];
 
+        // Kırmızı Senaryo (Müdahale edilmezse: Dengeli bir artış eğrisi izler, maksimum 10'da biter)
         const redTrend = [
             currentStress,
             Math.min(10, currentStress + 1),
