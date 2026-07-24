@@ -39,6 +39,7 @@
         
         .hybrid-note { background: #e3f2fd; border-left: 5px solid #2196f3; padding: 10px; font-size: 12px; margin-bottom: 10px; color: #0d47a1; font-weight: bold; }
         .green-deal-box { background: #e8f5e9; border-left: 5px solid #2e7d32; padding: 12px; font-size: 12px; margin-bottom: 10px; color: #1b5e20; font-weight: bold; border-radius: 0 10px 10px 0; }
+        .prescription-box { background: #fffde7; border-left: 5px solid #fbc02d; padding: 12px; font-size: 12px; margin-bottom: 10px; color: #f57f17; font-weight: bold; border-radius: 0 10px 10px 0; }
         .expert-msg { background: #fff3e0; border-left: 5px solid #ff9800; padding: 10px; font-size: 12px; font-weight: bold; color: #e65100; margin-bottom: 15px; }
         .error-msg { color: var(--danger); font-weight: bold; text-align: center; padding: 20px; border: 2px dashed var(--danger); border-radius: 15px; display: none; margin-top: 10px; font-size: 13px; }
 
@@ -51,7 +52,7 @@
     <div id="lang-toggle" onclick="toggleLang()">EN / TR</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi</div>
     <h1>GLOBAL AGRO DOCTOR</h1>
-    <div class="author">Hazreti Yusuf İhsan HAMAMCI <br><small>Biology Expert & Project Lead</small></div>
+    <div class="author">Yusuf İhsan HAMAMCI <br><small>Biology Expert & Project Lead</small></div>
 
     <div id="form-area">
         <div class="card">
@@ -106,6 +107,7 @@
         <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;">BRÜSSEL PROJE RAPORU #EU-AGRO</div>
         <div id="hybrid-output" class="hybrid-note"></div>
         <div id="green-deal-output" class="green-deal-box"></div>
+        <div id="prescription-output" class="prescription-box"></div>
         <div id="res-output" class="res-body"></div>
         <div id="expert-note" class="expert-msg">
             [TR] ⚠️ UZMAN GÖRÜŞÜ: Çözülemeyen sorunlarda acil uzman desteği alınmalıdır.<br><br>
@@ -115,7 +117,7 @@
         <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/edit?usp=drive_link" target="_blank" class="btn-excel">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
 
         <button id="reset-btn" class="btn-reset" onclick="resetSystem()">YENİ ANALİZ / NEW ANALYZE</button>
-        <div class="footer">© 2026 Hazreti Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
+        <div class="footer">© 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
     </div>
 </div>
 
@@ -202,6 +204,7 @@
         const region = document.getElementById('region').value;
         const hybrid = document.getElementById('hybrid-output');
         const greenDeal = document.getElementById('green-deal-output');
+        const prescription = document.getElementById('prescription-output');
         const out = document.getElementById('res-output');
         document.getElementById('res-area').style.display = 'block';
 
@@ -210,13 +213,29 @@
         
         hybrid.innerHTML = `🌿 [TR] KLOROFİL: ${chlTR} | STRES: ${stressScore}/10<br>🌿 [EN] CHLOROPHYLL: ${chlEN} | STRESS: ${stressScore}/10`;
 
-        // Avrupa Yeşil Mutabakatı Sürdürülebilirlik & Karbon Azaltım Skoru Hesaplama
-        let fertilizerSaving = Math.max(5, Math.round((11 - stressScore) * 1.8)); // % tasarruf
-        let carbonReduction = (fertilizerSaving * 2.4).toFixed(1); // kg CO2 eşdeğeri azaltım
+        let fertilizerSaving = Math.max(5, Math.round((11 - stressScore) * 1.8));
+        let carbonReduction = (fertilizerSaving * 2.4).toFixed(1);
         
         greenDeal.innerHTML = `🇪🇺 EU GREEN DEAL IMPACT:<br>` +
                               `[TR] Gübre Tasarrufu: %${fertilizerSaving} | Karbon Azaltımı: ${carbonReduction} kg CO₂e/da<br>` +
                               `[EN] Fertilizer Saving: %${fertilizerSaving} | Carbon Reduction: ${carbonReduction} kg CO₂e/da`;
+
+        // Akıllı Gübreleme ve Çevre Dostu Reçete Modülü
+        let prescTR = "", prescEN = "";
+        if(ph < 5.0) {
+            prescTR = "Akıllı Reçete: Asitliği dengelemek için 120 kg/da Toz Tarım Kireci (CaCO3). Azot kaybını önlemek için Amonyum Sülfat yerine Amonyum Nitrat tercih edin.";
+            prescEN = "Smart Prescription: 120 kg/da Agricultural Lime (CaCO3) to buffer acidity. Avoid Nitrate leaching by controlled split application.";
+        } else if(ph > 7.5) {
+            prescTR = "Akıllı Reçete: Alkali baskıyı kırmak için 40 kg/da Elemental Kükürt ve yapraktan Şelatlı Demir (Fe) uygulaması yapın.";
+            prescEN = "Smart Prescription: Apply 40 kg/da Elemental Sulfur and foliar Chelated Iron (Fe) to break alkalinity lock.";
+        } else {
+            prescTR = "Akıllı Reçete: Toprak dengesi ideal. Yeraltı su kirliliğini (ötrofikasyon) önlemek adına standart dozajın %15 altında taban gübresi uygulayın.";
+            prescEN = "Smart Prescription: Soil balance optimal. Apply base fertilizer 15% below standard dose to prevent groundwater eutrophication.";
+        }
+
+        prescription.innerHTML = `🌱 AKILLI GÜBRELEME & ÇEVRE REÇETESİ / SMART FERTILIZER & ECO PRESCRIPTION:<br>` +
+                                 `[TR] ${prescTR}<br>` +
+                                 `[EN] ${prescEN}`;
 
         let diagTR = "", diagEN = "", recTR = "", recEN = "", minTR = "", minEN = "";
 
@@ -250,7 +269,7 @@
             weather: document.getElementById('weather').value,
             region: document.getElementById('region').value,
             stress: stressScore,
-            notes: "Otomatik Analiz + Green Deal",
+            notes: "Smart Prescription + Green Deal",
             image: imgData
         };
         fetch(SCRIPT_URL, {
