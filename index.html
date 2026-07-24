@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GLOBAL AGRO DOCTOR | Pro AI Terminal</title>
+    <title>GLOBAL AGRO DOCTOR | Brussels EU Terminal</title>
     <style>
         :root { --primary: #1b5e20; --accent: #ffd700; --danger: #d32f2f; --bg: #f4f7f5; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 10px; color: #333; }
@@ -11,8 +11,8 @@
         
         #lang-toggle { position: absolute; top: 20px; right: 20px; background: #eee; border: 1px solid #ccc; padding: 5px 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; }
         .school-tag { font-size: 10px; color: #777; text-align: center; text-transform: uppercase; letter-spacing: 2px; }
-        h1 { text-align: center; color: var(--primary); font-size: 22px; margin: 5px 0; }
-        .author { text-align: center; font-size: 14px; font-weight: 600; color: #444; margin-bottom: 20px; }
+        h1 { text-align: center; color: var(--primary); font-size: 20px; margin: 5px 0; }
+        .author { text-align: center; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 20px; }
 
         .card { background: #f9fdfa; padding: 15px; border-radius: 20px; margin-bottom: 12px; border: 1px solid #e8f0e9; }
         label { display: block; font-size: 11px; font-weight: 800; color: var(--primary); margin-bottom: 8px; text-transform: uppercase; }
@@ -48,12 +48,12 @@
 <div class="container">
     <div id="lang-toggle" onclick="toggleLang()">EN / TR</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi</div>
-    <h1>GLOBAL TARIM DOKTORU</h1>
+    <h1>GLOBAL AGRO DOCTOR</h1>
     <div class="author">Yusuf İhsan HAMAMCI <br><small>Biology Expert & Project Lead</small></div>
 
     <div id="form-area">
         <div class="card">
-            <label id="lbl-reg">Region & Crop / Bölge ve Ürün</label>
+            <label>Bölge ve Ürün / Region & Crop</label>
             <select id="region">
                 <option value="be-sugar">Brussels, BE - Sugar Beet (Şeker Pancarı)</option>
                 <option value="nl-tulip">Netherlands - Tulips (Lale)</option>
@@ -68,8 +68,19 @@
         </div>
 
         <div class="card">
-            <label id="lbl-ph">Soil pH / Toprak pH</label>
-            <input type="number" id="ph" step="0.1" placeholder="Ex: 4.5">
+            <label>Toprak pH Değeri / Soil pH</label>
+            <input type="number" id="ph" step="0.1" placeholder="Ex: 4.5" value="4.8">
+        </div>
+
+        <div class="card">
+            <label>Hava Durumu / Weather Condition</label>
+            <select id="weather">
+                <option value="Güneşli / Sunny">Güneşli / Sunny</option>
+                <option value="Bulutlu / Cloudy">Bulutlu / Cloudy</option>
+                <option value="Yağmurlu / Rainy">Yağmurlu / Rainy</option>
+                <option value="Sisli / Foggy">Sisli / Foggy</option>
+                <option value="Don Tehlikesi / Frost Risk">Don Tehlikesi / Frost Risk</option>
+            </select>
         </div>
 
         <button id="start-btn" class="btn-main" onclick="startSystem()">ANALİZİ BAŞLAT / START ANALYZE</button>
@@ -90,7 +101,7 @@
     </div>
 
     <div id="res-area">
-        <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;">REÇETE / PRESCRIPTION #SCIENTIX-V11</div>
+        <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;">BRÜSSEL PROJE RAPORU #EU-AGRO</div>
         <div id="hybrid-output" class="hybrid-note"></div>
         <div id="res-output" class="res-body"></div>
         <div id="expert-note" class="expert-msg">
@@ -103,6 +114,9 @@
 </div>
 
 <script>
+    // 🔗 BURAYA DAHA ÖNCEKİ GOOGLE APPS SCRIPT WEB APP URL'Nİ YAPIŞTIRABİLİRSİN (Eğer varsa)
+    const SCRIPT_URL = ""; 
+
     let lang = 'TR';
     let track;
     const v = document.getElementById('v');
@@ -110,15 +124,15 @@
 
     function toggleLang() {
         lang = lang === 'TR' ? 'EN' : 'TR';
-        document.querySelector('h1').innerText = lang === 'TR' ? 'GLOBAL TARIM DOKTORU' : 'GLOBAL AGRO DOCTOR';
+        document.querySelector('h1').innerText = lang === 'TR' ? 'GLOBAL AGRO DOCTOR' : 'GLOBAL AGRO DOCTOR';
         document.getElementById('start-btn').innerText = lang === 'TR' ? 'ANALİZİ BAŞLAT' : 'START ANALYSIS';
         if(document.getElementById('res-area').style.display === 'block') processAI(true);
     }
 
     async function startSystem() {
-        if(!document.getElementById('ph').value) return alert("Please enter pH!");
+        if(!document.getElementById('ph').value) return alert("Lütfen pH değeri giriniz! / Please enter pH!");
         document.getElementById('cam-box').style.display = 'block';
-        document.getElementById('start-btn').style.display = 'none';
+        document.getElementById('form-area').style.display = 'none';
         try {
             const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
             v.srcObject = s;
@@ -127,14 +141,17 @@
                 const caps = track.getCapabilities();
                 if(caps.torch) await track.applyConstraints({ advanced: [{ torch: true }] });
             }, 500);
-        } catch (e) { alert("Camera Error"); }
+        } catch (e) { alert("Kamera erişim hatası! / Camera Error"); }
     }
 
     function processAI(isLangOnly = false) {
         const ctx = c.getContext('2d');
+        let base64Img = "";
+        
         if(!isLangOnly) {
             c.width = v.videoWidth; c.height = v.videoHeight;
             ctx.drawImage(v, 0, 0);
+            base64Img = c.toDataURL('image/jpeg', 0.7);
         }
         
         const data = ctx.getImageData(0, 0, c.width, c.height).data;
@@ -157,22 +174,31 @@
             v.style.display = 'none'; c.style.display = 'block';
             document.getElementById('snap-btn').style.display = 'none';
             document.getElementById('reset-btn').style.display = 'block';
+
+            // Eğer Google Apps Script URL tanımlandıysa verileri arka planda yolla
+            if(SCRIPT_URL) {
+                sendDataToCloud(base64Img, chl);
+            }
         }
         renderResult(chl);
     }
 
     function renderResult(chl) {
         const ph = parseFloat(document.getElementById('ph').value);
+        const weather = document.getElementById('weather').value;
+        const region = document.getElementById('region').value;
         const hybrid = document.getElementById('hybrid-output');
         const out = document.getElementById('res-output');
         document.getElementById('res-area').style.display = 'block';
 
-        // 1. Görsel Klorofil & Azot Tahmini
-        let chlTR = chl > 1.4 ? "Optimal (Yeterli)" : "Düşük (Azot Eksikliği Riski)";
-        let chlEN = chl > 1.4 ? "Optimal (Sufficient)" : "Low (Nitrogen Deficiency Risk)";
-        hybrid.innerHTML = `🌿 [TR] KLOROFİL & AZOT: ${chlTR}<br>🌿 [EN] CHLOROPHYLL & NITROGEN: ${chlEN}`;
+        let chlTR = chl > 1.4 ? "Optimal (Yeterli Klorofil)" : "Düşük (Azot Eksikliği Riski)";
+        let chlEN = chl > 1.4 ? "Optimal (Sufficient Chlorophyll)" : "Low (Nitrogen Deficiency Risk)";
+        
+        // Dinamik Stres Skoru (1-10 arası)
+        let stressScore = Math.min(10, Math.max(1, Math.round((1.5 - chl) * 10 + (ph < 5 || ph > 7 ? 3 : 1))));
 
-        // 2. PH ve Mineral Analizi (Eski veriler geri geldi)
+        hybrid.innerHTML = `🌿 [TR] KLOROFİL: ${chlTR} | STRES: ${stressScore}/10<br>🌿 [EN] CHLOROPHYLL: ${chlEN} | STRESS: ${stressScore}/10`;
+
         let diagTR = "", diagEN = "", recTR = "", recEN = "", minTR = "", minEN = "";
 
         if(ph < 4.5) {
@@ -192,12 +218,27 @@
             minEN = "- MINERAL: Nutrient uptake at healthy levels.";
         }
 
-        // Azot (N) İhtiyacı sentezi
         let nitroTR = chl < 1.4 ? "\n- AZOT: Yaprak rengi açık, N takviyesi önerilir." : "\n- AZOT: Seviye dengeli.";
         let nitroEN = chl < 1.4 ? "\n- NITROGEN: Light color, N supplement suggested." : "\n- NITROGEN: Levels balanced.";
 
-        out.innerText = `[TR] DURUM: ${diagTR}\n[TR] ÖNERİ: ${recTR}\n${minTR}${nitroTR}\n\n` +
-                        `[EN] STATUS: ${diagEN}\n[EN] ADVICE: ${recEN}\n${minEN}${nitroEN}`;
+        out.innerText = `[TR] BÖLGE: ${region}\n[TR] HAVA: ${weather}\n[TR] DURUM: ${diagTR}\n[TR] ÖNERİ: ${recTR}\n${minTR}${nitroTR}\n\n` +
+                        `[EN] REGION: ${region}\n[EN] WEATHER: ${weather}\n[EN] STATUS: ${diagEN}\n[EN] ADVICE: ${recEN}\n${minEN}${nitroEN}`;
+    }
+
+    function sendDataToCloud(imgData, chl) {
+        const payload = {
+            ph: document.getElementById('ph').value,
+            weather: document.getElementById('weather').value,
+            region: document.getElementById('region').value,
+            stress: Math.min(10, Math.max(1, Math.round((1.5 - chl) * 10))),
+            image: imgData
+        };
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).catch(err => console.log('Bulut aktarım hatası:', err));
     }
 
     function resetSystem() {
