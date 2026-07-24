@@ -44,7 +44,10 @@
         .green-deal-box { background: #e8f5e9; border-left: 5px solid #2e7d32; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #1b5e20; font-weight: bold; border-radius: 0 10px 10px 0; }
         .prescription-box { background: #fffde7; border-left: 5px solid #fbc02d; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #f57f17; font-weight: bold; border-radius: 0 10px 10px 0; }
         .calibration-box { background: #f3e5f5; border-left: 5px solid #ab47bc; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #4a148c; font-weight: bold; border-radius: 0 10px 10px 0; }
-        .chart-box { background: #fafafa; padding: 10px; border-radius: 15px; margin-bottom: 12px; border: 1px solid #ddd; }
+        
+        .chart-box { background: #fafafa; padding: 12px; border-radius: 15px; margin-bottom: 12px; border: 1px solid #ddd; }
+        .chart-container { position: relative; width: 100%; height: 220px; }
+
         .expert-msg { background: #fff3e0; border-left: 5px solid #ff9800; padding: 10px; font-size: 11px; font-weight: bold; color: #e65100; margin-bottom: 15px; }
         .error-msg { color: var(--danger); font-weight: bold; text-align: center; padding: 20px; border: 2px dashed var(--danger); border-radius: 15px; display: none; margin-top: 10px; font-size: 13px; }
 
@@ -66,7 +69,7 @@
                 <option value="be-sugar">Brussels, BE - Sugar Beet (Şeker Pancarı)</option>
                 <option value="nl-tulip">Netherlands - Tulips (Lale)</option>
                 <option value="it-tomato">Italy - Tomatoes (Domates)</option>
-                <option value="tr-tea">Turkey, Rize - Tea (Çay)</option>
+                <option value="tr-tea" selected>Turkey, Rize - Tea (Çay)</option>
                 <option value="fr-grape">France - Vineyards (Üzüm)</option>
                 <option value="global-other">Global - Diğer / Other</option>
             </select>
@@ -120,8 +123,10 @@
         
         <!-- Çift Senaryolu Prediktif Stres Simülasyon Grafiği (Chart.js) -->
         <div class="chart-box">
-            <label style="text-align:center; margin-bottom:5px; font-size: 10px;">📈 Senaryo Bazlı 5 Günlük Stres Trendi<br>Scenario-Based 5-Day Stress Trend</label>
-            <canvas id="stressChart" style="width:100%; height:160px;"></canvas>
+            <label style="text-align:center; margin-bottom:8px; font-size: 11px;">📈 Senaryo Bazlı 5 Günlük Stres Trendi<br>Scenario-Based 5-Day Stress Trend</label>
+            <div class="chart-container">
+                <canvas id="stressChart"></canvas>
+            </div>
         </div>
 
         <div id="res-output" class="res-body"></div>
@@ -321,7 +326,8 @@
                             data: greenTrend,
                             borderColor: '#2e7d32',
                             backgroundColor: 'rgba(46, 125, 50, 0.1)',
-                            borderWidth: 2,
+                            borderWidth: 2.5,
+                            pointRadius: 4,
                             fill: true,
                             tension: 0.3
                         },
@@ -330,8 +336,9 @@
                             data: redTrend,
                             borderColor: '#d32f2f',
                             backgroundColor: 'rgba(211, 47, 47, 0.05)',
-                            borderWidth: 2,
+                            borderWidth: 2.5,
                             borderDash: [5, 5],
+                            pointRadius: 4,
                             fill: false,
                             tension: 0.3
                         }
@@ -339,9 +346,16 @@
                 },
                 options: {
                     responsive: true,
-                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 9 } } } },
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { 
+                            position: 'bottom', 
+                            labels: { boxWidth: 12, font: { size: 9 } } 
+                        } 
+                    },
                     scales: {
-                        y: { min: 0, max: 10 }
+                        y: { min: 0, max: 10, ticks: { stepSize: 2 } },
+                        x: { ticks: { font: { size: 9 } } }
                     }
                 }
             });
