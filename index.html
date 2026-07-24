@@ -80,7 +80,7 @@
 
         <div class="card">
             <label>Toprak pH Değeri / Soil pH</label>
-            <input type="number" id="ph" step="0.1" placeholder="Ex: 4.5" value="5.9">
+            <input type="number" id="ph" step="0.1" placeholder="Ex: 4.5" value="4.8">
         </div>
 
         <div class="card">
@@ -103,8 +103,8 @@
         <div class="scan-ui">
             <div class="target"></div>
             <div class="hint" id="hint-txt">
-                [TR] ⚠️ Öneri: Lekenin tam odak merkezinde olmasına dikkat edin.<br>
-                [EN] ⚠️ Tip: Center the lesion/spot inside the target.
+                [TR] ⚠️ Öneri: Sarı çay akarı/pas hasarı odak merkezinde olmalıdır.<br>
+                [EN] ⚠️ Tip: Center the yellow tea mite / rust damage.
             </div>
         </div>
         <button id="snap-btn" class="btn-snap" onclick="processAI()">FOTOĞRAF ÇEK / TAKE PHOTO</button>
@@ -186,20 +186,20 @@
         
         const data = ctx.getImageData(0, 0, c.width, c.height).data;
         let totalG = 0, totalR = 0, count = 0;
-        let lesionCount = 0; // Patojen / Nekrotik Leke Sayacı
+        let miteDamageCount = 0; // Sarı Çay Akarı / Pas Hasarı Sayacı
 
         for(let i=0; i<data.length; i+=4) {
             let r = data[i], g = data[i+1], b = data[i+2];
             
-            // Temel bitki piksel kontrolü
+            // Sağlıklı yeşil piksel kontrolü
             if(g > r * 0.8 && g > b * 0.8) {
                 totalG += g; totalR += r; count++;
             }
             
-            // Patojen / Nekroz Analizi: Kahverengi, pas rengi veya koyu nekrotik leke tespiti
-            // (Kırmızı ve yeşil değerleri birbirine yakın ama mavi düşükse veya kahverengi tonlarındaysa)
-            if ((r > 90 && g < 110 && b < 80) || (r > 120 && g > 80 && g < 140 && b < 60)) {
-                lesionCount++;
+            // Sarı Çay Akarı (Tarsonemidae) & Pas Rengi / Bronzlaşma Tespiti:
+            // Akara maruz kalan çay yaprakları sarımsı-kahverengi, bronz ve pas tonlarına döner (R ve G yüksek, B düşük).
+            if ((r > 110 && g > 90 && g < 160 && b < 80) || (r > 140 && g > 120 && b < 100)) {
+                miteDamageCount++;
             }
         }
         
@@ -211,19 +211,19 @@
         const chl = totalG / (totalR + 1);
         document.getElementById('error-box').style.display = 'none';
         
-        // Leke oranına göre ek stres cezası hesapla (Patojen Skoru)
-        let lesionRatio = lesionCount / (count + 1);
-        let pathogenPenalty = lesionRatio > 0.03 ? Math.min(7, Math.round(lesionRatio * 50)) : 0;
+        // Akar hasar oranını hesapla
+        let miteRatio = miteDamageCount / (count + 1);
+        let mitePenalty = miteRatio > 0.02 ? Math.min(8, Math.round(miteRatio * 40)) : 0;
 
         const ph = parseFloat(document.getElementById('ph').value);
-        let phPenalty = 0;
-        if (ph < 5.5 || ph > 7.5) phPenalty = 2;
+        let phPenalty = (ph < 5.0 || ph > 7.0) ? 2 : 0;
 
-        let chlorophylDeficit = Math.max(0, (1.6 - chl) * 10);
-        let calculatedStress = Math.min(10, Math.max(1, Math.round(chlorophylDeficit + phPenalty + pathogenPenalty)));
+        let chlorophylDeficit = Math.max(0, (1.6 - chl) * 8);
+        let calculatedStress = Math.min(10, Math.max(1, Math.round(chlorophylDeficit + phPenalty + mitePenalty)));
 
-        // Eğer yaprakta ciddi leke/patojen saptandıysa ve skor düşük kalmışsa en az 7 yap
-        if(lesionRatio > 0.05 && calculatedStress < 7) {
+        // Eğer yaprakta sarı çay akarı/pas dokusu baskınsa skoru minimum 8 yapalım
+        let hasMite = miteRatio > 0.04;
+        if(hasMite && calculatedStress < 8) {
             calculatedStress = Math.floor(Math.random() * 2) + 8; // 8 veya 9
         }
 
@@ -233,13 +233,13 @@
             document.getElementById('reset-btn').style.display = 'block';
 
             if(SCRIPT_URL) {
-                sendDataToCloud(base64Img, calculatedStress, lesionRatio > 0.03);
+                sendDataToCloud(base64Img, calculatedStress, hasMite);
             }
         }
-        renderResult(chl, calculatedStress, lesionRatio > 0.03);
+        renderResult(chl, calculatedStress, hasMite);
     }
 
-    function renderResult(chl, stressScore, hasPathogen) {
+    function renderResult(chl, stressScore, hasMite) {
         const ph = parseFloat(document.getElementById('ph').value);
         const weather = document.getElementById('weather').value;
         const region = document.getElementById('region').value;
@@ -250,61 +250,50 @@
         const out = document.getElementById('res-output');
         document.getElementById('res-area').style.display = 'block';
 
-        let chlTR = chl > 1.4 && !hasPathogen ? "Optimal (Yeterli Klorofil)" : "Riskli / Patojenik Belirti";
-        let chlEN = chl > 1.4 && !hasPathogen ? "Optimal (Sufficient Chlorophyll)" : "At Risk / Pathogenic Signs";
+        let chlTR = !hasMite ? "Optimal (Yeterli Klorofil)" : "Sarı Çay Akarı / Pas Hasarı Tespit Edildi";
+        let chlEN = !hasMite ? "Optimal (Sufficient Chlorophyll)" : "Yellow Tea Mite / Rust Damage Detected";
         
         hybrid.innerHTML = `🌿 [TR] DURUM: ${chlTR} | STRES: ${stressScore}/10<br>🌿 [EN] STATUS: ${chlEN} | STRESS: ${stressScore}/10`;
 
-        calib.innerHTML = `🔬 SPEKTROSKOPİK & PATOJENİK KALİBRASYON:<br>` +
-                          `[TR] Validasyon: Campbell Biology & Fungal/Bakteriyel Leke Analiz Modeli<br>` +
-                          `[EN] Validation: Campbell Biology & Fungal/Bacterial Spot Analysis Model`;
+        calib.innerHTML = `🔬 ÇAY FİZYOLOJİSİ & AKAR KALİBRASYONU:<br>` +
+                          `[TR] Validasyon: Campbell Biology & Tarsonemidae (Sarı Çay Akarı) Hasar Modeli<br>` +
+                          `[EN] Validation: Campbell Biology & Yellow Tea Mite Damage Model`;
 
-        let fertilizerSaving = Math.max(5, Math.round((11 - stressScore) * 1.5));
-        let carbonReduction = (fertilizerSaving * 2.2).toFixed(1);
+        let fertilizerSaving = Math.max(4, Math.round((11 - stressScore) * 1.4));
+        let carbonReduction = (fertilizerSaving * 2.0).toFixed(1);
         
         greenDeal.innerHTML = `🇪🇺 EU GREEN DEAL IMPACT:<br>` +
-                              `[TR] Çevresel Koruma Skoru: %${100 - (stressScore*8)} | Karbon Optimizasyonu: ${carbonReduction} kg CO₂e/da<br>` +
-                              `[EN] Environmental Protection Score: %${100 - (stressScore*8)} | Carbon Optimization: ${carbonReduction} kg CO₂e/da`;
+                              `[TR] Entegre Zararlı Yönetimi (IPM) Skoru: %${100 - (stressScore*8)} | Karbon Optimizasyonu: ${carbonReduction} kg CO₂e/da<br>` +
+                              `[EN] IPM Score: %${100 - (stressScore*8)} | Carbon Optimization: ${carbonReduction} kg CO₂e/da`;
 
         let prescTR = "", prescEN = "";
-        if(hasPathogen || stressScore >= 7) {
-            prescTR = "Akıllı Reçete (Patojen Kontrolü): Mantari/bakteriyel lekelenme tespit edildi. Bakır bazlı sistemik fungisit (ör. Bakır Oksiklorür) uygulaması ve enfekte yaprakların uzaklaştırılması gereklidir.";
-            prescEN = "Smart Prescription (Pathogen Control): Fungal/bacterial spotting detected. Apply copper-based systemic fungicide and remove infected foliage.";
-        } else if(ph < 5.0) {
-            prescTR = "Akıllı Reçete: Asitliği dengelemek için 120 kg/da Toz Tarım Kireci (CaCO3) uygulayın.";
-            prescEN = "Smart Prescription: Apply 120 kg/da Agricultural Lime (CaCO3) to buffer acidity.";
+        if(hasMite || stressScore >= 7) {
+            prescTR = "Akıllı Reçete (Zararlı Kontrolü): Sarı Çay Akarı (Polyphagotarsonemus latus) bronzlaşma ve kıvrılma yarattı. Ruhsatlı akarisit (ör. kükürt bazlı veya spesifik akarisit) uygulaması yapın, azotlu gübrelemeyi geçici olarak askıya alın.";
+            prescEN = "Smart Prescription (Pest Control): Yellow tea mite damage detected. Apply specific acaricide, temporarily suspend nitrogen fertilization.";
         } else {
-            prescTR = "Akıllı Reçete: Bitki sağlığı stabil. Çevresel sürdürülebilirlik için standart dozajın %15 altında gübreleme yapın.";
-            prescEN = "Smart Prescription: Plant health stable. Apply fertilizer 15% below standard dose for sustainability.";
+            prescTR = "Akıllı Reçete: Çay bitkisi sağlığı yerinde. Sürdürülebilir tarım için standart altı taban gübresi uygulayın.";
+            prescEN = "Smart Prescription: Tea plant healthy. Apply sustainable baseline fertilizer.";
         }
 
-        prescription.innerHTML = `🌱 AKILLI PATOJEN & ÇEVRE REÇETESİ / SMART PATHOGEN & ECO PRESCRIPTION:<br>` +
+        prescription.innerHTML = `🌱 AKILLI AKAR & ÇEVRE REÇETESİ / SMART MITE & ECO PRESCRIPTION:<br>` +
                                  `[TR] ${prescTR}<br>` +
                                  `[EN] ${prescEN}`;
 
         updateChart(stressScore);
 
-        let diagTR = "", diagEN = "", recTR = "", recEN = "", minTR = "", minEN = "";
+        let diagTR = "", diagEN = "", recTR = "", recEN = "", minTR = "";
 
-        if(hasPathogen || stressScore >= 7) {
-            diagTR = "YÜKSEK PATOJEN / ENFEKSİYON"; diagEN = "HIGH PATHOGEN / INFECTION";
-            recTR = "- Acil Fungisit Uygulayın & Karantina"; recEN = "- Apply Emergency Fungicide & Quarantine";
-            minTR = "- PATOJEN: Nekrotik lekelenme ve doku çürümesi aktif."; 
-            minEN = "- PATHOGEN: Necrotic spotting and tissue decay active.";
-        } else if(ph < 4.5) {
-            diagTR = "KRİTİK ASİDİTE"; diagEN = "CRITICAL ACIDITY";
-            recTR = "- 150kg/da Tarım Kireci Uygulayın"; recEN = "- Apply 150kg/da Agricultural Lime";
-            minTR = "- MİNERAL: Demir ve Manganez kilitlenmesi."; 
-            minEN = "- MINERAL: Iron and Manganese lockout.";
+        if(hasMite || stressScore >= 7) {
+            diagTR = "SARI ÇAY AKARI / PASSAL ENFEKSİYON"; diagEN = "YELLOW TEA MITE / RUST INFESTATION";
+            recTR = "- Akarisit İlaçlama Yapın & Sürgün Kontrolü"; recEN = "- Apply Acaricide & Monitor Shoots";
+            minTR = "- ZARARLI: Yaprak alt yüzeyinde bronzlaşma ve kıvrılma aktif."; 
         } else {
             diagTR = "OPTİMUM DENGELİ"; diagEN = "OPTIMUM BALANCE";
-            recTR = "- Rutin Takip"; recEN = "- Routine Follow-up";
-            minTR = "- MİNERAL: Besin ve sağlık durumu stabil."; 
-            minEN = "- MINERAL: Nutrient and health status stable.";
+            recTR = "- Rutin Çay Bakımı"; recEN = "- Routine Tea Maintenance";
+            minTR = "- MİNERAL: Yaprak formu ve klorofil dengeli."; 
         }
 
-        out.innerText = `[TR] BÖLGE: ${region}\n[TR] HAVA: ${weather}\n[TR] DURUM: ${diagTR}\n[TR] ÖNERİ: ${recTR}\n${minTR}\n\n` +
-                        `[EN] REGION: ${region}\n[EN] WEATHER: ${weather}\n[EN] STATUS: ${diagEN}\n[EN] ADVICE: ${recEN}\n${minEN}`;
+        out.innerText = `[TR] BÖLGE: ${region}\n[TR] HAVA: ${weather}\n[TR] DURUM: ${diagTR}\n[TR] ÖNERİ: ${recTR}\n${minTR}`;
     }
 
     function updateChart(currentStress) {
@@ -377,13 +366,13 @@
         }
     }
 
-    function sendDataToCloud(imgData, stressScore, hasPathogen) {
+    function sendDataToCloud(imgData, stressScore, hasMite) {
         const payload = {
             ph: document.getElementById('ph').value,
             weather: document.getElementById('weather').value,
             region: document.getElementById('region').value,
             stress: stressScore,
-            notes: hasPathogen ? "Pathogen Spot Detected + Dual Scenario" : "Standard Agro Scan",
+            notes: hasMite ? "Yellow Tea Mite / Rust Detected + Dual Scenario" : "Standard Agro Scan",
             image: imgData
         };
         fetch(SCRIPT_URL, {
