@@ -137,7 +137,7 @@
             [EN] ⚠️ EXPERT ADVICE: Seek immediate expert support for unresolved issues.
         </div>
         
-        <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/edit?usp=drive_link" target="_blank" class="btn-excel">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
+        <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKFX6C2No/edit?usp=drive_link" target="_blank" class="btn-excel">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
         <div class="btn-save" onclick="window.print()">📥 RAPORU YAZDIR / PDF KAYDET</div>
 
         <button id="reset-btn" class="btn-reset" onclick="resetSystem()">YENİ ANALİZ / NEW ANALYZE</button>
@@ -146,6 +146,7 @@
 </div>
 
 <script>
+    // En güncel Apps Script Web Uygulaması URL'si ile sabitlendi:
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzAuL8GyiA9YRbQPc62OiK63c4PW_PbRb-7SR7glyHaoGrGtWssXkybgoThQzq-G1nF/exec";
 
     let lang = 'TR';
@@ -215,7 +216,6 @@
         let diseaseText = lang === 'TR' ? res.disease_tr : res.disease_en;
         let prescText = lang === 'TR' ? res.prescription_tr : res.prescription_en;
         
-        // DÜZELTME YAPILAN NOKTA: stress_score eşlemesi sağlandı
         let stressScore = res.stress_score !== undefined ? res.stress_score : (res.stress !== undefined ? res.stress : 5);
 
         document.getElementById('hybrid-output').innerHTML = `🌿 [TR] TESPİT: <b>${res.disease_tr || 'Genel Tarımsal Analiz'}</b> | STRES: <b>${stressScore}/10</b><br>🌿 [EN] DETECTION: <b>${res.disease_en || 'General Agricultural Scan'}</b> | STRESS: <b>${stressScore}/10</b>`;
