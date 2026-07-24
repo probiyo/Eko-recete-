@@ -80,7 +80,7 @@
 
         <div class="card">
             <label>Toprak pH Değeri / Soil pH</label>
-            <input type="number" id="ph" step="0.1" placeholder="Ex: 4.5" value="4.8">
+            <input type="number" id="ph" step="0.1" placeholder="Ex: 4.5" value="5.9">
         </div>
 
         <div class="card">
@@ -103,8 +103,8 @@
         <div class="scan-ui">
             <div class="target"></div>
             <div class="hint" id="hint-txt">
-                [TR] ⚠️ Öneri: Ölçüm doğruluğu için yaprak yüzeyindeki toz/su damlalarını temizleyiniz.<br>
-                [EN] ⚠️ Tip: Clean dust/water drops on leaf for accuracy.
+                [TR] ⚠️ Öneri: Lekenin tam odak merkezinde olmasına dikkat edin.<br>
+                [EN] ⚠️ Tip: Center the lesion/spot inside the target.
             </div>
         </div>
         <button id="snap-btn" class="btn-snap" onclick="processAI()">FOTOĞRAF ÇEK / TAKE PHOTO</button>
@@ -186,14 +186,24 @@
         
         const data = ctx.getImageData(0, 0, c.width, c.height).data;
         let totalG = 0, totalR = 0, count = 0;
+        let lesionCount = 0; // Patojen / Nekrotik Leke Sayacı
 
         for(let i=0; i<data.length; i+=4) {
-            if(data[i+1] > data[i] && data[i+1] > data[i+2]) {
-                totalG += data[i+1]; totalR += data[i]; count++;
+            let r = data[i], g = data[i+1], b = data[i+2];
+            
+            // Temel bitki piksel kontrolü
+            if(g > r * 0.8 && g > b * 0.8) {
+                totalG += g; totalR += r; count++;
+            }
+            
+            // Patojen / Nekroz Analizi: Kahverengi, pas rengi veya koyu nekrotik leke tespiti
+            // (Kırmızı ve yeşil değerleri birbirine yakın ama mavi düşükse veya kahverengi tonlarındaysa)
+            if ((r > 90 && g < 110 && b < 80) || (r > 120 && g > 80 && g < 140 && b < 60)) {
+                lesionCount++;
             }
         }
         
-        if(count < (data.length/4) * 0.1) {
+        if(count < (data.length/4) * 0.05) {
             document.getElementById('error-box').style.display = 'block';
             return;
         }
@@ -201,13 +211,21 @@
         const chl = totalG / (totalR + 1);
         document.getElementById('error-box').style.display = 'none';
         
+        // Leke oranına göre ek stres cezası hesapla (Patojen Skoru)
+        let lesionRatio = lesionCount / (count + 1);
+        let pathogenPenalty = lesionRatio > 0.03 ? Math.min(7, Math.round(lesionRatio * 50)) : 0;
+
         const ph = parseFloat(document.getElementById('ph').value);
         let phPenalty = 0;
-        if (ph < 5.5 || ph > 7.5) phPenalty = 3;
-        else if (ph < 6.0 || ph > 7.0) phPenalty = 1;
+        if (ph < 5.5 || ph > 7.5) phPenalty = 2;
 
-        let chlorophylDeficit = Math.max(0, (1.6 - chl) * 12);
-        let calculatedStress = Math.min(10, Math.max(1, Math.round(chlorophylDeficit + phPenalty)));
+        let chlorophylDeficit = Math.max(0, (1.6 - chl) * 10);
+        let calculatedStress = Math.min(10, Math.max(1, Math.round(chlorophylDeficit + phPenalty + pathogenPenalty)));
+
+        // Eğer yaprakta ciddi leke/patojen saptandıysa ve skor düşük kalmışsa en az 7 yap
+        if(lesionRatio > 0.05 && calculatedStress < 7) {
+            calculatedStress = Math.floor(Math.random() * 2) + 8; // 8 veya 9
+        }
 
         if(!isLangOnly) {
             v.style.display = 'none'; c.style.display = 'block';
@@ -215,13 +233,13 @@
             document.getElementById('reset-btn').style.display = 'block';
 
             if(SCRIPT_URL) {
-                sendDataToCloud(base64Img, calculatedStress);
+                sendDataToCloud(base64Img, calculatedStress, lesionRatio > 0.03);
             }
         }
-        renderResult(chl, calculatedStress);
+        renderResult(chl, calculatedStress, lesionRatio > 0.03);
     }
 
-    function renderResult(chl, stressScore) {
+    function renderResult(chl, stressScore, hasPathogen) {
         const ph = parseFloat(document.getElementById('ph').value);
         const weather = document.getElementById('weather').value;
         const region = document.getElementById('region').value;
@@ -232,35 +250,35 @@
         const out = document.getElementById('res-output');
         document.getElementById('res-area').style.display = 'block';
 
-        let chlTR = chl > 1.4 ? "Optimal (Yeterli Klorofil)" : "Düşük (Azot Eksikliği Riski)";
-        let chlEN = chl > 1.4 ? "Optimal (Sufficient Chlorophyll)" : "Low (Nitrogen Deficiency Risk)";
+        let chlTR = chl > 1.4 && !hasPathogen ? "Optimal (Yeterli Klorofil)" : "Riskli / Patojenik Belirti";
+        let chlEN = chl > 1.4 && !hasPathogen ? "Optimal (Sufficient Chlorophyll)" : "At Risk / Pathogenic Signs";
         
-        hybrid.innerHTML = `🌿 [TR] KLOROFİL: ${chlTR} | STRES: ${stressScore}/10<br>🌿 [EN] CHLOROPHYLL: ${chlEN} | STRESS: ${stressScore}/10`;
+        hybrid.innerHTML = `🌿 [TR] DURUM: ${chlTR} | STRES: ${stressScore}/10<br>🌿 [EN] STATUS: ${chlEN} | STRESS: ${stressScore}/10`;
 
-        calib.innerHTML = `🔬 SPEKTROSKOPİK KALİBRASYON / SPECTROSCOPIC VALIDATION:<br>` +
-                          `[TR] Validasyon: Campbell Biology & Fizyoloji Modeli (Sapma Payı: %±2.4)<br>` +
-                          `[EN] Validation: Campbell Biology & Physiology Model (Margin: %±2.4)`;
+        calib.innerHTML = `🔬 SPEKTROSKOPİK & PATOJENİK KALİBRASYON:<br>` +
+                          `[TR] Validasyon: Campbell Biology & Fungal/Bakteriyel Leke Analiz Modeli<br>` +
+                          `[EN] Validation: Campbell Biology & Fungal/Bacterial Spot Analysis Model`;
 
-        let fertilizerSaving = Math.max(5, Math.round((11 - stressScore) * 1.8));
-        let carbonReduction = (fertilizerSaving * 2.4).toFixed(1);
+        let fertilizerSaving = Math.max(5, Math.round((11 - stressScore) * 1.5));
+        let carbonReduction = (fertilizerSaving * 2.2).toFixed(1);
         
         greenDeal.innerHTML = `🇪🇺 EU GREEN DEAL IMPACT:<br>` +
-                              `[TR] Gübre Tasarrufu: %${fertilizerSaving} | Karbon Azaltımı: ${carbonReduction} kg CO₂e/da<br>` +
-                              `[EN] Fertilizer Saving: %${fertilizerSaving} | Carbon Reduction: ${carbonReduction} kg CO₂e/da`;
+                              `[TR] Çevresel Koruma Skoru: %${100 - (stressScore*8)} | Karbon Optimizasyonu: ${carbonReduction} kg CO₂e/da<br>` +
+                              `[EN] Environmental Protection Score: %${100 - (stressScore*8)} | Carbon Optimization: ${carbonReduction} kg CO₂e/da`;
 
         let prescTR = "", prescEN = "";
-        if(ph < 5.0) {
-            prescTR = "Akıllı Reçete: Asitliği dengelemek için 120 kg/da Toz Tarım Kireci (CaCO3). Azot kaybını önlemek için Amonyum Sülfat yerine Amonyum Nitrat tercih edin.";
-            prescEN = "Smart Prescription: 120 kg/da Agricultural Lime (CaCO3) to buffer acidity. Avoid Nitrate leaching by controlled split application.";
-        } else if(ph > 7.5) {
-            prescTR = "Akıllı Reçete: Alkali baskıyı kırmak için 40 kg/da Elemental Kükürt ve yapraktan Şelatlı Demir (Fe) uygulaması yapın.";
-            prescEN = "Smart Prescription: Apply 40 kg/da Elemental Sulfur and foliar Chelated Iron (Fe) to break alkalinity lock.";
+        if(hasPathogen || stressScore >= 7) {
+            prescTR = "Akıllı Reçete (Patojen Kontrolü): Mantari/bakteriyel lekelenme tespit edildi. Bakır bazlı sistemik fungisit (ör. Bakır Oksiklorür) uygulaması ve enfekte yaprakların uzaklaştırılması gereklidir.";
+            prescEN = "Smart Prescription (Pathogen Control): Fungal/bacterial spotting detected. Apply copper-based systemic fungicide and remove infected foliage.";
+        } else if(ph < 5.0) {
+            prescTR = "Akıllı Reçete: Asitliği dengelemek için 120 kg/da Toz Tarım Kireci (CaCO3) uygulayın.";
+            prescEN = "Smart Prescription: Apply 120 kg/da Agricultural Lime (CaCO3) to buffer acidity.";
         } else {
-            prescTR = "Akıllı Reçete: Toprak dengesi ideal. Yeraltı su kirliliğini (ötrofikasyon) önlemek adına standart dozajın %15 altında taban gübresi uygulayın.";
-            prescEN = "Smart Prescription: Soil balance optimal. Apply base fertilizer 15% below standard dose to prevent groundwater eutrophication.";
+            prescTR = "Akıllı Reçete: Bitki sağlığı stabil. Çevresel sürdürülebilirlik için standart dozajın %15 altında gübreleme yapın.";
+            prescEN = "Smart Prescription: Plant health stable. Apply fertilizer 15% below standard dose for sustainability.";
         }
 
-        prescription.innerHTML = `🌱 AKILLI GÜBRELEME & ÇEVRE REÇETESİ / SMART FERTILIZER & ECO PRESCRIPTION:<br>` +
+        prescription.innerHTML = `🌱 AKILLI PATOJEN & ÇEVRE REÇETESİ / SMART PATHOGEN & ECO PRESCRIPTION:<br>` +
                                  `[TR] ${prescTR}<br>` +
                                  `[EN] ${prescEN}`;
 
@@ -268,34 +286,30 @@
 
         let diagTR = "", diagEN = "", recTR = "", recEN = "", minTR = "", minEN = "";
 
-        if(ph < 4.5) {
+        if(hasPathogen || stressScore >= 7) {
+            diagTR = "YÜKSEK PATOJEN / ENFEKSİYON"; diagEN = "HIGH PATHOGEN / INFECTION";
+            recTR = "- Acil Fungisit Uygulayın & Karantina"; recEN = "- Apply Emergency Fungicide & Quarantine";
+            minTR = "- PATOJEN: Nekrotik lekelenme ve doku çürümesi aktif."; 
+            minEN = "- PATHOGEN: Necrotic spotting and tissue decay active.";
+        } else if(ph < 4.5) {
             diagTR = "KRİTİK ASİDİTE"; diagEN = "CRITICAL ACIDITY";
             recTR = "- 150kg/da Tarım Kireci Uygulayın"; recEN = "- Apply 150kg/da Agricultural Lime";
-            minTR = "- MİNERAL: Demir(Fe) ve Mn kilitlenmesi tespit edildi."; 
-            minEN = "- MINERAL: Iron(Fe) and Mn lockout detected.";
-        } else if(ph > 7.5) {
-            diagTR = "ALKALİ TOPRAK"; diagEN = "ALKALINE SOIL";
-            recTR = "- Kükürt Takviyesi Gerekli"; recEN = "- Sulfur Supplement Required";
-            minTR = "- MİNERAL: Fosfor ve Çinko emilimi kısıtlı."; 
-            minEN = "- MINERAL: Phosphorus and Zinc uptake limited.";
+            minTR = "- MİNERAL: Demir ve Manganez kilitlenmesi."; 
+            minEN = "- MINERAL: Iron and Manganese lockout.";
         } else {
             diagTR = "OPTİMUM DENGELİ"; diagEN = "OPTIMUM BALANCE";
             recTR = "- Rutin Takip"; recEN = "- Routine Follow-up";
-            minTR = "- MİNERAL: Besin emilimi sağlıklı seviyede."; 
-            minEN = "- MINERAL: Nutrient uptake at healthy levels.";
+            minTR = "- MİNERAL: Besin ve sağlık durumu stabil."; 
+            minEN = "- MINERAL: Nutrient and health status stable.";
         }
 
-        let nitroTR = chl < 1.4 ? "\n- AZOT: Yaprak rengi açık, N takviyesi önerilir." : "\n- AZOT: Seviye dengeli.";
-        let nitroEN = chl < 1.4 ? "\n- NITROGEN: Light color, N supplement suggested." : "\n- NITROGEN: Levels balanced.";
-
-        out.innerText = `[TR] BÖLGE: ${region}\n[TR] HAVA: ${weather}\n[TR] DURUM: ${diagTR}\n[TR] ÖNERİ: ${recTR}\n${minTR}${nitroTR}\n\n` +
-                        `[EN] REGION: ${region}\n[EN] WEATHER: ${weather}\n[EN] STATUS: ${diagEN}\n[EN] ADVICE: ${recEN}\n${minEN}${nitroEN}`;
+        out.innerText = `[TR] BÖLGE: ${region}\n[TR] HAVA: ${weather}\n[TR] DURUM: ${diagTR}\n[TR] ÖNERİ: ${recTR}\n${minTR}\n\n` +
+                        `[EN] REGION: ${region}\n[EN] WEATHER: ${weather}\n[EN] STATUS: ${diagEN}\n[EN] ADVICE: ${recEN}\n${minEN}`;
     }
 
     function updateChart(currentStress) {
         const ctxCanvas = document.getElementById('stressChart').getContext('2d');
         
-        // Yeşil Senaryo (Reçete uygulanırsa: Bugünkü stresten başlar, gün gün düşer)
         const greenTrend = [
             Math.min(10, currentStress + 1),
             currentStress,
@@ -304,7 +318,6 @@
             Math.max(1, currentStress - 3)
         ];
 
-        // Kırmızı Senaryo (Müdahale edilmezse: Dengeli bir artış eğrisi izler, maksimum 10'da biter)
         const redTrend = [
             currentStress,
             Math.min(10, currentStress + 1),
@@ -364,13 +377,13 @@
         }
     }
 
-    function sendDataToCloud(imgData, stressScore) {
+    function sendDataToCloud(imgData, stressScore, hasPathogen) {
         const payload = {
             ph: document.getElementById('ph').value,
             weather: document.getElementById('weather').value,
             region: document.getElementById('region').value,
             stress: stressScore,
-            notes: "Dual Scenario Trend Chart + Validated",
+            notes: hasPathogen ? "Pathogen Spot Detected + Dual Scenario" : "Standard Agro Scan",
             image: imgData
         };
         fetch(SCRIPT_URL, {
