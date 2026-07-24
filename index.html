@@ -110,7 +110,7 @@
             [EN] ⚠️ EXPERT ADVICE: Seek immediate expert support for unresolved issues.
         </div>
         
-        <!-- Canlı E-Tablo Veri Butonu (Güncellenmiş Link) -->
+        <!-- Canlı E-Tablo Veri Butonu -->
         <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/edit?usp=drive_link" target="_blank" class="btn-excel">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
 
         <button id="reset-btn" class="btn-reset" onclick="resetSystem()">YENİ ANALİZ / NEW ANALYZE</button>
@@ -174,19 +174,29 @@
 
         const chl = totalG / (totalR + 1);
         document.getElementById('error-box').style.display = 'none';
+        
+        // Dinamik Stres Skoru Hesaplama (Klorofil zayıflığı + pH sapması bazlı)
+        const ph = parseFloat(document.getElementById('ph').value);
+        let phPenalty = 0;
+        if (ph < 5.5 || ph > 7.5) phPenalty = 3;
+        else if (ph < 6.0 || ph > 7.0) phPenalty = 1;
+
+        let chlorophylDeficit = Math.max(0, (1.6 - chl) * 12);
+        let calculatedStress = Math.min(10, Math.max(1, Math.round(chlorophylDeficit + phPenalty)));
+
         if(!isLangOnly) {
             v.style.display = 'none'; c.style.display = 'block';
             document.getElementById('snap-btn').style.display = 'none';
             document.getElementById('reset-btn').style.display = 'block';
 
             if(SCRIPT_URL) {
-                sendDataToCloud(base64Img, chl);
+                sendDataToCloud(base64Img, calculatedStress);
             }
         }
-        renderResult(chl);
+        renderResult(chl, calculatedStress);
     }
 
-    function renderResult(chl) {
+    function renderResult(chl, stressScore) {
         const ph = parseFloat(document.getElementById('ph').value);
         const weather = document.getElementById('weather').value;
         const region = document.getElementById('region').value;
@@ -197,8 +207,6 @@
         let chlTR = chl > 1.4 ? "Optimal (Yeterli Klorofil)" : "Düşük (Azot Eksikliği Riski)";
         let chlEN = chl > 1.4 ? "Optimal (Sufficient Chlorophyll)" : "Low (Nitrogen Deficiency Risk)";
         
-        let stressScore = Math.min(10, Math.max(1, Math.round((1.5 - chl) * 10 + (ph < 5 || ph > 7 ? 3 : 1))));
-
         hybrid.innerHTML = `🌿 [TR] KLOROFİL: ${chlTR} | STRES: ${stressScore}/10<br>🌿 [EN] CHLOROPHYLL: ${chlEN} | STRESS: ${stressScore}/10`;
 
         let diagTR = "", diagEN = "", recTR = "", recEN = "", minTR = "", minEN = "";
@@ -227,12 +235,12 @@
                         `[EN] REGION: ${region}\n[EN] WEATHER: ${weather}\n[EN] STATUS: ${diagEN}\n[EN] ADVICE: ${recEN}\n${minEN}${nitroEN}`;
     }
 
-    function sendDataToCloud(imgData, chl) {
+    function sendDataToCloud(imgData, stressScore) {
         const payload = {
             ph: document.getElementById('ph').value,
             weather: document.getElementById('weather').value,
             region: document.getElementById('region').value,
-            stress: Math.min(10, Math.max(1, Math.round((1.5 - chl) * 10))),
+            stress: stressScore,
             notes: "Otomatik Analiz",
             image: imgData
         };
