@@ -237,6 +237,7 @@
         document.getElementById('upload-txt-sub').innerText = lang === 'TR' ? 'Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları / Group shots with students, lab and field studies' : 'Group shots with students, lab and field studies / Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları';
         document.getElementById('photo-caption').placeholder = lang === 'TR' ? 'Açıklama giriniz...' : 'Enter caption...';
         
+        loadGallery(); // Galeri metnini dil değişimine göre güncellemek için çağrıldı
         if(document.getElementById('res-area').style.display === 'block') processAI(true);
     }
 
@@ -558,6 +559,76 @@
                                  `[EN] ${prescEN}`;
 
         updateChart(stressScore);
+    }
+
+    function updateChart(stressScore) {
+        const ctx = document.getElementById('stressChart').getContext('2d');
+        let days = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Today'];
+        
+        let baselineScenario = [
+            Math.min(10, Math.max(1, stressScore + 1)),
+            Math.min(10, Math.max(1, stressScore)),
+            Math.min(10, Math.max(1, stressScore - 1)),
+            Math.min(10, Math.max(1, stressScore - 1)),
+            stressScore
+        ];
+
+        let optimizedScenario = baselineScenario.map(val => Math.max(1, Math.round(val * 0.7)));
+
+        if(myChart) myChart.destroy();
+
+        myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: days,
+                datasets: [
+                    {
+                        label: lang === 'TR' ? 'Mevcut Eğilim / Current Trend' : 'Current Trend',
+                        data: baselineScenario,
+                        borderColor: '#d32f2f',
+                        backgroundColor: 'rgba(211, 47, 47, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3
+                    },
+                    {
+                        label: lang === 'TR' ? 'AB Yeşil Mutabakat Önerisi / EU Green Deal Optimized' : 'EU Green Deal Optimized',
+                        data: optimizedScenario,
+                        borderColor: '#1b5e20',
+                        backgroundColor: 'rgba(27, 94, 32, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 10,
+                        ticks: { font: { size: 10 } }
+                    },
+                    x: {
+                        ticks: { font: { size: 10 } }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { font: { size: 10 } }
+                    }
+                }
+            }
+        });
+    }
+
+    function resetSystem() {
+        document.getElementById('res-area').style.display = 'none';
+        document.getElementById('cam-box').style.display = 'none';
+        document.getElementById('form-area').style.display = 'block';
+        document.getElementById('snap-btn').style.display = 'block';
+        document.getElementById('reset-btn').style.display = 'none';
+        if(track) track.stop();
     }
 </script>
 </body>
