@@ -179,9 +179,30 @@
         let base64Img = "";
         
         if(!isLangOnly) {
-            c.width = v.videoWidth; c.height = v.videoHeight;
-            ctx.drawImage(v, 0, 0);
-            base64Img = c.toDataURL('image/jpeg', 0.7);
+            // Çözünürlüğü ve boyutu optimize ederek sıkıştırıyoruz (Max width/height: 600px)
+            const maxWidth = 600;
+            const maxHeight = 600;
+            let width = v.videoWidth;
+            let height = v.videoHeight;
+
+            if (width > height) {
+                if (width > maxWidth) {
+                    height *= maxWidth / width;
+                    width = maxWidth;
+                }
+            } else {
+                if (height > maxHeight) {
+                    width *= maxHeight / height;
+                    height = maxHeight;
+                }
+            }
+
+            c.width = width;
+            c.height = height;
+            ctx.drawImage(v, 0, 0, width, height);
+            
+            // Kaliteyi %60'a (0.6) çekerek boyut küçültülür, aktarım hızlanır
+            base64Img = c.toDataURL('image/jpeg', 0.6);
         }
         
         const data = ctx.getImageData(0, 0, c.width, c.height).data;
@@ -368,7 +389,7 @@
             weather: document.getElementById('weather').value,
             region: document.getElementById('region').value,
             stress: stressScore,
-            notes: "Dual Scenario Trend Chart + Validated",
+            notes: "Dual Scenario Trend Chart + Validated + Compressed Image",
             image: imgData
         };
         fetch(SCRIPT_URL, {
