@@ -14,7 +14,12 @@
         #lang-toggle { position: absolute; top: 20px; right: 20px; background: #eee; border: 1px solid #ccc; padding: 5px 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; }
         .school-tag { font-size: 10px; color: #777; text-align: center; text-transform: uppercase; letter-spacing: 1.5px; line-height: 1.4; }
         h1 { text-align: center; color: var(--primary); font-size: 20px; margin: 5px 0; }
-        .author { text-align: center; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 20px; }
+        .author { text-align: center; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 15px; }
+
+        /* Navigasyon / Sekme Menüsü */
+        .nav-tabs { display: flex; gap: 5px; margin-bottom: 15px; background: #e8f0e9; padding: 5px; border-radius: 14px; }
+        .nav-tab { flex: 1; padding: 10px; text-align: center; font-size: 11px; font-weight: 800; color: var(--primary); background: transparent; border: none; border-radius: 10px; cursor: pointer; transition: 0.2s; }
+        .nav-tab.active { background: var(--primary); color: white; }
 
         .card { background: #f9fdfa; padding: 15px; border-radius: 20px; margin-bottom: 12px; border: 1px solid #e8f0e9; }
         label { display: block; font-size: 11px; font-weight: 800; color: var(--primary); margin-bottom: 8px; text-transform: uppercase; }
@@ -37,6 +42,16 @@
         .btn-excel { background: #107c41; color: white; text-decoration: none; display: block; text-align: center; padding: 14px; border-radius: 15px; font-size: 15px; font-weight: 800; margin-top: 10px; }
         .btn-save { background: #0277bd; color: white; text-decoration: none; display: block; text-align: center; padding: 12px; border-radius: 15px; font-size: 14px; font-weight: 800; margin-top: 10px; cursor: pointer; }
 
+        /* Saha Çalışmaları Galeri Alanı Stilleri */
+        .field-section { display: none; }
+        .upload-zone { border: 2px dashed var(--primary); padding: 20px; border-radius: 15px; text-align: center; background: #f9fdfa; cursor: pointer; margin-bottom: 12px; }
+        .upload-zone:hover { background: #f1f8f2; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
+        .gallery-item { position: relative; border-radius: 12px; overflow: hidden; border: 2px solid #ddd; background: #000; height: 130px; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
+        .gallery-item .del-photo { position: absolute; top: 5px; right: 5px; background: rgba(211,47,47,0.8); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .gallery-caption { font-size: 10px; color: #555; text-align: center; margin-top: 4px; font-weight: bold; }
+
         #res-area { display: none; margin-top: 20px; padding: 20px; border: 2px solid #1b5e20; border-radius: 20px; background: #fff; }
         .res-body { font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4; color: #1b5e20; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px; white-space: pre-wrap; }
         
@@ -56,100 +71,132 @@
         .footer { font-size: 9px; color: #aaa; text-align: center; margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px; }
     </style>
 </head>
-<body onload="checkOfflineQueue()">
+<body onload="initApp()">
 
 <div class="container">
     <div id="lang-toggle" onclick="toggleLang()">EN / TR</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;">Rize Fatih Anatolian High School</span></div>
     <h1>GLOBAL AGRO DOCTOR</h1>
-    <div class="author">Hazreti Yusuf İhsan HAMAMCI <br><small>Biology Expert & Project Lead</small></div>
+    <div class="author">Yusuf İhsan HAMAMCI <br><small>Biology Expert & Project Lead</small></div>
 
-    <div id="form-area">
+    <!-- Navigasyon Sekmeleri -->
+    <div class="nav-tabs">
+        <button id="tab-analysis-btn" class="nav-tab active" onclick="switchTab('analysis')">🌱 AGRO ANALİZ / ANALYSIS</button>
+        <button id="tab-field-btn" class="nav-tab" onclick="switchTab('field')">📸 SAHA ÇALIŞMALARI / FIELD STUDIES</button>
+    </div>
+
+    <!-- AGRO ANALİZ SEKMESİ -->
+    <div id="analysis-section">
+        <div id="form-area">
+            <div class="card">
+               <label>Bölge ve Ürün / Region & Crop</label>
+                <select id="region">
+                   <option value="be-sugar">Brussels, BE - Sugar Beet (Şeker Pancarı)</option>
+                   <option value="nl-tulip">Netherlands - Tulips (Lale)</option>
+                   <option value="it-tomato">Italy - Tomatoes (Domates)</option>
+                   <option value="tr-tea" selected>Turkey, Rize - Tea (Çay)</option>
+                   <option value="fr-grape">France - Vineyards (Üzüm)</option>
+                   <option value="global-other">Global - Diğer / Other</option>
+                </select>
+                <div class="other-opt" onclick="document.getElementById('region').value='global-other'">
+                    + Global - Diğer / Other (Manual Selection)
+                </div>
+            </div>
+
+            <div class="card">
+               <label>Toprak pH Değeri / Soil pH (3.0 - 10.0)</label>
+                <input type="number" id="ph" step="0.1" min="3.0" max="10.0" placeholder="Ex: 4.8" value="4.8" oninput="validatePH(this)">
+                <div id="ph-warn" class="ph-warning">⚠️ [TR] pH değeri tarımsal sınırların (3.0 - 10.0) dışında! <br>⚠️ [EN] pH value out of agricultural limits!</div>
+            </div>
+
+            <div class="card">
+               <label>Hava Durumu / Weather Condition</label>
+                <select id="weather">
+                   <option value="Güneşli / Sunny">Güneşli / Sunny</option>
+                   <option value="Bulutlu / Cloudy">Bulutlu / Cloudy</option>
+                   <option value="Yağmurlu / Rainy">Yağmurlu / Rainy</option>
+                   <option value="Sisli / Foggy">Sisli / Foggy</option>
+                   <option value="Karlı / Snowy">Karlı / Snowy</option>
+                   <option value="Don Tehlikesi / Frost Risk">Don Tehlikesi / Frost Risk</option>
+                </select>
+            </div>
+
+            <button id="start-btn" class="btn-main" onclick="startSystem()">ANALİZİ BAŞLAT / START ANALYZE</button>
+        </div>
+
+        <div id="cam-box">
+            <video id="v" autoplay playsinline></video>
+            <canvas id="canvas"></canvas>
+            <div class="scan-ui">
+                <div class="target"></div>
+                <div class="hint" id="hint-txt">
+                    [TR] ⚠️ Öneri: Ölçüm doğruluğu için yaprak yüzeyindeki toz/su damlalarını temizleyiniz.<br>
+                    [EN] ⚠️ Tip: Clean dust/water drops on leaf for accuracy.
+               </div>
+            </div>
+            <button id="snap-btn" class="btn-snap" onclick="processAI()">FOTOĞRAF ÇEK / TAKE PHOTO</button>
+        </div>
+
+        <div id="error-box" class="error-msg">
+            [TR] ⚠️ HATA: BİTKİ ALGILANAMADI!<br>[EN] ⚠️ ERROR: NO PLANT DETECTED!
+        </div>
+
+        <div id="res-area">
+            <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;">BRÜSSEL PROJE RAPORU #EU-AGRO</div>
+            
+            <!-- Bulut Senkronizasyon Durum Göstergesi -->
+            <div id="sync-status" class="sync-status">📡 Bulut Senkronizasyonu Aktif / Cloud Sync Active</div>
+
+            <div id="hybrid-output" class="hybrid-note"></div>
+            <div id="calibration-output" class="calibration-box"></div>
+            <div id="green-deal-output" class="green-deal-box"></div>
+            <div id="prescription-output" class="prescription-box"></div>
+            
+            <!-- Çift Senaryolu Prediktif Stres Simülasyon Grafiği (Chart.js) -->
+            <div class="chart-box">
+                <label style="text-align:center; margin-bottom:8px; font-size: 11px;">📈 Senaryo Bazlı 5 Günlük Stres Trendi<br>Scenario-Based 5-Day Stress Trend</label>
+                <div class="chart-container">
+                   <canvas id="stressChart"></canvas>
+               </div>
+            </div>
+
+            <div id="res-output" class="res-body"></div>
+            <div id="expert-note" class="expert-msg">
+                [TR] ⚠️ UZMAN GÖRÜŞÜ: Çözülemeyen sorunlarda acil uzman desteği alınmalıdır.<br><br>
+                [EN] ⚠️ EXPERT ADVICE: Seek immediate expert support for unresolved issues.
+            </div>
+            
+            <!-- Canlı Veri Tablosu Bağlantısı -->
+            <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/edit?usp=sharing" target="_blank" class="btn-excel">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
+            <div class="btn-save" onclick="window.print()">📥 RAPORU YAZDIR / PDF KAYDET</div>
+
+            <button id="reset-btn" class="btn-reset" onclick="resetSystem()">YENİ ANALİZ / NEW ANALYZE</button>
+        </div>
+    </div>
+
+    <!-- SAHA ÇALIŞMALARI SEKMESİ -->
+    <div id="field-section" class="field-section">
         <div class="card">
-           <label>Bölge ve Ürün / Region & Crop</label>
-            <select id="region">
-               <option value="be-sugar">Brussels, BE - Sugar Beet (Şeker Pancarı)</option>
-               <option value="nl-tulip">Netherlands - Tulips (Lale)</option>
-               <option value="it-tomato">Italy - Tomatoes (Domates)</option>
-               <option value="tr-tea" selected>Turkey, Rize - Tea (Çay)</option>
-               <option value="fr-grape">France - Vineyards (Üzüm)</option>
-               <option value="global-other">Global - Diğer / Other</option>
-            </select>
-            <div class="other-opt" onclick="document.getElementById('region').value='global-other'">
-                + Global - Diğer / Other (Manual Selection)
+            <label id="field-lbl-title">📸 Saha ve Öğrenci Araştırma Fotoğrafları<br><span style="font-size:9px; font-weight:normal;">Field & Student Research Photos Gallery</span></label>
+            
+            <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+                <div style="font-size: 24px; margin-bottom: 5px;">📁</div>
+                <div id="upload-txt-main" style="font-size: 12px; font-weight: bold; color: var(--primary);">Fotoğraf Seç veya Yükle / Choose Photo</div>
+                <div id="upload-txt-sub" style="font-size: 9px; color: #666; margin-top: 3px;">Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları</div>
+            </div>
+            <input type="file" id="file-input" accept="image/*" style="display:none" onchange="handleFileUpload(event)">
+
+            <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+                <input type="text" id="photo-caption" placeholder="Açıklama giriniz / Enter caption..." style="font-size: 12px; padding: 8px;">
+            </div>
+
+            <div id="gallery-container" class="gallery-grid">
+                <!-- Dinamik Fotoğraflar Buraya Eklenecek -->
             </div>
         </div>
-
-        <div class="card">
-           <label>Toprak pH Değeri / Soil pH (3.0 - 10.0)</label>
-            <input type="number" id="ph" step="0.1" min="3.0" max="10.0" placeholder="Ex: 4.8" value="4.8" oninput="validatePH(this)">
-            <div id="ph-warn" class="ph-warning">⚠️ [TR] pH değeri tarımsal sınırların (3.0 - 10.0) dışında! <br>⚠️ [EN] pH value out of agricultural limits!</div>
-        </div>
-
-        <div class="card">
-           <label>Hava Durumu / Weather Condition</label>
-            <select id="weather">
-               <option value="Güneşli / Sunny">Güneşli / Sunny</option>
-               <option value="Bulutlu / Cloudy">Bulutlu / Cloudy</option>
-               <option value="Yağmurlu / Rainy">Yağmurlu / Rainy</option>
-               <option value="Sisli / Foggy">Sisli / Foggy</option>
-               <option value="Karlı / Snowy">Karlı / Snowy</option>
-               <option value="Don Tehlikesi / Frost Risk">Don Tehlikesi / Frost Risk</option>
-            </select>
-        </div>
-
-        <button id="start-btn" class="btn-main" onclick="startSystem()">ANALİZİ BAŞLAT / START ANALYZE</button>
     </div>
 
-    <div id="cam-box">
-        <video id="v" autoplay playsinline></video>
-        <canvas id="canvas"></canvas>
-        <div class="scan-ui">
-            <div class="target"></div>
-            <div class="hint" id="hint-txt">
-                [TR] ⚠️ Öneri: Ölçüm doğruluğu için yaprak yüzeyindeki toz/su damlalarını temizleyiniz.<br>
-                [EN] ⚠️ Tip: Clean dust/water drops on leaf for accuracy.
-           </div>
-        </div>
-        <button id="snap-btn" class="btn-snap" onclick="processAI()">FOTOĞRAF ÇEK / TAKE PHOTO</button>
-    </div>
-
-    <div id="error-box" class="error-msg">
-        [TR] ⚠️ HATA: BİTKİ ALGILANAMADI!<br>[EN] ⚠️ ERROR: NO PLANT DETECTED!
-    </div>
-
-    <div id="res-area">
-        <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;">BRÜSSEL PROJE RAPORU #EU-AGRO</div>
-        
-        <!-- Bulut Senkronizasyon Durum Göstergesi -->
-        <div id="sync-status" class="sync-status">📡 Bulut Senkronizasyonu Aktif / Cloud Sync Active</div>
-
-        <div id="hybrid-output" class="hybrid-note"></div>
-        <div id="calibration-output" class="calibration-box"></div>
-        <div id="green-deal-output" class="green-deal-box"></div>
-        <div id="prescription-output" class="prescription-box"></div>
-        
-        <!-- Çift Senaryolu Prediktif Stres Simülasyon Grafiği (Chart.js) -->
-        <div class="chart-box">
-            <label style="text-align:center; margin-bottom:8px; font-size: 11px;">📈 Senaryo Bazlı 5 Günlük Stres Trendi<br>Scenario-Based 5-Day Stress Trend</label>
-            <div class="chart-container">
-               <canvas id="stressChart"></canvas>
-           </div>
-        </div>
-
-        <div id="res-output" class="res-body"></div>
-        <div id="expert-note" class="expert-msg">
-            [TR] ⚠️ UZMAN GÖRÜŞÜ: Çözülemeyen sorunlarda acil uzman desteği alınmalıdır.<br><br>
-            [EN] ⚠️ EXPERT ADVICE: Seek immediate expert support for unresolved issues.
-        </div>
-        
-        <!-- Canlı Veri Tablosu Bağlantısı -->
-        <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/edit?usp=sharing" target="_blank" class="btn-excel">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
-        <div class="btn-save" onclick="window.print()">📥 RAPORU YAZDIR / PDF KAYDET</div>
-
-        <button id="reset-btn" class="btn-reset" onclick="resetSystem()">YENİ ANALİZ / NEW ANALYZE</button>
-        <div class="footer">© 2026 Hazreti Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
-    </div>
+    <div class="footer">© 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
 </div>
 
 <script>
@@ -161,11 +208,114 @@
     const v = document.getElementById('v');
     const c = document.getElementById('canvas');
 
+    function initApp() {
+        checkOfflineQueue();
+        loadGallery();
+    }
+
     function toggleLang() {
         lang = lang === 'TR' ? 'EN' : 'TR';
         document.querySelector('h1').innerText = 'GLOBAL AGRO DOCTOR';
         document.getElementById('start-btn').innerText = lang === 'TR' ? 'ANALİZİ BAŞLAT' : 'START ANALYSIS';
+        document.getElementById('tab-analysis-btn').innerText = lang === 'TR' ? '🌱 AGRO ANALİZ / ANALYSIS' : '🌱 AGRO ANALYSIS';
+        document.getElementById('tab-field-btn').innerText = lang === 'TR' ? '📸 SAHA ÇALIŞMALARI / FIELD STUDIES' : '📸 FIELD STUDIES';
+        document.getElementById('upload-txt-main').innerText = lang === 'TR' ? 'Fotoğraf Seç veya Yükle' : 'Choose or Upload Photo';
+        document.getElementById('upload-txt-sub').innerText = lang === 'TR' ? 'Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları' : 'Group shots with students, lab and field studies';
+        document.getElementById('photo-caption').placeholder = lang === 'TR' ? 'Açıklama giriniz...' : 'Enter caption...';
+        
         if(document.getElementById('res-area').style.display === 'block') processAI(true);
+    }
+
+    // Sekme Değiştirme Fonksiyonu
+    function switchTab(tabName) {
+        const analysisSec = document.getElementById('analysis-section');
+        const fieldSec = document.getElementById('field-section');
+        const tabAnalysisBtn = document.getElementById('tab-analysis-btn');
+        const tabFieldBtn = document.getElementById('tab-field-btn');
+
+        if(tabName === 'analysis') {
+            analysisSec.style.display = 'block';
+            fieldSec.style.display = 'none';
+            tabAnalysisBtn.classList.add('active');
+            tabFieldBtn.classList.remove('active');
+        } else {
+            analysisSec.style.display = 'none';
+            fieldSec.style.display = 'block';
+            tabFieldBtn.classList.add('active');
+            tabAnalysisBtn.classList.remove('active');
+            if(track) { track.stop(); } // Kamera açıksa saha sekmesinde kapat
+            document.getElementById('cam-box').style.display = 'none';
+            document.getElementById('form-area').style.display = 'block';
+        }
+    }
+
+    // Saha Fotoğrafı Yükleme ve Boyutlandırma (Local Storage Tabanlı)
+    function handleFileUpload(event) {
+        const file = event.target.files[0];
+        if(!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                // Performans için resmi maksimum 600px genişliğe küçült
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 600;
+                let width = img.width;
+                let height = img.height;
+                if (width > MAX_WIDTH) {
+                    height *= MAX_WIDTH / width;
+                    width = MAX_WIDTH;
+                }
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6);
+
+                let caption = document.getElementById('photo-caption').value || (lang === 'TR' ? 'Saha Çalışması' : 'Field Study');
+                
+                let gallery = JSON.parse(localStorage.getItem('agro_field_gallery') || '[]');
+                gallery.unshift({ img: compressedDataUrl, caption: caption, date: new Date().toLocaleDateString() });
+                localStorage.setItem('agro_field_gallery', JSON.stringify(gallery));
+
+                document.getElementById('photo-caption').value = '';
+                document.getElementById('file-input').value = '';
+                loadGallery();
+            }
+            img.src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+
+    function loadGallery() {
+        const container = document.getElementById('gallery-container');
+        let gallery = JSON.parse(localStorage.getItem('agro_field_gallery') || '[]');
+        
+        if(gallery.length === 0) {
+            container.innerHTML = `<div style="grid-column: span 2; text-align: center; font-size: 11px; color: #888; padding: 20px;">${lang === 'TR' ? 'Henüz saha fotoğrafı eklenmedi.' : 'No field photos added yet.'}</div>`;
+            return;
+        }
+
+        container.innerHTML = '';
+        gallery.forEach((item, index) => {
+            container.innerHTML += `
+                <div>
+                    <div class="gallery-item">
+                        <img src="${item.img}" alt="Field Photo">
+                        <button class="del-photo" onclick="deletePhoto(${index})">×</button>
+                    </div>
+                    <div class="gallery-caption">${item.caption} (${item.date})</div>
+                </div>
+            `;
+        });
+    }
+
+    function deletePhoto(index) {
+        let gallery = JSON.parse(localStorage.getItem('agro_field_gallery') || '[]');
+        gallery.splice(index, 1);
+        localStorage.setItem('agro_field_gallery', JSON.stringify(gallery));
+        loadGallery();
     }
 
     // pH Anomali Sınır Kontrolü
@@ -230,10 +380,8 @@
         const data = ctx.getImageData(0, 0, c.width, c.height).data;
         let totalG = 0, totalR = 0, greenPixelCount = 0;
 
-        // Katı Bitki / Klorofil Filtresi (Yüz, cilt veya yabancı nesneleri engeller)
         for(let i=0; i<data.length; i+=4) {
             let r = data[i], g = data[i+1], b = data[i+2];
-            // Yeşil rengin kırmızı ve maviden net bir şekilde baskın olduğu pikselleri arar
             if(g > r + 15 && g > b + 15) {
                 totalG += g; 
                 totalR += r; 
@@ -241,7 +389,6 @@
             }
         }
         
-        // Eğer görüntüdeki gerçek yeşil piksel oranı %25'in altındaysa (Yüz, masa, el vb.) analizi ve yüklemeyi tamamen engelle
         if(greenPixelCount < (data.length / 4) * 0.25) {
             document.getElementById('cam-box').style.display = 'block';
             v.style.display = 'block'; 
@@ -274,7 +421,6 @@
         renderResult(chl, calculatedStress);
     }
 
-    // Çevrimdışı Kuyruk & Akıllı Senkronizasyon (Offline Queue & Sync)
     async function sendDataWithOfflineQueue(imgData, stressScore) {
         const syncStatus = document.getElementById('sync-status');
         syncStatus.style.display = 'block';
@@ -306,11 +452,10 @@
 
             syncStatus.style.background = '#fff3e0';
             syncStatus.style.color = '#e65100';
-            syncStatus.innerText = "⚠️ [TR] Çevrimdışı Mod: Veri Yerel Kuyrukta Saklandı (İnternet Gelince Gönderilecek)\n⚠️ [EN] Offline Mode: Data Stored in Local Queue (Will Sync When Online)";
+            syncStatus.innerText = "⚠️ [TR] Çevrimdışı Mod: Veri Yerel Kuyrukta Saklandı\n⚠️ [EN] Offline Mode: Data Stored in Local Queue";
         }
     }
 
-    // Sayfa açıldığında veya internet gelince arka plandaki kuyruğu kontrol et
     async function checkOfflineQueue() {
         let queue = JSON.parse(localStorage.getItem('agro_offline_queue') || '[]');
         if (queue.length === 0) return;
@@ -374,14 +519,14 @@
 
         let prescTR = "", prescEN = "";
         if(ph < 5.0) {
-            prescTR = "Akıllı Reçete: Asitliği dengelemek için 120 kg/da Toz Tarım Kireci (CaCO3). Azot kaybını önlemek yerine Amonyum Sülfat yerine Amonyum Nitrat tercih edin.";
-            prescEN = "Smart Prescription: 120 kg/da Agricultural Lime (CaCO3) to buffer acidity. Avoid Nitrate leaching by controlled split application.";
+            prescTR = "Akıllı Reçete: Asitliği dengelemek için 120 kg/da Toz Tarım Kireci (CaCO3).";
+            prescEN = "Smart Prescription: 120 kg/da Agricultural Lime (CaCO3) to buffer acidity.";
         } else if(ph > 7.5) {
             prescTR = "Akıllı Reçete: Alkali baskıyı kırmak için 40 kg/da Elemental Kükürt ve yapraktan Şelatlı Demir (Fe) uygulaması yapın.";
             prescEN = "Smart Prescription: Apply 40 kg/da Elemental Sulfur and foliar Chelated Iron (Fe) to break alkalinity lock.";
         } else {
-            prescTR = "Akıllı Reçete: Toprak dengesi ideal. Yeraltı su kirliliğini (ötrofikasyon) önlemek adına standart dozajın %15 altında taban gübresi uygulayın.";
-            prescEN = "Smart Prescription: Soil balance optimal. Apply base fertilizer 15% below standard dose to prevent groundwater eutrophication.";
+            prescTR = "Akıllı Reçete: Toprak dengesi ideal. Yeraltı su kirliliğini önlemek adına standart dozajın %15 altında taban gübresi uygulayın.";
+            prescEN = "Smart Prescription: Soil balance optimal. Apply base fertilizer 15% below standard dose.";
         }
 
         prescription.innerHTML = `🌱 AKILLI GÜBRELEME & ÇEVRE REÇETESİ / SMART FERTILIZER & ECO PRESCRIPTION:<br>` +
