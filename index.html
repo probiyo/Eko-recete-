@@ -12,7 +12,7 @@
         .container { max-width: 480px; margin: auto; background: white; padding: 20px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; position: relative; }
         
         #lang-toggle { position: absolute; top: 20px; right: 20px; background: #eee; border: 1px solid #ccc; padding: 5px 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; }
-        .school-tag { font-size: 10px; color: #777; text-align: center; text-transform: uppercase; letter-spacing: 2px; }
+        .school-tag { font-size: 10px; color: #777; text-align: center; text-transform: uppercase; letter-spacing: 1.5px; line-height: 1.4; }
         h1 { text-align: center; color: var(--primary); font-size: 20px; margin: 5px 0; }
         .author { text-align: center; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 20px; }
 
@@ -58,7 +58,7 @@
 
 <div class="container">
     <div id="lang-toggle" onclick="toggleLang()">EN / TR</div>
-    <div class="school-tag">Rize Fatih Anadolu Lisesi</div>
+    <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;">Rize Fatih Anatolian High School</span></div>
     <h1>GLOBAL AGRO DOCTOR</h1>
     <div class="author">Yusuf İhsan HAMAMCI <br><small>Biology Expert & Project Lead</small></div>
 
@@ -90,6 +90,7 @@
                 <option value="Bulutlu / Cloudy">Bulutlu / Cloudy</option>
                 <option value="Yağmurlu / Rainy">Yağmurlu / Rainy</option>
                 <option value="Sisli / Foggy">Sisli / Foggy</option>
+                <option value="Karlı / Snowy">Karlı / Snowy</option>
                 <option value="Don Tehlikesi / Frost Risk">Don Tehlikesi / Frost Risk</option>
             </select>
         </div>
