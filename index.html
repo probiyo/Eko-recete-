@@ -51,6 +51,7 @@
 
         .expert-msg { background: #fff3e0; border-left: 5px solid #ff9800; padding: 10px; font-size: 11px; font-weight: bold; color: #e65100; margin-bottom: 15px; }
         .error-msg { color: var(--danger); font-weight: bold; text-align: center; padding: 20px; border: 2px dashed var(--danger); border-radius: 15px; display: none; margin-top: 10px; font-size: 13px; }
+        .ph-warning { color: var(--danger); font-size: 10px; font-weight: bold; margin-top: 5px; display: none; }
 
         .footer { font-size: 9px; color: #aaa; text-align: center; margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px; }
     </style>
@@ -80,8 +81,9 @@
         </div>
 
         <div class="card">
-            <label>Toprak pH Değeri / Soil pH</label>
-            <input type="number" id="ph" step="0.1" placeholder="Ex: 4.5" value="4.8">
+            <label>Toprak pH Değeri / Soil pH (3.0 - 10.0)</label>
+            <input type="number" id="ph" step="0.1" min="3.0" max="10.0" placeholder="Ex: 4.8" value="4.8" oninput="validatePH(this)">
+            <div id="ph-warn" class="ph-warning">⚠️ [TR] pH değeri tarımsal sınırların (3.0 - 10.0) dışında! <br>⚠️ [EN] pH value out of agricultural limits!</div>
         </div>
 
         <div class="card">
@@ -166,8 +168,31 @@
         if(document.getElementById('res-area').style.display === 'block') processAI(true);
     }
 
+    // pH Anomali Sınır Kontrolü (Data Sanitization)
+    function validatePH(input) {
+        const val = parseFloat(input.value);
+        const warn = document.getElementById('ph-warn');
+        const startBtn = document.getElementById('start-btn');
+        
+        if (val < 3.0 || val > 10.0 || isNaN(val)) {
+            warn.style.display = 'block';
+            input.style.borderColor = 'var(--danger)';
+            startBtn.disabled = true;
+            startBtn.style.opacity = '0.5';
+        } else {
+            warn.style.display = 'none';
+            input.style.borderColor = '#d1d9d2';
+            startBtn.disabled = false;
+            startBtn.style.opacity = '1';
+        }
+    }
+
     async function startSystem() {
-        if(!document.getElementById('ph').value) return alert("Lütfen pH değeri giriniz! / Please enter pH!");
+        const phVal = parseFloat(document.getElementById('ph').value);
+        if(phVal < 3.0 || phVal > 10.0 || isNaN(phVal)) {
+            alert("Lütfen geçerli bir tarımsal pH değeri (3.0 - 10.0) giriniz! / Please enter a valid agricultural pH!");
+            return;
+        }
         document.getElementById('cam-box').style.display = 'block';
         document.getElementById('form-area').style.display = 'none';
         try {
@@ -186,7 +211,6 @@
         let base64Img = "";
         
         if(!isLangOnly) {
-            // Brüksel Proje Standartı: 500x500 Optimize Sıkıştırma (Hızlı Aktarım & Düşük Boyut)
             const maxRes = 500;
             let width = v.videoWidth;
             let height = v.videoHeight;
@@ -200,8 +224,6 @@
             c.width = width;
             c.height = height;
             ctx.drawImage(v, 0, 0, width, height);
-            
-            // %50 Kalite sıkıştırmasıyla veriyi ~100 KB civarına düşürür
             base64Img = c.toDataURL('image/jpeg', 0.5);
         }
         
@@ -242,7 +264,6 @@
         renderResult(chl, calculatedStress);
     }
 
-    // Akıllı Yeniden Deneme (Smart Retry with Exponential Backoff) Mekanizması
     async function sendDataWithRetry(imgData, stressScore, retries = 3, delay = 1000) {
         const syncStatus = document.getElementById('sync-status');
         syncStatus.style.display = 'block';
@@ -253,7 +274,7 @@
             weather: document.getElementById('weather').value,
             region: document.getElementById('region').value,
             stress: stressScore,
-            notes: "Optimized Image + Enterprise Retry Mechanism Enabled",
+            notes: "Sanitized pH + Optimized Image + Enterprise Retry",
             image: imgData
         };
 
@@ -270,11 +291,10 @@
                 syncStatus.innerText = "✅ Buluta Başarıyla Aktarıldı / Successfully Synced to Cloud";
                 return;
             } catch (err) {
-                console.warn(`Bağlantı denemesi ${i + 1} başarısız. Tekrar deneniyor...`, err);
                 if (i < retries - 1) {
                     syncStatus.innerText = `⚠️ Ağ Kesintisi, Tekrar Deneniyor (${i + 2}/3)...`;
                     await new Promise(res => setTimeout(res, delay));
-                    delay *= 2; // Üstel artış (Exponential backoff)
+                    delay *= 2;
                 } else {
                     syncStatus.style.background = '#ffebee';
                     syncStatus.style.color = '#c62828';
