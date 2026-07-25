@@ -84,7 +84,7 @@
     <div id="lang-toggle" onclick="toggleLang()">EN / TR</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;">Rize Fatih Anatolian High School</span></div>
     <h1>GLOBAL AGRO DOCTOR</h1>
-    <div class="author">Yusuf İhsan HAMAMCI <br><small>Biology Expert & Project Lead</small></div>
+    <div class="author">Hazreti Yusuf İhsan HAMAMCI <br><small>Biology Expert & Project Lead</small></div>
 
     <!-- Navigasyon Sekmeleri -->
     <div class="nav-tabs">
@@ -189,7 +189,7 @@
             <div class="upload-zone" onclick="document.getElementById('file-input').click()">
                 <div style="font-size: 24px; margin-bottom: 5px;">📁</div>
                 <div id="upload-txt-main" style="font-size: 12px; font-weight: bold; color: var(--primary);">Fotoğraf Seç veya Yükle / Choose Photo</div>
-                <div id="upload-txt-sub" style="font-size: 9px; color: #666; margin-top: 3px;">Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları</div>
+                <div id="upload-txt-sub" style="font-size: 9px; color: #666; margin-top: 3px;">Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları / Group shots with students, lab and field studies</div>
             </div>
             <input type="file" id="file-input" accept="image/*" style="display:none" onchange="handleFileUpload(event)">
 
@@ -203,7 +203,7 @@
         </div>
     </div>
 
-    <div class="footer">© 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
+    <div class="footer">© 2026 Hazreti Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
 </div>
 
 <!-- Lightbox (Tam Ekran Büyütme) Modalı -->
@@ -234,7 +234,7 @@
         document.getElementById('tab-analysis-btn').innerText = lang === 'TR' ? '🌱 AGRO ANALİZ / ANALYSIS' : '🌱 AGRO ANALYSIS';
         document.getElementById('tab-field-btn').innerText = lang === 'TR' ? '📸 SAHA ÇALIŞMALARI / FIELD STUDIES' : '📸 FIELD STUDIES';
         document.getElementById('upload-txt-main').innerText = lang === 'TR' ? 'Fotoğraf Seç veya Yükle' : 'Choose or Upload Photo';
-        document.getElementById('upload-txt-sub').innerText = lang === 'TR' ? 'Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları' : 'Group shots with students, lab and field studies';
+        document.getElementById('upload-txt-sub').innerText = lang === 'TR' ? 'Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları / Group shots with students, lab and field studies' : 'Group shots with students, lab and field studies / Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları';
         document.getElementById('photo-caption').placeholder = lang === 'TR' ? 'Açıklama giriniz...' : 'Enter caption...';
         
         if(document.getElementById('res-area').style.display === 'block') processAI(true);
@@ -558,106 +558,6 @@
                                  `[EN] ${prescEN}`;
 
         updateChart(stressScore);
-
-        let diagTR = "", diagEN = "", recTR = "", recEN = "", minTR = "", minEN = "";
-
-        if(ph < 4.5) {
-            diagTR = "KRİTİK ASİDİTE"; diagEN = "CRITICAL ACIDITY";
-            recTR = "- 150kg/da Tarım Kireci Uygulayın"; recEN = "- Apply 150kg/da Agricultural Lime";
-            minTR = "- MİNERAL: Demir(Fe) ve Mn kilitlenmesi tespit edildi."; 
-            minEN = "- MINERAL: Iron(Fe) and Mn lockout detected.";
-        } else if(ph > 7.5) {
-            diagTR = "ALKALİ TOPRAK"; diagEN = "ALKALINE SOIL";
-            recTR = "- Kükürt Takviyesi Gerekli"; recEN = "- Sulfur Supplement Required";
-            minTR = "- MİNERAL: Fosfor ve Çinko emilimi kısıtlı."; 
-            minEN = "- MINERAL: Phosphorus and Zinc uptake limited.";
-        } else {
-            diagTR = "OPTİMUM DENGELİ"; diagEN = "OPTIMUM BALANCE";
-            recTR = "- Rutin Takip"; recEN = "- Routine Follow-up";
-            minTR = "- MİNERAL: Besin emilimi sağlıklı seviyede."; 
-            minEN = "- MINERAL: Nutrient uptake at healthy levels.";
-        }
-
-        let nitroTR = chl < 1.4 ? "\n- AZOT: Yaprak rengi açık, N takviyesi önerilir." : "\n- AZOT: Seviye dengeli.";
-        let nitroEN = chl < 1.4 ? "\n- NITROGEN: Light color, N supplement suggested." : "\n- NITROGEN: Levels balanced.";
-
-        out.innerText = `[TR] BÖLGE: ${region}\n[TR] HAVA: ${weather}\n[TR] DURUM: ${diagTR}\n[TR] ÖNERİ: ${recTR}\n${minTR}${nitroTR}\n\n` +
-                        `[EN] REGION: ${region}\n[EN] WEATHER: ${weather}\n[EN] STATUS: ${diagEN}\n[EN] ADVICE: ${recEN}\n${minEN}${nitroEN}`;
-    }
-
-    function updateChart(currentStress) {
-        const ctxCanvas = document.getElementById('stressChart').getContext('2d');
-        
-        const greenTrend = [
-           Math.min(10, currentStress + 1),
-           currentStress,
-           currentStress,
-           Math.max(1, currentStress - 2),
-           Math.max(1, currentStress - 3)
-        ];
-
-        const redTrend = [
-           currentStress,
-           Math.min(10, currentStress + 1),
-           Math.min(10, currentStress + 2),
-           Math.min(10, currentStress + 3),
-           Math.min(10, currentStress + 4)
-        ];
-
-        if (myChart) {
-           myChart.data.datasets[0].data = greenTrend;
-           myChart.data.datasets[1].data = redTrend;
-           myChart.update();
-        } else {
-            myChart = new Chart(ctxCanvas, {
-                type: 'line',
-                data: {
-                   labels: ['1. Gün / Day 1', '2. Gün / Day 2', '3. Gün / Day 3 (Bugün/Today)', '4. Gün / Day 4', '5. Gün / Day 5'],
-                   datasets: [
-                       {
-                           label: 'Reçete Uygulanırsa (Yeşil / Green Scenario)',
-                           data: greenTrend,
-                           borderColor: '#2e7d32',
-                           backgroundColor: 'rgba(46, 125, 50, 0.1)',
-                           borderWidth: 2.5,
-                           pointRadius: 4,
-                           fill: true,
-                           tension: 0.3
-                       },
-                       {
-                           label: 'Müdahale Edilmezse (Kırmızı / Red Scenario)',
-                           data: redTrend,
-                           borderColor: '#d32f2f',
-                           backgroundColor: 'rgba(211, 47, 47, 0.05)',
-                           borderWidth: 2.5,
-                           borderDash: [5, 5],
-                           pointRadius: 4,
-                           fill: false,
-                           tension: 0.3
-                       }
-                   ]
-                },
-                options: {
-                   responsive: true,
-                   maintainAspectRatio: false,
-                   plugins: { 
-                       legend: { 
-                           position: 'bottom', 
-                           labels: { boxWidth: 12, font: { size: 9 } } 
-                       } 
-                   },
-                   scales: {
-                       y: { min: 0, max: 10, ticks: { stepSize: 2 } },
-                       x: { ticks: { font: { size: 9 } } }
-                   }
-                }
-            });
-        }
-    }
-
-    function resetSystem() {
-        if(track) track.stop();
-        location.reload();
     }
 </script>
 </body>
