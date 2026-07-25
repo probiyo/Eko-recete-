@@ -44,7 +44,7 @@
         .green-deal-box { background: #e8f5e9; border-left: 5px solid #2e7d32; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #1b5e20; font-weight: bold; border-radius: 0 10px 10px 0; }
         .prescription-box { background: #fffde7; border-left: 5px solid #fbc02d; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #f57f17; font-weight: bold; border-radius: 0 10px 10px 0; }
         .calibration-box { background: #f3e5f5; border-left: 5px solid #ab47bc; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #4a148c; font-weight: bold; border-radius: 0 10px 10px 0; }
-        .sync-status { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; padding: 8px; border-radius: 10px; font-size: 11px; font-weight: bold; text-align: center; margin-bottom: 10px; display: none; }
+        .sync-status { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; padding: 8px; border-radius: 10px; font-size: 11px; font-weight: bold; text-align: center; margin-bottom: 10px; display: none; line-height: 1.4; }
         
         .chart-box { background: #fafafa; padding: 12px; border-radius: 15px; margin-bottom: 12px; border: 1px solid #ddd; }
         .chart-container { position: relative; width: 100%; height: 220px; }
@@ -288,16 +288,15 @@
             });
             syncStatus.style.background = '#e8f5e9';
             syncStatus.style.color = '#2e7d32';
-            syncStatus.innerText = "✅ Buluta Başarıyla Aktarıldı / Successfully Synced to Cloud";
+            syncStatus.innerText = "✅ Buluta Başarıyla Aktarıldı\n✅ Successfully Synced to Cloud";
         } catch (err) {
-            // Ağ tamamen yoksa veya hata alınırsa LocalStorage'a kaydet (Offline Mode)
             let queue = JSON.parse(localStorage.getItem('agro_offline_queue') || '[]');
             queue.push(payload);
             localStorage.setItem('agro_offline_queue', JSON.stringify(queue));
 
             syncStatus.style.background = '#fff3e0';
             syncStatus.style.color = '#e65100';
-            syncStatus.innerText = "⚠️ Çevrimdışı Mod: Veri Yerel Kuyrukta Saklandı (İnternet Gelince Gönderilecek)";
+            syncStatus.innerText = "⚠️ [TR] Çevrimdışı Mod: Veri Yerel Kuyrukta Saklandı (İnternet Gelince Gönderilecek)\n⚠️ [EN] Offline Mode: Data Stored in Local Queue (Will Sync When Online)";
         }
     }
 
@@ -310,7 +309,7 @@
         syncStatus.style.display = 'block';
         syncStatus.style.background = '#e3f2fd';
         syncStatus.style.color = '#0d47a1';
-        syncStatus.innerText = `🔄 Çevrimdışı Kuyruktaki ${queue.length} Veri Gönderiliyor...`;
+        syncStatus.innerText = `🔄 [TR] Çevrimdışı Kuyruktaki ${queue.length} Veri Gönderiliyor...\n🔄 [EN] Syncing ${queue.length} Offline Items...`;
 
         let remainingQueue = [];
         for (let payload of queue) {
@@ -322,7 +321,7 @@
                     body: JSON.stringify(payload)
                 });
             } catch (e) {
-                remainingQueue.push(payload); // Gönderilemeyenleri tekrar kuyrukta tut
+                remainingQueue.push(payload);
             }
         }
 
@@ -330,7 +329,7 @@
             localStorage.removeItem('agro_offline_queue');
             syncStatus.style.background = '#e8f5e9';
             syncStatus.style.color = '#2e7d32';
-            syncStatus.innerText = "✅ Tüm Çevrimdışı Veriler Buluta Senkronize Edildi!";
+            syncStatus.innerText = "✅ [TR] Tüm Çevrimdışı Veriler Buluta Senkronize Edildi!\n✅ [EN] All Offline Data Successfully Synced to Cloud!";
         } else {
             localStorage.setItem('agro_offline_queue', JSON.stringify(remainingQueue));
         }
