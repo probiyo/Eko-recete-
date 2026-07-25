@@ -20,18 +20,26 @@ function processAI(isLangOnly = false) {
         }
         
         const data = ctx.getImageData(0, 0, c.width, c.height).data;
-        let totalG = 0, totalR = 0, count = 0;
+        let totalG = 0, totalR = 0, greenPixelCount = 0;
 
+        // Katı Bitki / Klorofil Filtresi (Yüz, cilt veya yabancı nesneleri engeller)
         for(let i=0; i<data.length; i+=4) {
-            if(data[i+1] > data[i] && data[i+1] > data[i+2]) {
-                totalG += data[i+1]; totalR += data[i]; count++;
+            let r = data[i], g = data[i+1], b = data[i+2];
+            // Yeşil rengin kırmızı ve maviden net bir şekilde baskın olduğu pikselleri arar
+            if(g > r + 15 && g > b + 15) {
+                totalG += g; 
+                totalR += r; 
+                greenPixelCount++;
             }
         }
         
-        // GDPR ve Bitki Doğrulama Filtresi (Yüz veya yaprak dışı nesneleri engeller)
-        if(count < (data.length/4) * 0.15) {
+        // Eğer görüntüdeki gerçek yeşil piksel oranı %25'in altındaysa (Yüz, masa, el vb.) analizi ve yüklemeyi tamamen engelle
+        if(greenPixelCount < (data.length / 4) * 0.25) {
+            document.getElementById('cam-box').style.display = 'block';
+            v.style.display = 'block'; 
+            c.style.display = 'none';
             document.getElementById('error-box').style.display = 'block';
-            document.getElementById('error-box').innerHTML = "[TR] ⚠️ GDPR UYARISI: BİTKİ/YAPRAK ALGILAMADI! Kişisel veri (yüz/nesne) yüklenemez.<br>[EN] ⚠️ GDPR WARNING: NO PLANT DETECTED! Personal data blocked.";
+            document.getElementById('error-box').innerHTML = "[TR] ⚠️ GDPR & BİTKİ UYARISI: YETERLİ YAPRAK/BİTKİ ALGILANAMADI! Kişisel veri (yüz/nesne) buluta yüklenemez.<br>[EN] ⚠️ GDPR & PLANT WARNING: NO SUFFICIENT LEAF DETECTED! Personal data blocked.";
             return;
         }
 
