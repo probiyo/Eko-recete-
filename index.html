@@ -56,7 +56,7 @@
         .footer { font-size: 9px; color: #aaa; text-align: center; margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px; }
     </style>
 </head>
-<body>
+<body onload="checkOfflineQueue()">
 
 <div class="container">
     <div id="lang-toggle" onclick="toggleLang()">EN / TR</div>
@@ -168,7 +168,7 @@
         if(document.getElementById('res-area').style.display === 'block') processAI(true);
     }
 
-    // pH Anomali Sınır Kontrolü (Data Sanitization)
+    // pH Anomali Sınır Kontrolü
     function validatePH(input) {
         const val = parseFloat(input.value);
         const warn = document.getElementById('ph-warn');
@@ -258,27 +258,62 @@
             document.getElementById('reset-btn').style.display = 'block';
 
             if(SCRIPT_URL) {
-                sendDataWithRetry(base64Img, calculatedStress);
+                sendDataWithOfflineQueue(base64Img, calculatedStress);
             }
         }
         renderResult(chl, calculatedStress);
     }
 
-    async function sendDataWithRetry(imgData, stressScore, retries = 3, delay = 1000) {
+    // Çevrimdışı Kuyruk & Akıllı Senkronizasyon (Offline Queue & Sync)
+    async function sendDataWithOfflineQueue(imgData, stressScore) {
         const syncStatus = document.getElementById('sync-status');
         syncStatus.style.display = 'block';
-        syncStatus.innerText = "📡 Buluta Aktarılıyor... / Syncing with Cloud...";
 
         const payload = {
             ph: document.getElementById('ph').value,
             weather: document.getElementById('weather').value,
             region: document.getElementById('region').value,
             stress: stressScore,
-            notes: "Sanitized pH + Optimized Image + Enterprise Retry",
+            notes: "Sanitized pH + Optimized Image + Offline Resilience Queue",
             image: imgData
         };
 
-        for (let i = 0; i < retries; i++) {
+        try {
+            syncStatus.innerText = "📡 Buluta Aktarılıyor... / Syncing with Cloud...";
+            await fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            syncStatus.style.background = '#e8f5e9';
+            syncStatus.style.color = '#2e7d32';
+            syncStatus.innerText = "✅ Buluta Başarıyla Aktarıldı / Successfully Synced to Cloud";
+        } catch (err) {
+            // Ağ tamamen yoksa veya hata alınırsa LocalStorage'a kaydet (Offline Mode)
+            let queue = JSON.parse(localStorage.getItem('agro_offline_queue') || '[]');
+            queue.push(payload);
+            localStorage.setItem('agro_offline_queue', JSON.stringify(queue));
+
+            syncStatus.style.background = '#fff3e0';
+            syncStatus.style.color = '#e65100';
+            syncStatus.innerText = "⚠️ Çevrimdışı Mod: Veri Yerel Kuyrukta Saklandı (İnternet Gelince Gönderilecek)";
+        }
+    }
+
+    // Sayfa açıldığında veya internet gelince arka plandaki kuyruğu kontrol et
+    async function checkOfflineQueue() {
+        let queue = JSON.parse(localStorage.getItem('agro_offline_queue') || '[]');
+        if (queue.length === 0) return;
+
+        const syncStatus = document.getElementById('sync-status');
+        syncStatus.style.display = 'block';
+        syncStatus.style.background = '#e3f2fd';
+        syncStatus.style.color = '#0d47a1';
+        syncStatus.innerText = `🔄 Çevrimdışı Kuyruktaki ${queue.length} Veri Gönderiliyor...`;
+
+        let remainingQueue = [];
+        for (let payload of queue) {
             try {
                 await fetch(SCRIPT_URL, {
                     method: 'POST',
@@ -286,21 +321,18 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                syncStatus.style.background = '#e8f5e9';
-                syncStatus.style.color = '#2e7d32';
-                syncStatus.innerText = "✅ Buluta Başarıyla Aktarıldı / Successfully Synced to Cloud";
-                return;
-            } catch (err) {
-                if (i < retries - 1) {
-                    syncStatus.innerText = `⚠️ Ağ Kesintisi, Tekrar Deneniyor (${i + 2}/3)...`;
-                    await new Promise(res => setTimeout(res, delay));
-                    delay *= 2;
-                } else {
-                    syncStatus.style.background = '#ffebee';
-                    syncStatus.style.color = '#c62828';
-                    syncStatus.innerText = "⚠️ Çevrimdışı Mod: Veri Yerel Bellekte Saklandı / Offline Mode";
-                }
+            } catch (e) {
+                remainingQueue.push(payload); // Gönderilemeyenleri tekrar kuyrukta tut
             }
+        }
+
+        if (remainingQueue.length === 0) {
+            localStorage.removeItem('agro_offline_queue');
+            syncStatus.style.background = '#e8f5e9';
+            syncStatus.style.color = '#2e7d32';
+            syncStatus.innerText = "✅ Tüm Çevrimdışı Veriler Buluta Senkronize Edildi!";
+        } else {
+            localStorage.setItem('agro_offline_queue', JSON.stringify(remainingQueue));
         }
     }
 
