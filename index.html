@@ -84,7 +84,7 @@
     <div id="lang-toggle" onclick="toggleLang()">EN / TR</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;">Rize Fatih Anatolian High School</span></div>
     <h1>GLOBAL AGRO DOCTOR</h1>
-    <div class="author">Yusuf İhsan HAMAMCI <br><small>Biology Expert & Project Lead</small></div>
+    <div class="author">Hazreti Yusuf İhsan HAMAMCI <br><small>Biology Expert & Project Lead</small></div>
 
     <!-- Navigasyon Sekmeleri -->
     <div class="nav-tabs">
@@ -203,7 +203,7 @@
         </div>
     </div>
 
-    <div class="footer">© 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
+    <div class="footer">© 2026 Hazreti Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
 </div>
 
 <!-- Lightbox (Tam Ekran Büyütme) Modalı -->
@@ -237,11 +237,10 @@
         document.getElementById('upload-txt-sub').innerText = lang === 'TR' ? 'Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları / Group shots with students, lab and field studies' : 'Group shots with students, lab and field studies / Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları';
         document.getElementById('photo-caption').placeholder = lang === 'TR' ? 'Açıklama giriniz...' : 'Enter caption...';
         
-        loadGallery(); // Galeri metnini dil değişimine göre güncellemek için çağrıldı
+        loadGallery();
         if(document.getElementById('res-area').style.display === 'block') processAI(true);
     }
 
-    // Sekme Değiştirme Fonksiyonu
     function switchTab(tabName) {
         const analysisSec = document.getElementById('analysis-section');
         const fieldSec = document.getElementById('field-section');
@@ -258,13 +257,12 @@
             fieldSec.style.display = 'block';
             tabFieldBtn.classList.add('active');
             tabAnalysisBtn.classList.remove('active');
-            if(track) { track.stop(); } // Kamera açıksa saha sekmesinde kapat
+            if(track) { track.stop(); }
             document.getElementById('cam-box').style.display = 'none';
             document.getElementById('form-area').style.display = 'block';
         }
     }
 
-    // Saha Fotoğrafı Yükleme ve Boyutlandırma (Local Storage Tabanlı)
     function handleFileUpload(event) {
         const file = event.target.files[0];
         if(!file) return;
@@ -274,7 +272,7 @@
             const img = new Image();
             img.onload = function() {
                 const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 800; // Kaliteyi biraz artırıp büyütmeye uygun hale getirdik
+                const MAX_WIDTH = 800;
                 let width = img.width;
                 let height = img.height;
                 if (width > MAX_WIDTH) {
@@ -325,7 +323,6 @@
         });
     }
 
-    // Lightbox Açma / Kapatma Fonksiyonları
     function openLightbox(imgSrc, captionText) {
         document.getElementById('lightbox-img').src = imgSrc;
         document.getElementById('lightbox-caption').innerText = captionText;
@@ -343,7 +340,6 @@
         loadGallery();
     }
 
-    // pH Anomali Sınır Kontrolü
     function validatePH(input) {
         const val = parseFloat(input.value);
         const warn = document.getElementById('ph-warn');
@@ -558,11 +554,89 @@
                                `[TR] ${prescTR}<br>` +
                                `[EN] ${prescEN}`;
 
+        out.innerText = lang === 'TR' ? 
+            `[RAPOR ÖZETİ]\nBölge/Ürün: ${region}\nToprak pH: ${ph}\nHava Koşulu: ${weather}\nHesaplanan Stres Seviyesi: ${stressScore}/10\nDurum: Analiz başarıyla tamamlandı ve buluta aktarıldı.` :
+            `[REPORT SUMMARY]\nRegion/Crop: ${region}\nSoil pH: ${ph}\nWeather: ${weather}\nCalculated Stress Level: ${stressScore}/10\nStatus: Analysis successfully completed and synced.`;
+
         updateChart(stressScore);
     }
 
     function updateChart(stressScore) {
-        // Grafik güncelleme mantığı devam ediyor...
+        const ctx = document.getElementById('stressChart').getContext('2d');
+        
+        // 5 Günlük Tahmini Senaryo Verileri Üretme
+        let currentTrend = [
+            Math.min(10, Math.max(1, stressScore)),
+            Math.min(10, Math.max(1, stressScore + (Math.random() > 0.5 ? 1 : 0))),
+            Math.min(10, Math.max(1, stressScore + 1)),
+            Math.min(10, Math.max(1, stressScore + 2)),
+            Math.min(10, Math.max(1, stressScore + 2))
+        ];
+
+        let interventionTrend = [
+            stressScore,
+            Math.max(1, stressScore - 1),
+            Math.max(1, stressScore - 2),
+            Math.max(1, stressScore - 3),
+            Math.max(1, stressScore - 3)
+        ];
+
+        if (myChart) {
+            myChart.destroy();
+        }
+
+        myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['1. Gün / Day 1', '2. Gün / Day 2', '3. Gün / Day 3', '4. Gün / Day 4', '5. Gün / Day 5'],
+                datasets: [
+                    {
+                        label: lang === 'TR' ? 'Mevcut Eğilim (Müdahalesiz)' : 'Current Trend (No Action)',
+                        data: currentTrend,
+                        borderColor: '#d32f2f',
+                        backgroundColor: 'rgba(211, 47, 47, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true
+                    },
+                    {
+                        label: lang === 'TR' ? 'Akıllı Müdahale Sonrası' : 'Smart Intervention',
+                        data: interventionTrend,
+                        borderColor: '#1b5e20',
+                        backgroundColor: 'rgba(27, 94, 32, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 10,
+                        ticks: { stepSize: 2 }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { boxWidth: 12, font: { size: 10 } }
+                    }
+                }
+            }
+        });
+    }
+
+    function resetSystem() {
+        document.getElementById('res-area').style.display = 'none';
+        document.getElementById('form-area').style.display = 'block';
+        document.getElementById('snap-btn').style.display = 'block';
+        document.getElementById('reset-btn').style.display = 'none';
+        document.getElementById('cam-box').style.display = 'none';
+        if(track) track.stop();
     }
 </script>
 </body>
