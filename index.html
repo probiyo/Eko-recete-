@@ -53,7 +53,7 @@
         .gallery-item .del-photo { position: absolute; top: 5px; right: 5px; background: rgba(211,47,47,0.8); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 2; }
         .gallery-caption { font-size: 10px; color: #555; text-align: center; margin-top: 4px; font-weight: bold; }
 
-        /* Lightbox (Tam Ekran Fotoğraf Büyütme) Stilleri */
+        /* Lightbox Stilleri */
         #lightbox-modal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; }
         #lightbox-img { max-width: 90%; max-height: 80vh; border-radius: 12px; border: 2px solid #fff; box-shadow: 0 0 20px rgba(0,0,0,0.5); object-fit: contain; }
         #lightbox-caption { color: white; margin-top: 15px; font-size: 14px; font-weight: bold; text-align: center; }
@@ -69,7 +69,8 @@
         .sync-status { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; padding: 8px; border-radius: 10px; font-size: 11px; font-weight: bold; text-align: center; margin-bottom: 10px; display: none; line-height: 1.4; }
         
         .chart-box { background: #fafafa; padding: 12px; border-radius: 15px; margin-bottom: 12px; border: 1px solid #ddd; }
-        .chart-container { position: relative; width: 100%; height: 220px; }
+        /* Grafiğin yükseklik sorununu çözmek için sabit min-height eklendi */
+        .chart-container { position: relative; width: 100%; min-height: 200px; }
 
         .expert-msg { background: #fff3e0; border-left: 5px solid #ff9800; padding: 10px; font-size: 11px; font-weight: bold; color: #e65100; margin-bottom: 15px; }
         .error-msg { color: var(--danger); font-weight: bold; text-align: center; padding: 20px; border: 2px dashed var(--danger); border-radius: 15px; display: none; margin-top: 10px; font-size: 13px; }
@@ -151,7 +152,6 @@
         <div id="res-area">
             <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;">BRÜSSEL PROJE RAPORU #EU-AGRO</div>
             
-            <!-- Bulut Senkronizasyon Durum Göstergesi -->
             <div id="sync-status" class="sync-status">📡 Bulut Senkronizasyonu Aktif / Cloud Sync Active</div>
 
             <div id="hybrid-output" class="hybrid-note"></div>
@@ -159,7 +159,7 @@
             <div id="green-deal-output" class="green-deal-box"></div>
             <div id="prescription-output" class="prescription-box"></div>
             
-            <!-- Çift Senaryolu Prediktif Stres Simülasyon Grafiği (Chart.js) -->
+            <!-- Çift Senaryolu Prediktif Stres Simülasyon Grafiği -->
             <div class="chart-box">
                 <label style="text-align:center; margin-bottom:8px; font-size: 11px;">📈 Senaryo Bazlı 5 Günlük Stres Trendi<br>Scenario-Based 5-Day Stress Trend</label>
                 <div class="chart-container">
@@ -173,7 +173,6 @@
                 [EN] ⚠️ EXPERT ADVICE: Seek immediate expert support for unresolved issues.
             </div>
             
-            <!-- Canlı Veri Tablosu Bağlantısı -->
             <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/edit?usp=sharing" target="_blank" class="btn-excel">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
             <div class="btn-save" onclick="window.print()">📥 RAPORU YAZDIR / PDF KAYDET</div>
 
@@ -197,16 +196,13 @@
                 <input type="text" id="photo-caption" placeholder="Açıklama giriniz / Enter caption..." style="font-size: 12px; padding: 8px;">
             </div>
 
-            <div id="gallery-container" class="gallery-grid">
-                <!-- Dinamik Fotoğraflar Buraya Eklenecek -->
-            </div>
+            <div id="gallery-container" class="gallery-grid"></div>
         </div>
     </div>
 
     <div class="footer">© 2026 Hazreti Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
 </div>
 
-<!-- Lightbox (Tam Ekran Büyütme) Modalı -->
 <div id="lightbox-modal" onclick="closeLightbox()">
     <button id="lightbox-close" onclick="closeLightbox()">&times;</button>
     <img id="lightbox-img" src="" alt="Zoomed Photo">
@@ -234,7 +230,7 @@
         document.getElementById('tab-analysis-btn').innerText = lang === 'TR' ? '🌱 AGRO ANALİZ / ANALYSIS' : '🌱 AGRO ANALYSIS';
         document.getElementById('tab-field-btn').innerText = lang === 'TR' ? '📸 SAHA ÇALIŞMALARI / FIELD STUDIES' : '📸 FIELD STUDIES';
         document.getElementById('upload-txt-main').innerText = lang === 'TR' ? 'Fotoğraf Seç veya Yükle' : 'Choose or Upload Photo';
-        document.getElementById('upload-txt-sub').innerText = lang === 'TR' ? 'Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları / Group shots with students, lab and field studies' : 'Group shots with students, lab and field studies / Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları';
+        document.getElementById('upload-txt-sub').innerText = lang === 'TR' ? 'Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları' : 'Group shots with students, lab and field studies';
         document.getElementById('photo-caption').placeholder = lang === 'TR' ? 'Açıklama giriniz...' : 'Enter caption...';
         
         loadGallery();
@@ -361,7 +357,7 @@
     async function startSystem() {
         const phVal = parseFloat(document.getElementById('ph').value);
         if(phVal < 3.0 || phVal > 10.0 || isNaN(phVal)) {
-            alert("Lütfen geçerli bir tarımsal pH değeri (3.0 - 10.0) giriniz! / Please enter a valid agricultural pH!");
+            alert("Lütfen geçerli bir tarımsal pH değeri (3.0 - 10.0) giriniz!");
             return;
         }
         document.getElementById('cam-box').style.display = 'block';
@@ -374,7 +370,7 @@
                 const caps = track.getCapabilities();
                 if(caps.torch) await track.applyConstraints({ advanced: [{ torch: true }] });
             }, 500);
-        } catch (e) { alert("Kamera erişim hatası! / Camera Error"); }
+        } catch (e) { alert("Kamera erişim hatası!"); }
     }
 
     function processAI(isLangOnly = false) {
@@ -410,12 +406,12 @@
             }
         }
         
-        if(greenPixelCount < (data.length / 4) * 0.25) {
+        if(greenPixelCount < (data.length / 4) * 0.25 && !isLangOnly) {
             document.getElementById('cam-box').style.display = 'block';
             v.style.display = 'block'; 
             c.style.display = 'none';
             document.getElementById('error-box').style.display = 'block';
-            document.getElementById('error-box').innerHTML = "[TR] ⚠️ GDPR & BİTKİ UYARISI: YETERLİ YAPRAK/BİTKİ ALGILANAMADI! Kişisel veri (yüz/nesne) buluta yüklenemez.<br>[EN] ⚠️ GDPR & PLANT WARNING: NO SUFFICIENT LEAF DETECTED! Personal data blocked.";
+            document.getElementById('error-box').innerHTML = "[TR] ⚠️ HATA: YETERLİ YAPRAK/BİTKİ ALGILANAMADI!<br>[EN] ⚠️ ERROR: NO SUFFICIENT LEAF DETECTED!";
             return;
         }
 
@@ -451,7 +447,7 @@
             weather: document.getElementById('weather').value,
             region: document.getElementById('region').value,
             stress: stressScore,
-            notes: "Sanitized pH + Optimized Image + Offline Resilience Queue",
+            notes: "Sanitized pH + Optimized Image",
             image: imgData
         };
 
@@ -473,7 +469,7 @@
 
             syncStatus.style.background = '#fff3e0';
             syncStatus.style.color = '#e65100';
-            syncStatus.innerText = "⚠️ [TR] Çevrimdışı Mod: Veri Yerel Kuyrukta Saklandı\n⚠️ [EN] Offline Mode: Data Stored in Local Queue";
+            syncStatus.innerText = "⚠️ Çevrimdışı Mod: Veri Yerel Kuyrukta Saklandı";
         }
     }
 
@@ -483,9 +479,6 @@
 
         const syncStatus = document.getElementById('sync-status');
         syncStatus.style.display = 'block';
-        syncStatus.style.background = '#e3f2fd';
-        syncStatus.style.color = '#0d47a1';
-        syncStatus.innerText = `🔄 [TR] Çevrimdışı Kuyruktaki ${queue.length} Veri Gönderiliyor...\n🔄 [EN] Syncing ${queue.length} Offline Items...`;
 
         let remainingQueue = [];
         for (let payload of queue) {
@@ -503,9 +496,7 @@
 
         if (remainingQueue.length === 0) {
             localStorage.removeItem('agro_offline_queue');
-            syncStatus.style.background = '#e8f5e9';
-            syncStatus.style.color = '#2e7d32';
-            syncStatus.innerText = "✅ [TR] Tüm Çevrimdışı Veriler Buluta Senkronize Edildi!\n✅ [EN] All Offline Data Successfully Synced to Cloud!";
+            syncStatus.innerText = "✅ Tüm Çevrimdışı Veriler Senkronize Edildi!";
         } else {
             localStorage.setItem('agro_offline_queue', JSON.stringify(remainingQueue));
         }
@@ -564,10 +555,9 @@
     function updateChart(stressScore) {
         const ctx = document.getElementById('stressChart').getContext('2d');
         
-        // 5 Günlük Tahmini Senaryo Verileri Üretme
         let currentTrend = [
             Math.min(10, Math.max(1, stressScore)),
-            Math.min(10, Math.max(1, stressScore + (Math.random() > 0.5 ? 1 : 0))),
+            Math.min(10, Math.max(1, stressScore + 1)),
             Math.min(10, Math.max(1, stressScore + 1)),
             Math.min(10, Math.max(1, stressScore + 2)),
             Math.min(10, Math.max(1, stressScore + 2))
@@ -588,10 +578,10 @@
         myChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['1. Gün / Day 1', '2. Gün / Day 2', '3. Gün / Day 3', '4. Gün / Day 4', '5. Gün / Day 5'],
+                labels: ['1. Gün', '2. Gün', '3. Gün', '4. Gün', '5. Gün'],
                 datasets: [
                     {
-                        label: lang === 'TR' ? 'Mevcut Eğilim (Müdahalesiz)' : 'Current Trend (No Action)',
+                        label: lang === 'TR' ? 'Mevcut Eğilim' : 'Current Trend',
                         data: currentTrend,
                         borderColor: '#d32f2f',
                         backgroundColor: 'rgba(211, 47, 47, 0.1)',
@@ -600,7 +590,7 @@
                         fill: true
                     },
                     {
-                        label: lang === 'TR' ? 'Akıllı Müdahale Sonrası' : 'Smart Intervention',
+                        label: lang === 'TR' ? 'Akıllı Müdahale' : 'Smart Intervention',
                         data: interventionTrend,
                         borderColor: '#1b5e20',
                         backgroundColor: 'rgba(27, 94, 32, 0.1)',
