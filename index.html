@@ -219,39 +219,39 @@
             <div class="citizen-stats">
                 <div class="stat-card">
                     <div id="stat-total-nodes" class="stat-number">5</div>
-                    <div class="stat-label">Aktif Bölgesel Ağ / Active Nodes</div>
+                    <div class="stat-label" id="stat-lbl-nodes">Aktif Bölgesel Ağ / Active Nodes</div>
                 </div>
                 <div class="stat-card">
                     <div id="stat-total-samples" class="stat-number">142</div>
-                    <div class="stat-label">Toplam Veri / Total Samples</div>
+                    <div class="stat-label" id="stat-lbl-samples">Toplam Veri / Total Samples</div>
                 </div>
             </div>
 
-            <div style="font-size: 11px; font-weight: bold; margin-bottom: 5px; color: var(--primary);">Katılımcı Pilot Bölgeler / Partner Regions:</div>
+            <div id="partner-regions-title" style="font-size: 11px; font-weight: bold; margin-bottom: 5px; color: var(--primary);">Katılımcı Pilot Bölgeler / Partner Regions:</div>
             <div class="network-list">
                 <div class="network-item">
-                    <span>🌱 Rize Fatih Anadolu Lisesi (Çay)</span>
+                    <span id="node-1-txt">🌱 Rize Fatih Anadolu Lisesi (Çay / Tea)</span>
                     <strong style="color: #2e7d32;" id="node-rize">Aktif Hub / Active Hub</strong>
                 </div>
                 <div class="network-item">
-                    <span>🍊 Antakya (Narenciye)</span>
+                    <span id="node-2-txt">🍊 Antakya (Narenciye / Citrus)</span>
                     <strong style="color: #2e7d32;" id="node-antakya">Pilot Bölge / Pilot Region</strong>
                 </div>
                 <div class="network-item">
-                    <span>🫒 Ege Bölgesi (Zeytin & Zeytinyağı)</span>
-                    <strong style="color: #2e7d32;" id="node-ege- olive">Pilot Bölge / Pilot Region</strong>
+                    <span id="node-3-txt">🫒 Ege Bölgesi (Zeytin & Zeytinyağı / Olive & Olive Oil)</span>
+                    <strong style="color: #2e7d32;" id="node-ege-olive">Pilot Bölge / Pilot Region</strong>
                 </div>
                 <div class="network-item">
-                    <span>🌿 Ege Bölgesi (İncir)</span>
+                    <span id="node-4-txt">🌿 Ege Bölgesi (İncir / Fig)</span>
                     <strong style="color: #2e7d32;" id="node-ege-fig">Pilot Bölge / Pilot Region</strong>
                 </div>
                 <div class="network-item">
-                    <span>🇪🇺 Brüksel EU Okul Ağı (Pilot)</span>
+                    <span id="node-5-txt">🇪🇺 Brüksel EU Okul Ağı (Şeker Pancarı / Sugar Beet)</span>
                     <strong style="color: #2e7d32;" id="node-brussels">Pilot Bölge / Pilot Region</strong>
                 </div>
             </div>
 
-            <button class="btn-main" style="margin-top: 15px; font-size: 13px; padding: 12px;" onclick="alert(lang === 'TR' ? 'Uluslararası Açık Kaynak Veri Havuzu senkronizasyonu güncellendi!' : 'International Open Source Data Hub synchronization updated!')">🔄 AĞI SENKRONİZE ET / SYNC NETWORK</button>
+            <button id="sync-net-btn" class="btn-main" style="margin-top: 15px; font-size: 13px; padding: 12px;" onclick="alert(lang === 'TR' ? 'Uluslararası Açık Kaynak Veri Havuzu senkronizasyonu güncellendi!' : 'International Open Source Data Hub synchronization updated!')">🔄 AĞI SENKRONİZE ET / SYNC NETWORK</button>
         </div>
     </div>
 
@@ -296,12 +296,27 @@
         document.getElementById('upload-txt-sub').innerText = lang === 'TR' ? 'Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları / Group shots with students, lab and field studies' : 'Group shots with students, lab and field studies / Öğrencilerle toplu kareler';
         document.getElementById('photo-caption').placeholder = lang === 'TR' ? 'Açıklama giriniz / Enter caption...' : 'Enter caption / Açıklama giriniz...';
         
-        // Citizen Science Node labels update
-        document.getElementById('node-rize').innerText = lang === 'TR' ? 'Aktif Hub / Active Hub' : 'Active Hub / Aktif Hub';
-        document.getElementById('node-antakya').innerText = lang === 'TR' ? 'Pilot Bölge / Pilot Region' : 'Pilot Region / Pilot Bölge';
-        document.getElementById('node-ege- olive').innerText = lang === 'TR' ? 'Pilot Bölge / Pilot Region' : 'Pilot Region / Pilot Bölge';
-        document.getElementById('node-ege-fig').innerText = lang === 'TR' ? 'Pilot Bölge / Pilot Region' : 'Pilot Region / Pilot Bölge';
-        document.getElementById('node-brussels').innerText = lang === 'TR' ? 'Pilot Bölge / Pilot Region' : 'Pilot Region / Pilot Bölge';
+        // Citizen Science Metinleri ve Çift Dilli Düğümler
+        document.getElementById('stat-lbl-nodes').innerText = lang === 'TR' ? 'Aktif Bölgesel Ağ / Active Nodes' : 'Active Nodes / Aktif Bölgesel Ağ';
+        document.getElementById('stat-lbl-samples').innerText = lang === 'TR' ? 'Toplam Veri / Total Samples' : 'Total Samples / Toplam Veri';
+        document.getElementById('partner-regions-title').innerText = lang === 'TR' ? 'Katılımcı Pilot Bölgeler / Partner Regions:' : 'Partner Regions / Katılımcı Pilot Bölgeler:';
+
+        document.getElementById('node-1-txt').innerText = lang === 'TR' ? '🌱 Rize Fatih Anadolu Lisesi (Çay / Tea)' : '🌱 Rize Fatih Anatolian High School (Tea / Çay)';
+        document.getElementById('node-2-txt').innerText = lang === 'TR' ? '🍊 Antakya (Narenciye / Citrus)' : '🍊 Antakya (Citrus / Narenciye)';
+        document.getElementById('node-3-txt').innerText = lang === 'TR' ? '🫒 Ege Bölgesi (Zeytin & Zeytinyağı / Olive & Olive Oil)' : '🫒 Aegean Region (Olive & Olive Oil / Zeytin & Zeytinyağı)';
+        document.getElementById('node-4-txt').innerText = lang === 'TR' ? '🌿 Ege Bölgesi (İncir / Fig)' : '🌿 Aegean Region (Fig / İncir)';
+        document.getElementById('node-5-txt').innerText = lang === 'TR' ? '🇪🇺 Brüksel EU Okul Ağı (Şeker Pancarı / Sugar Beet)' : '🇪🇺 Brussels EU School Network (Sugar Beet / Şeker Pancarı)';
+
+        const activeHubText = lang === 'TR' ? 'Aktif Hub / Active Hub' : 'Active Hub / Aktif Hub';
+        const pilotRegText = lang === 'TR' ? 'Pilot Bölge / Pilot Region' : 'Pilot Region / Pilot Bölge';
+
+        document.getElementById('node-rize').innerText = activeHubText;
+        document.getElementById('node-antakya').innerText = pilotRegText;
+        document.getElementById('node-ege-olive').innerText = pilotRegText;
+        document.getElementById('node-ege-fig').innerText = pilotRegText;
+        document.getElementById('node-brussels').innerText = pilotRegText;
+
+        document.getElementById('sync-net-btn').innerText = lang === 'TR' ? '🔄 AĞI SENKRONİZE ET / SYNC NETWORK' : '🔄 SYNC NETWORK / AĞI SENKRONİZE ET';
     }
 
     function switchTab(tabName) {
