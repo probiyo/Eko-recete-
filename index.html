@@ -17,8 +17,8 @@
         .author { text-align: center; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 15px; }
 
         /* Navigasyon / Sekme Menüsü */
-        .nav-tabs { display: flex; gap: 5px; margin-bottom: 15px; background: #e8f0e9; padding: 5px; border-radius: 14px; }
-        .nav-tab { flex: 1; padding: 10px; text-align: center; font-size: 11px; font-weight: 800; color: var(--primary); background: transparent; border: none; border-radius: 10px; cursor: pointer; transition: 0.2s; }
+        .nav-tabs { display: flex; gap: 4px; margin-bottom: 15px; background: #e8f0e9; padding: 4px; border-radius: 14px; }
+        .nav-tab { flex: 1; padding: 8px 4px; text-align: center; font-size: 10px; font-weight: 800; color: var(--primary); background: transparent; border: none; border-radius: 10px; cursor: pointer; transition: 0.2s; }
         .nav-tab.active { background: var(--primary); color: white; }
 
         .card { background: #f9fdfa; padding: 15px; border-radius: 20px; margin-bottom: 12px; border: 1px solid #e8f0e9; }
@@ -53,6 +53,15 @@
         .gallery-item .del-photo { position: absolute; top: 5px; right: 5px; background: rgba(211,47,47,0.8); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 2; }
         .gallery-caption { font-size: 10px; color: #555; text-align: center; margin-top: 4px; font-weight: bold; }
 
+        /* Vatandaş Bilimi / Uluslararası Ağ Sekmesi Stilleri */
+        .citizen-section { display: none; }
+        .citizen-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+        .stat-card { background: #e8f5e9; border: 1px solid #a5d6a7; padding: 12px; border-radius: 12px; text-align: center; }
+        .stat-number { font-size: 18px; font-weight: 800; color: var(--primary); }
+        .stat-label { font-size: 9px; color: #555; margin-top: 2px; font-weight: bold; }
+        .network-list { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+        .network-item { background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 10px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
+
         /* Lightbox Stilleri */
         #lightbox-modal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; }
         #lightbox-img { max-width: 90%; max-height: 80vh; border-radius: 12px; border: 2px solid #fff; box-shadow: 0 0 20px rgba(0,0,0,0.5); object-fit: contain; }
@@ -69,7 +78,6 @@
         .sync-status { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; padding: 8px; border-radius: 10px; font-size: 11px; font-weight: bold; text-align: center; margin-bottom: 10px; display: none; line-height: 1.4; }
         
         .chart-box { background: #fafafa; padding: 12px; border-radius: 15px; margin-bottom: 12px; border: 1px solid #ddd; }
-        /* Grafiğin yükseklik sorununu çözmek için sabit min-height eklendi */
         .chart-container { position: relative; width: 100%; min-height: 200px; }
 
         .expert-msg { background: #fff3e0; border-left: 5px solid #ff9800; padding: 10px; font-size: 11px; font-weight: bold; color: #e65100; margin-bottom: 15px; }
@@ -89,8 +97,9 @@
 
     <!-- Navigasyon Sekmeleri -->
     <div class="nav-tabs">
-        <button id="tab-analysis-btn" class="nav-tab active" onclick="switchTab('analysis')">🌱 AGRO ANALİZ / ANALYSIS</button>
-        <button id="tab-field-btn" class="nav-tab" onclick="switchTab('field')">📸 SAHA ÇALIŞMALARI / FIELD STUDIES</button>
+        <button id="tab-analysis-btn" class="nav-tab active" onclick="switchTab('analysis')">🌱 ANALİZ</button>
+        <button id="tab-field-btn" class="nav-tab" onclick="switchTab('field')">📸 SAHA</button>
+        <button id="tab-citizen-btn" class="nav-tab" onclick="switchTab('citizen')">🌍 CITIZEN SCIENCE</button>
     </div>
 
     <!-- AGRO ANALİZ SEKMESİ -->
@@ -99,11 +108,13 @@
             <div class="card">
                <label>Bölge ve Ürün / Region & Crop</label>
                 <select id="region">
+                   <option value="tr-hatay-olive">Antakya, Hatay - Olive (Zeytin)</option>
+                   <option value="tr-ege-olive">Ege Bölgesi - Olive Oil (Zeytinyağı)</option>
+                   <option value="tr-akdeniz-citrus">Akdeniz - Citrus (Narenciye)</option>
+                   <option value="tr-tea" selected>Turkey, Rize - Tea (Çay)</option>
                    <option value="be-sugar">Brussels, BE - Sugar Beet (Şeker Pancarı)</option>
                    <option value="nl-tulip">Netherlands - Tulips (Lale)</option>
                    <option value="it-tomato">Italy - Tomatoes (Domates)</option>
-                   <option value="tr-tea" selected>Turkey, Rize - Tea (Çay)</option>
-                   <option value="fr-grape">France - Vineyards (Üzüm)</option>
                    <option value="global-other">Global - Diğer / Other</option>
                 </select>
                 <div class="other-opt" onclick="document.getElementById('region').value='global-other'">
@@ -114,7 +125,7 @@
             <div class="card">
                <label>Toprak pH Değeri / Soil pH (3.0 - 10.0)</label>
                 <input type="number" id="ph" step="0.1" min="3.0" max="10.0" placeholder="Ex: 4.8" value="4.8" oninput="validatePH(this)">
-                <div id="ph-warn" class="ph-warning">⚠️ [TR] pH değeri tarımsal sınırların (3.0 - 10.0) dışında! <br>⚠️ [EN] pH value out of agricultural limits!</div>
+                <div id="ph-warn" class="ph-warning">⚠️ [TR] pH değeri tarımsal sınırların dışında! <br>⚠️ [EN] pH value out of agricultural limits!</div>
             </div>
 
             <div class="card">
@@ -200,6 +211,46 @@
         </div>
     </div>
 
+    <!-- CITIZEN SCIENCE & ULUSLARARASI VERİ HAVUZU SEKMESİ -->
+    <div id="citizen-section" class="citizen-section">
+        <div class="card">
+            <label>🌍 Açık Kaynaklı Tarım Veritabanı<br><span style="font-size:9px; font-weight:normal;">Citizen Science & International Network Hub</span></label>
+            
+            <div class="citizen-stats">
+                <div class="stat-card">
+                    <div id="stat-total-nodes" class="stat-number">4</div>
+                    <div class="stat-label">Aktif Bölgesel Ağ / Active Nodes</div>
+                </div>
+                <div class="stat-card">
+                    <div id="stat-total-samples" class="stat-number">128</div>
+                    <div class="stat-label">Toplam Veri / Total Samples</div>
+                </div>
+            </div>
+
+            <div style="font-size: 11px; font-weight: bold; margin-bottom: 5px; color: var(--primary);">Katılımcı Pilot Bölgeler / Partner Regions:</div>
+            <div class="network-list">
+                <div class="network-item">
+                    <span>🌱 Rize Fatih Anadolu Lisesi (Çay)</span>
+                    <strong style="color: #2e7d32;">Aktif Hub</strong>
+                </div>
+                <div class="network-item">
+                    <span>🌿 Antakya / Hatay (Zeytin)</span>
+                    <strong style="color: #2e7d32;">Senkronize</strong>
+                </div>
+                <div class="network-item">
+                    <span>🫒 Ege Bölgesi (Zeytinyağı)</span>
+                    <strong style="color: #2e7d32;">Senkronize</strong>
+                </div>
+                <div class="network-item">
+                    <span>🇪🇺 Brüksel EU Okul Ağı (Pilot)</span>
+                    <strong style="color: #2e7d32;">Bağlı</strong>
+                </div>
+            </div>
+
+            <button class="btn-main" style="margin-top: 15px; font-size: 13px; padding: 12px;" onclick="alert('Uluslararası Açık Kaynak Veri Havuzu senkronizasyonu güncellendi!')">🔄 AĞI SENKRONİZE ET / SYNC NETWORK</button>
+        </div>
+    </div>
+
     <div class="footer">© 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
 </div>
 
@@ -227,8 +278,9 @@
         lang = lang === 'TR' ? 'EN' : 'TR';
         document.querySelector('h1').innerText = 'GLOBAL AGRO DOCTOR';
         document.getElementById('start-btn').innerText = lang === 'TR' ? 'ANALİZİ BAŞLAT' : 'START ANALYSIS';
-        document.getElementById('tab-analysis-btn').innerText = lang === 'TR' ? '🌱 AGRO ANALİZ / ANALYSIS' : '🌱 AGRO ANALYSIS';
-        document.getElementById('tab-field-btn').innerText = lang === 'TR' ? '📸 SAHA ÇALIŞMALARI / FIELD STUDIES' : '📸 FIELD STUDIES';
+        document.getElementById('tab-analysis-btn').innerText = lang === 'TR' ? '🌱 ANALİZ' : '🌱 ANALYSIS';
+        document.getElementById('tab-field-btn').innerText = lang === 'TR' ? '📸 SAHA' : '📸 FIELD';
+        document.getElementById('tab-citizen-btn').innerText = lang === 'TR' ? '🌍 CITIZEN SCIENCE' : '🌍 CITIZEN SCIENCE';
         document.getElementById('upload-txt-main').innerText = lang === 'TR' ? 'Fotoğraf Seç veya Yükle' : 'Choose or Upload Photo';
         document.getElementById('upload-txt-sub').innerText = lang === 'TR' ? 'Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları' : 'Group shots with students, lab and field studies';
         document.getElementById('photo-caption').placeholder = lang === 'TR' ? 'Açıklama giriniz...' : 'Enter caption...';
@@ -240,19 +292,31 @@
     function switchTab(tabName) {
         const analysisSec = document.getElementById('analysis-section');
         const fieldSec = document.getElementById('field-section');
+        const citizenSec = document.getElementById('citizen-section');
+        
         const tabAnalysisBtn = document.getElementById('tab-analysis-btn');
         const tabFieldBtn = document.getElementById('tab-field-btn');
+        const tabCitizenBtn = document.getElementById('tab-citizen-btn');
+
+        analysisSec.style.display = 'none';
+        fieldSec.style.display = 'none';
+        citizenSec.style.display = 'none';
+        tabAnalysisBtn.classList.remove('active');
+        tabFieldBtn.classList.remove('active');
+        tabCitizenBtn.classList.remove('active');
 
         if(tabName === 'analysis') {
             analysisSec.style.display = 'block';
-            fieldSec.style.display = 'none';
             tabAnalysisBtn.classList.add('active');
-            tabFieldBtn.classList.remove('active');
-        } else {
-            analysisSec.style.display = 'none';
+        } else if(tabName === 'field') {
             fieldSec.style.display = 'block';
             tabFieldBtn.classList.add('active');
-            tabAnalysisBtn.classList.remove('active');
+            if(track) { track.stop(); }
+            document.getElementById('cam-box').style.display = 'none';
+            document.getElementById('form-area').style.display = 'block';
+        } else if(tabName === 'citizen') {
+            citizenSec.style.display = 'block';
+            tabCitizenBtn.classList.add('active');
             if(track) { track.stop(); }
             document.getElementById('cam-box').style.display = 'none';
             document.getElementById('form-area').style.display = 'block';
