@@ -97,8 +97,8 @@
 
     <!-- Navigasyon Sekmeleri -->
     <div class="nav-tabs">
-        <button id="tab-analysis-btn" class="nav-tab active" onclick="switchTab('analysis')">🌱 ANALİZ</button>
-        <button id="tab-field-btn" class="nav-tab" onclick="switchTab('field')">📸 SAHA</button>
+        <button id="tab-analysis-btn" class="nav-tab active" onclick="switchTab('analysis')">🌱 ANALİZ / ANALYSIS</button>
+        <button id="tab-field-btn" class="nav-tab" onclick="switchTab('field')">📸 SAHA / FIELD</button>
         <button id="tab-citizen-btn" class="nav-tab" onclick="switchTab('citizen')">🌍 CITIZEN SCIENCE</button>
     </div>
 
@@ -140,7 +140,7 @@
                 </select>
             </div>
 
-            <button id="start-btn" class="btn-main" onclick="startSystem()">ANALİZİ BAŞLAT / START ANALYZE</button>
+            <button id="start-btn" class="btn-main" onclick="startSystem()">ANALİZİ BAŞLAT / START ANALYSIS</button>
         </div>
 
         <div id="cam-box">
@@ -161,7 +161,7 @@
         </div>
 
         <div id="res-area">
-            <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;">BRÜSSEL PROJE RAPORU #EU-AGRO</div>
+            <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;">BRÜSSEL PROJE RAPORU / BRUSSELS PROJECT REPORT #EU-AGRO</div>
             
             <div id="sync-status" class="sync-status">📡 Bulut Senkronizasyonu Aktif / Cloud Sync Active</div>
 
@@ -185,9 +185,9 @@
             </div>
             
             <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/edit?usp=sharing" target="_blank" class="btn-excel">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
-            <div class="btn-save" onclick="window.print()">📥 RAPORU YAZDIR / PDF KAYDET</div>
+            <div class="btn-save" onclick="window.print()">📥 RAPORU YAZDIR / SAVE PDF</div>
 
-            <button id="reset-btn" class="btn-reset" onclick="resetSystem()">YENİ ANALİZ / NEW ANALYZE</button>
+            <button id="reset-btn" class="btn-reset" onclick="resetSystem()">YENİ ANALİZ / NEW ANALYSIS</button>
         </div>
     </div>
 
@@ -198,7 +198,7 @@
             
             <div class="upload-zone" onclick="document.getElementById('file-input').click()">
                 <div style="font-size: 24px; margin-bottom: 5px;">📁</div>
-                <div id="upload-txt-main" style="font-size: 12px; font-weight: bold; color: var(--primary);">Fotoğraf Seç veya Yükle / Choose Photo</div>
+                <div id="upload-txt-main" style="font-size: 12px; font-weight: bold; color: var(--primary);">Fotoğraf Seç veya Yükle / Choose or Upload Photo</div>
                 <div id="upload-txt-sub" style="font-size: 9px; color: #666; margin-top: 3px;">Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları / Group shots with students, lab and field studies</div>
             </div>
             <input type="file" id="file-input" accept="image/*" style="display:none" onchange="handleFileUpload(event)">
@@ -231,27 +231,27 @@
             <div class="network-list">
                 <div class="network-item">
                     <span>🌱 Rize Fatih Anadolu Lisesi (Çay)</span>
-                    <strong style="color: #2e7d32;">Aktif Hub</strong>
+                    <strong style="color: #2e7d32;" id="node-rize">Aktif Hub / Active Hub</strong>
                 </div>
                 <div class="network-item">
                     <span>🍊 Antakya (Narenciye)</span>
-                    <strong style="color: #2e7d32;">Senkronize</strong>
+                    <strong style="color: #2e7d32;" id="node-antakya">Pilot Bölge / Pilot Region</strong>
                 </div>
                 <div class="network-item">
                     <span>🫒 Ege Bölgesi (Zeytin & Zeytinyağı)</span>
-                    <strong style="color: #2e7d32;">Senkronize</strong>
+                    <strong style="color: #2e7d32;" id="node-ege- olive">Pilot Bölge / Pilot Region</strong>
                 </div>
                 <div class="network-item">
                     <span>🌿 Ege Bölgesi (İncir)</span>
-                    <strong style="color: #2e7d32;">Senkronize</strong>
+                    <strong style="color: #2e7d32;" id="node-ege-fig">Pilot Bölge / Pilot Region</strong>
                 </div>
                 <div class="network-item">
                     <span>🇪🇺 Brüksel EU Okul Ağı (Pilot)</span>
-                    <strong style="color: #2e7d32;">Bağlı</strong>
+                    <strong style="color: #2e7d32;" id="node-brussels">Pilot Bölge / Pilot Region</strong>
                 </div>
             </div>
 
-            <button class="btn-main" style="margin-top: 15px; font-size: 13px; padding: 12px;" onclick="alert('Uluslararası Açık Kaynak Veri Havuzu senkronizasyonu güncellendi!')">🔄 AĞI SENKRONİZE ET / SYNC NETWORK</button>
+            <button class="btn-main" style="margin-top: 15px; font-size: 13px; padding: 12px;" onclick="alert(lang === 'TR' ? 'Uluslararası Açık Kaynak Veri Havuzu senkronizasyonu güncellendi!' : 'International Open Source Data Hub synchronization updated!')">🔄 AĞI SENKRONİZE ET / SYNC NETWORK</button>
         </div>
     </div>
 
@@ -276,21 +276,32 @@
     function initApp() {
         checkOfflineQueue();
         loadGallery();
+        updateUIText();
     }
 
     function toggleLang() {
         lang = lang === 'TR' ? 'EN' : 'TR';
-        document.querySelector('h1').innerText = 'GLOBAL AGRO DOCTOR';
-        document.getElementById('start-btn').innerText = lang === 'TR' ? 'ANALİZİ BAŞLAT' : 'START ANALYSIS';
-        document.getElementById('tab-analysis-btn').innerText = lang === 'TR' ? '🌱 ANALİZ' : '🌱 ANALYSIS';
-        document.getElementById('tab-field-btn').innerText = lang === 'TR' ? '📸 SAHA' : '📸 FIELD';
-        document.getElementById('tab-citizen-btn').innerText = lang === 'TR' ? '🌍 CITIZEN SCIENCE' : '🌍 CITIZEN SCIENCE';
-        document.getElementById('upload-txt-main').innerText = lang === 'TR' ? 'Fotoğraf Seç veya Yükle' : 'Choose or Upload Photo';
-        document.getElementById('upload-txt-sub').innerText = lang === 'TR' ? 'Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları' : 'Group shots with students, lab and field studies';
-        document.getElementById('photo-caption').placeholder = lang === 'TR' ? 'Açıklama giriniz...' : 'Enter caption...';
-        
+        updateUIText();
         loadGallery();
         if(document.getElementById('res-area').style.display === 'block') processAI(true);
+    }
+
+    function updateUIText() {
+        document.querySelector('h1').innerText = 'GLOBAL AGRO DOCTOR';
+        document.getElementById('start-btn').innerText = lang === 'TR' ? 'ANALİZİ BAŞLAT / START ANALYSIS' : 'START ANALYSIS / ANALİZİ BAŞLAT';
+        document.getElementById('tab-analysis-btn').innerText = lang === 'TR' ? '🌱 ANALİZ / ANALYSIS' : '🌱 ANALYSIS / ANALİZ';
+        document.getElementById('tab-field-btn').innerText = lang === 'TR' ? '📸 SAHA / FIELD' : '📸 FIELD / SAHA';
+        document.getElementById('tab-citizen-btn').innerText = lang === 'TR' ? '🌍 CITIZEN SCIENCE' : '🌍 CITIZEN SCIENCE';
+        document.getElementById('upload-txt-main').innerText = lang === 'TR' ? 'Fotoğraf Seç veya Yükle / Choose or Upload Photo' : 'Choose or Upload Photo / Fotoğraf Seç veya Yükle';
+        document.getElementById('upload-txt-sub').innerText = lang === 'TR' ? 'Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları / Group shots with students, lab and field studies' : 'Group shots with students, lab and field studies / Öğrencilerle toplu kareler';
+        document.getElementById('photo-caption').placeholder = lang === 'TR' ? 'Açıklama giriniz / Enter caption...' : 'Enter caption / Açıklama giriniz...';
+        
+        // Citizen Science Node labels update
+        document.getElementById('node-rize').innerText = lang === 'TR' ? 'Aktif Hub / Active Hub' : 'Active Hub / Aktif Hub';
+        document.getElementById('node-antakya').innerText = lang === 'TR' ? 'Pilot Bölge / Pilot Region' : 'Pilot Region / Pilot Bölge';
+        document.getElementById('node-ege- olive').innerText = lang === 'TR' ? 'Pilot Bölge / Pilot Region' : 'Pilot Region / Pilot Bölge';
+        document.getElementById('node-ege-fig').innerText = lang === 'TR' ? 'Pilot Bölge / Pilot Region' : 'Pilot Region / Pilot Bölge';
+        document.getElementById('node-brussels').innerText = lang === 'TR' ? 'Pilot Bölge / Pilot Region' : 'Pilot Region / Pilot Bölge';
     }
 
     function switchTab(tabName) {
@@ -349,7 +360,7 @@
                 ctx.drawImage(img, 0, 0, width, height);
                 const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
 
-                let caption = document.getElementById('photo-caption').value || (lang === 'TR' ? 'Saha Çalışması' : 'Field Study');
+                let caption = document.getElementById('photo-caption').value || (lang === 'TR' ? 'Saha Çalışması / Field Study' : 'Field Study / Saha Çalışması');
                 
                 let gallery = JSON.parse(localStorage.getItem('agro_field_gallery') || '[]');
                 gallery.unshift({ img: compressedDataUrl, caption: caption, date: new Date().toLocaleDateString() });
@@ -369,7 +380,7 @@
         let gallery = JSON.parse(localStorage.getItem('agro_field_gallery') || '[]');
         
         if(gallery.length === 0) {
-            container.innerHTML = `<div style="grid-column: span 2; text-align: center; font-size: 11px; color: #888; padding: 20px;">${lang === 'TR' ? 'Henüz saha fotoğrafı eklenmedi.' : 'No field photos added yet.'}</div>`;
+            container.innerHTML = `<div style="grid-column: span 2; text-align: center; font-size: 11px; color: #888; padding: 20px;">${lang === 'TR' ? 'Henüz saha fotoğrafı eklenmedi. / No field photos added yet.' : 'No field photos added yet. / Henüz saha fotoğrafı eklenmedi.'}</div>`;
             return;
         }
 
@@ -425,7 +436,7 @@
     async function startSystem() {
         const phVal = parseFloat(document.getElementById('ph').value);
         if(phVal < 3.0 || phVal > 10.0 || isNaN(phVal)) {
-            alert("Lütfen geçerli bir tarımsal pH değeri (3.0 - 10.0) giriniz!");
+            alert(lang === 'TR' ? 'Lütfen geçerli bir tarımsal pH değeri (3.0 - 10.0) giriniz!' : 'Please enter a valid agricultural pH value (3.0 - 10.0)!');
             return;
         }
         document.getElementById('cam-box').style.display = 'block';
@@ -438,7 +449,7 @@
                 const caps = track.getCapabilities();
                 if(caps.torch) await track.applyConstraints({ advanced: [{ torch: true }] });
             }, 500);
-        } catch (e) { alert("Kamera erişim hatası!"); }
+        } catch (e) { alert(lang === 'TR' ? 'Kamera erişim hatası! / Camera access error!' : 'Camera access error! / Kamera erişim hatası!'); }
     }
 
     function processAI(isLangOnly = false) {
@@ -537,7 +548,7 @@
 
             syncStatus.style.background = '#fff3e0';
             syncStatus.style.color = '#e65100';
-            syncStatus.innerText = "⚠️ Çevrimdışı Mod: Veri Yerel Kuyrukta Saklandı";
+            syncStatus.innerText = "⚠️ Çevrimdışı Mod: Veri Yerel Kuyrukta Saklandı / Offline Mode: Data Stored in Local Queue";
         }
     }
 
@@ -564,7 +575,7 @@
 
         if (remainingQueue.length === 0) {
             localStorage.removeItem('agro_offline_queue');
-            syncStatus.innerText = "✅ Tüm Çevrimdışı Veriler Senkronize Edildi!";
+            syncStatus.innerText = "✅ Tüm Çevrimdışı Veriler Senkronize Edildi! / All Offline Data Synced!";
         } else {
             localStorage.setItem('agro_offline_queue', JSON.stringify(remainingQueue));
         }
@@ -573,98 +584,96 @@
     function renderResult(chl, stressScore) {
         const ph = parseFloat(document.getElementById('ph').value);
         const weather = document.getElementById('weather').value;
-        const region = document.getElementById('region').value;
-        const hybrid = document.getElementById('hybrid-output');
-        const calib = document.getElementById('calibration-output');
-        const greenDeal = document.getElementById('green-deal-output');
-        const prescription = document.getElementById('prescription-output');
-        const out = document.getElementById('res-output');
+        const regionSelect = document.getElementById('region');
+        const regionText = regionSelect.options[regionSelect.selectedIndex].text;
+        
         document.getElementById('res-area').style.display = 'block';
 
-        let chlTR = chl > 1.4 ? "Optimal (Yeterli Klorofil)" : "Düşük (Azot Eksikliği Riski)";
-        let chlEN = chl > 1.4 ? "Optimal (Sufficient Chlorophyll)" : "Low (Nitrogen Deficiency Risk)";
-        
-        hybrid.innerHTML = `🌿 [TR] KLOROFİL: ${chlTR} | STRES: ${stressScore}/10<br>🌿 [EN] CHLOROPHYLL: ${chlEN} | STRESS: ${stressScore}/10`;
+        // Çift dilli kutu içerikleri
+        document.getElementById('hybrid-output').innerHTML = lang === 'TR' ? 
+            `🇪🇺 AB Yeşil Mutabakat Uyum Skoru: %${Math.max(40, 100 - (stressScore * 6))} <br><span style="font-size:9px; font-weight:normal;">EU Green Deal Compliance Score</span>` : 
+            `🇪🇺 EU Green Deal Compliance Score: %${Math.max(40, 100 - (stressScore * 6))} <br><span style="font-size:9px; font-weight:normal;">AB Yeşil Mutabakat Uyum Skoru</span>`;
 
-        calib.innerHTML = `🔬 SPEKTROSKOPİK KALİBRASYON / SPECTROSCOPIC VALIDATION:<br>` +
-                          `[TR] Validasyon: Campbell Biology & Fizyoloji Modeli (Sapma Payı: %±2.4)<br>` +
-                          `[EN] Validation: Campbell Biology & Physiology Model (Margin: %±2.4)`;
+        document.getElementById('calibration-output').innerHTML = lang === 'TR' ?
+            `🔬 Spektral Klorofil İndeksi (Chl): ${chl.toFixed(2)} (Eşik: >1.50) <br><span style="font-size:9px; font-weight:normal;">Spectral Chlorophyll Index</span>` :
+            `🔬 Spectral Chlorophyll Index (Chl): ${chl.toFixed(2)} (Threshold: >1.50) <br><span style="font-size:9px; font-weight:normal;">Spektral Klorofil İndeksi</span>`;
 
-        let fertilizerSaving = Math.max(5, Math.round((11 - stressScore) * 1.8));
-        let carbonReduction = (fertilizerSaving * 2.4).toFixed(1);
-        
-        greenDeal.innerHTML = `🇪🇺 EU GREEN DEAL IMPACT:<br>` +
-                            `[TR] Gübre Tasarrufu: %${fertilizerSaving} | Karbon Azaltımı: ${carbonReduction} kg CO₂e/da<br>` +
-                            `[EN] Fertilizer Saving: %${fertilizerSaving} | Carbon Reduction: ${carbonReduction} kg CO₂e/da`;
+        document.getElementById('green-deal-output').innerHTML = lang === 'TR' ?
+            `🌱 Karbon Ayak İzi Azaltım Önerisi: Organik gübreleme ile dönüm başına -12kg CO2 <br><span style="font-size:9px; font-weight:normal;">Carbon Footprint Reduction Recommendation</span>` :
+            `🌱 Carbon Footprint Reduction Recommendation: -12kg CO2 per decare with organic fertilization <br><span style="font-size:9px; font-weight:normal;">Karbon Ayak İzi Azaltım Önerisi</span>`;
 
-        let prescTR = "", prescEN = "";
-        if(ph < 5.0) {
-            prescTR = "Akıllı Reçete: Asitliği dengelemek için 120 kg/da Toz Tarım Kireci (CaCO3).";
-            prescEN = "Smart Prescription: 120 kg/da Agricultural Lime (CaCO3) to buffer acidity.";
-        } else if(ph > 7.5) {
-            prescTR = "Akıllı Reçete: Alkali baskıyı kırmak için 40 kg/da Elemental Kükürt ve yapraktan Şelatlı Demir (Fe) uygulaması yapın.";
-            prescEN = "Smart Prescription: Apply 40 kg/da Elemental Sulfur and foliar Chelated Iron (Fe) to break alkalinity lock.";
-        } else {
-            prescTR = "Akıllı Reçete: Toprak dengesi ideal. Yeraltı su kirliliğini önlemek adına standart dozajın %15 altında taban gübresi uygulayın.";
-            prescEN = "Smart Prescription: Soil balance optimal. Apply base fertilizer 15% below standard dose.";
-        }
+        document.getElementById('prescription-output').innerHTML = lang === 'TR' ?
+            `💊 Akıllı Reçete: pH düzeltmesi için jips/kireç uygulaması önerilir. Stres Seviyesi: ${stressScore}/10 <br><span style="font-size:9px; font-weight:normal;">Smart Prescription: Gypsum/Lime application recommended</span>` :
+            `💊 Smart Prescription: Gypsum/Lime application recommended for pH adjustment. Stress Level: ${stressScore}/10 <br><span style="font-size:9px; font-weight:normal;">Akıllı Reçete</span>`;
 
-        prescription.innerHTML = `🌱 AKILLI GÜBRELEME & ÇEVRE REÇETESİ / SMART FERTILIZER & ECO PRESCRIPTION:<br>` +
-                               `[TR] ${prescTR}<br>` +
-                               `[EN] ${prescEN}`;
+        let reportText = lang === 'TR' ? 
+            `--- BRÜSSEL PROJE RAPORU ---\n` +
+            `Kurum: Rize Fatih Anadolu Lisesi\n` +
+            `Lider: Yusuf İhsan HAMAMCI\n` +
+            `Bölge/Ürün: ${regionText}\n` +
+            `Toprak pH: ${ph}\n` +
+            `Hava Durumu: ${weather}\n` +
+            `Algılanan Stres Skoru: ${stressScore} / 10\n` +
+            `Durum: ${stressScore > 6 ? 'KRİTİK MÜDAHALE GEREKLİ' : (stressScore > 3 ? 'ORTA DÜZEYDE TAKİP' : 'SAĞLIKLI GELİŞİM')}\n` +
+            `Tarih: ${new Date().toLocaleString()}`
+            :
+            `--- BRUSSELS PROJECT REPORT ---\n` +
+            `Institution: Rize Fatih Anatolian High School\n` +
+            `Lead: Yusuf İhsan HAMAMCI\n` +
+            `Region/Crop: ${regionText}\n` +
+            `Soil pH: ${ph}\n` +
+            `Weather: ${weather}\n` +
+            `Detected Stress Score: ${stressScore} / 10\n` +
+            `Status: ${stressScore > 6 ? 'CRITICAL INTERVENTION NEEDED' : (stressScore > 3 ? 'MODERATE MONITORING' : 'HEALTHY GROWTH')}\n` +
+            `Date: ${new Date().toLocaleString()}`;
 
-        out.innerText = lang === 'TR' ? 
-            `[RAPOR ÖZETİ]\nBölge/Ürün: ${region}\nToprak pH: ${ph}\nHava Koşulu: ${weather}\nHesaplanan Stres Seviyesi: ${stressScore}/10\nDurum: Analiz başarıyla tamamlandı ve buluta aktarıldı.` :
-            `[REPORT SUMMARY]\nRegion/Crop: ${region}\nSoil pH: ${ph}\nWeather: ${weather}\nCalculated Stress Level: ${stressScore}/10\nStatus: Analysis successfully completed and synced.`;
-
+        document.getElementById('res-output').innerText = reportText;
         updateChart(stressScore);
     }
 
-    function updateChart(stressScore) {
+    function updateChart(currentStress) {
         const ctx = document.getElementById('stressChart').getContext('2d');
         
-        let currentTrend = [
-            Math.min(10, Math.max(1, stressScore)),
-            Math.min(10, Math.max(1, stressScore + 1)),
-            Math.min(10, Math.max(1, stressScore + 1)),
-            Math.min(10, Math.max(1, stressScore + 2)),
-            Math.min(10, Math.max(1, stressScore + 2))
+        let trendData1 = [
+            Math.max(1, currentStress - 2),
+            Math.max(1, currentStress - 1),
+            currentStress,
+            Math.min(10, currentStress + 1),
+            Math.min(10, currentStress + 2)
         ];
 
-        let interventionTrend = [
-            stressScore,
-            Math.max(1, stressScore - 1),
-            Math.max(1, stressScore - 2),
-            Math.max(1, stressScore - 3),
-            Math.max(1, stressScore - 3)
+        let trendData2 = [
+            Math.max(1, currentStress - 1),
+            Math.max(1, currentStress - 2),
+            Math.max(1, currentStress - 1),
+            Math.max(1, currentStress - 2),
+            Math.max(1, currentStress - 3)
         ];
 
-        if (myChart) {
-            myChart.destroy();
-        }
+        if(myChart) myChart.destroy();
 
         myChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['1. Gün', '2. Gün', '3. Gün', '4. Gün', '5. Gün'],
+                labels: lang === 'TR' ? ['1. Gün', '2. Gün', 'Bugün (3.G)', '4. Gün (Tahmin)', '5. Gün (Tahmin)'] : ['Day 1', 'Day 2', 'Today (Day 3)', 'Day 4 (Forecast)', 'Day 5 (Forecast)'],
                 datasets: [
                     {
-                        label: lang === 'TR' ? 'Mevcut Eğilim' : 'Current Trend',
-                        data: currentTrend,
+                        label: lang === 'TR' ? 'Mevcut Bakım Senaryosu / Current Scenario' : 'Current Maintenance Scenario',
+                        data: trendData1,
                         borderColor: '#d32f2f',
                         backgroundColor: 'rgba(211, 47, 47, 0.1)',
                         borderWidth: 2,
-                        tension: 0.3,
-                        fill: true
+                        fill: true,
+                        tension: 0.3
                     },
                     {
-                        label: lang === 'TR' ? 'Akıllı Müdahale' : 'Smart Intervention',
-                        data: interventionTrend,
-                        borderColor: '#1b5e20',
-                        backgroundColor: 'rgba(27, 94, 32, 0.1)',
+                        label: lang === 'TR' ? 'Akıllı Reçete Senaryosu / Smart Prescription' : 'Smart Prescription Scenario',
+                        data: trendData2,
+                        borderColor: '#2e7d32',
+                        backgroundColor: 'rgba(46, 125, 50, 0.1)',
                         borderWidth: 2,
-                        tension: 0.3,
-                        fill: true
+                        fill: true,
+                        tension: 0.3
                     }
                 ]
             },
@@ -675,13 +684,15 @@
                     y: {
                         min: 0,
                         max: 10,
-                        ticks: { stepSize: 2 }
+                        ticks: { font: { size: 10 } }
+                    },
+                    x: {
+                        ticks: { font: { size: 9 } }
                     }
                 },
                 plugins: {
                     legend: {
-                        position: 'bottom',
-                        labels: { boxWidth: 12, font: { size: 10 } }
+                        labels: { font: { size: 9 } }
                     }
                 }
             }
@@ -690,12 +701,13 @@
 
     function resetSystem() {
         document.getElementById('res-area').style.display = 'none';
+        document.getElementById('cam-box').style.display = 'none';
         document.getElementById('form-area').style.display = 'block';
         document.getElementById('snap-btn').style.display = 'block';
         document.getElementById('reset-btn').style.display = 'none';
-        document.getElementById('cam-box').style.display = 'none';
         if(track) track.stop();
     }
 </script>
+
 </body>
 </html>
