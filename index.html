@@ -158,7 +158,8 @@
         </div>
 
         <div id="error-box" class="error-msg">
-            [TR] ⚠️ HATA: BİTKİ ALGILANAMADI! (Yalnızca yaprak/bitki analizi yapılabilir)<br>[EN] ⚠️ ERROR: NO PLANT DETECTED! (Only plant/leaf analysis allowed)
+            [TR] ⚠️ BİTKİ ALGILANAMADI: Yeterli yaprak/klorofil (yeşil doku) tespit edilemedi. Lütfen yaprak görüntüsü çekiniz!<br>
+            [EN] ⚠️ NO PLANT DETECTED: Insufficient leaf/chlorophyll (green tissue) detected. Please capture a leaf image!
         </div>
 
         <div id="res-area">
@@ -259,7 +260,7 @@
         </div>
     </div>
 
-    <div class="footer">© 2026 Hazreti Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
+    <div class="footer">© 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
 </div>
 
 <div id="lightbox-modal" onclick="closeLightbox()">
@@ -488,7 +489,35 @@
         c.height = v.videoHeight || 480;
         const ctxCanvas = c.getContext('2d');
         ctxCanvas.drawImage(v, 0, 0, c.width, c.height);
+
+        // --- BİTKİ / YAPRAK KONTROLÜ (YEŞİL PİKSEL ORANI) ---
+        const imgData = ctxCanvas.getImageData(0, 0, c.width, c.height);
+        const pixels = imgData.data;
+        let greenCount = 0;
+        let totalPixels = pixels.length / 4;
+
+        for (let i = 0; i < pixels.length; i += 16) { // Hız için her 4. pikseli örnekle
+            let r = pixels[i];
+            let g = pixels[i+1];
+            let b = pixels[i+2];
+            // Yeşil renk baskınlık kontrolü (Klorofil tonu)
+            if (g > r + 15 && g > b + 15 && g > 40) {
+                greenCount++;
+            }
+        }
         
+        let greenRatio = greenCount / (totalPixels / 4);
+
+        // Eğer görüntüde yeterli yeşil renk yoksa (Örn: avuç içi, masa, boşluk)
+        if (greenRatio < 0.08) {
+            if(track) { track.stop(); }
+            document.getElementById('cam-box').style.display = 'none';
+            document.getElementById('error-box').style.display = 'block';
+            document.getElementById('reset-btn').style.display = 'block';
+            return;
+        }
+        // ----------------------------------------------------
+
         lastCapturedImage = c.toDataURL('image/jpeg', 0.7);
 
         const previewEl = document.getElementById('preview-img');
@@ -587,9 +616,9 @@
             region: region,
             ph: ph,
             weather: weather,
-            status: stressStatus, // E Sütunu (Stres)
-            notes: notesText,     // F Sütunu (Analiz/Notlar)
-            image: imageData,     // G Sütunu (Fotoğraf)
+            stres: stressStatus,  // E Sütunu için eşlendi
+            notlar: notesText,    // F Sütunu için eşlendi
+            fotograf: imageData,  // G Sütunu için eşlendi
             timestamp: new Date().toISOString()
         };
 
@@ -610,6 +639,7 @@
         document.getElementById('form-area').style.display = 'block';
         document.getElementById('preview-img').style.display = 'none';
         document.getElementById('sync-status').style.display = 'none';
+        document.getElementById('error-box').style.display = 'none';
     }
 </script>
 </body>
