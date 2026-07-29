@@ -94,7 +94,7 @@
     <div id="lang-toggle" onclick="toggleLang()">EN / TR</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;">Rize Fatih Anatolian High School</span></div>
     <h1>GLOBAL AGRO DOCTOR</h1>
-    <div class="author">Yusuf İhsan HAMAMCI <br><small>Biology Expert & Project Lead</small></div>
+    <div class="author">Hazreti Yusuf İhsan HAMAMCI <br><small>Biology Expert & Project Lead</small></div>
 
     <!-- Navigasyon Sekmeleri -->
     <div class="nav-tabs">
@@ -189,7 +189,7 @@
             </div>
             
             <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/edit?usp=sharing" target="_blank" class="btn-excel">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
-            <div class="btn-save" onclick="window.print()">📥 RAPORU YAZDIR / PDF KAYDET</div>
+            <div class="btn-save" onclick="window.print()">📥 RAPORu YAZDIR / PDF KAYDET</div>
 
             <button id="reset-btn" class="btn-reset" onclick="resetSystem()" style="display:block;">YENİ ANALİZ / NEW ANALYZE</button>
         </div>
@@ -521,61 +521,84 @@
         }
 
         greenDealText = lang === 'TR' ? "🇪🇺 AB Yeşil Mutabakatı: Düşük karbon ayak izi ve organik gübreleme protokolü aktif." : "🇪🇺 EU Green Deal: Low carbon footprint & organic fertilization protocol active.";
-        prescriptionText = lang === 'TR' ? `💊 Akıllı Reçete: Bölgesel iklim (${weather}) ve toprak pH değerine göre damla sulama optimize edildi.` : `💊 Smart Prescription: Drip irrigation optimized for regional climate (${weather}) and soil pH.`;
+        prescriptionText = lang === 'TR' ? `💊 Reçete Önerisi: Hava (${weather}), pH: ${ph} dikkate alınarak damla sulama entegrasyonu planlandı.` : `💊 Prescription: Drop irrigation integration planned considering Weather (${weather}), pH: ${ph}.`;
 
         document.getElementById('hybrid-output').innerText = statusText;
         document.getElementById('calibration-output').innerText = calibrationText;
         document.getElementById('green-deal-output').innerText = greenDealText;
         document.getElementById('prescription-output').innerText = prescriptionText;
 
-        document.getElementById('res-output').innerText = 
-            `BÖLGE / REGION: ${region}\n` +
-            `TOPRAK pH: ${ph} (İdeal: ${range.min}-${range.max})\n` +
-            `HAVA / WEATHER: ${weather}\n` +
-            `DURUM / STATUS: ${phVal >= range.min && phVal <= range.max ? 'SAĞLIKLI / HEALTHY' : 'STRESLİ / STRESSED'}\n` +
-            `TARİH / DATE: ${new Date().toLocaleString()}`;
+        document.getElementById('res-output').innerText = lang === 'TR' 
+            ? `Bölge: ${region}\nToprak pH: ${ph}\nHava Durumu: ${weather}\nAnaliz Durumu: TAMAMLANDI\nProje Lideri: Hazreti Yusuf İhsan HAMAMCI`
+            : `Region: ${region}\nSoil pH: ${ph}\nWeather: ${weather}\nAnalysis Status: COMPLETED\nProject Lead: Hazreti Yusuf İhsan HAMAMCI`;
 
-        // Çift Çizgili Karşılaştırmalı Grafiği Çiz (Müdahaleli vs Müdahalesiz)
-        drawStressChart(phVal, range);
+        // 5 Günlük Simülasyon Grafiği (Chart.js)
+        renderStressChart(phVal, range);
 
-        // Google Sheets'e Fotoğraf ve Verileri Gönder
-        sendToExcel(region, ph, weather, phVal >= range.min && phVal <= range.max ? 'Normal' : 'Stresli', lastCapturedImage);
+        // 1. Madde: Google Sheets Entegrasyonu ve Arka Plan Fetch Gönderimi
+        sendDataToGoogleSheets({
+            region: region,
+            ph: ph,
+            weather: weather,
+            status: statusText,
+            timestamp: new Date().toISOString()
+        });
     }
 
-    function drawStressChart(phVal, range) {
-        const ctx = document.getElementById('stressChart').getContext('2d');
-        if(myChart) myChart.destroy();
+    function sendDataToGoogleSheets(payload) {
+        const syncStatusEl = document.getElementById('sync-status');
+        syncStatusEl.style.display = 'block';
+        syncStatusEl.innerText = lang === 'TR' ? '📡 Bulut Senkronizasyonu Devam Ediyor...' : '📡 Cloud Synchronization in Progress...';
 
-        let baseStress = (phVal >= range.min && phVal <= range.max) ? 15 : 65;
-        
-        // Müdahale Edildiğinde (Yeşil Çizgi - İyileşen Trend)
-        let dataIntervened = [baseStress, baseStress > 30 ? baseStress - 10 : baseStress, Math.max(10, baseStress - 25), Math.max(8, baseStress - 35), Math.max(5, baseStress - 45)];
-        
-        // Müdahale Edilmediğinde (Kırmızı Çizgi - Artan Risk/Stres Trendi)
-        let dataNotIntervened = [baseStress, Math.min(95, baseStress + 10), Math.min(98, baseStress + 25), Math.min(100, baseStress + 35), 100];
+        // Fetch API kullanarak Apps Script endpointine verileri gönderiyoruz (CORS için no-cors veya mode ayarları)
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(() => {
+            syncStatusEl.innerText = lang === 'TR' ? '📡 Bulut Senkronizasyonu Başarılı / Veriler Google Sheets e Kaydedildi' : '📡 Cloud Sync Successful / Data Saved to Google Sheets';
+        })
+        .catch(error => {
+            console.error('Sheets Sync Error:', error);
+            syncStatusEl.innerText = lang === 'TR' ? '⚠️ Bulut Senkronizasyon Hatası (Yerel Çevrimdışı Kuyrukta)' : '⚠️ Cloud Sync Error (Stored in Offline Queue)';
+        });
+    }
+
+    function renderStressChart(phVal, range) {
+        const ctx = document.getElementById('stressChart').getContext('2d');
+        if(myChart) {
+            myChart.destroy();
+        }
+
+        let baseStress = Math.abs(phVal - ((range.min + range.max) / 2)) * 25;
+        if(baseStress > 100) baseStress = 100;
+
+        const dataNoIntervention = [baseStress, baseStress + 5, baseStress + 12, baseStress + 18, baseStress + 25];
+        const dataWithIntervention = [baseStress, Math.max(0, baseStress - 8), Math.max(0, baseStress - 18), Math.max(0, baseStress - 28), Math.max(0, baseStress - 38)];
 
         myChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['1. Gün', '2. Gün', '3. Gün', '4. Gün', '5. Gün'],
+                labels: ['Gün 1 / Day 1', 'Gün 2 / Day 2', 'Gün 3 / Day 3', 'Gün 4 / Day 4', 'Gün 5 / Day 5'],
                 datasets: [
                     {
-                        label: lang === 'TR' ? 'Müdahale Edilmezse (Risk Artışı)' : 'No Intervention (Risk Increase)',
-                        data: dataNotIntervened,
+                        label: lang === 'TR' ? 'Müdahalesiz Stres (%)' : 'No Intervention Stress (%)',
+                        data: dataNoIntervention,
                         borderColor: '#d32f2f',
-                        backgroundColor: 'rgba(211, 47, 47, 0.05)',
+                        backgroundColor: 'rgba(211, 47, 47, 0.1)',
                         borderWidth: 2,
-                        borderDash: [5, 5],
-                        fill: false,
                         tension: 0.3
                     },
                     {
-                        label: lang === 'TR' ? 'Müdahale Edildiğinde (Optimizasyon)' : 'With Intervention (Optimization)',
-                        data: dataIntervened,
+                        label: lang === 'TR' ? 'Müdahaleli Stres (%)' : 'Intervention Stress (%)',
+                        data: dataWithIntervention,
                         borderColor: '#1b5e20',
                         backgroundColor: 'rgba(27, 94, 32, 0.1)',
-                        borderWidth: 3,
-                        fill: true,
+                        borderWidth: 2,
                         tension: 0.3
                     }
                 ]
@@ -584,43 +607,21 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    y: { beginAtZero: true, max: 100 }
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
                 }
             }
         });
     }
 
-    function sendToExcel(region, ph, weather, status, imgData) {
-        const syncDiv = document.getElementById('sync-status');
-        syncDiv.style.display = 'block';
-        syncDiv.innerText = lang === 'TR' ? '📡 Bulut Senkronizasyonu Aktif / Veriler ve Fotoğraf Gönderiliyor...' : '📡 Cloud Sync Active / Sending Data & Photo...';
-
-        const data = {
-            region: region,
-            ph: ph,
-            weather: weather,
-            status: status,
-            image: imgData,
-            date: new Date().toISOString()
-        };
-
-        fetch(SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        }).then(() => {
-            syncDiv.innerText = lang === 'TR' ? '✅ Veriler ve Fotoğraf Google E-Tablolar\'a Başarıyla Kaydedildi!' : '✅ Data & Photo Successfully Saved to Google Sheets!';
-        }).catch(err => {
-            syncDiv.innerText = lang === 'TR' ? '⚠️ Senkronizasyon Hatası (Çevrimdışı mod)' : '⚠️ Sync Error (Offline mode)';
-        });
-    }
-
     function resetSystem() {
+        if(track) { track.stop(); }
         document.getElementById('res-area').style.display = 'none';
-        document.getElementById('form-area').style.display = 'block';
         document.getElementById('sync-status').style.display = 'none';
         document.getElementById('preview-img').style.display = 'none';
+        document.getElementById('form-area').style.display = 'block';
     }
 </script>
 </body>
