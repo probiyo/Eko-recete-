@@ -71,6 +71,8 @@
         #res-area { display: none; margin-top: 20px; padding: 20px; border: 2px solid #1b5e20; border-radius: 20px; background: #fff; }
         .res-body { font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4; color: #1b5e20; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px; white-space: pre-wrap; }
         
+        .captured-preview { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-bottom: 12px; border: 2px solid #ddd; display: none; }
+
         .hybrid-note { background: #e3f2fd; border-left: 5px solid #2196f3; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #0d47a1; font-weight: bold; }
         .green-deal-box { background: #e8f5e9; border-left: 5px solid #2e7d32; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #1b5e20; font-weight: bold; border-radius: 0 10px 10px 0; }
         .prescription-box { background: #fffde7; border-left: 5px solid #fbc02d; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #f57f17; font-weight: bold; border-radius: 0 10px 10px 0; }
@@ -164,14 +166,17 @@
             
             <div id="sync-status" class="sync-status">📡 Bulut Senkronizasyonu Aktif / Cloud Sync Active</div>
 
+            <!-- Analiz Edilen Yaprak Fotoğrafı Önizlemesi -->
+            <img id="preview-img" class="captured-preview" src="" alt="Captured Leaf">
+
             <div id="hybrid-output" class="hybrid-note"></div>
             <div id="calibration-output" class="calibration-box"></div>
             <div id="green-deal-output" class="green-deal-box"></div>
             <div id="prescription-output" class="prescription-box"></div>
             
-            <!-- Çift Senaryolu Prediktif Stres Simülasyon Grafiği -->
+            <!-- Çift Senaryolu Prediktif Stres Simülasyon Grafiği (Karşılaştırmalı) -->
             <div class="chart-box">
-                <label style="text-align:center; margin-bottom:8px; font-size: 11px;">📈 Senaryo Bazlı 5 Günlük Stres Trendi<br>Scenario-Based 5-Day Stress Trend</label>
+                <label style="text-align:center; margin-bottom:8px; font-size: 11px;">📈 Karşılaştırmalı 5 Günlük Stres Trendi (Müdahaleli vs Müdahalesiz)<br>Comparative 5-Day Stress Trend (Intervention vs No Intervention)</label>
                 <div class="chart-container">
                    <canvas id="stressChart"></canvas>
                </div>
@@ -486,6 +491,11 @@
         
         lastCapturedImage = c.toDataURL('image/jpeg', 0.7);
 
+        // Fotoğraf önizlemesini raporda göster
+        const previewEl = document.getElementById('preview-img');
+        previewEl.src = lastCapturedImage;
+        previewEl.style.display = 'block';
+
         if(track) { track.stop(); }
         document.getElementById('cam-box').style.display = 'none';
         document.getElementById('error-box').style.display = 'none';
@@ -525,11 +535,11 @@
             `DURUM / STATUS: ${phVal >= range.min && phVal <= range.max ? 'SAĞLIKLI / HEALTHY' : 'STRESLİ / STRESSED'}\n` +
             `TARİH / DATE: ${new Date().toLocaleString()}`;
 
-        // Grafiği Çiz
+        // Çift Çizgili Karşılaştırmalı Grafiği Çiz (Müdahaleli vs Müdahalesiz)
         drawStressChart(phVal, range);
 
-        // Google Sheets'e Veri Gönderimi
-        sendToExcel(region, ph, weather, phVal >= range.min && phVal <= range.max ? 'Normal' : 'Stresli');
+        // Google Sheets'e Fotoğraf ve Verileri Gönder
+        sendToExcel(region, ph, weather, phVal >= range.min && phVal <= range.max ? 'Normal' : 'Stresli', lastCapturedImage);
     }
 
     function drawStressChart(phVal, range) {
@@ -537,20 +547,38 @@
         if(myChart) myChart.destroy();
 
         let baseStress = (phVal >= range.min && phVal <= range.max) ? 15 : 65;
-        let dataTrend = [baseStress, baseStress + 5, baseStress - 2, baseStress + 8, baseStress + 3];
+        
+        // Müdahale Edildiğinde (Yeşil Çizgi - İyileşen Trend)
+        let dataIntervened = [baseStress, baseStress > 30 ? baseStress - 10 : baseStress, Math.max(10, baseStress - 25), Math.max(8, baseStress - 35), Math.max(5, baseStress - 45)];
+        
+        // Müdahale Edilmediğinde (Kırmızı Çizgi - Artan Risk/Stres Trendi)
+        let dataNotIntervened = [baseStress, Math.min(95, baseStress + 10), Math.min(98, baseStress + 25), Math.min(100, baseStress + 35), 100];
 
         myChart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: ['1. Gün', '2. Gün', '3. Gün', '4. Gün', '5. Gün'],
-                datasets: [{
-                    label: lang === 'TR' ? 'Stres İndeksi (%)' : 'Stress Index (%)',
-                    data: dataTrend,
-                    borderColor: '#1b5e20',
-                    backgroundColor: 'rgba(27, 94, 32, 0.1)',
-                    fill: true,
-                    tension: 0.3
-                }]
+                datasets: [
+                    {
+                        label: lang === 'TR' ? 'Müdahale Edilmezse (Risk Artışı)' : 'No Intervention (Risk Increase)',
+                        data: dataNotIntervened,
+                        borderColor: '#d32f2f',
+                        backgroundColor: 'rgba(211, 47, 47, 0.05)',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        fill: false,
+                        tension: 0.3
+                    },
+                    {
+                        label: lang === 'TR' ? 'Müdahale Edildiğinde (Optimizasyon)' : 'With Intervention (Optimization)',
+                        data: dataIntervened,
+                        borderColor: '#1b5e20',
+                        backgroundColor: 'rgba(27, 94, 32, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3
+                    }
+                ]
             },
             options: {
                 responsive: true,
@@ -562,16 +590,17 @@
         });
     }
 
-    function sendToExcel(region, ph, weather, status) {
+    function sendToExcel(region, ph, weather, status, imgData) {
         const syncDiv = document.getElementById('sync-status');
         syncDiv.style.display = 'block';
-        syncDiv.innerText = lang === 'TR' ? '📡 Bulut Senkronizasyonu Aktif / Veriler Gönderiliyor...' : '📡 Cloud Sync Active / Sending Data...';
+        syncDiv.innerText = lang === 'TR' ? '📡 Bulut Senkronizasyonu Aktif / Veriler ve Fotoğraf Gönderiliyor...' : '📡 Cloud Sync Active / Sending Data & Photo...';
 
         const data = {
             region: region,
             ph: ph,
             weather: weather,
             status: status,
+            image: imgData,
             date: new Date().toISOString()
         };
 
@@ -581,7 +610,7 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         }).then(() => {
-            syncDiv.innerText = lang === 'TR' ? '✅ Veriler Google E-Tablolar\'a Başarıyla Kaydedildi!' : '✅ Data Successfully Saved to Google Sheets!';
+            syncDiv.innerText = lang === 'TR' ? '✅ Veriler ve Fotoğraf Google E-Tablolar\'a Başarıyla Kaydedildi!' : '✅ Data & Photo Successfully Saved to Google Sheets!';
         }).catch(err => {
             syncDiv.innerText = lang === 'TR' ? '⚠️ Senkronizasyon Hatası (Çevrimdışı mod)' : '⚠️ Sync Error (Offline mode)';
         });
@@ -591,6 +620,7 @@
         document.getElementById('res-area').style.display = 'none';
         document.getElementById('form-area').style.display = 'block';
         document.getElementById('sync-status').style.display = 'none';
+        document.getElementById('preview-img').style.display = 'none';
     }
 </script>
 </body>
