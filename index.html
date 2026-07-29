@@ -15,18 +15,14 @@
         .school-tag { font-size: 10px; color: #777; text-align: center; text-transform: uppercase; letter-spacing: 1.5px; line-height: 1.4; }
         h1 { text-align: center; color: var(--primary); font-size: 20px; margin: 5px 0; }
         .author { text-align: center; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 15px; }
-
         /* Navigasyon / Sekme Menüsü */
         .nav-tabs { display: flex; gap: 4px; margin-bottom: 15px; background: #e8f0e9; padding: 4px; border-radius: 14px; }
         .nav-tab { flex: 1; padding: 8px 4px; text-align: center; font-size: 10px; font-weight: 800; color: var(--primary); background: transparent; border: none; border-radius: 10px; cursor: pointer; transition: 0.2s; }
         .nav-tab.active { background: var(--primary); color: white; }
-
         .card { background: #f9fdfa; padding: 15px; border-radius: 20px; margin-bottom: 12px; border: 1px solid #e8f0e9; }
         label { display: block; font-size: 11px; font-weight: 800; color: var(--primary); margin-bottom: 8px; text-transform: uppercase; }
         select, input { width: 100%; padding: 12px; border: 2px solid #d1d9d2; border-radius: 12px; font-size: 15px; outline: none; box-sizing: border-box; }
-
         .other-opt { background: #e8f5e9; color: var(--primary); font-weight: bold; text-align: center; padding: 10px; border-radius: 10px; cursor: pointer; margin-top: 5px; border: 1px dashed var(--primary); font-size: 13px; }
-
         #cam-box { display: none; margin-top: 15px; border-radius: 20px; overflow: hidden; border: 4px solid #333; position: relative; }
         video, canvas { width: 100%; height: 320px; object-fit: cover; }
         #canvas { display: none; }
@@ -34,14 +30,12 @@
         .scan-ui { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .target { width: 200px; height: 200px; border: 2px solid var(--accent); border-radius: 20px; box-shadow: 0 0 0 1000px rgba(0,0,0,0.5); }
         .hint { background: rgba(0,0,0,0.85); color: white; padding: 8px 12px; border-radius: 10px; font-size: 10px; margin-top: 10px; text-align: center; width: 85%; line-height: 1.3; }
-
         button { width: 100%; padding: 16px; border: none; border-radius: 15px; font-size: 16px; font-weight: 800; cursor: pointer; margin-top: 10px; }
         .btn-main { background: var(--primary); color: white; }
         .btn-snap { background: #222; color: white; }
         .btn-reset { background: #555; color: white; display: none; }
         .btn-excel { background: #107c41; color: white; text-decoration: none; display: block; text-align: center; padding: 14px; border-radius: 15px; font-size: 15px; font-weight: 800; margin-top: 10px; }
         .btn-save { background: #0277bd; color: white; text-decoration: none; display: block; text-align: center; padding: 12px; border-radius: 15px; font-size: 14px; font-weight: 800; margin-top: 10px; cursor: pointer; }
-
         /* Saha Çalışmaları Galeri Alanı Stilleri */
         .field-section { display: none; }
         .upload-zone { border: 2px dashed var(--primary); padding: 20px; border-radius: 15px; text-align: center; background: #f9fdfa; cursor: pointer; margin-bottom: 12px; }
@@ -52,7 +46,6 @@
         .gallery-item:hover img { transform: scale(1.03); }
         .gallery-item .del-photo { position: absolute; top: 5px; right: 5px; background: rgba(211,47,47,0.8); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 2; }
         .gallery-caption { font-size: 10px; color: #555; text-align: center; margin-top: 4px; font-weight: bold; }
-
         /* Vatandaş Bilimi / Uluslararası Ağ Sekmesi Stilleri */
         .citizen-section { display: none; }
         .citizen-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
@@ -61,18 +54,15 @@
         .stat-label { font-size: 9px; color: #555; margin-top: 2px; font-weight: bold; }
         .network-list { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
         .network-item { background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 10px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
-
         /* Lightbox Stilleri */
         #lightbox-modal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; }
         #lightbox-img { max-width: 90%; max-height: 80vh; border-radius: 12px; border: 2px solid #fff; box-shadow: 0 0 20px rgba(0,0,0,0.5); object-fit: contain; }
         #lightbox-caption { color: white; margin-top: 15px; font-size: 14px; font-weight: bold; text-align: center; }
         #lightbox-close { position: absolute; top: 20px; right: 25px; background: #d32f2f; color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
         #res-area { display: none; margin-top: 20px; padding: 20px; border: 2px solid #1b5e20; border-radius: 20px; background: #fff; }
         .res-body { font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4; color: #1b5e20; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px; white-space: pre-wrap; }
         
         .captured-preview { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-bottom: 12px; border: 2px solid #ddd; display: none; }
-
         .hybrid-note { background: #e3f2fd; border-left: 5px solid #2196f3; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #0d47a1; font-weight: bold; }
         .green-deal-box { background: #e8f5e9; border-left: 5px solid #2e7d32; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #1b5e20; font-weight: bold; border-radius: 0 10px 10px 0; }
         .prescription-box { background: #fffde7; border-left: 5px solid #fbc02d; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #f57f17; font-weight: bold; border-radius: 0 10px 10px 0; }
@@ -81,11 +71,9 @@
         
         .chart-box { background: #fafafa; padding: 12px; border-radius: 15px; margin-bottom: 12px; border: 1px solid #ddd; }
         .chart-container { position: relative; width: 100%; min-height: 200px; }
-
         .expert-msg { background: #fff3e0; border-left: 5px solid #ff9800; padding: 10px; font-size: 11px; font-weight: bold; color: #e65100; margin-bottom: 15px; }
         .error-msg { color: var(--danger); font-weight: bold; text-align: center; padding: 20px; border: 2px dashed var(--danger); border-radius: 15px; display: none; margin-top: 10px; font-size: 13px; }
         .ph-warning { color: var(--danger); font-size: 10px; font-weight: bold; margin-top: 5px; display: none; }
-
         .footer { font-size: 9px; color: #aaa; text-align: center; margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px; }
     </style>
 </head>
@@ -95,14 +83,12 @@
     <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;">Rize Fatih Anatolian High School</span></div>
     <h1>GLOBAL AGRO DOCTOR</h1>
     <div class="author">Yusuf İhsan HAMAMCI <br><small>Biology Expert & Project Lead</small></div>
-
     <!-- Navigasyon Sekmeleri -->
     <div class="nav-tabs">
         <button id="tab-analysis-btn" class="nav-tab active" onclick="switchTab('analysis')">🌱 ANALİZ</button>
         <button id="tab-field-btn" class="nav-tab" onclick="switchTab('field')">📸 SAHA</button>
         <button id="tab-citizen-btn" class="nav-tab" onclick="switchTab('citizen')">🌍 CITIZEN SCIENCE</button>
     </div>
-
     <!-- AGRO ANALİZ SEKMESİ -->
     <div id="analysis-section">
         <div id="form-area">
@@ -122,13 +108,11 @@
                     + Global - Diğer / Other (Manual Selection)
                 </div>
             </div>
-
             <div class="card">
                <label id="ph-label">TOPRAK pH DEĞERİ / SOIL pH (3.0 - 9.0)</label>
                 <input type="number" id="ph" step="0.1" min="3.0" max="9.0" placeholder="Ex: 6.5" value="4.8" oninput="validatePH(this)">
                 <div id="ph-warn" class="ph-warning">⚠️ [TR] Girilen pH değeri seçilen bitki için ideal bilimsel aralığın dışında! <br>⚠️ [EN] Entered pH value is out of the ideal scientific range for this crop!</div>
             </div>
-
             <div class="card">
                <label>Hava Durumu / Weather Condition</label>
                 <select id="weather">
@@ -140,10 +124,8 @@
                    <option value="Don Tehlikesi / Frost Risk">Don Tehlikesi / Frost Risk</option>
                 </select>
             </div>
-
             <button id="start-btn" class="btn-main" onclick="startSystem()">ANALİZİ BAŞLAT / START ANALYZE</button>
         </div>
-
         <div id="cam-box">
             <video id="v" autoplay playsinline></video>
             <canvas id="canvas"></canvas>
@@ -156,20 +138,16 @@
             </div>
             <button id="snap-btn" class="btn-snap" onclick="processAI()">FOTOĞRAF ÇEK / TAKE PHOTO</button>
         </div>
-
         <div id="error-box" class="error-msg">
             [TR] ⚠️ BİTKİ ALGILANAMADI: Yeterli yaprak/klorofil (yeşil doku) tespit edilemedi. Lütfen yaprak görüntüsü çekiniz!<br>
             [EN] ⚠️ NO PLANT DETECTED: Insufficient leaf/chlorophyll (green tissue) detected. Please capture a leaf image!
         </div>
-
         <div id="res-area">
             <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;">BRÜSSEL PROJE RAPORU #EU-AGRO</div>
             
             <div id="sync-status" class="sync-status">📡 Bulut Senkronizasyonu Aktif / Cloud Sync Active</div>
-
             <!-- Analiz Edilen Yaprak Fotoğrafı Önizlemesi -->
             <img id="preview-img" class="captured-preview" src="" alt="Captured Leaf">
-
             <div id="hybrid-output" class="hybrid-note"></div>
             <div id="calibration-output" class="calibration-box"></div>
             <div id="green-deal-output" class="green-deal-box"></div>
@@ -182,7 +160,6 @@
                    <canvas id="stressChart"></canvas>
                </div>
             </div>
-
             <div id="res-output" class="res-body"></div>
             <div id="expert-note" class="expert-msg">
                 [TR] ⚠️ UZMAN GÖRÜŞÜ: Çözülemeyen sorunlarda acil uzman desteği alınmalıdır.<br><br>
@@ -191,11 +168,9 @@
             
             <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/edit?usp=sharing" target="_blank" class="btn-excel">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
             <div class="btn-save" onclick="window.print()">📥 RAPORU YAZDIR / PDF KAYDET</div>
-
             <button id="reset-btn" class="btn-reset" onclick="resetSystem()" style="display:block;">YENİ ANALİZ / NEW ANALYZE</button>
         </div>
     </div>
-
     <!-- SAHA ÇALIŞMALARI SEKMESİ -->
     <div id="field-section" class="field-section">
         <div class="card">
@@ -207,15 +182,12 @@
                 <div id="upload-txt-sub" style="font-size: 9px; color: #666; margin-top: 3px;">Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları / Group shots with students, lab and field studies</div>
             </div>
             <input type="file" id="file-input" accept="image/*" style="display:none" onchange="handleFileUpload(event)">
-
             <div style="display: flex; gap: 5px; margin-bottom: 10px;">
                 <input type="text" id="photo-caption" placeholder="Açıklama giriniz / Enter caption..." style="font-size: 12px; padding: 8px;">
             </div>
-
             <div id="gallery-container" class="gallery-grid"></div>
         </div>
     </div>
-
     <!-- CITIZEN SCIENCE & ULUSLARARASI VERİ HAVUZU SEKMESİ -->
     <div id="citizen-section" class="citizen-section">
         <div class="card">
@@ -231,7 +203,6 @@
                     <div id="stat-samples-lbl" class="stat-label">Toplam Veri / Total Samples</div>
                 </div>
             </div>
-
             <div id="partner-regions-lbl" style="font-size: 11px; font-weight: bold; margin-bottom: 5px; color: var(--primary);">Katılımcı Pilot Bölgeler / Partner Regions:</div>
             <div class="network-list">
                 <div class="network-item">
@@ -255,30 +226,24 @@
                     <strong id="status-hub5" style="color: #2e7d32;">Bağlı / Connected</strong>
                 </div>
             </div>
-
             <button id="sync-net-btn" class="btn-main" style="margin-top: 15px; font-size: 13px; padding: 12px;" onclick="alert(lang === 'TR' ? 'Uluslararası Açık Kaynak Veri Havuzu senkronizasyonu güncellendi!' : 'International Open Source Data Hub synchronization updated!')">🔄 AĞI SENKRONİZE ET / SYNC NETWORK</button>
         </div>
     </div>
-
     <div class="footer">© 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
 </div>
-
 <div id="lightbox-modal" onclick="closeLightbox()">
     <button id="lightbox-close" onclick="closeLightbox()">&times;</button>
     <img id="lightbox-img" src="" alt="Zoomed Photo">
     <div id="lightbox-caption"></div>
 </div>
-
 <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZXLHj3jeBI16nCqSv_hRmvKdYpTALbEm4T0aH4jCv5yHhm7-YXKu4h-kdfqi6iG5H/exec";
-
     let lang = 'TR';
     let track;
     let myChart = null;
     let lastCapturedImage = "";
     const v = document.getElementById('v');
     const c = document.getElementById('canvas');
-
     const cropRanges = {
         "tr-antakya-citrus": { min: 6.0, max: 7.5, name: "Narenciye / Citrus" },
         "tr-ege-olive": { min: 6.5, max: 8.0, name: "Zeytin / Olive" },
@@ -289,12 +254,10 @@
         "it-tomato": { min: 6.0, max: 6.8, name: "Domates / Tomato" },
         "global-other": { min: 6.0, max: 7.0, name: "Diğer / Other" }
     };
-
     function initApp() {
         loadGallery();
         updatePHRangeInfo();
     }
-
     function updatePHRangeInfo() {
         const regionKey = document.getElementById('region').value;
         const range = cropRanges[regionKey] || { min: 6.0, max: 7.0 };
@@ -311,15 +274,12 @@
             validatePH(phInput);
         }
     }
-
     function validatePH(input) {
         const val = parseFloat(input.value);
         const warn = document.getElementById('ph-warn');
         const regionKey = document.getElementById('region').value;
         const range = cropRanges[regionKey] || { min: 6.0, max: 7.0 };
-
         if(isNaN(val)) return;
-
         if(val < range.min || val > range.max) {
             warn.style.display = 'block';
             if(lang === 'TR') {
@@ -331,7 +291,6 @@
             warn.style.display = 'none';
         }
     }
-
     function toggleLang() {
         lang = lang === 'TR' ? 'EN' : 'TR';
         document.querySelector('h1').innerText = 'GLOBAL AGRO DOCTOR';
@@ -346,7 +305,6 @@
         updatePHRangeInfo();
         loadGallery();
     }
-
     function switchTab(tabName) {
         const analysisSec = document.getElementById('analysis-section');
         const fieldSec = document.getElementById('field-section');
@@ -355,14 +313,12 @@
         const tabAnalysisBtn = document.getElementById('tab-analysis-btn');
         const tabFieldBtn = document.getElementById('tab-field-btn');
         const tabCitizenBtn = document.getElementById('tab-citizen-btn');
-
         analysisSec.style.display = 'none';
         fieldSec.style.display = 'none';
         citizenSec.style.display = 'none';
         tabAnalysisBtn.classList.remove('active');
         tabFieldBtn.classList.remove('active');
         tabCitizenBtn.classList.remove('active');
-
         if(tabName === 'analysis') {
             analysisSec.style.display = 'block';
             tabAnalysisBtn.classList.add('active');
@@ -380,11 +336,9 @@
             document.getElementById('form-area').style.display = 'block';
         }
     }
-
     function handleFileUpload(event) {
         const file = event.target.files[0];
         if(!file) return;
-
         const reader = new FileReader();
         reader.onload = function(e) {
             const img = new Image();
@@ -402,13 +356,11 @@
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, width, height);
                 const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
-
                 let caption = document.getElementById('photo-caption').value || (lang === 'TR' ? 'Saha Çalışması' : 'Field Study');
                 
                 let gallery = JSON.parse(localStorage.getItem('agro_field_gallery') || '[]');
                 gallery.unshift({ img: compressedDataUrl, caption: caption, date: new Date().toLocaleDateString() });
                 localStorage.setItem('agro_field_gallery', JSON.stringify(gallery));
-
                 document.getElementById('photo-caption').value = '';
                 document.getElementById('file-input').value = '';
                 loadGallery();
@@ -417,7 +369,6 @@
         }
         reader.readAsDataURL(file);
     }
-
     function loadGallery() {
         const container = document.getElementById('gallery-container');
         let gallery = JSON.parse(localStorage.getItem('agro_field_gallery') || '[]');
@@ -426,7 +377,6 @@
             container.innerHTML = `<div style="grid-column: span 2; text-align: center; font-size: 11px; color: #888; padding: 20px;">${lang === 'TR' ? 'Henüz saha fotoğrafı eklenmedi.' : 'No field photos added yet.'}</div>`;
             return;
         }
-
         container.innerHTML = '';
         gallery.forEach((item, index) => {
             const div = document.createElement('div');
@@ -439,7 +389,6 @@
             container.appendChild(div);
         });
     }
-
     function deletePhoto(event, index) {
         event.stopPropagation();
         if(confirm(lang === 'TR' ? 'Bu fotoğrafı silmek istediğinize emin misiniz?' : 'Are you sure you want to delete this photo?')) {
@@ -449,27 +398,22 @@
             loadGallery();
         }
     }
-
     function openLightbox(imgSrc, caption) {
         document.getElementById('lightbox-img').src = imgSrc;
         document.getElementById('lightbox-caption').innerText = caption;
         document.getElementById('lightbox-modal').style.display = 'flex';
     }
-
     function closeLightbox() {
         document.getElementById('lightbox-modal').style.display = 'none';
     }
-
     function startSystem() {
         const phVal = document.getElementById('ph').value;
         if(!phVal) {
             alert(lang === 'TR' ? 'Lütfen pH değerini giriniz!' : 'Please enter pH value!');
             return;
         }
-
         document.getElementById('form-area').style.display = 'none';
         document.getElementById('cam-box').style.display = 'block';
-
         navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: 'environment' } } })
         .catch(() => {
             return navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
@@ -483,32 +427,26 @@
             resetSystem();
         });
     }
-
     function processAI() {
         c.width = v.videoWidth || 640;
         c.height = v.videoHeight || 480;
         const ctxCanvas = c.getContext('2d');
         ctxCanvas.drawImage(v, 0, 0, c.width, c.height);
-
         // --- BİTKİ / YAPRAK KONTROLÜ (YEŞİL PİKSEL ORANI) ---
         const imgData = ctxCanvas.getImageData(0, 0, c.width, c.height);
         const pixels = imgData.data;
         let greenCount = 0;
         let totalPixels = pixels.length / 4;
-
-        for (let i = 0; i < pixels.length; i += 16) { // Hız için her 4. pikseli örnekle
+        for (let i = 0; i < pixels.length; i += 16) { 
             let r = pixels[i];
             let g = pixels[i+1];
             let b = pixels[i+2];
-            // Yeşil renk baskınlık kontrolü (Klorofil tonu)
             if (g > r + 15 && g > b + 15 && g > 40) {
                 greenCount++;
             }
         }
         
         let greenRatio = greenCount / (totalPixels / 4);
-
-        // Eğer görüntüde yeterli yeşil renk yoksa (Örn: avuç içi, masa, boşluk)
         if (greenRatio < 0.08) {
             if(track) { track.stop(); }
             document.getElementById('cam-box').style.display = 'none';
@@ -517,29 +455,23 @@
             return;
         }
         // ----------------------------------------------------
-
         lastCapturedImage = c.toDataURL('image/jpeg', 0.7);
-
         const previewEl = document.getElementById('preview-img');
         previewEl.src = lastCapturedImage;
         previewEl.style.display = 'block';
-
         if(track) { track.stop(); }
         document.getElementById('cam-box').style.display = 'none';
         document.getElementById('error-box').style.display = 'none';
         document.getElementById('res-area').style.display = 'block';
-
         const region = document.getElementById('region').value;
         const ph = document.getElementById('ph').value;
         const weather = document.getElementById('weather').value;
         const range = cropRanges[region] || { min: 6.0, max: 7.0 };
         const phVal = parseFloat(ph);
-
         let statusText = "";
         let calibrationText = "";
         let greenDealText = "";
         let prescriptionText = "";
-
         if(phVal >= range.min && phVal <= range.max) {
             statusText = lang === 'TR' ? `[OK] ${range.name} için ideal pH aralığında (${range.min}-${range.max}).` : `[OK] Optimal pH range for ${range.name} (${range.min}-${range.max}).`;
             calibrationText = lang === 'TR' ? "🔬 Kalibrasyon: Sensör referans aralığında, klorofil sentezi kararlı." : "🔬 Calibration: Sensor within reference range, chlorophyll synthesis stable.";
@@ -547,10 +479,8 @@
             statusText = lang === 'TR' ? `[UYARI] pH (${phVal}) hedef aralıkta (${range.min}-${range.max}) değil! Stres gözlendi.` : `[WARNING] pH (${phVal}) out of target range (${range.min}-${range.max})! Stress observed.`;
             calibrationText = lang === 'TR' ? "🔬 Kalibrasyon: pH sapması nedeniyle mikro element alımı (Fe/Mg) bloke olmuş olabilir." : "🔬 Calibration: Nutrient uptake (Fe/Mg) might be blocked due to pH shift.";
         }
-
         greenDealText = lang === 'TR' ? "🇪🇺 AB Yeşil Mutabakatı: Düşük karbon ayak izi ve organik gübreleme protokolü aktif." : "🇪🇺 EU Green Deal: Low carbon footprint & organic fertilization protocol active.";
         prescriptionText = lang === 'TR' ? "💊 Reçete: Öngörülen ekolojik iyileştirme ve dengeli besleme planı uygulanmalıdır." : "💊 Prescription: Recommended ecological improvement and balanced feeding plan should be applied.";
-
         document.getElementById('hybrid-output').innerText = statusText;
         document.getElementById('calibration-output').innerText = calibrationText;
         document.getElementById('green-deal-output').innerText = greenDealText;
@@ -558,20 +488,16 @@
         
         const fullReportText = `Analiz: ${statusText} | ${calibrationText} | ${greenDealText} | ${prescriptionText}`;
         document.getElementById('res-output').innerText = lang === 'TR' ? `Analiz Tamamlandı.\nBölge: ${range.name}\npH: ${ph}\nHava: ${weather}` : `Analysis Completed.\nRegion: ${range.name}\npH: ${ph}\nWeather: ${weather}`;
-
         drawStressChart(phVal >= range.min && phVal <= range.max);
         
-        // Stres (E sütunu) ve Analiz/Notlar (F sütunu) buluta gönderiliyor
+        // Veriler düz metin parametreleri olarak Google Sheets'e gönderiliyor (no-cors sorunu çözüldü)
         syncDataToCloud(region, ph, weather, statusText, fullReportText, lastCapturedImage);
     }
-
     function drawStressChart(isOptimal) {
         const ctx = document.getElementById('stressChart').getContext('2d');
         if(myChart) { myChart.destroy(); }
-
         const dataIntervention = isOptimal ? [10, 8, 6, 5, 4] : [40, 30, 20, 12, 8];
         const dataNoIntervention = isOptimal ? [10, 12, 15, 20, 25] : [40, 50, 65, 80, 95];
-
         myChart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -606,7 +532,6 @@
             }
         });
     }
-
     function syncDataToCloud(region, ph, weather, stressStatus, notesText, imageData) {
         const syncStatusEl = document.getElementById('sync-status');
         syncStatusEl.style.display = 'block';
@@ -616,24 +541,22 @@
             region: region,
             ph: ph,
             weather: weather,
-            stres: stressStatus,  // E Sütunu için eşlendi
-            notlar: notesText,    // F Sütunu için eşlendi
-            fotograf: imageData,  // G Sütunu için eşlendi
-            timestamp: new Date().toISOString()
+            stres: stressStatus,
+            notlar: notesText,
+            fotograf: imageData
         };
 
         fetch(SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(payload)
         }).then(() => {
             syncStatusEl.innerText = lang === 'TR' ? '✅ Bulut Senkronizasyonu Başarılı!' : '✅ Cloud Sync Successful!';
         }).catch(() => {
-            syncStatusEl.innerText = lang === 'TR' ? '⚠️ Bulut Senkronizasyon Hatası (Yerel Mod)' : '⚠️ Cloud Sync Error (Local Mode)';
+            syncStatusEl.innerText = lang === 'TR' ? '⚠️ Bulut Senkronizasyon Hatası' : '⚠️ Cloud Sync Error';
         });
     }
-
     function resetSystem() {
         document.getElementById('res-area').style.display = 'none';
         document.getElementById('form-area').style.display = 'block';
