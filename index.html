@@ -189,7 +189,7 @@
             </div>
             
             <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/edit?usp=sharing" target="_blank" class="btn-excel">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
-            <div class="btn-save" onclick="window.print()">📥 RAPORu YAZDIR / PDF KAYDET</div>
+            <div class="btn-save" onclick="window.print()">📥 RAPORU YAZDIR / PDF KAYDET</div>
 
             <button id="reset-btn" class="btn-reset" onclick="resetSystem()" style="display:block;">YENİ ANALİZ / NEW ANALYZE</button>
         </div>
@@ -529,7 +529,9 @@
         document.getElementById('res-output').innerText = lang === 'TR' ? `Analiz Tamamlandı.\nBölge: ${range.name}\npH: ${ph}\nHava: ${weather}` : `Analysis Completed.\nRegion: ${range.name}\npH: ${ph}\nWeather: ${weather}`;
 
         drawStressChart(phVal >= range.min && phVal <= range.max);
-        syncDataToCloud(region, ph, weather, statusText);
+        
+        // Fotoğraf verisi eklendi
+        syncDataToCloud(region, ph, weather, statusText, lastCapturedImage);
     }
 
     function drawStressChart(isOptimal) {
@@ -574,7 +576,7 @@
         });
     }
 
-    function syncDataToCloud(region, ph, weather, statusText) {
+    function syncDataToCloud(region, ph, weather, statusText, imageData) {
         const syncStatusEl = document.getElementById('sync-status');
         syncStatusEl.style.display = 'block';
         syncStatusEl.innerText = lang === 'TR' ? '📡 Veriler Google Sheets Bulut Sistemine Aktarılıyor...' : '📡 Syncing Data to Google Sheets Cloud...';
@@ -584,6 +586,7 @@
             ph: ph,
             weather: weather,
             status: statusText,
+            image: imageData, // Fotoğraf verisi Google Apps Script'e gönderiliyor
             timestamp: new Date().toISOString()
         };
 
