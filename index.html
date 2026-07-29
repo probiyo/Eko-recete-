@@ -145,7 +145,7 @@
         <div id="res-area">
             <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;">BRÜSSEL PROJE RAPORU #EU-AGRO</div>
             
-            <div id="sync-status" class="sync-status">📡 Bulut Senkronizasyonu Aktif / Cloud Sync Active</div>
+            <div id="sync-status" class="sync-status">✨ Yerel Analiz Başarıyla Tamamlandı / Local Analysis Completed Successfully</div>
             <!-- Analiz Edilen Yaprak Fotoğrafı Önizlemesi -->
             <img id="preview-img" class="captured-preview" src="" alt="Captured Leaf">
             <div id="hybrid-output" class="hybrid-note"></div>
@@ -226,7 +226,7 @@
                     <strong id="status-hub5" style="color: #2e7d32;">Bağlı / Connected</strong>
                 </div>
             </div>
-            <button id="sync-net-btn" class="btn-main" style="margin-top: 15px; font-size: 13px; padding: 12px;" onclick="alert(lang === 'TR' ? 'Uluslararası Açık Kaynak Veri Havuzu senkronizasyonu güncellendi!' : 'International Open Source Data Hub synchronization updated!')">🔄 AĞI SENKRONİZE ET / SYNC NETWORK</button>
+            <button id="sync-net-btn" class="btn-main" style="margin-top: 15px; font-size: 13px; padding: 12px;" onclick="alert(lang === 'TR' ? 'Uluslararası Açık Kaynak Veri Havuzu güncel!' : 'International Open Source Data Hub updated!')">🔄 AĞI GÜNCELLE / UPDATE NETWORK</button>
         </div>
     </div>
     <div class="footer">© 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
@@ -237,7 +237,6 @@
     <div id="lightbox-caption"></div>
 </div>
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZXLHj3jeBI16nCqSv_hRmvKdYpTALbEm4T0aH4jCv5yHhm7-YXKu4h-kdfqi6iG5H/exec";
     let lang = 'TR';
     let track;
     let myChart = null;
@@ -486,12 +485,10 @@
         document.getElementById('green-deal-output').innerText = greenDealText;
         document.getElementById('prescription-output').innerText = prescriptionText;
         
-        const fullReportText = `Analiz: ${statusText} | ${calibrationText} | ${greenDealText} | ${prescriptionText}`;
         document.getElementById('res-output').innerText = lang === 'TR' ? `Analiz Tamamlandı.\nBölge: ${range.name}\npH: ${ph}\nHava: ${weather}` : `Analysis Completed.\nRegion: ${range.name}\npH: ${ph}\nWeather: ${weather}`;
         drawStressChart(phVal >= range.min && phVal <= range.max);
         
-        // Google Sheets veri gönderimi URL encoded yapı ile güncellendi
-        syncDataToCloud(region, ph, weather, statusText, fullReportText, lastCapturedImage);
+        document.getElementById('sync-status').style.display = 'block';
     }
     function drawStressChart(isOptimal) {
         const ctx = document.getElementById('stressChart').getContext('2d');
@@ -530,28 +527,6 @@
                     y: { beginAtZero: true, max: 100 }
                 }
             }
-        });
-    }
-    function syncDataToCloud(region, ph, weather, statusText, fullReportText, lastCapturedImage) {
-        const syncStatusEl = document.getElementById('sync-status');
-        syncStatusEl.style.display = 'block';
-        syncStatusEl.innerText = lang === 'TR' ? '📡 Veriler Google Sheets Bulut Sistemine Aktarılıyor...' : '📡 Syncing Data to Google Sheets Cloud...';
-        
-        const formData = new URLSearchParams();
-        formData.append('region', region);
-        formData.append('ph', ph);
-        formData.append('weather', weather);
-        formData.append('stres', statusText);
-        formData.append('notlar', fullReportText);
-        formData.append('fotograf', lastCapturedImage);
-
-        fetch(SCRIPT_URL, {
-            method: 'POST',
-            body: formData
-        }).then(res => res.text()).then(() => {
-            syncStatusEl.innerText = lang === 'TR' ? '✅ Bulut Senkronizasyonu Başarılı!' : '✅ Cloud Sync Successful!';
-        }).catch(() => {
-            syncStatusEl.innerText = lang === 'TR' ? '⚠️ Bulut Senkronizasyon Hatası' : '⚠️ Cloud Sync Error';
         });
     }
     function resetSystem() {
