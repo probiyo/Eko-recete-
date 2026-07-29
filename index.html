@@ -490,7 +490,7 @@
         document.getElementById('res-output').innerText = lang === 'TR' ? `Analiz Tamamlandı.\nBölge: ${range.name}\npH: ${ph}\nHava: ${weather}` : `Analysis Completed.\nRegion: ${range.name}\npH: ${ph}\nWeather: ${weather}`;
         drawStressChart(phVal >= range.min && phVal <= range.max);
         
-        // Google Sheets veri gönderimi güncellendi
+        // Google Sheets veri gönderimi URL encoded yapı ile güncellendi
         syncDataToCloud(region, ph, weather, statusText, fullReportText, lastCapturedImage);
     }
     function drawStressChart(isOptimal) {
@@ -536,20 +536,19 @@
         const syncStatusEl = document.getElementById('sync-status');
         syncStatusEl.style.display = 'block';
         syncStatusEl.innerText = lang === 'TR' ? '📡 Veriler Google Sheets Bulut Sistemine Aktarılıyor...' : '📡 Syncing Data to Google Sheets Cloud...';
-        const payload = {
-            region: region,
-            ph: ph,
-            weather: weather,
-            stres: statusText,
-            notlar: fullReportText,
-            fotograf: lastCapturedImage
-        };
+        
+        const formData = new URLSearchParams();
+        formData.append('region', region);
+        formData.append('ph', ph);
+        formData.append('weather', weather);
+        formData.append('stres', statusText);
+        formData.append('notlar', fullReportText);
+        formData.append('fotograf', lastCapturedImage);
+
         fetch(SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify(payload)
-        }).then(() => {
+            body: formData
+        }).then(res => res.text()).then(() => {
             syncStatusEl.innerText = lang === 'TR' ? '✅ Bulut Senkronizasyonu Başarılı!' : '✅ Cloud Sync Successful!';
         }).catch(() => {
             syncStatusEl.innerText = lang === 'TR' ? '⚠️ Bulut Senkronizasyon Hatası' : '⚠️ Cloud Sync Error';
