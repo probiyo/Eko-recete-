@@ -490,17 +490,18 @@
         drawStressChart(phVal >= range.min && phVal <= range.max);
         
         document.getElementById('sync-status').style.display = 'block';
-
-        // Google Sheets'e Veri Gönderme Bloğu (Stres ve Notlar Eklendi)
+        
+        // Google Sheets'e Veri Gönderme Bloğu (Fotoğraf Eklendi)
         const formData = {
             region: range.name,
             ph: ph,
             weather: weather,
             stress: phVal >= range.min && phVal <= range.max ? "Normal / Stres Yok" : "Stres Var (pH Sapması)",
             notes: document.getElementById('res-output').innerText.replace(/\n/g, " "),
+            photograph: lastCapturedImage, // Çekilen fotoğrafın base64 verisi
             date: new Date().toLocaleString()
         };
-
+        
         fetch(SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
