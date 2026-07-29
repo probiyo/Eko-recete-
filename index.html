@@ -490,7 +490,7 @@
         document.getElementById('res-output').innerText = lang === 'TR' ? `Analiz Tamamlandı.\nBölge: ${range.name}\npH: ${ph}\nHava: ${weather}` : `Analysis Completed.\nRegion: ${range.name}\npH: ${ph}\nWeather: ${weather}`;
         drawStressChart(phVal >= range.min && phVal <= range.max);
         
-        // Veriler düz metin parametreleri olarak Google Sheets'e gönderiliyor (no-cors sorunu çözüldü)
+        // Google Sheets veri gönderimi güncellendi
         syncDataToCloud(region, ph, weather, statusText, fullReportText, lastCapturedImage);
     }
     function drawStressChart(isOptimal) {
@@ -532,20 +532,18 @@
             }
         });
     }
-    function syncDataToCloud(region, ph, weather, stressStatus, notesText, imageData) {
+    function syncDataToCloud(region, ph, weather, statusText, fullReportText, lastCapturedImage) {
         const syncStatusEl = document.getElementById('sync-status');
         syncStatusEl.style.display = 'block';
         syncStatusEl.innerText = lang === 'TR' ? '📡 Veriler Google Sheets Bulut Sistemine Aktarılıyor...' : '📡 Syncing Data to Google Sheets Cloud...';
-
         const payload = {
             region: region,
             ph: ph,
             weather: weather,
-            stres: stressStatus,
-            notlar: notesText,
-            fotograf: imageData
+            stres: statusText,
+            notlar: fullReportText,
+            fotograf: lastCapturedImage
         };
-
         fetch(SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
