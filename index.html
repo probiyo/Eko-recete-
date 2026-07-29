@@ -491,11 +491,13 @@
         
         document.getElementById('sync-status').style.display = 'block';
 
-        // Google Sheets'e Veri Gönderme Bloğu
+        // Google Sheets'e Veri Gönderme Bloğu (Stres ve Notlar Eklendi)
         const formData = {
             region: range.name,
             ph: ph,
             weather: weather,
+            stress: phVal >= range.min && phVal <= range.max ? "Normal / Stres Yok" : "Stres Var (pH Sapması)",
+            notes: document.getElementById('res-output').innerText.replace(/\n/g, " "),
             date: new Date().toLocaleString()
         };
 
