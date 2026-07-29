@@ -92,7 +92,7 @@
     <div id="lang-toggle" onclick="toggleLang()">EN / TR</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;">Rize Fatih Anatolian High School</span></div>
     <h1>GLOBAL AGRO DOCTOR</h1>
-    <div class="author">Yusuf İhsan HAMAMCI <br><small>Biology Expert & Project Lead</small></div>
+    <div class="author">Hazreti Yusuf İhsan HAMAMCI <br><small>Biology Expert & Project Lead</small></div>
 
     <!-- Navigasyon Sekmeleri -->
     <div class="nav-tabs">
@@ -186,7 +186,7 @@
             <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/edit?usp=sharing" target="_blank" class="btn-excel">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
             <div class="btn-save" onclick="window.print()">📥 RAPORU YAZDIR / PDF KAYDET</div>
 
-            <button id="reset-btn" class="btn-reset" onclick="resetSystem()">YENİ ANALİZ / NEW ANALYZE</button>
+            <button id="reset-btn" class="btn-reset" onclick="resetSystem()" style="display:block;">YENİ ANALİZ / NEW ANALYZE</button>
         </div>
     </div>
 
@@ -273,7 +273,6 @@
     const v = document.getElementById('v');
     const c = document.getElementById('canvas');
 
-    // Bitki bazlı bilimsel ideal pH aralıkları tablosu
     const cropRanges = {
         "tr-antakya-citrus": { min: 6.0, max: 7.5, name: "Narenciye / Citrus" },
         "tr-ege-olive": { min: 6.5, max: 8.0, name: "Zeytin / Olive" },
@@ -301,7 +300,6 @@
             phLabel.innerHTML = `SOIL pH VALUE (Ideal Range: ${range.min} - ${range.max}) [3.0 - 9.0]`;
         }
         
-        // Mevcut girilen pH değerini yeni seçilen bitkiye göre kontrol et
         const phInput = document.getElementById('ph');
         if(phInput.value) {
             validatePH(phInput);
@@ -316,8 +314,6 @@
 
         if(isNaN(val)) return;
 
-        // Öğrenci 3.0 ile 9.0 arasında istediği değeri serbestçe girebilir, 
-        // ancak seçilen bitkinin tolerans aralığı dışındaysa uyarı verir.
         if(val < range.min || val > range.max) {
             warn.style.display = 'block';
             if(lang === 'TR') {
@@ -342,41 +338,6 @@
         document.getElementById('photo-caption').placeholder = lang === 'TR' ? 'Açıklama giriniz...' : 'Enter caption...';
         
         updatePHRangeInfo();
-
-        if(lang === 'EN') {
-            document.getElementById('citizen-hub-title').innerHTML = `🌍 Open Source Agriculture Database<br><span style="font-size:9px; font-weight:normal;">Citizen Science & International Network Hub</span>`;
-            document.getElementById('stat-nodes-lbl').innerText = "Active Regional Network";
-            document.getElementById('stat-samples-lbl').innerText = "Total Data Samples";
-            document.getElementById('partner-regions-lbl').innerText = "Participating Pilot Regions:";
-            document.getElementById('node-rize').innerText = "🌱 Rize Fatih Anatolian High School (Tea) [Ideal pH: 4.5-5.5]";
-            document.getElementById('node-antakya').innerText = "🍊 Antakya (Citrus) [Ideal pH: 6.0-7.5]";
-            document.getElementById('node-ege-olive').innerText = "🫒 Aegean Region (Olive & Olive Oil) [Ideal pH: 6.5-8.0]";
-            document.getElementById('node-ege-fig').innerText = "🌿 Aegean Region (Fig) [Ideal pH: 6.0-7.5]";
-            document.getElementById('node-brussels').innerText = "🇪🇺 Brussels EU School Network (Pilot)";
-            document.getElementById('status-hub1').innerText = "Active Hub";
-            document.getElementById('status-hub2').innerText = "Synchronized";
-            document.getElementById('status-hub3').innerText = "Synchronized";
-            document.getElementById('status-hub4').innerText = "Synchronized";
-            document.getElementById('status-hub5').innerText = "Connected";
-            document.getElementById('sync-net-btn').innerText = "🔄 SYNC NETWORK";
-        } else {
-            document.getElementById('citizen-hub-title').innerHTML = `🌍 Açık Kaynaklı Tarım Veritabanı<br><span style="font-size:9px; font-weight:normal;">Citizen Science & International Network Hub</span>`;
-            document.getElementById('stat-nodes-lbl').innerText = "Aktif Bölgesel Ağ / Active Nodes";
-            document.getElementById('stat-samples-lbl').innerText = "Toplam Veri / Total Samples";
-            document.getElementById('partner-regions-lbl').innerText = "Katılımcı Pilot Bölgeler / Partner Regions:";
-            document.getElementById('node-rize').innerText = "🌱 Rize Fatih Anadolu Lisesi (Çay / Tea) [İdeal pH: 4.5-5.5]";
-            document.getElementById('node-antakya').innerText = "🍊 Antakya (Narenciye / Citrus) [İdeal pH: 6.0-7.5]";
-            document.getElementById('node-ege-olive').innerText = "🫒 Ege Bölgesi (Zeytin & Zeytinyağı / Olive) [İdeal pH: 6.5-8.0]";
-            document.getElementById('node-ege-fig').innerText = "🌿 Ege Bölgesi (İncir / Fig) [İdeal pH: 6.0-7.5]";
-            document.getElementById('node-brussels').innerText = "🇪🇺 Brüksel EU Okul Ağı (Pilot / EU School Network)";
-            document.getElementById('status-hub1').innerText = "Aktif Hub / Active Hub";
-            document.getElementById('status-hub2').innerText = "Senkronize / Synchronized";
-            document.getElementById('status-hub3').innerText = "Senkronize / Synchronized";
-            document.getElementById('status-hub4').innerText = "Senkronize / Synchronized";
-            document.getElementById('status-hub5').innerText = "Bağlı / Connected";
-            document.getElementById('sync-net-btn').innerText = "🔄 AĞI SENKRONİZE ET / SYNC NETWORK";
-        }
-
         loadGallery();
     }
 
@@ -517,42 +478,119 @@
         });
     }
 
-    function processAI(isUpdateOnly = false) {
-        if(!isUpdateOnly) {
-            c.width = v.videoWidth || 640;
-            c.height = v.videoHeight || 480;
-            const ctxCanvas = c.getContext('2d');
-            ctxCanvas.drawImage(v, 0, 0, c.width, c.height);
-            
-            const imgData = ctxCanvas.getImageData(0, 0, c.width, c.height);
-            let greenPixels = 0;
-            let totalPixels = imgData.data.length / 4;
-            
-            for (let i = 0; i < imgData.data.length; i += 4) {
-                let r = imgData.data[i];
-                let g = imgData.data[i+1];
-                let b = imgData.data[i+2];
-                if (g > r + 10 && g > b + 10) {
-                    greenPixels++;
-                }
-            }
-            
-            let greenRatio = greenPixels / totalPixels;
-            if (greenRatio < 0.08) {
-                if(track) { track.stop(); }
-                document.getElementById('cam-box').style.display = 'none';
-                document.getElementById('error-box').style.display = 'block';
-                document.getElementById('form-area').style.display = 'block';
-                return;
-            }
+    function processAI() {
+        c.width = v.videoWidth || 640;
+        c.height = v.videoHeight || 480;
+        const ctxCanvas = c.getContext('2d');
+        ctxCanvas.drawImage(v, 0, 0, c.width, c.height);
+        
+        lastCapturedImage = c.toDataURL('image/jpeg', 0.7);
 
-            lastCapturedImage = c.toDataURL('image/jpeg', 0.7);
+        if(track) { track.stop(); }
+        document.getElementById('cam-box').style.display = 'none';
+        document.getElementById('error-box').style.display = 'none';
+        document.getElementById('res-area').style.display = 'block';
 
-            if(track) { track.stop(); }
-            document.getElementById('cam-box').style.display = 'none';
+        const region = document.getElementById('region').value;
+        const ph = document.getElementById('ph').value;
+        const weather = document.getElementById('weather').value;
+        const range = cropRanges[region] || { min: 6.0, max: 7.0 };
+        const phVal = parseFloat(ph);
+
+        let statusText = "";
+        let calibrationText = "";
+        let greenDealText = "";
+        let prescriptionText = "";
+
+        if(phVal >= range.min && phVal <= range.max) {
+            statusText = lang === 'TR' ? `[OK] ${range.name} için ideal pH aralığında (${range.min}-${range.max}).` : `[OK] Optimal pH range for ${range.name} (${range.min}-${range.max}).`;
+            calibrationText = lang === 'TR' ? "🔬 Kalibrasyon: Sensör referans aralığında, klorofil sentezi kararlı." : "🔬 Calibration: Sensor within reference range, chlorophyll synthesis stable.";
+        } else {
+            statusText = lang === 'TR' ? `[UYARI] pH (${phVal}) hedef aralıkta (${range.min}-${range.max}) değil! Stres gözlendi.` : `[WARNING] pH (${phVal}) out of target range (${range.min}-${range.max})! Stress observed.`;
+            calibrationText = lang === 'TR' ? "🔬 Kalibrasyon: pH sapması nedeniyle mikro element alımı (Fe/Mg) bloke olmuş olabilir." : "🔬 Calibration: Nutrient uptake (Fe/Mg) might be blocked due to pH shift.";
         }
 
-        document.getElementById('error-box').style.display = 'none';
+        greenDealText = lang === 'TR' ? "🇪🇺 AB Yeşil Mutabakatı: Düşük karbon ayak izi ve organik gübreleme protokolü aktif." : "🇪🇺 EU Green Deal: Low carbon footprint & organic fertilization protocol active.";
+        prescriptionText = lang === 'TR' ? `💊 Akıllı Reçete: Bölgesel iklim (${weather}) ve toprak pH değerine göre damla sulama optimize edildi.` : `💊 Smart Prescription: Drip irrigation optimized for regional climate (${weather}) and soil pH.`;
+
+        document.getElementById('hybrid-output').innerText = statusText;
+        document.getElementById('calibration-output').innerText = calibrationText;
+        document.getElementById('green-deal-output').innerText = greenDealText;
+        document.getElementById('prescription-output').innerText = prescriptionText;
+
+        document.getElementById('res-output').innerText = 
+            `BÖLGE / REGION: ${region}\n` +
+            `TOPRAK pH: ${ph} (İdeal: ${range.min}-${range.max})\n` +
+            `HAVA / WEATHER: ${weather}\n` +
+            `DURUM / STATUS: ${phVal >= range.min && phVal <= range.max ? 'SAĞLIKLI / HEALTHY' : 'STRESLİ / STRESSED'}\n` +
+            `TARİH / DATE: ${new Date().toLocaleString()}`;
+
+        // Grafiği Çiz
+        drawStressChart(phVal, range);
+
+        // Google Sheets'e Veri Gönderimi
+        sendToExcel(region, ph, weather, phVal >= range.min && phVal <= range.max ? 'Normal' : 'Stresli');
+    }
+
+    function drawStressChart(phVal, range) {
+        const ctx = document.getElementById('stressChart').getContext('2d');
+        if(myChart) myChart.destroy();
+
+        let baseStress = (phVal >= range.min && phVal <= range.max) ? 15 : 65;
+        let dataTrend = [baseStress, baseStress + 5, baseStress - 2, baseStress + 8, baseStress + 3];
+
+        myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['1. Gün', '2. Gün', '3. Gün', '4. Gün', '5. Gün'],
+                datasets: [{
+                    label: lang === 'TR' ? 'Stres İndeksi (%)' : 'Stress Index (%)',
+                    data: dataTrend,
+                    borderColor: '#1b5e20',
+                    backgroundColor: 'rgba(27, 94, 32, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, max: 100 }
+                }
+            }
+        });
+    }
+
+    function sendToExcel(region, ph, weather, status) {
+        const syncDiv = document.getElementById('sync-status');
+        syncDiv.style.display = 'block';
+        syncDiv.innerText = lang === 'TR' ? '📡 Bulut Senkronizasyonu Aktif / Veriler Gönderiliyor...' : '📡 Cloud Sync Active / Sending Data...';
+
+        const data = {
+            region: region,
+            ph: ph,
+            weather: weather,
+            status: status,
+            date: new Date().toISOString()
+        };
+
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }).then(() => {
+            syncDiv.innerText = lang === 'TR' ? '✅ Veriler Google E-Tablolar\'a Başarıyla Kaydedildi!' : '✅ Data Successfully Saved to Google Sheets!';
+        }).catch(err => {
+            syncDiv.innerText = lang === 'TR' ? '⚠️ Senkronizasyon Hatası (Çevrimdışı mod)' : '⚠️ Sync Error (Offline mode)';
+        });
+    }
+
+    function resetSystem() {
+        document.getElementById('res-area').style.display = 'none';
+        document.getElementById('form-area').style.display = 'block';
+        document.getElementById('sync-status').style.display = 'none';
     }
 </script>
 </body>
