@@ -106,25 +106,25 @@
         <div id="form-area">
             <div class="card">
                <label>Bölge ve Ürün / Region & Crop</label>
-                <select id="region">
-                   <option value="tr-antakya-citrus">Antakya - Citrus (Narenciye)</option>
-                   <option value="tr-ege-olive">Ege - Olive & Olive Oil (Zeytin / Zeytinyağı)</option>
-                   <option value="tr-ege-fig">Ege - Fig (İncir)</option>
+                <select id="region" onchange="updatePHRangeInfo()">
+                   <option value="tr-antakya-citrus">Antakya - Citrus (Narenciye) [İdeal pH: 6.0 - 7.5]</option>
+                   <option value="tr-ege-olive">Ege - Olive & Olive Oil (Zeytin) [İdeal pH: 6.5 - 8.0]</option>
+                   <option value="tr-ege-fig">Ege - Fig (İncir) [İdeal pH: 6.0 - 7.5]</option>
                    <option value="tr-tea" selected>Turkey, Rize - Tea (Çay) [İdeal pH: 4.5 - 5.5]</option>
-                   <option value="be-sugar">Brussels, BE - Sugar Beet (Şeker Pancarı)</option>
-                   <option value="nl-tulip">Netherlands - Tulips (Lale)</option>
-                   <option value="it-tomato">Italy - Tomatoes (Domates)</option>
-                   <option value="global-other">Global - Diğer / Other</option>
+                   <option value="be-sugar">Brussels, BE - Sugar Beet (Şeker Pancarı) [İdeal pH: 6.0 - 7.0]</option>
+                   <option value="nl-tulip">Netherlands - Tulips (Lale) [İdeal pH: 6.0 - 7.0]</option>
+                   <option value="it-tomato">Italy - Tomatoes (Domates) [İdeal pH: 6.0 - 6.8]</option>
+                   <option value="global-other">Global - Diğer / Other [İdeal pH: 6.0 - 7.0]</option>
                 </select>
-                <div class="other-opt" onclick="document.getElementById('region').value='global-other'">
+                <div class="other-opt" onclick="document.getElementById('region').value='global-other'; updatePHRangeInfo();">
                     + Global - Diğer / Other (Manual Selection)
                 </div>
             </div>
 
             <div class="card">
-               <label>Toprak pH Değeri / Soil pH (Genel Aralık: 3.0 - 9.0)</label>
-                <input type="number" id="ph" step="0.1" min="3.0" max="9.0" placeholder="Ex: 4.8" value="4.8" oninput="validatePH(this)">
-                <div id="ph-warn" class="ph-warning">⚠️ [TR] pH değeri çay bitkisi için ideal bilimsel aralığın (4.5 - 5.5) dışında! <br>⚠️ [EN] pH value out of ideal scientific range for tea (4.5 - 5.5)!</div>
+               <label id="ph-label">TOPRAK pH DEĞERİ / SOIL pH (3.0 - 9.0)</label>
+                <input type="number" id="ph" step="0.1" min="3.0" max="9.0" placeholder="Ex: 6.5" value="4.8" oninput="validatePH(this)">
+                <div id="ph-warn" class="ph-warning">⚠️ [TR] Girilen pH değeri seçilen bitki için ideal bilimsel aralığın dışında! <br>⚠️ [EN] Entered pH value is out of the ideal scientific range for this crop!</div>
             </div>
 
             <div class="card">
@@ -233,15 +233,15 @@
                     <strong id="status-hub1" style="color: #2e7d32;">Aktif Hub / Active Hub</strong>
                 </div>
                 <div class="network-item">
-                    <span id="node-antakya">🍊 Antakya (Narenciye / Citrus)</span>
+                    <span id="node-antakya">🍊 Antakya (Narenciye / Citrus) [pH: 6.0-7.5]</span>
                     <strong id="status-hub2" style="color: #2e7d32;">Senkronize / Synchronized</strong>
                 </div>
                 <div class="network-item">
-                    <span id="node-ege-olive">🫒 Ege Bölgesi (Zeytin & Zeytinyağı / Olive)</span>
+                    <span id="node-ege-olive">🫒 Ege Bölgesi (Zeytin & Zeytinyağı / Olive) [pH: 6.5-8.0]</span>
                     <strong id="status-hub3" style="color: #2e7d32;">Senkronize / Synchronized</strong>
                 </div>
                 <div class="network-item">
-                    <span id="node-ege-fig">🌿 Ege Bölgesi (İncir / Fig)</span>
+                    <span id="node-ege-fig">🌿 Ege Bölgesi (İncir / Fig) [pH: 6.0-7.5]</span>
                     <strong id="status-hub4" style="color: #2e7d32;">Senkronize / Synchronized</strong>
                 </div>
                 <div class="network-item">
@@ -273,8 +273,61 @@
     const v = document.getElementById('v');
     const c = document.getElementById('canvas');
 
+    // Bitki bazlı bilimsel ideal pH aralıkları tablosu
+    const cropRanges = {
+        "tr-antakya-citrus": { min: 6.0, max: 7.5, name: "Narenciye / Citrus" },
+        "tr-ege-olive": { min: 6.5, max: 8.0, name: "Zeytin / Olive" },
+        "tr-ege-fig": { min: 6.0, max: 7.5, name: "İncir / Fig" },
+        "tr-tea": { min: 4.5, max: 5.5, name: "Çay / Tea" },
+        "be-sugar": { min: 6.0, max: 7.0, name: "Şeker Pancarı / Sugar Beet" },
+        "nl-tulip": { min: 6.0, max: 7.0, name: "Lale / Tulip" },
+        "it-tomato": { min: 6.0, max: 6.8, name: "Domates / Tomato" },
+        "global-other": { min: 6.0, max: 7.0, name: "Diğer / Other" }
+    };
+
     function initApp() {
         loadGallery();
+        updatePHRangeInfo();
+    }
+
+    function updatePHRangeInfo() {
+        const regionKey = document.getElementById('region').value;
+        const range = cropRanges[regionKey] || { min: 6.0, max: 7.0 };
+        const phLabel = document.getElementById('ph-label');
+        
+        if(lang === 'TR') {
+            phLabel.innerHTML = `TOPRAK pH DEĞERİ / SOIL pH (İdeal Aralık: ${range.min} - ${range.max}) [3.0 - 9.0]`;
+        } else {
+            phLabel.innerHTML = `SOIL pH VALUE (Ideal Range: ${range.min} - ${range.max}) [3.0 - 9.0]`;
+        }
+        
+        // Mevcut girilen pH değerini yeni seçilen bitkiye göre kontrol et
+        const phInput = document.getElementById('ph');
+        if(phInput.value) {
+            validatePH(phInput);
+        }
+    }
+
+    function validatePH(input) {
+        const val = parseFloat(input.value);
+        const warn = document.getElementById('ph-warn');
+        const regionKey = document.getElementById('region').value;
+        const range = cropRanges[regionKey] || { min: 6.0, max: 7.0 };
+
+        if(isNaN(val)) return;
+
+        // Öğrenci 3.0 ile 9.0 arasında istediği değeri serbestçe girebilir, 
+        // ancak seçilen bitkinin tolerans aralığı dışındaysa uyarı verir.
+        if(val < range.min || val > range.max) {
+            warn.style.display = 'block';
+            if(lang === 'TR') {
+                warn.innerHTML = `⚠️ [TR] Girilen pH (${val}), ${range.name} için ideal bilimsel aralığın (${range.min} - ${range.max}) dışında!`;
+            } else {
+                warn.innerHTML = `⚠️ [EN] Entered pH (${val}) is outside the ideal scientific range (${range.min} - ${range.max}) for ${range.name}!`;
+            }
+        } else {
+            warn.style.display = 'none';
+        }
     }
 
     function toggleLang() {
@@ -288,15 +341,17 @@
         document.getElementById('upload-txt-sub').innerText = lang === 'TR' ? 'Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları' : 'Group shots with students, lab and field studies';
         document.getElementById('photo-caption').placeholder = lang === 'TR' ? 'Açıklama giriniz...' : 'Enter caption...';
         
+        updatePHRangeInfo();
+
         if(lang === 'EN') {
             document.getElementById('citizen-hub-title').innerHTML = `🌍 Open Source Agriculture Database<br><span style="font-size:9px; font-weight:normal;">Citizen Science & International Network Hub</span>`;
             document.getElementById('stat-nodes-lbl').innerText = "Active Regional Network";
             document.getElementById('stat-samples-lbl').innerText = "Total Data Samples";
             document.getElementById('partner-regions-lbl').innerText = "Participating Pilot Regions:";
             document.getElementById('node-rize').innerText = "🌱 Rize Fatih Anatolian High School (Tea) [Ideal pH: 4.5-5.5]";
-            document.getElementById('node-antakya').innerText = "🍊 Antakya (Citrus)";
-            document.getElementById('node-ege-olive').innerText = "🫒 Aegean Region (Olive & Olive Oil)";
-            document.getElementById('node-ege-fig').innerText = "🌿 Aegean Region (Fig)";
+            document.getElementById('node-antakya').innerText = "🍊 Antakya (Citrus) [Ideal pH: 6.0-7.5]";
+            document.getElementById('node-ege-olive').innerText = "🫒 Aegean Region (Olive & Olive Oil) [Ideal pH: 6.5-8.0]";
+            document.getElementById('node-ege-fig').innerText = "🌿 Aegean Region (Fig) [Ideal pH: 6.0-7.5]";
             document.getElementById('node-brussels').innerText = "🇪🇺 Brussels EU School Network (Pilot)";
             document.getElementById('status-hub1').innerText = "Active Hub";
             document.getElementById('status-hub2').innerText = "Synchronized";
@@ -310,9 +365,9 @@
             document.getElementById('stat-samples-lbl').innerText = "Toplam Veri / Total Samples";
             document.getElementById('partner-regions-lbl').innerText = "Katılımcı Pilot Bölgeler / Partner Regions:";
             document.getElementById('node-rize').innerText = "🌱 Rize Fatih Anadolu Lisesi (Çay / Tea) [İdeal pH: 4.5-5.5]";
-            document.getElementById('node-antakya').innerText = "🍊 Antakya (Narenciye / Citrus)";
-            document.getElementById('node-ege-olive').innerText = "🫒 Ege Bölgesi (Zeytin & Zeytinyağı / Olive)";
-            document.getElementById('node-ege-fig').innerText = "🌿 Ege Bölgesi (İncir / Fig)";
+            document.getElementById('node-antakya').innerText = "🍊 Antakya (Narenciye / Citrus) [İdeal pH: 6.0-7.5]";
+            document.getElementById('node-ege-olive').innerText = "🫒 Ege Bölgesi (Zeytin & Zeytinyağı / Olive) [İdeal pH: 6.5-8.0]";
+            document.getElementById('node-ege-fig').innerText = "🌿 Ege Bölgesi (İncir / Fig) [İdeal pH: 6.0-7.5]";
             document.getElementById('node-brussels').innerText = "🇪🇺 Brüksel EU Okul Ağı (Pilot / EU School Network)";
             document.getElementById('status-hub1').innerText = "Aktif Hub / Active Hub";
             document.getElementById('status-hub2').innerText = "Senkronize / Synchronized";
@@ -323,7 +378,6 @@
         }
 
         loadGallery();
-        if(document.getElementById('res-area').style.display === 'block') processAI(true);
     }
 
     function switchTab(tabName) {
@@ -439,16 +493,6 @@
         document.getElementById('lightbox-modal').style.display = 'none';
     }
 
-    function validatePH(input) {
-        const val = parseFloat(input.value);
-        const warn = document.getElementById('ph-warn');
-        if(val < 4.5 || val > 5.5) {
-            warn.style.display = 'block';
-        } else {
-            warn.style.display = 'none';
-        }
-    }
-
     function startSystem() {
         const phVal = document.getElementById('ph').value;
         if(!phVal) {
@@ -509,7 +553,6 @@
         }
 
         document.getElementById('error-box').style.display = 'none';
-        // Devamı sistem yapısına uygun şekilde işlenecektir.
     }
 </script>
 </body>
