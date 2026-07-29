@@ -145,7 +145,7 @@
         <div id="res-area">
             <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;">BRÜSSEL PROJE RAPORU #EU-AGRO</div>
             
-            <div id="sync-status" class="sync-status">✨ Yerel Analiz Başarıyla Tamamlandı / Local Analysis Completed Successfully</div>
+            <div id="sync-status" class="sync-status">✨ Yerel Analiz Başarıyla Tamamlandı & Excel'e Aktarıldı!</div>
             <!-- Analiz Edilen Yaprak Fotoğrafı Önizlemesi -->
             <img id="preview-img" class="captured-preview" src="" alt="Captured Leaf">
             <div id="hybrid-output" class="hybrid-note"></div>
@@ -237,6 +237,7 @@
     <div id="lightbox-caption"></div>
 </div>
 <script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSfNJ-wahBs-bJn5AIJjHTvGNM19WpMKvEDij-6j8pM6ej2-VDdZCcFIak4DcXYxpv/exec';
     let lang = 'TR';
     let track;
     let myChart = null;
@@ -489,6 +490,23 @@
         drawStressChart(phVal >= range.min && phVal <= range.max);
         
         document.getElementById('sync-status').style.display = 'block';
+
+        // Google Sheets'e Veri Gönderme Bloğu
+        const formData = {
+            region: range.name,
+            ph: ph,
+            weather: weather,
+            date: new Date().toLocaleString()
+        };
+
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        });
     }
     function drawStressChart(isOptimal) {
         const ctx = document.getElementById('stressChart').getContext('2d');
