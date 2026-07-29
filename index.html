@@ -526,12 +526,14 @@
         document.getElementById('calibration-output').innerText = calibrationText;
         document.getElementById('green-deal-output').innerText = greenDealText;
         document.getElementById('prescription-output').innerText = prescriptionText;
+        
+        const fullReportText = `Analiz: ${statusText} | ${calibrationText} | ${greenDealText} | ${prescriptionText}`;
         document.getElementById('res-output').innerText = lang === 'TR' ? `Analiz Tamamlandı.\nBölge: ${range.name}\npH: ${ph}\nHava: ${weather}` : `Analysis Completed.\nRegion: ${range.name}\npH: ${ph}\nWeather: ${weather}`;
 
         drawStressChart(phVal >= range.min && phVal <= range.max);
         
-        // Fotoğraf verisi eklendi
-        syncDataToCloud(region, ph, weather, statusText, lastCapturedImage);
+        // Stres (E sütunu) ve Analiz/Notlar (F sütunu) buluta gönderiliyor
+        syncDataToCloud(region, ph, weather, statusText, fullReportText, lastCapturedImage);
     }
 
     function drawStressChart(isOptimal) {
@@ -576,7 +578,7 @@
         });
     }
 
-    function syncDataToCloud(region, ph, weather, statusText, imageData) {
+    function syncDataToCloud(region, ph, weather, stressStatus, notesText, imageData) {
         const syncStatusEl = document.getElementById('sync-status');
         syncStatusEl.style.display = 'block';
         syncStatusEl.innerText = lang === 'TR' ? '📡 Veriler Google Sheets Bulut Sistemine Aktarılıyor...' : '📡 Syncing Data to Google Sheets Cloud...';
@@ -585,8 +587,9 @@
             region: region,
             ph: ph,
             weather: weather,
-            status: statusText,
-            image: imageData, // Fotoğraf verisi Google Apps Script'e gönderiliyor
+            status: stressStatus, // E Sütunu (Stres)
+            notes: notesText,     // F Sütunu (Analiz/Notlar)
+            image: imageData,     // G Sütunu (Fotoğraf)
             timestamp: new Date().toISOString()
         };
 
