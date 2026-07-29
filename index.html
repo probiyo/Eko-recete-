@@ -124,7 +124,7 @@
             <div class="card">
                <label>Toprak pH Değeri / Soil pH (3.0 - 10.0)</label>
                 <input type="number" id="ph" step="0.1" min="3.0" max="10.0" placeholder="Ex: 4.8" value="4.8" oninput="validatePH(this)">
-                <div id="ph-warn" class="ph-warning">⚠️ [TR] pH değeri tarımsal sınırların dışında! <br>⚠️ [EN] pH value out of agricultural limits!</div>
+                <div id="ph-warn" class="ph-warning">⚠️ [TR] pH değeri tarımsal sınırların (3.0 - 10.0) dışında! <br>⚠️ [EN] pH value out of agricultural limits!</div>
             </div>
 
             <div class="card">
@@ -156,7 +156,7 @@
         </div>
 
         <div id="error-box" class="error-msg">
-            [TR] ⚠️ HATA: BİTKİ ALGILANAMADI!<br>[EN] ⚠️ ERROR: NO PLANT DETECTED!
+            [TR] ⚠️ HATA: BİTKİ ALGILANAMADI! (Yalnızca yaprak/bitki analizi yapılabilir)<br>[EN] ⚠️ ERROR: NO PLANT DETECTED! (Only plant/leaf analysis allowed)
         </div>
 
         <div id="res-area">
@@ -442,7 +442,7 @@
     function validatePH(input) {
         const val = parseFloat(input.value);
         const warn = document.getElementById('ph-warn');
-        if(val < 3.5 || val > 8.5) {
+        if(val < 3.0 || val > 10.0) {
             warn.style.display = 'block';
         } else {
             warn.style.display = 'none';
@@ -479,6 +479,31 @@
             c.height = v.videoHeight || 480;
             const ctxCanvas = c.getContext('2d');
             ctxCanvas.drawImage(v, 0, 0, c.width, c.height);
+            
+            // Klorofil / Bitki Algılama Doğrulama (Yeşil Piksel Filtresi)
+            const imgData = ctxCanvas.getImageData(0, 0, c.width, c.height);
+            let greenPixels = 0;
+            let totalPixels = imgData.data.length / 4;
+            
+            for (let i = 0; i < imgData.data.length; i += 4) {
+                let r = imgData.data[i];
+                let g = imgData.data[i+1];
+                let b = imgData.data[i+2];
+                // Yeşil kanalın kırmızı ve maviden belirgin yüksek olması bitki klorofil yapısını doğrular
+                if (g > r + 10 && g > b + 10) {
+                    greenPixels++;
+                }
+            }
+            
+            let greenRatio = greenPixels / totalPixels;
+            if (greenRatio < 0.08) { // Yeterli klorofil / yeşil doku yoksa hata ver
+                if(track) { track.stop(); }
+                document.getElementById('cam-box').style.display = 'none';
+                document.getElementById('error-box').style.display = 'block';
+                document.getElementById('form-area').style.display = 'block';
+                return;
+            }
+
             lastCapturedImage = c.toDataURL('image/jpeg', 0.7);
 
             if(track) { track.stop(); }
