@@ -521,64 +521,33 @@
         }
 
         greenDealText = lang === 'TR' ? "🇪🇺 AB Yeşil Mutabakatı: Düşük karbon ayak izi ve organik gübreleme protokolü aktif." : "🇪🇺 EU Green Deal: Low carbon footprint & organic fertilization protocol active.";
-        prescriptionText = lang === 'TR' ? `💊 Reçete Önerisi: Hava (${weather}), pH: ${ph} dikkate alınarak damla sulama entegrasyonu planlandı.` : `💊 Prescription: Drop irrigation integration planned considering Weather (${weather}), pH: ${ph}.`;
+        prescriptionText = lang === 'TR' ? `💊 Reçete Önerisi: Hava (${weather}), pH: ${ph} dikkate alınarak damla sulama entegrasyonu planlanmıştır.` : `💊 Prescription: Drip irrigation integration planned considering weather (${weather}) and pH (${ph}).`;
 
         document.getElementById('hybrid-output').innerText = statusText;
         document.getElementById('calibration-output').innerText = calibrationText;
         document.getElementById('green-deal-output').innerText = greenDealText;
         document.getElementById('prescription-output').innerText = prescriptionText;
 
-        document.getElementById('res-output').innerText = lang === 'TR' 
-            ? `Bölge: ${region}\nToprak pH: ${ph}\nHava Durumu: ${weather}\nAnaliz Durumu: TAMAMLANDI\nProje Lideri: Hazreti Yusuf İhsan HAMAMCI`
-            : `Region: ${region}\nSoil pH: ${ph}\nWeather: ${weather}\nAnalysis Status: COMPLETED\nProject Lead: Hazreti Yusuf İhsan HAMAMCI`;
+        let details = lang === 'TR' ? 
+            `[RAPOR DETAYI]\n- Seçilen Bölge/Ürün: ${range.name}\n- Toprak pH: ${ph}\n- Hava Koşulu: ${weather}\n- Analiz Durumu: Başarılı\n- Öneri: Yapraksal besleme ve pH dengelenmesi.` :
+            `[REPORT DETAIL]\n- Selected Region/Crop: ${range.name}\n- Soil pH: ${ph}\n- Weather: ${weather}\n- Analysis Status: Success\n- Recommendation: Foliar feeding and pH balancing.`;
 
-        // 5 Günlük Simülasyon Grafiği (Chart.js)
-        renderStressChart(phVal, range);
+        document.getElementById('res-output').innerText = details;
 
-        // 1. Madde: Google Sheets Entegrasyonu ve Arka Plan Fetch Gönderimi
-        sendDataToGoogleSheets({
-            region: region,
-            ph: ph,
-            weather: weather,
-            status: statusText,
-            timestamp: new Date().toISOString()
-        });
+        // Grafik Çizimi
+        renderChart(phVal, range.min, range.max);
+
+        // Google Sheets / Apps Script Senkronizasyonu
+        syncToCloud(range.name, ph, weather);
     }
 
-    function sendDataToGoogleSheets(payload) {
-        const syncStatusEl = document.getElementById('sync-status');
-        syncStatusEl.style.display = 'block';
-        syncStatusEl.innerText = lang === 'TR' ? '📡 Bulut Senkronizasyonu Devam Ediyor...' : '📡 Cloud Synchronization in Progress...';
-
-        // Fetch API kullanarak Apps Script endpointine verileri gönderiyoruz (CORS için no-cors veya mode ayarları)
-        fetch(SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload)
-        })
-        .then(() => {
-            syncStatusEl.innerText = lang === 'TR' ? '📡 Bulut Senkronizasyonu Başarılı / Veriler Google Sheets e Kaydedildi' : '📡 Cloud Sync Successful / Data Saved to Google Sheets';
-        })
-        .catch(error => {
-            console.error('Sheets Sync Error:', error);
-            syncStatusEl.innerText = lang === 'TR' ? '⚠️ Bulut Senkronizasyon Hatası (Yerel Çevrimdışı Kuyrukta)' : '⚠️ Cloud Sync Error (Stored in Offline Queue)';
-        });
-    }
-
-    function renderStressChart(phVal, range) {
+    function renderChart(currentPH, minPH, maxPH) {
         const ctx = document.getElementById('stressChart').getContext('2d');
-        if(myChart) {
-            myChart.destroy();
-        }
+        if(myChart) { myChart.destroy(); }
 
-        let baseStress = Math.abs(phVal - ((range.min + range.max) / 2)) * 25;
-        if(baseStress > 100) baseStress = 100;
-
-        const dataNoIntervention = [baseStress, baseStress + 5, baseStress + 12, baseStress + 18, baseStress + 25];
-        const dataWithIntervention = [baseStress, Math.max(0, baseStress - 8), Math.max(0, baseStress - 18), Math.max(0, baseStress - 28), Math.max(0, baseStress - 38)];
+        let isOptimal = currentPH >= minPH && currentPH <= maxPH;
+        let dataIntervention = isOptimal ? [10, 8, 6, 5, 4] : [30, 25, 18, 12, 8];
+        let dataNoIntervention = isOptimal ? [10, 12, 15, 20, 25] : [30, 40, 55, 70, 85];
 
         myChart = new Chart(ctx, {
             type: 'line',
@@ -586,19 +555,22 @@
                 labels: ['Gün 1 / Day 1', 'Gün 2 / Day 2', 'Gün 3 / Day 3', 'Gün 4 / Day 4', 'Gün 5 / Day 5'],
                 datasets: [
                     {
-                        label: lang === 'TR' ? 'Müdahalesiz Stres (%)' : 'No Intervention Stress (%)',
-                        data: dataNoIntervention,
-                        borderColor: '#d32f2f',
-                        backgroundColor: 'rgba(211, 47, 47, 0.1)',
-                        borderWidth: 2,
+                        label: lang === 'TR' ? 'Müdahaleli Stres (%) / With Intervention' : 'With Intervention',
+                        data: dataIntervention,
+                        borderColor: '#2e7d32',
+                        backgroundColor: 'rgba(46, 125, 50, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
                         tension: 0.3
                     },
                     {
-                        label: lang === 'TR' ? 'Müdahaleli Stres (%)' : 'Intervention Stress (%)',
-                        data: dataWithIntervention,
-                        borderColor: '#1b5e20',
-                        backgroundColor: 'rgba(27, 94, 32, 0.1)',
+                        label: lang === 'TR' ? 'Müdahalesiz Stres (%) / No Intervention' : 'No Intervention',
+                        data: dataNoIntervention,
+                        borderColor: '#d32f2f',
+                        backgroundColor: 'rgba(211, 47, 47, 0.05)',
                         borderWidth: 2,
+                        borderDash: [5, 5],
+                        fill: false,
                         tension: 0.3
                     }
                 ]
@@ -606,22 +578,48 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { font: { size: 10 } } }
+                },
                 scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100
-                    }
+                    y: { beginAtZero: true, max: 100 }
                 }
             }
+        });
+    }
+
+    function syncToCloud(cropName, ph, weather) {
+        const syncStatusEl = document.getElementById('sync-status');
+        syncStatusEl.style.display = 'block';
+        syncStatusEl.innerText = lang === 'TR' ? '📡 Bulut Veritabanına Aktarılıyor...' : '📡 Syncing to Cloud Database...';
+
+        const payload = {
+            crop: cropName,
+            ph: ph,
+            weather: weather,
+            date: new Date().toISOString()
+        };
+
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).then(() => {
+            syncStatusEl.innerText = lang === 'TR' ? '✅ Bulut Senkronizasyonu Başarılı!' : '✅ Cloud Synchronization Successful!';
+        }).catch(err => {
+            console.error(err);
+            syncStatusEl.innerText = lang === 'TR' ? '⚠️ Bulut Senkronizasyon Uyarısı (Çevrimdışı Mod)' : '⚠️ Cloud Sync Warning (Offline Mode)';
         });
     }
 
     function resetSystem() {
         if(track) { track.stop(); }
         document.getElementById('res-area').style.display = 'none';
-        document.getElementById('sync-status').style.display = 'none';
-        document.getElementById('preview-img').style.display = 'none';
+        document.getElementById('error-box').style.display = 'none';
+        document.getElementById('cam-box').style.display = 'none';
         document.getElementById('form-area').style.display = 'block';
+        document.getElementById('sync-status').style.display = 'none';
     }
 </script>
 </body>
