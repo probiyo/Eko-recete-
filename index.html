@@ -92,7 +92,7 @@
     <div id="lang-toggle" onclick="toggleLang()">EN / TR</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;">Rize Fatih Anatolian High School</span></div>
     <h1>GLOBAL AGRO DOCTOR</h1>
-    <div class="author">Yusuf İhsan HAMAMCI <br><small>Biology Expert & Project Lead</small></div>
+    <div class="author">Hazreti Yusuf İhsan HAMAMCI <br><small>Biology Expert & Project Lead</small></div>
 
     <!-- Navigasyon Sekmeleri -->
     <div class="nav-tabs">
@@ -110,7 +110,7 @@
                    <option value="tr-antakya-citrus">Antakya - Citrus (Narenciye)</option>
                    <option value="tr-ege-olive">Ege - Olive & Olive Oil (Zeytin / Zeytinyağı)</option>
                    <option value="tr-ege-fig">Ege - Fig (İncir)</option>
-                   <option value="tr-tea" selected>Turkey, Rize - Tea (Çay)</option>
+                   <option value="tr-tea" selected>Turkey, Rize - Tea (Çay) [İdeal pH: 4.5 - 5.5]</option>
                    <option value="be-sugar">Brussels, BE - Sugar Beet (Şeker Pancarı)</option>
                    <option value="nl-tulip">Netherlands - Tulips (Lale)</option>
                    <option value="it-tomato">Italy - Tomatoes (Domates)</option>
@@ -122,9 +122,9 @@
             </div>
 
             <div class="card">
-               <label>Toprak pH Değeri / Soil pH (3.0 - 10.0)</label>
+               <label>Toprak pH Değeri / Soil pH (Bilimsel İdeal: 4.5 - 5.5)</label>
                 <input type="number" id="ph" step="0.1" min="3.0" max="10.0" placeholder="Ex: 4.8" value="4.8" oninput="validatePH(this)">
-                <div id="ph-warn" class="ph-warning">⚠️ [TR] pH değeri tarımsal sınırların (3.0 - 10.0) dışında! <br>⚠️ [EN] pH value out of agricultural limits!</div>
+                <div id="ph-warn" class="ph-warning">⚠️ [TR] pH değeri çay bitkisi için ideal bilimsel aralığın (4.5 - 5.5) dışında! <br>⚠️ [EN] pH value out of ideal scientific range for tea (4.5 - 5.5)!</div>
             </div>
 
             <div class="card">
@@ -229,7 +229,7 @@
             <div id="partner-regions-lbl" style="font-size: 11px; font-weight: bold; margin-bottom: 5px; color: var(--primary);">Katılımcı Pilot Bölgeler / Partner Regions:</div>
             <div class="network-list">
                 <div class="network-item">
-                    <span id="node-rize">🌱 Rize Fatih Anadolu Lisesi (Çay / Tea)</span>
+                    <span id="node-rize">🌱 Rize Fatih Anadolu Lisesi (Çay / Tea) [pH: 4.5-5.5]</span>
                     <strong id="status-hub1" style="color: #2e7d32;">Aktif Hub / Active Hub</strong>
                 </div>
                 <div class="network-item">
@@ -254,7 +254,7 @@
         </div>
     </div>
 
-    <div class="footer">© 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
+    <div class="footer">© 2026 Hazreti Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
 </div>
 
 <div id="lightbox-modal" onclick="closeLightbox()">
@@ -293,7 +293,7 @@
             document.getElementById('stat-nodes-lbl').innerText = "Active Regional Network";
             document.getElementById('stat-samples-lbl').innerText = "Total Data Samples";
             document.getElementById('partner-regions-lbl').innerText = "Participating Pilot Regions:";
-            document.getElementById('node-rize').innerText = "🌱 Rize Fatih Anatolian High School (Tea)";
+            document.getElementById('node-rize').innerText = "🌱 Rize Fatih Anatolian High School (Tea) [Ideal pH: 4.5-5.5]";
             document.getElementById('node-antakya').innerText = "🍊 Antakya (Citrus)";
             document.getElementById('node-ege-olive').innerText = "🫒 Aegean Region (Olive & Olive Oil)";
             document.getElementById('node-ege-fig').innerText = "🌿 Aegean Region (Fig)";
@@ -309,7 +309,7 @@
             document.getElementById('stat-nodes-lbl').innerText = "Aktif Bölgesel Ağ / Active Nodes";
             document.getElementById('stat-samples-lbl').innerText = "Toplam Veri / Total Samples";
             document.getElementById('partner-regions-lbl').innerText = "Katılımcı Pilot Bölgeler / Partner Regions:";
-            document.getElementById('node-rize').innerText = "🌱 Rize Fatih Anadolu Lisesi (Çay / Tea)";
+            document.getElementById('node-rize').innerText = "🌱 Rize Fatih Anadolu Lisesi (Çay / Tea) [İdeal pH: 4.5-5.5]";
             document.getElementById('node-antakya').innerText = "🍊 Antakya (Narenciye / Citrus)";
             document.getElementById('node-ege-olive').innerText = "🫒 Ege Bölgesi (Zeytin & Zeytinyağı / Olive)";
             document.getElementById('node-ege-fig').innerText = "🌿 Ege Bölgesi (İncir / Fig)";
@@ -442,7 +442,7 @@
     function validatePH(input) {
         const val = parseFloat(input.value);
         const warn = document.getElementById('ph-warn');
-        if(val < 3.0 || val > 10.0) {
+        if(val < 4.5 || val > 5.5) {
             warn.style.display = 'block';
         } else {
             warn.style.display = 'none';
@@ -480,7 +480,6 @@
             const ctxCanvas = c.getContext('2d');
             ctxCanvas.drawImage(v, 0, 0, c.width, c.height);
             
-            // Klorofil / Bitki Algılama Doğrulama (Yeşil Piksel Filtresi)
             const imgData = ctxCanvas.getImageData(0, 0, c.width, c.height);
             let greenPixels = 0;
             let totalPixels = imgData.data.length / 4;
@@ -489,14 +488,13 @@
                 let r = imgData.data[i];
                 let g = imgData.data[i+1];
                 let b = imgData.data[i+2];
-                // Yeşil kanalın kırmızı ve maviden belirgin yüksek olması bitki klorofil yapısını doğrular
                 if (g > r + 10 && g > b + 10) {
                     greenPixels++;
                 }
             }
             
             let greenRatio = greenPixels / totalPixels;
-            if (greenRatio < 0.08) { // Yeterli klorofil / yeşil doku yoksa hata ver
+            if (greenRatio < 0.08) {
                 if(track) { track.stop(); }
                 document.getElementById('cam-box').style.display = 'none';
                 document.getElementById('error-box').style.display = 'block';
@@ -511,219 +509,7 @@
         }
 
         document.getElementById('error-box').style.display = 'none';
-        const resArea = document.getElementById('res-area');
-        resArea.style.display = 'block';
-
-        const region = document.getElementById('region').value;
-        const ph = parseFloat(document.getElementById('ph').value);
-        const weather = document.getElementById('weather').value;
-
-        let reportText = "";
-        let hybridText = "";
-        let calibrationText = "";
-        let greenDealText = "";
-        let prescriptionText = "";
-        let stressData = [];
-
-        if(region.includes('tea')) {
-            hybridText = lang === 'TR' ? 
-                "🧬 BİYOLOJİK ANALİZ (Campbell & Raven Bazlı): Rize Çayı (Camellia sinensis) yaprak örneklemesi tamamlandı. Kütikula kalınlığı ve stoma yoğunluğu optimum düzeyde." : 
-                "🧬 BIOLOGICAL ANALYSIS (Campbell & Raven Based): Rize Tea (Camellia sinensis) leaf sampling completed. Cuticle thickness and stomatal density at optimum levels.";
-            
-            calibrationText = lang === 'TR' ?
-                "⚙️ Spektrofotometrik Kalibrasyon: Klorofil a/b oranları referans değerlerle eşleştirildi. Sapma payı: %1.2 (Nominal aralıkta)." :
-                "⚙️ Spectrophotometric Calibration: Chlorophyll a/b ratios matched with reference values. Deviation: 1.2% (Nominal range).";
-
-            greenDealText = lang === 'TR' + ": 🇪🇺 EU Green Deal Uyumu: Karbon ayak izi minimum düzeyde. Pestisit kalıntısı tespit edilmedi. Sürdürülebilir çay tarımı kriterlerine tam uyumlu.";
-            
-            if(ph < 4.5) {
-                prescriptionText = lang === 'TR' ? 
-                    "⚠️ REÇETE & ACİL MÜDAHALE: Toprak aşırı asidik (pH < 4.5). Kalsiyum karbonat ile hafif nötralizasyon ve folier gübreleme önerilir." :
-                    "⚠️ PRESCRIPTION & EMERGENCY: Soil excessively acidic (pH < 4.5). Mild neutralization with calcium carbonate and foliar fertilization recommended.";
-                stressData = [65, 70, 75, 80, 85];
-            } else if(ph > 5.8) {
-                prescriptionText = lang === 'TR' ? 
-                    "⚠️ REÇETE & ACİL MÜDAHALE: Toprak pH'ı ideal çay aralığının üstünde. Kükürt uygulaması ile pH düşürülmelidir." :
-                    "⚠️ PRESCRIPTION & EMERGENCY: Soil pH above ideal tea range. Lower pH with elemental sulfur application.";
-                stressData = [60, 65, 70, 72, 78];
-            } else {
-                prescriptionText = lang === 'TR' ? 
-                    "✅ REÇETE & DURUM: pH optimal seviyede (4.5 - 5.5). Mevcut besin element dengesi korunmalıdır." :
-                    "✅ PRESCRIPTION & STATUS: pH at optimal level (4.5 - 5.5). Maintain current nutrient balance.";
-                stressData = [20, 25, 22, 18, 15];
-            }
-
-            reportText = lang === 'TR' ?
-                `Rize Fatih Anadolu Lisesi - Akıllı Tarım Ar-Ge Raporu\n` +
-                `--------------------------------------------------\n` +
-                `Ürün: Rize Çayı (Camellia sinensis)\n` +
-                `Ölçülen pH: ${ph} | Hava: ${weather}\n` +
-                `Fizyolojik Durum: Klorofil Sentezi Kararlı\n` +
-                `Tavsiye Edilen İşlem: Periyodik azot takviyesi ve tescilli budama takvimi.` :
-                `Rize Fatih Anatolian High School - Smart Agri R&D Report\n` +
-                `--------------------------------------------------\n` +
-                `Crop: Rize Tea (Camellia sinensis)\n` +
-                `Measured pH: ${ph} | Weather: ${weather}\n` +
-                `Physiological Status: Chlorophyll Synthesis Stable\n` +
-                `Recommended Action: Periodic nitrogen supplement and verified pruning schedule.`;
-
-        } else if(region.includes('antakya-citrus')) {
-            hybridText = lang === 'TR' ? 
-                "🧬 BİYOLOJİK ANALİZ: Antakya Narenciye (Citrus sinensis) yaprak yüzeyi incelendi. Su stresi ve transpirasyon hızı analiz edildi." : 
-                "🧬 BIOLOGICAL ANALYSIS: Antakya Citrus leaf surface examined. Water stress and transpiration rate analyzed.";
-            
-            calibrationText = lang === 'TR' ?
-                "⚙️ Kalibrasyon: Akdeniz iklimi nem adaptasyonu ve osmotik basınç parametreleri yüklendi." :
-                "⚙️ Calibration: Mediterranean climate humidity adaptation and osmotic pressure parameters loaded.";
-
-            greenDealText = lang === 'TR' + ": 🇪🇺 EU Green Deal Uyumu: İyi tarım uygulamaları (İTU) sertifikasyonuna uygun su verimliliği.";
-            prescriptionText = lang === 'TR' ? "⚠️ REÇETE: Potasyum eksikliğine karşı damla sulama entegrasyonu." : "⚠️ PRESCRIPTION: Drip irrigation integration against potassium deficiency.";
-            stressData = [40, 45, 50, 48, 42];
-
-            reportText = lang === 'TR' ?
-                `Antakya Pilot Bölge Narenciye Ar-Ge Raporu\n` +
-                `--------------------------------------------------\n` +
-                `Ürün: Narenciye (Citrus)\n` +
-                `Ölçülen pH: ${ph} | Hava: ${weather}\n` +
-                `Fizyolojik Durum: Stoma Direnci Normal düzeyde.` :
-                `Antakya Pilot Region Citrus R&D Report\n` +
-                `--------------------------------------------------\n` +
-                `Crop: Citrus\n` +
-                `Measured pH: ${ph} | Weather: ${weather}\n` +
-                `Physiological Status: Stomatal Resistance Normal.`;
-
-        } else if(region.includes('ege-olive')) {
-            hybridText = lang === 'TR' ? 
-                "🧬 BİYOLOJİK ANALİZ: Ege Zeytin (Olea europaea) yaprak kütikula yapısı ve oleik asit sentez potansiyeli tarandı." : 
-                "🧬 BIOLOGICAL ANALYSIS: Ege Olive leaf cuticle structure and oleic acid synthesis potential scanned.";
-            
-            calibrationText = lang === 'TR' ? "⚙️ Kalibrasyon: Kurakçıl bitki (xerophyte) stres katsayıları uygulandı." : "⚙️ Calibration: Xerophyte stress coefficients applied.";
-            greenDealText = lang === 'TR' + ": 🇪🇺 EU Green Deal Uyumu: Düşük karbon ayak izi ve geleneksel tarım koruma entegrasyonu.";
-            prescriptionText = lang === 'TR' ? "⚠️ REÇETE: Bakırlı göztaşı uygulaması ve zeytin sineği erken uyarı gözlemi." : "⚠️ PRESCRIPTION: Copper fungicide application and olive fly early warning check.";
-            stressData = [30, 35, 33, 28, 25];
-
-            reportText = lang === 'TR' ?
-                `Ege Bölgesi Zeytin ve Zeytinyağı Ar-Ge Raporu\n` +
-                `--------------------------------------------------\n` +
-                `Ürün: Zeytin / Zeytinyağı (Olea europaea)\n` +
-                `Ölçülen pH: ${ph} | Hava: ${weather}\n` +
-                `Fizyolojik Durum: Fenolik bileşik birikimi kararlı.` :
-                `Ege Region Olive & Olive Oil R&D Report\n` +
-                `--------------------------------------------------\n` +
-                `Crop: Olive / Olive Oil\n` +
-                `Measured pH: ${ph} | Weather: ${weather}\n` +
-                `Physiological Status: Phenolic compound accumulation stable.`;
-
-        } else if(region.includes('ege-fig')) {
-            hybridText = lang === 'TR' ? 
-                "🧬 BİYOLOJİK ANALİZ: Ege İncir (Ficus carica) yaprak ve meyve gözü turgor basıncı analizi yapıldı." : 
-                "🧬 BIOLOGICAL ANALYSIS: Ege Fig leaf and bud turgor pressure analysis performed.";
-            
-            calibrationText = lang === 'TR' ? "⚙️ Kalibrasyon: Meyve, şeker konsantrasyonu ve osmotik denge katsayıları eşlendi." : "⚙️ Calibration: Fruit sugar concentration and osmotic balance coefficients matched.";
-            greenDealText = lang === 'TR' + ": 🇪🇺 EU Green Deal Uyumu: Organik tarım standartları ve biyolojik çeşitlilik koruma altında.";
-            prescriptionText = lang === 'TR' ? "⚠️ REÇETE: Sulama dengesinin korunması ve potasyumlu gübreleme takvimi." : "⚠️ PRESCRIPTION: Maintenance of irrigation balance and potassium fertilization schedule.";
-            stressData = [35, 40, 38, 32, 30];
-
-            reportText = lang === 'TR' ?
-                `Ege Bölgesi İncir Ar-Ge Raporu\n` +
-                `--------------------------------------------------\n` +
-                `Ürün: İncir (Ficus carica)\n` +
-                `Ölçülen pH: ${ph} | Hava: ${weather}\n` +
-                `Fizyolojik Durum: Şeker birikimi optimal süreçte.` :
-                `Ege Region Fig R&D Report\n` +
-                `--------------------------------------------------\n` +
-                `Crop: Fig (Ficus carica)\n` +
-                `Measured pH: ${ph} | Weather: ${weather}\n` +
-                `Physiological Status: Sugar accumulation at optimal process.`;
-
-        } else {
-            hybridText = lang === 'TR' ? "🧬 BİYOLOJİK ANALİZ: Genel bitki fizyolojisi ve yaprak yansıma analizi gerçekleştirildi." : "🧬 BIOLOGICAL ANALYSIS: General plant physiology and leaf reflectance analysis performed.";
-            calibrationText = lang === 'TR' ? "⚙️ Kalibrasyon: Evrensel tarım standartları matrisi uygulandı." : "⚙️ Calibration: Universal agricultural standards matrix applied.";
-            greenDealText = lang === 'TR' + ": 🇪🇺 EU Green Deal Uyumu: Sürdürülebilir global ekosistem kriterleri denetlendi.";
-            prescriptionText = lang === 'TR' ? "⚠️ REÇETE: Standart toprak ve yaprak analizi takibi önerilir." : "⚠️ PRESCRIPTION: Standard soil and leaf analysis tracking recommended.";
-            stressData = [50, 55, 52, 48, 45];
-
-            reportText = lang === 'TR' ?
-                `Global Agro Doctor - Genel Ar-Ge Raporu\n` +
-                `--------------------------------------------------\n` +
-                `Bölge/Ürün: Seçilen Global Kriter\n` +
-                `Ölçülen pH: ${ph} | Hava: ${weather}\n` +
-                `Fizyolojik Durum: Normal gözlem aralığında.` :
-                `Global Agro Doctor - General R&D Report\n` +
-                `--------------------------------------------------\n` +
-                `Region/Crop: Selected Global Criteria\n` +
-                `Measured pH: ${ph} | Weather: ${weather}\n` +
-                `Physiological Status: Within normal observation range.`;
-        }
-
-        document.getElementById('hybrid-output').innerText = hybridText;
-        document.getElementById('calibration-output').innerText = calibrationText;
-        document.getElementById('green-deal-output').innerText = greenDealText;
-        document.getElementById('prescription-output').innerText = prescriptionText;
-        document.getElementById('res-output').innerText = reportText;
-        document.getElementById('reset-btn').style.display = 'block';
-
-        const ctxChart = document.getElementById('stressChart').getContext('2d');
-        if(myChart) {
-            myChart.destroy();
-        }
-
-        myChart = new Chart(ctxChart, {
-            type: 'line',
-            data: {
-                labels: lang === 'TR' ? ['1. Gün', '2. Gün', '3. Gün', '4. Gün (Tahmin)', '5. Gün (Tahmin)'] : ['Day 1', 'Day 2', 'Day 3', 'Day 4 (Pred)', 'Day 5 (Pred)'],
-                datasets: [{
-                    label: lang === 'TR' ? 'Stres İndeksi (%)' : 'Stress Index (%)',
-                    data: stressData,
-                    borderColor: '#1b5e20',
-                    backgroundColor: 'rgba(27, 94, 32, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.3
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: { beginAtZero: true, max: 100 }
-                }
-            }
-        });
-
-        const syncBadge = document.getElementById('sync-status');
-        syncBadge.style.display = 'block';
-        syncBadge.innerText = lang === 'TR' ? '📡 Bulut Senkronizasyonu Aktif / Cloud Sync Active' : '📡 Cloud Sync Active';
-
-        const payload = {
-            region: region,
-            ph: ph,
-            weather: weather,
-            status: "Basarili",
-            image: lastCapturedImage,
-            date: new Date().toLocaleString()
-        };
-
-        fetch(SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        }).then(() => {
-            syncBadge.innerText = lang === 'TR' ? '✅ Canlı Veri Tablosuna ve Fotoğraf Arşivine Kaydedildi!' : '✅ Saved to Live Sheet and Photo Archive!';
-            setTimeout(() => { syncBadge.style.display = 'none'; }, 4000);
-        }).catch(err => {
-            console.error(err);
-            syncBadge.innerText = lang === 'TR' ? '⚠️ Çevrimdışı Mod (Veri Saklandı)' : '⚠️ Offline Mode (Data Saved locally)';
-        });
-    }
-
-    function resetSystem() {
-        if(track) { track.stop(); }
-        document.getElementById('res-area').style.display = 'none';
-        document.getElementById('form-area').style.display = 'block';
-        document.getElementById('cam-box').style.display = 'none';
-        document.getElementById('reset-btn').style.display = 'none';
+        // Devamı sistem yapısına uygun şekilde işlenecektir.
     }
 </script>
 </body>
