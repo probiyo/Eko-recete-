@@ -29,7 +29,7 @@
 
         #cam-box { display: none; margin-top: 15px; border-radius: 20px; overflow: hidden; border: 4px solid #333; position: relative; }
         video, canvas { width: 100%; height: 320px; object-fit: cover; }
-        #canvas { display: none; position: absolute; top: 0; left: 0; }
+        #canvas { display: none; }
         
         .scan-ui { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .target { width: 200px; height: 200px; border: 2px solid var(--accent); border-radius: 20px; box-shadow: 0 0 0 1000px rgba(0,0,0,0.5); }
@@ -269,11 +269,11 @@
     let lang = 'TR';
     let track;
     let myChart = null;
+    let lastCapturedImage = "";
     const v = document.getElementById('v');
     const c = document.getElementById('canvas');
 
     function initApp() {
-        checkOfflineQueue();
         loadGallery();
     }
 
@@ -288,7 +288,6 @@
         document.getElementById('upload-txt-sub').innerText = lang === 'TR' ? 'Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları' : 'Group shots with students, lab and field studies';
         document.getElementById('photo-caption').placeholder = lang === 'TR' ? 'Açıklama giriniz...' : 'Enter caption...';
         
-        // Citizen Science Metinleri Güncelleme
         if(lang === 'EN') {
             document.getElementById('citizen-hub-title').innerHTML = `🌍 Open Source Agriculture Database<br><span style="font-size:9px; font-weight:normal;">Citizen Science & International Network Hub</span>`;
             document.getElementById('stat-nodes-lbl').innerText = "Active Regional Network";
@@ -460,7 +459,10 @@
         document.getElementById('form-area').style.display = 'none';
         document.getElementById('cam-box').style.display = 'block';
 
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: 'environment' } } })
+        .catch(() => {
+            return navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        })
         .then(stream => {
             v.srcObject = stream;
             track = stream.getVideoTracks()[0];
@@ -473,6 +475,12 @@
 
     function processAI(isUpdateOnly = false) {
         if(!isUpdateOnly) {
+            c.width = v.videoWidth || 640;
+            c.height = v.videoHeight || 480;
+            const ctxCanvas = c.getContext('2d');
+            ctxCanvas.drawImage(v, 0, 0, c.width, c.height);
+            lastCapturedImage = c.toDataURL('image/jpeg', 0.7);
+
             if(track) { track.stop(); }
             document.getElementById('cam-box').style.display = 'none';
         }
@@ -630,7 +638,6 @@
         document.getElementById('res-output').innerText = reportText;
         document.getElementById('reset-btn').style.display = 'block';
 
-        // Grafik Oluşturma veya Güncelleme
         const ctxChart = document.getElementById('stressChart').getContext('2d');
         if(myChart) {
             myChart.destroy();
@@ -659,7 +666,6 @@
             }
         });
 
-        // Google Sheets Otomatik Senkronizasyon (Arka Planda)
         const syncBadge = document.getElementById('sync-status');
         syncBadge.style.display = 'block';
         syncBadge.innerText = lang === 'TR' ? '📡 Bulut Senkronizasyonu Aktif / Cloud Sync Active' : '📡 Cloud Sync Active';
@@ -669,6 +675,7 @@
             ph: ph,
             weather: weather,
             status: "Basarili",
+            image: lastCapturedImage,
             date: new Date().toLocaleString()
         };
 
@@ -678,7 +685,7 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         }).then(() => {
-            syncBadge.innerText = lang === 'TR' ? '✅ Canlı Veri Tablosuna Kaydedildi!' : '✅ Saved to Live Data Sheet!';
+            syncBadge.innerText = lang === 'TR' ? '✅ Canlı Veri Tablosuna ve Fotoğraf Arşivine Kaydedildi!' : '✅ Saved to Live Sheet and Photo Archive!';
             setTimeout(() => { syncBadge.style.display = 'none'; }, 4000);
         }).catch(err => {
             console.error(err);
@@ -692,10 +699,6 @@
         document.getElementById('form-area').style.display = 'block';
         document.getElementById('cam-box').style.display = 'none';
         document.getElementById('reset-btn').style.display = 'none';
-    }
-
-    function checkOfflineQueue() {
-        console.log('App initialized successfully.');
     }
 </script>
 </body>
