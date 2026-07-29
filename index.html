@@ -491,7 +491,6 @@
         
         lastCapturedImage = c.toDataURL('image/jpeg', 0.7);
 
-        // Fotoğraf önizlemesini raporda göster
         const previewEl = document.getElementById('preview-img');
         previewEl.src = lastCapturedImage;
         previewEl.style.display = 'block';
@@ -521,56 +520,46 @@
         }
 
         greenDealText = lang === 'TR' ? "🇪🇺 AB Yeşil Mutabakatı: Düşük karbon ayak izi ve organik gübreleme protokolü aktif." : "🇪🇺 EU Green Deal: Low carbon footprint & organic fertilization protocol active.";
-        prescriptionText = lang === 'TR' ? `💊 Reçete Önerisi: Hava (${weather}), pH: ${ph} dikkate alınarak damla sulama entegrasyonu planlanmıştır.` : `💊 Prescription: Drip irrigation integration planned considering weather (${weather}) and pH (${ph}).`;
+        prescriptionText = lang === 'TR' ? "💊 Reçete: Öngörülen ekolojik iyileştirme ve dengeli besleme planı uygulanmalıdır." : "💊 Prescription: Recommended ecological improvement and balanced feeding plan should be applied.";
 
         document.getElementById('hybrid-output').innerText = statusText;
         document.getElementById('calibration-output').innerText = calibrationText;
         document.getElementById('green-deal-output').innerText = greenDealText;
         document.getElementById('prescription-output').innerText = prescriptionText;
+        document.getElementById('res-output').innerText = lang === 'TR' ? `Analiz Tamamlandı.\nBölge: ${range.name}\npH: ${ph}\nHava: ${weather}` : `Analysis Completed.\nRegion: ${range.name}\npH: ${ph}\nWeather: ${weather}`;
 
-        let details = lang === 'TR' ? 
-            `[RAPOR DETAYI]\n- Seçilen Bölge/Ürün: ${range.name}\n- Toprak pH: ${ph}\n- Hava Koşulu: ${weather}\n- Analiz Durumu: Başarılı\n- Öneri: Yapraksal besleme ve pH dengelenmesi.` :
-            `[REPORT DETAIL]\n- Selected Region/Crop: ${range.name}\n- Soil pH: ${ph}\n- Weather: ${weather}\n- Analysis Status: Success\n- Recommendation: Foliar feeding and pH balancing.`;
-
-        document.getElementById('res-output').innerText = details;
-
-        // Grafik Çizimi
-        renderChart(phVal, range.min, range.max);
-
-        // Google Sheets / Apps Script Senkronizasyonu
-        syncToCloud(range.name, ph, weather);
+        drawStressChart(phVal >= range.min && phVal <= range.max);
+        syncDataToCloud(region, ph, weather, statusText);
     }
 
-    function renderChart(currentPH, minPH, maxPH) {
+    function drawStressChart(isOptimal) {
         const ctx = document.getElementById('stressChart').getContext('2d');
         if(myChart) { myChart.destroy(); }
 
-        let isOptimal = currentPH >= minPH && currentPH <= maxPH;
-        let dataIntervention = isOptimal ? [10, 8, 6, 5, 4] : [30, 25, 18, 12, 8];
-        let dataNoIntervention = isOptimal ? [10, 12, 15, 20, 25] : [30, 40, 55, 70, 85];
+        const dataIntervention = isOptimal ? [10, 8, 6, 5, 4] : [40, 30, 20, 12, 8];
+        const dataNoIntervention = isOptimal ? [10, 12, 15, 20, 25] : [40, 50, 65, 80, 95];
 
         myChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['Gün 1 / Day 1', 'Gün 2 / Day 2', 'Gün 3 / Day 3', 'Gün 4 / Day 4', 'Gün 5 / Day 5'],
+                labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5'],
                 datasets: [
                     {
-                        label: lang === 'TR' ? 'Müdahaleli Stres (%) / With Intervention' : 'With Intervention',
+                        label: lang === 'TR' ? 'Müdahaleli Stres / With Intervention' : 'Intervention Stress',
                         data: dataIntervention,
                         borderColor: '#2e7d32',
                         backgroundColor: 'rgba(46, 125, 50, 0.1)',
-                        borderWidth: 3,
+                        borderWidth: 2,
                         fill: true,
                         tension: 0.3
                     },
                     {
-                        label: lang === 'TR' ? 'Müdahalesiz Stres (%) / No Intervention' : 'No Intervention',
+                        label: lang === 'TR' ? 'Müdahalesiz Stres / No Intervention' : 'No Intervention Stress',
                         data: dataNoIntervention,
                         borderColor: '#d32f2f',
-                        backgroundColor: 'rgba(211, 47, 47, 0.05)',
+                        backgroundColor: 'rgba(211, 47, 47, 0.1)',
                         borderWidth: 2,
-                        borderDash: [5, 5],
-                        fill: false,
+                        fill: true,
                         tension: 0.3
                     }
                 ]
@@ -578,9 +567,6 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'bottom', labels: { font: { size: 10 } } }
-                },
                 scales: {
                     y: { beginAtZero: true, max: 100 }
                 }
@@ -588,16 +574,17 @@
         });
     }
 
-    function syncToCloud(cropName, ph, weather) {
+    function syncDataToCloud(region, ph, weather, statusText) {
         const syncStatusEl = document.getElementById('sync-status');
         syncStatusEl.style.display = 'block';
-        syncStatusEl.innerText = lang === 'TR' ? '📡 Bulut Veritabanına Aktarılıyor...' : '📡 Syncing to Cloud Database...';
+        syncStatusEl.innerText = lang === 'TR' ? '📡 Veriler Google Sheets Bulut Sistemine Aktarılıyor...' : '📡 Syncing Data to Google Sheets Cloud...';
 
         const payload = {
-            crop: cropName,
+            region: region,
             ph: ph,
             weather: weather,
-            date: new Date().toISOString()
+            status: statusText,
+            timestamp: new Date().toISOString()
         };
 
         fetch(SCRIPT_URL, {
@@ -606,19 +593,16 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         }).then(() => {
-            syncStatusEl.innerText = lang === 'TR' ? '✅ Bulut Senkronizasyonu Başarılı!' : '✅ Cloud Synchronization Successful!';
-        }).catch(err => {
-            console.error(err);
-            syncStatusEl.innerText = lang === 'TR' ? '⚠️ Bulut Senkronizasyon Uyarısı (Çevrimdışı Mod)' : '⚠️ Cloud Sync Warning (Offline Mode)';
+            syncStatusEl.innerText = lang === 'TR' ? '✅ Bulut Senkronizasyonu Başarılı!' : '✅ Cloud Sync Successful!';
+        }).catch(() => {
+            syncStatusEl.innerText = lang === 'TR' ? '⚠️ Bulut Senkronizasyon Hatası (Yerel Mod)' : '⚠️ Cloud Sync Error (Local Mode)';
         });
     }
 
     function resetSystem() {
-        if(track) { track.stop(); }
         document.getElementById('res-area').style.display = 'none';
-        document.getElementById('error-box').style.display = 'none';
-        document.getElementById('cam-box').style.display = 'none';
         document.getElementById('form-area').style.display = 'block';
+        document.getElementById('preview-img').style.display = 'none';
         document.getElementById('sync-status').style.display = 'none';
     }
 </script>
