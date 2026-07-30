@@ -355,7 +355,7 @@
             lblAbsorbance: "Ölçülen / Hesaplanan Klorofil a Konsantrasyonu (mg/L)",
             btnBioCalc: "KLOROFİL a VERİSİNİ KAYDET & ANALİZE AKTAR",
             bioSyncSuccess: "✨ MEBİ Lab Verisi Canlı Veri Tablosuna ve Analiz Modülüne Aktarıldı!",
-            fieldTitle: "📸 Saha ve Öğrenci Araştırma Fotoğrafları<br><span style='font-size:9px; font-weight:normal;'>Field & Student Research Photos Gallery</span>",
+            fieldTitle: "📸 Saha and Öğrenci Araştırma Fotoğrafları<br><span style='font-size:9px; font-weight:normal;'>Field & Student Research Photos Gallery</span>",
             uploadMain: "Fotoğraf Seç veya Yükle / Choose Photo",
             uploadSub: "Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları",
             captionPlaceholder: "Açıklama giriniz...",
@@ -579,7 +579,6 @@
             tabBiolabBtn.classList.add('active');
             if(track) { track.stop(); }
             document.getElementById('cam-box').style.display = 'none';
-            // Eğer rapor açıksa form alanları kapalı kalmaya devam etsin diye kontrol
             if(document.getElementById('res-area').style.display !== 'block') {
                 document.getElementById('form-area').style.display = 'block';
             }
@@ -825,7 +824,7 @@
         if(track) { track.stop(); }
         document.getElementById('cam-box').style.display = 'none';
         document.getElementById('error-box').style.display = 'none';
-        document.getElementById('form-area').style.display = 'none'; // ÇAKIŞMA GİDERİLDİ: Form alanı tamamen gizleniyor
+        document.getElementById('form-area').style.display = 'none';
         document.getElementById('res-area').style.display = 'block';
         
         const region = document.getElementById('region').value;
@@ -882,7 +881,9 @@
             • Lab Klorofil a (663 nm): ${labChlorophyll || 'N/A'} mg/L<br>
             • Karbon Ayak İzi Azaltımı / Carbon Footprint Reduction: %24.5 (Tahmini / Estimated)<br>
             • Uyumluluk Durumu / Compliance Status: BRÜSSEL TERMİNALİ İÇİN ONAYLANDI (ISO-14001 & AB Yeşil Mutabakat Uyumlu)`;
-            prescriptionText = `💊 Entegre Ekolojik Reçete:\n1. Toprak pH dengelemesi için uygun organik düzenleyici uygulanmalı.\n2. 663 nm bandındaki pigment optimizasyonu için Şelatlı Demir (Fe-EDDHA) ve mikro element takviyesi sağlanmalı.`;
+            prescriptionText = `💊 Entegre Ekolojik Reçete ve Spesifik Girdi Yönetimi:\n` +
+                `1. Organik Düzenleyici: Çay tarımının asidik karakterine ve tampon kapasitesine uygun olarak, humik-fulvik asit ekstreleri veya olgunlaştırılmış kompost/ahır gübresi ile toprak yapısı iyileştirilmeli.\n` +
+                `2. Spesifik Mikro Elementler: Çayın klorofil a sentezini ve 663 nm bandındaki optik verimini doğrudan desteklemek amacıyla Demir (Fe) yanında Bor (B), Çinko (Zn) ve Mangan (Mn) element takviyeleri eksiksiz sağlanmalı.`;
         } else {
             if(isPhOptimal) {
                 statusText = `[OK] Optimal pH range for ${range.name} (${range.min}-${range.max}).${labTextInfo}`;
@@ -897,7 +898,9 @@
             • Lab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L<br>
             • Carbon Footprint Reduction: %24.5 (Estimated)<br>
             • Compliance Status: APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)`;
-            prescriptionText = `💊 Integrated Ecological Prescription:\n1. Apply organic modifier for soil pH balance.\n2. Provide Chelated Iron (Fe-EDDHA) and micronutrients for 663 nm pigment optimization.`;
+            prescriptionText = `💊 Integrated Ecological Prescription & Specific Nutrient Management:\n` +
+                `1. Organic Modifier: Improve soil structure and buffer capacity using humic-fulvic acid extracts or well-composted farmyard manure suitable for tea farming.\n` +
+                `2. Specific Micronutrients: Directly support chlorophyll a synthesis and 663 nm optical efficiency by supplementing Boron (B), Zinc (Zn), and Manganese (Mn) alongside Iron.`;
         }
         
         document.getElementById('hybrid-output').innerHTML = statusText;
@@ -966,3 +969,4 @@
 </script>
 </body>
 </html>
+```[cite: 7]
