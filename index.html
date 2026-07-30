@@ -86,19 +86,21 @@
     <div id="lang-toggle" onclick="toggleLang()">EN / TR</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;">Rize Fatih Anatolian High School</span></div>
     <h1>GLOBAL AGRO DOCTOR</h1>
-    <div class="author">Yusuf İhsan HAMAMCI <br><small>Biology Expert & Project Lead</small></div>
+    <div class="author">Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biology Expert & Project Lead</small></div>
+    
     <!-- Navigasyon Sekmeleri -->
     <div class="nav-tabs">
-        <button id="tab-analysis-btn" class="nav-tab active" onclick="switchTab('analysis')">🌱 ANALİZ</button>
-        <button id="tab-biolab-btn" class="nav-tab" onclick="switchTab('biolab')">🧬 MEBİ LAB</button>
-        <button id="tab-field-btn" class="nav-tab" onclick="switchTab('field')">📸 SAHA</button>
-        <button id="tab-citizen-btn" class="nav-tab" onclick="switchTab('citizen')">🌍 CITIZEN</button>
+        <button id="tab-analysis-btn" class="nav-tab active" onclick="switchTab('analysis')" data-i18n="tabAnalysis">🌱 ANALİZ</button>
+        <button id="tab-biolab-btn" class="nav-tab" onclick="switchTab('biolab')" data-i18n="tabBiolab">🧬 MEBİ LAB</button>
+        <button id="tab-field-btn" class="nav-tab" onclick="switchTab('field')" data-i18n="tabField">📸 SAHA</button>
+        <button id="tab-citizen-btn" class="nav-tab" onclick="switchTab('citizen')" data-i18n="tabCitizen">🌍 CITIZEN</button>
     </div>
+
     <!-- AGRO ANALİZ SEKMESİ -->
     <div id="analysis-section">
         <div id="form-area">
             <div class="card">
-               <label>Bölge ve Ürün / Region & Crop</label>
+               <label data-i18n="lblRegion">Bölge ve Ürün / Region & Crop</label>
                 <select id="region" onchange="updatePHRangeInfo()">
                    <option value="tr-antakya-citrus">Antakya - Citrus (Narenciye) [İdeal pH: 6.0 - 7.5]</option>
                    <option value="tr-ege-olive">Ege - Olive & Olive Oil (Zeytin) [İdeal pH: 6.5 - 8.0]</option>
@@ -109,17 +111,17 @@
                    <option value="it-tomato">Italy - Tomatoes (Domates) [İdeal pH: 6.0 - 6.8]</option>
                    <option value="global-other">Global - Diğer / Other [İdeal pH: 6.0 - 7.0]</option>
                 </select>
-                <div class="other-opt" onclick="document.getElementById('region').value='global-other'; updatePHRangeInfo();">
+                <div class="other-opt" onclick="document.getElementById('region').value='global-other'; updatePHRangeInfo();" data-i18n="lblManualSelect">
                     + Global - Diğer / Other (Manual Selection)
                 </div>
             </div>
             <div class="card">
-               <label id="ph-label">TOPRAK pH DEĞERİ / SOIL pH (3.0 - 9.0)</label>
+               <label id="ph-label" data-i18n="lblSoilPH">TOPRAK pH DEĞERİ / SOIL pH (3.0 - 9.0)</label>
                 <input type="number" id="ph" step="0.1" min="3.0" max="9.0" placeholder="Ex: 6.5" value="4.8" oninput="validatePH(this)">
-                <div id="ph-warn" class="ph-warning">⚠️ [TR] Girilen pH değeri seçilen bitki için ideal bilimsel aralığın dışında! <br>⚠️ [EN] Entered pH value is out of the ideal scientific range for this crop!</div>
+                <div id="ph-warn" class="ph-warning">⚠️ Girilen pH değeri seçilen bitki için ideal bilimsel aralığın dışında! <br>⚠️ Entered pH value is out of the ideal scientific range for this crop!</div>
             </div>
             <div class="card">
-               <label>Hava Durumu / Weather Condition <span id="loc-status" style="font-size:9px; color:#2e7d32; font-weight:normal;">(Otomatik Konum Bekleniyor...)</span></label>
+               <label><span data-i18n="lblWeather">Hava Durumu / Weather Condition</span> <span id="loc-status" style="font-size:9px; color:#2e7d32; font-weight:normal;">(Otomatik Konum Bekleniyor...)</span></label>
                 <select id="weather">
                    <option value="Güneşli / Sunny">Güneşli / Sunny</option>
                    <option value="Bulutlu / Cloudy">Bulutlu / Cloudy</option>
@@ -128,32 +130,33 @@
                    <option value="Karlı / Snowy">Karlı / Snowy</option>
                    <option value="Don Tehlikesi / Frost Risk">Don Tehlikesi / Frost Risk</option>
                 </select>
-                <div class="other-opt" onclick="fetchCurrentWeather()" style="font-size: 11px; padding: 8px; margin-top: 5px;">
+                <div class="other-opt" onclick="fetchCurrentWeather()" style="font-size: 11px; padding: 8px; margin-top: 5px;" data-i18n="lblAutoWeather">
                     📍 Konumdan Otomatik Hava Durumunu Güncelle / Fetch Weather
                 </div>
             </div>
-            <button id="start-btn" class="btn-main" onclick="startSystem()">ANALİZİ BAŞLAT / START ANALYZE</button>
+            <button id="start-btn" class="btn-main" onclick="startSystem()" data-i18n="btnStartAnalyze">ANALİZİ BAŞLAT / START ANALYZE</button>
         </div>
         <div id="cam-box">
             <video id="v" autoplay playsinline></video>
             <canvas id="canvas"></canvas>
             <div class="scan-ui">
                 <div class="target"></div>
-                <div class="hint" id="hint-txt">
-                    [TR] ⚠️ Öneri: Ölçüm doğruluğu için yaprak yüzeyindeki toz/su damlalarını temizleyiniz.<br>
-                    [EN] ⚠️ Tip: Clean dust/water drops on leaf for accuracy.
+                <div class="hint" id="hint-txt" data-i18n="camHint">
+                    ⚠️ Öneri: Ölçüm doğruluğu için yaprak yüzeyindeki toz/su damlalarını temizleyiniz.<br>
+                    ⚠️ Tip: Clean dust/water drops on leaf for accuracy.
                </div>
             </div>
-            <button id="snap-btn" class="btn-snap" onclick="processAI()">FOTOĞRAF ÇEK / TAKE PHOTO</button>
+            <button id="snap-btn" class="btn-snap" onclick="processAI()" data-i18n="btnTakePhoto">FOTOĞRAF ÇEK / TAKE PHOTO</button>
         </div>
-        <div id="error-box" class="error-msg">
-            [TR] ⚠️ BİTKİ ALGILANAMADI: Yeterli yaprak/klorofil (yeşil doku) tespit edilemedi. Lütfen yaprak görüntüsü çekiniz!<br>
-            [EN] ⚠️ NO PLANT DETECTED: Insufficient leaf/chlorophyll (green tissue) detected. Please capture a leaf image!
+        <div id="error-box" class="error-msg" data-i18n="errorPlant">
+            ⚠️ BİTKİ ALGILANAMADI: Yeterli yaprak/klorofil (yeşil doku) tespit edilemedi. Lütfen yaprak görüntüsü çekiniz!<br>
+            ⚠️ NO PLANT DETECTED: Insufficient leaf/chlorophyll (green tissue) detected. Please capture a leaf image!
         </div>
         <div id="res-area">
             <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;">BRÜSSEL PROJE RAPORU #EU-AGRO<br><span style="font-size:9px; font-weight:normal;">BRUSSELS PROJECT REPORT #EU-AGRO</span></div>
             
-            <div id="sync-status" class="sync-status">✨ Yerel Analiz Başarıyla Tamamlandı & Excel'e Aktarıldı!<br><span style="font-size:9px; font-weight:normal;">Local Analysis Successfully Completed & Synced to Excel!</span></div>
+            <div id="sync-status" class="sync-status" data-i18n="syncSuccess">✨ Yerel Analiz Başarıyla Tamamlandı & Excel'e Aktarıldı!<br><span style="font-size:9px; font-weight:normal;">Local Analysis Successfully Completed & Synced to Excel!</span></div>
+            
             <!-- Analiz Edilen Yaprak Fotoğrafı Önizlemesi -->
             <img id="preview-img" class="captured-preview" src="" alt="Captured Leaf">
             <div id="hybrid-output" class="hybrid-note"></div>
@@ -162,38 +165,39 @@
             <div id="certificate-output" class="certificate-box"></div>
             <div id="prescription-output" class="prescription-box"></div>
             
-            <!-- Çift Senaryolu Prediktif Stres Simülasyon Grafiği (Karşılaştırmalı) -->
+            <!-- Çift Senaryolu Prediktif Stres Simülasyon Grafiği -->
             <div class="chart-box">
-                <label style="text-align:center; margin-bottom:8px; font-size: 11px;">📈 Karşılaştırmalı 5 Günlük Stres Trendi (Müdahaleli vs Müdahalesiz)<br>Comparative 5-Day Stress Trend (Intervention vs No Intervention)</label>
+                <label style="text-align:center; margin-bottom:8px; font-size: 11px;" data-i18n="chartTitle">📈 Karşılaştırmalı 5 Günlük Stres Trendi (Müdahaleli vs Müdahalesiz)<br>Comparative 5-Day Stress Trend (Intervention vs No Intervention)</label>
                 <div class="chart-container">
                    <canvas id="stressChart"></canvas>
                </div>
             </div>
             <div id="res-output" class="res-body"></div>
-            <div id="expert-note" class="expert-msg">
+            <div id="expert-note" class="expert-msg" data-i18n="expertNotice">
                 ⚠️ UZMAN GÖRÜŞÜ: Çözülemeyen sorunlarda acil uzman desteği alınmalıdır.<br>
                 ⚠️ EXPERT ADVICE: Seek immediate expert support for unresolved issues.
             </div>
             
-            <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/edit?usp=sharing" target="_blank" class="btn-excel">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
-            <div class="btn-save" onclick="window.print()">📥 RAPORu YAZDIR / PDF KAYDET</div>
-            <button id="reset-btn" class="btn-reset" onclick="resetSystem()" style="display:block;">YENİ ANALİZ / NEW ANALYZE</button>
+            <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/edit?usp=sharing" target="_blank" class="btn-excel" data-i18n="btnLiveSheet">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
+            <div class="btn-save" onclick="window.print()" data-i18n="btnPrintReport">📥 RAPORU YAZDIR / PDF KAYDET</div>
+            <button id="reset-btn" class="btn-reset" onclick="resetSystem()" style="display:block;" data-i18n="btnNewAnalyze">YENİ ANALİZ / NEW ANALYZE</button>
         </div>
     </div>
-    <!-- MEBİ & BİYOLOJİ LABORATUVARI SEKMESİ (GÜNCELLENDİ) -->
+
+    <!-- MEBİ & BİYOLOJİ LABORATUVARI SEKMESİ -->
     <div id="biolab-section" class="biolab-section">
         <div class="card">
-            <label>🧬 MEBİ & Biyoloji Laboratuvarı Modülü<br><span style="font-size:9px; font-weight:normal;">Klorofil Ekstraksiyonu & Akıllı Renk (RGB) Analizi</span></label>
-            <div class="mebi-badge">
+            <label data-i18n="bioLabTitle">🧬 MEBİ & Biyoloji Laboratuvarı Modülü<br><span style="font-size:9px; font-weight:normal;">Klorofil Ekstraksiyonu & Akıllı Renk (RGB) Analizi</span></label>
+            <div class="mebi-badge" data-i18n="bioBadge">
                 📚 <strong>MEB Güncel Kazanım Uyumlu:</strong> Fotosentez hızını etkileyen faktörler, pigment kromatografisi ve düşük maliyetli akıllı telefon kalorimetresi protokolü. (Brüksel STEM & Citizen Science Uyumlu)
             </div>
-            <label>Numune Bitki Türü / Sample Plant</label>
+            <label data-i18n="lblSamplePlant">Numune Bitki Türü / Sample Plant</label>
             <select id="bio-plant">
                 <option value="Camellia sinensis">Çay Yaprağı (Camellia sinensis - Rize)</option>
                 <option value="Citrus sinensis">Narenciye Yaprağı (Citrus sinensis - Antakya)</option>
                 <option value="Olea europaea">Zeytin Yaprağı (Olea europaea - Ege)</option>
             </select>
-            <label style="margin-top:10px;">Spektrofotometre / Kalorimetre Dalga Boyu</label>
+            <label data-i18n="lblWavelength">Spektrofotometre / Kalorimetre Dalga Boyu</label>
             <select id="bio-wavelength">
                 <option value="663">663 nm (Klorofil a - Maksimum Absorpsiyon)</option>
                 <option value="645">645 nm (Klorofil b - Maksimum Absorpsiyon)</option>
@@ -202,119 +206,254 @@
             
             <!-- Kamera ile Akıllı Renk (RGB) Analizi Alanı -->
             <div style="margin-top: 12px; border: 2px dashed var(--primary); padding: 12px; border-radius: 12px; background: #f4fbf5; text-align: center;">
-                <label style="margin-bottom: 5px;">📸 Yaprak Ekstraktı Kamera / Fotoğraf Analizi</label>
-                <div style="font-size: 10px; color: #555; margin-bottom: 8px;">Sıvı ekstraktın fotoğrafını çekin veya yükleyin (RGB piksel yoğunluğu ölçülecek):</div>
+                <label style="margin-bottom: 5px;" data-i18n="bioCamHeader">📸 Yaprak Ekstraktı Kamera / Fotoğraf Analizi</label>
+                <div style="font-size: 10px; color: #555; margin-bottom: 8px;" data-i18n="bioCamDesc">Sıvı ekstraktın fotoğrafını çekin veya yükleyin (RGB piksel yoğunluğu ölçülecek):</div>
                 <input type="file" id="bio-file-input" accept="image/*" style="display:none" onchange="processBioCamera(event)">
-                <button type="button" class="btn-main" style="padding: 10px; font-size: 12px; margin-top: 2px;" onclick="document.getElementById('bio-file-input').click()">📱 Kamera / Fotoğraf ile Renk Analizi Yap</button>
+                <button type="button" class="btn-main" style="padding: 10px; font-size: 12px; margin-top: 2px;" onclick="document.getElementById('bio-file-input').click()" data-i18n="btnBioCam">📱 Kamera / Fotoğraf ile Renk Analizi Yap</button>
             </div>
 
-            <label style="margin-top:12px;">Ölçülen / Hesaplanan Absorbans Değeri (A)</label>
+            <label style="margin-top:12px;" data-i18n="lblAbsorbance">Ölçülen / Hesaplanan Absorbans Değeri (A)</label>
             <input type="number" id="bio-absorbance" step="0.001" placeholder="Örn: 0.450" value="0.520">
             
-            <button class="btn-main" style="margin-top: 12px; font-size: 13px; padding: 12px;" onclick="calculateBiolab(true)">PİGMENT KONSANTRASYONUNU HESAPLA & EXCEL'E GÖNDER</button>
+            <button class="btn-main" style="margin-top: 12px; font-size: 13px; padding: 12px;" onclick="calculateBiolab(true)" data-i18n="btnBioCalc">PİGMENT KONSANTRASYONUNU HESAPLA & EXCEL'E GÖNDER</button>
             
-            <div id="bio-sync-status" class="sync-status" style="margin-top: 10px;">✨ MEBİ Lab Verisi Canlı Veri Tablosuna Başarıyla Gönderildi!</div>
+            <div id="bio-sync-status" class="sync-status" style="margin-top: 10px;" data-i18n="bioSyncSuccess">✨ MEBİ Lab Verisi Canlı Veri Tablosuna Başarıyla Gönderildi!</div>
             
             <div id="bio-result-box" style="display:none; margin-top:12px; background:#f0fdf4; border:1px solid #bbf7d0; padding:12px; border-radius:10px; font-size:11px; color:#166534; line-height:1.4;">
             </div>
         </div>
     </div>
+
     <!-- SAHA ÇALIŞMALARI SEKMESİ -->
     <div id="field-section" class="field-section">
         <div class="card">
-            <label id="field-lbl-title">📸 Saha ve Öğrenci Araştırma Fotoğrafları<br><span style="font-size:9px; font-weight:normal;">Field & Student Research Photos Gallery</span></label>
+            <label id="field-lbl-title" data-i18n="fieldTitle">📸 Saha ve Öğrenci Araştırma Fotoğrafları<br><span style="font-size:9px; font-weight:normal;">Field & Student Research Photos Gallery</span></label>
             
             <div class="upload-zone" onclick="document.getElementById('file-input').click()">
                 <div style="font-size: 24px; margin-bottom: 5px;">📁</div>
-                <div id="upload-txt-main" style="font-size: 12px; font-weight: bold; color: var(--primary);">Fotoğraf Seç veya Yükle / Choose Photo</div>
-                <div id="upload-txt-sub" style="font-size: 9px; color: #666; margin-top: 3px;">Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları / Group shots with students, lab and field studies</div>
+                <div id="upload-txt-main" style="font-size: 12px; font-weight: bold; color: var(--primary);" data-i18n="uploadMain">Fotoğraf Seç veya Yükle / Choose Photo</div>
+                <div id="upload-txt-sub" style="font-size: 9px; color: #666; margin-top: 3px;" data-i18n="uploadSub">Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları / Group shots with students, lab and field studies</div>
             </div>
             <input type="file" id="file-input" accept="image/*" style="display:none" onchange="handleFileUpload(event)">
             <div style="display: flex; gap: 5px; margin-bottom: 10px;">
-                <input type="text" id="photo-caption" placeholder="Açıklama giriniz / Enter caption..." style="font-size: 12px; padding: 8px;">
+                <input type="text" id="photo-caption" placeholder="Açıklama giriniz / Enter caption..." style="font-size: 12px; padding: 8px;" data-i18n-placeholder="captionPlaceholder">
             </div>
             <div id="gallery-container" class="gallery-grid"></div>
         </div>
     </div>
-    <!-- CITIZEN SCIENCE & ULUSLARARASI VERİ HAVUZU SEKMESİ -->
+
+    <!-- CITIZEN SCIENCE SEKMESİ -->
     <div id="citizen-section" class="citizen-section">
         <div class="card">
-            <label id="citizen-hub-title">🌍 Açık Kaynaklı Tarım Veritabanı<br><span style="font-size:9px; font-weight:normal;">Citizen Science & International Network Hub</span></label>
+            <label id="citizen-hub-title" data-i18n="citizenTitle">🌍 Açık Kaynaklı Tarım Veritabanı<br><span style="font-size:9px; font-weight:normal;">Citizen Science & International Network Hub</span></label>
             
             <div class="citizen-stats">
                 <div class="stat-card">
                     <div id="stat-total-nodes" class="stat-number">5</div>
-                    <div id="stat-nodes-lbl" class="stat-label">Aktif Bölgesel Ağ / Active Nodes</div>
+                    <div id="stat-nodes-lbl" class="stat-label" data-i18n="statNodes">Aktif Bölgesel Ağ / Active Nodes</div>
                 </div>
                 <div class="stat-card">
                     <div id="stat-total-samples" class="stat-number">142</div>
-                    <div id="stat-samples-lbl" class="stat-label">Toplam Veri / Total Samples</div>
+                    <div id="stat-samples-lbl" class="stat-label" data-i18n="statSamples">Toplam Veri / Total Samples</div>
                 </div>
             </div>
-            <div id="partner-regions-lbl" style="font-size: 11px; font-weight: bold; margin-bottom: 5px; color: var(--primary);">Katılımcı Pilot Bölgeler / Partner Regions:</div>
+            <div id="partner-regions-lbl" style="font-size: 11px; font-weight: bold; margin-bottom: 5px; color: var(--primary);" data-i18n="partnerRegions">Katılımcı Pilot Bölgeler / Partner Regions:</div>
             <div class="network-list">
                 <div class="network-item">
-                    <span id="node-rize">🌱 Rize Fatih Anadolu Lisesi (Çay / Tea) [pH: 4.5-5.5]</span>
-                    <strong id="status-hub1" style="color: #2e7d32;">Aktif Hub / Active Hub</strong>
+                    <span data-i18n="netRize">🌱 Rize Fatih Anadolu Lisesi (Çay / Tea) [pH: 4.5-5.5]</span>
+                    <strong style="color: #2e7d32;" data-i18n="netActive">Aktif Hub / Active Hub</strong>
                 </div>
                 <div class="network-item">
-                    <span id="node-antakya">🍊 Antakya (Narenciye / Citrus) [pH: 6.0-7.5]</span>
-                    <strong id="status-hub2" style="color: #2e7d32;">Senkronize / Synchronized</strong>
+                    <span data-i18n="netAntakya">🍊 Antakya (Narenciye / Citrus) [pH: 6.0-7.5]</span>
+                    <strong style="color: #2e7d32;" data-i18n="netSync">Senkronize / Synchronized</strong>
                 </div>
                 <div class="network-item">
-                    <span id="node-ege-olive">🫒 Ege Bölgesi (Zeytin & Zeytinyağı / Olive) [pH: 6.5-8.0]</span>
-                    <strong id="status-hub3" style="color: #2e7d32;">Senkronize / Synchronized</strong>
+                    <span data-i18n="netOlive">🫒 Ege Bölgesi (Zeytin & Zeytinyağı / Olive) [pH: 6.5-8.0]</span>
+                    <strong style="color: #2e7d32;" data-i18n="netSync">Senkronize / Synchronized</strong>
                 </div>
                 <div class="network-item">
-                    <span id="node-ege-fig">🌿 Ege Bölgesi (İncir / Fig) [pH: 6.0-7.5]</span>
-                    <strong id="status-hub4" style="color: #2e7d32;">Senkronize / Synchronized</strong>
+                    <span data-i18n="netFig">🌿 Ege Bölgesi (İncir / Fig) [pH: 6.0-7.5]</span>
+                    <strong style="color: #2e7d32;" data-i18n="netSync">Senkronize / Synchronized</strong>
                 </div>
                 <div class="network-item">
-                    <span id="node-brussels">🇪🇺 Brüksel EU Okul Ağı (Pilot / EU School Network)</span>
-                    <strong id="status-hub5" style="color: #2e7d32;">Bağlı / Connected</strong>
+                    <span data-i18n="netBrussels">🇪🇺 Brüksel EU Okul Ağı (Pilot / EU School Network)</span>
+                    <strong style="color: #2e7d32;" data-i18n="netConnected">Bağlı / Connected</strong>
                 </div>
             </div>
-            <button id="sync-net-btn" class="btn-main" style="margin-top: 15px; font-size: 13px; padding: 12px;" onclick="alert('Uluslararası Açık Kaynak Veri Havuzu güncel! / International Open Source Data Hub updated!')">🔄 AĞI GÜNCELLE / UPDATE NETWORK</button>
+            <button id="sync-net-btn" class="btn-main" style="margin-top: 15px; font-size: 13px; padding: 12px;" onclick="alert(currentLang === 'TR' ? 'Uluslararası Açık Kaynak Veri Havuzu güncel!' : 'International Open Source Data Hub updated!')" data-i18n="btnUpdateNetwork">🔄 AĞI GÜNCELLE / UPDATE NETWORK</button>
         </div>
     </div>
+    
     <div class="footer">© 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
 </div>
+
 <div id="lightbox-modal" onclick="closeLightbox()">
     <button id="lightbox-close" onclick="closeLightbox()">&times;</button>
     <img id="lightbox-img" src="" alt="Zoomed Photo">
     <div id="lightbox-caption"></div>
 </div>
+
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSfNJ-wahBs-bJn5AIJjHTvGNM19WpMKvEDij-6j8pM6ej2-VDdZCcFIak4DcXYxpv/exec';
-    let lang = 'TR';
+    let currentLang = 'TR';
     let track;
     let myChart = null;
     let lastCapturedImage = "";
     const v = document.getElementById('v');
     const c = document.getElementById('canvas');
-    const cropRanges = {
-        "tr-antakya-citrus": { min: 6.0, max: 7.5, name: "Narenciye / Citrus" },
-        "tr-ege-olive": { min: 6.5, max: 8.0, name: "Zeytin / Olive" },
-        "tr-ege-fig": { min: 6.0, max: 7.5, name: "İncir / Fig" },
-        "tr-tea": { min: 4.5, max: 5.5, name: "Çay / Tea" },
-        "be-sugar": { min: 6.0, max: 7.0, name: "Şeker Pancarı / Sugar Beet" },
-        "nl-tulip": { min: 6.0, max: 7.0, name: "Lale / Tulip" },
-        "it-tomato": { min: 6.0, max: 6.8, name: "Domates / Tomato" },
-        "global-other": { min: 6.0, max: 7.0, name: "Diğer / Other" }
+
+    const translations = {
+        TR: {
+            authorSub: "Biyoloji Uzmanı & Proje Lideri",
+            tabAnalysis: "🌱 ANALİZ",
+            tabBiolab: "🧬 MEBİ LAB",
+            tabField: "📸 SAHA",
+            tabCitizen: "🌍 CITIZEN",
+            lblRegion: "Bölge ve Ürün / Region & Crop",
+            lblManualSelect: "+ Global - Diğer / Other (Manuel Seçim)",
+            lblSoilPH: "TOPRAK pH DEĞERİ / SOIL pH (3.0 - 9.0)",
+            lblWeather: "Hava Durumu / Weather Condition",
+            lblAutoWeather: "📍 Konumdan Otomatik Hava Durumunu Güncelle",
+            btnStartAnalyze: "ANALİZİ BAŞLAT / START ANALYZE",
+            camHint: "⚠️ Öneri: Ölçüm doğruluğu için yaprak yüzeyindeki toz/su damlalarını temizleyiniz.",
+            btnTakePhoto: "FOTOĞRAF ÇEK / TAKE PHOTO",
+            errorPlant: "⚠️ BİTKİ ALGILANAMADI: Yeterli yaprak/klorofil (yeşil doku) tespit edilemedi. Lütfen yaprak görüntüsü çekiniz!",
+            syncSuccess: "✨ Yerel Analiz Başarıyla Tamamlandı & Excel'e Aktarıldı!",
+            chartTitle: "📈 Karşılaştırmalı 5 Günlük Stres Trendi (Müdahaleli vs Müdahalesiz)",
+            expertNotice: "⚠️ UZMAN GÖRÜŞÜ: Çözülemeyen sorunlarda acil uzman desteği alınmalıdır.",
+            btnLiveSheet: "📊 CANLI VERİ TABLOSU / LIVE DATA SHEET",
+            btnPrintReport: "📥 RAPORU YAZDIR / PDF KAYDET",
+            btnNewAnalyze: "YENİ ANALİZ / NEW ANALYZE",
+            bioLabTitle: "🧬 MEBİ & Biyoloji Laboratuvarı Modülü<br><span style='font-size:9px; font-weight:normal;'>Klorofil Ekstraksiyonu & Akıllı Renk (RGB) Analizi</span>",
+            bioBadge: "📚 <strong>MEB Güncel Kazanım Uyumlu:</strong> Fotosentez hızını etkileyen faktörler, pigment kromatografisi ve düşük maliyetli akıllı telefon kalorimetresi protokolü. (Brüksel STEM & Citizen Science Uyumlu)",
+            lblSamplePlant: "Numune Bitki Türü / Sample Plant",
+            lblWavelength: "Spektrofotometre / Kalorimetre Dalga Boyu",
+            bioCamHeader: "📸 Yaprak Ekstraktı Kamera / Fotoğraf Analizi",
+            bioCamDesc: "Sıvı ekstraktın fotoğrafını çekin veya yükleyin (RGB piksel yoğunluğu ölçülecek):",
+            btnBioCam: "📱 Kamera / Fotoğraf ile Renk Analizi Yap",
+            lblAbsorbance: "Ölçülen / Hesaplanan Absorbans Değeri (A)",
+            btnBioCalc: "PİGMENT KONSANTRASYONUNU HESAPLA & EXCEL'E GÖNDER",
+            bioSyncSuccess: "✨ MEBİ Lab Verisi Canlı Veri Tablosuna Başarıyla Gönderildi!",
+            fieldTitle: "📸 Saha ve Öğrenci Araştırma Fotoğrafları<br><span style='font-size:9px; font-weight:normal;'>Field & Student Research Photos Gallery</span>",
+            uploadMain: "Fotoğraf Seç veya Yükle / Choose Photo",
+            uploadSub: "Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları",
+            captionPlaceholder: "Açıklama giriniz...",
+            citizenTitle: "🌍 Açık Kaynaklı Tarım Veritabanı<br><span style='font-size:9px; font-weight:normal;'>Citizen Science & International Network Hub</span>",
+            statNodes: "Aktif Bölgesel Ağ / Active Nodes",
+            statSamples: "Toplam Veri / Total Samples",
+            partnerRegions: "Katılımcı Pilot Bölgeler / Partner Regions:",
+            netRize: "🌱 Rize Fatih Anadolu Lisesi (Çay / Tea) [pH: 4.5-5.5]",
+            netAntakya: "🍊 Antakya (Narenciye / Citrus) [pH: 6.0-7.5]",
+            netOlive: "🫒 Ege Bölgesi (Zeytin & Zeytinyağı / Olive) [pH: 6.5-8.0]",
+            netFig: "🌿 Ege Bölgesi (İncir / Fig) [pH: 6.0-7.5]",
+            netBrussels: "🇪🇺 Brüksel EU Okul Ağı (Pilot / EU School Network)",
+            netActive: "Aktif Hub",
+            netSync: "Senkronize",
+            netConnected: "Bağlı",
+            btnUpdateNetwork: "🔄 AĞI GÜNCELLE / UPDATE NETWORK"
+        },
+        EN: {
+            authorSub: "Biology Expert & Project Lead",
+            tabAnalysis: "🌱 ANALYSIS",
+            tabBiolab: "🧬 MEB LAB",
+            tabField: "📸 FIELD",
+            tabCitizen: "🌍 CITIZEN",
+            lblRegion: "Region & Crop",
+            lblManualSelect: "+ Global - Other (Manual Selection)",
+            lblSoilPH: "SOIL pH VALUE (3.0 - 9.0)",
+            lblWeather: "Weather Condition",
+            lblAutoWeather: "📍 Update Weather from Location Automatically",
+            btnStartAnalyze: "START ANALYSIS",
+            camHint: "⚠️ Tip: Clean dust/water drops on leaf surface for measurement accuracy.",
+            btnTakePhoto: "TAKE PHOTO",
+            errorPlant: "⚠️ NO PLANT DETECTED: Insufficient leaf/chlorophyll tissue detected. Please capture a leaf image!",
+            syncSuccess: "✨ Local Analysis Successfully Completed & Synced to Excel!",
+            chartTitle: "📈 Comparative 5-Day Stress Trend (Intervention vs No Intervention)",
+            expertNotice: "⚠️ EXPERT ADVICE: Seek immediate expert support for unresolved issues.",
+            btnLiveSheet: "📊 LIVE DATA SHEET",
+            btnPrintReport: "📥 PRINT REPORT / SAVE PDF",
+            btnNewAnalyze: "NEW ANALYSIS",
+            bioLabTitle: "🧬 MEB Lab & Biology Laboratory Module<br><span style='font-size:9px; font-weight:normal;'>Chlorophyll Extraction & Smart Color (RGB) Analysis</span>",
+            bioBadge: "📚 <strong>MEB Curriculum Aligned:</strong> Factors affecting photosynthesis rate, pigment chromatography, and low-cost smartphone colorimetry protocol. (Brussels STEM & Citizen Science Compliant)",
+            lblSamplePlant: "Sample Plant Type",
+            lblWavelength: "Spectrophotometer / Colorimeter Wavelength",
+            bioCamHeader: "📸 Leaf Extract Camera / Photo Analysis",
+            bioCamDesc: "Take or upload a photo of the liquid extract (RGB pixel density will be measured):",
+            btnBioCam: "📱 Perform Color Analysis via Camera / Photo",
+            lblAbsorbance: "Measured / Calculated Absorbance Value (A)",
+            btnBioCalc: "CALCULATE PIGMENT CONCENTRATION & SEND TO EXCEL",
+            bioSyncSuccess: "✨ MEB Lab Data Successfully Sent to Live Data Sheet!",
+            fieldTitle: "📸 Field & Student Research Photos<br><span style='font-size:9px; font-weight:normal;'>Field & Student Research Photos Gallery</span>",
+            uploadMain: "Choose or Upload Photo",
+            uploadSub: "Group photos with students, laboratory and field studies",
+            captionPlaceholder: "Enter caption...",
+            citizenTitle: "🌍 Open Source Agriculture Database<br><span style='font-size:9px; font-weight:normal;'>Citizen Science & International Network Hub</span>",
+            statNodes: "Active Regional Nodes",
+            statSamples: "Total Samples",
+            partnerRegions: "Partner Pilot Regions:",
+            netRize: "🌱 Rize Fatih Anatolian High School (Tea) [pH: 4.5-5.5]",
+            netAntakya: "🍊 Antakya (Citrus) [pH: 6.0-7.5]",
+            netOlive: "🫒 Aegean Region (Olive & Olive Oil) [pH: 6.5-8.0]",
+            netFig: "🌿 Aegean Region (Fig) [pH: 6.0-7.5]",
+            netBrussels: "🇪🇺 Brussels EU School Network (Pilot)",
+            netActive: "Active Hub",
+            netSync: "Synchronized",
+            netConnected: "Connected",
+            btnUpdateNetwork: "🔄 UPDATE NETWORK"
+        }
     };
+
+    const cropRanges = {
+        "tr-antakya-citrus": { min: 6.0, max: 7.5, name: "Antakya - Citrus (Narenciye)" },
+        "tr-ege-olive": { min: 6.5, max: 8.0, name: "Ege - Olive & Olive Oil (Zeytin)" },
+        "tr-ege-fig": { min: 6.0, max: 7.5, name: "Ege - Fig (İncir)" },
+        "tr-tea": { min: 4.5, max: 5.5, name: "Turkey, Rize - Tea (Çay)" },
+        "be-sugar": { min: 6.0, max: 7.0, name: "Brussels, BE - Sugar Beet (Şeker Pancarı)" },
+        "nl-tulip": { min: 6.0, max: 7.0, name: "Netherlands - Tulips (Lale)" },
+        "it-tomato": { min: 6.0, max: 6.8, name: "Italy - Tomatoes (Domates)" },
+        "global-other": { min: 6.0, max: 7.0, name: "Global - Diğer / Other" }
+    };
+
     function initApp() {
         loadGallery();
         updatePHRangeInfo();
         fetchCurrentWeather();
     }
+
+    function toggleLang() {
+        currentLang = currentLang === 'TR' ? 'EN' : 'TR';
+        document.getElementById('lang-toggle').innerText = currentLang === 'TR' ? 'EN / TR' : 'TR / EN';
+        
+        // Tüm data-i18n etiketlerini güncelle
+        const elements = document.querySelectorAll('[data-i18n]');
+        elements.forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if(translations[currentLang][key]) {
+                el.innerHTML = translations[currentLang][key];
+            }
+        });
+
+        // Placeholder'ları güncelle
+        const placeholders = document.querySelectorAll('[data-i18n-placeholder]');
+        placeholders.forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            if(translations[currentLang][key]) {
+                el.placeholder = translations[currentLang][key];
+            }
+        });
+
+        updatePHRangeInfo();
+        loadGallery();
+    }
+
     // Open-Meteo API ile Konum Bazlı Otomatik Hava Durumu
     function fetchCurrentWeather() {
         const statusEl = document.getElementById('loc-status');
         if (!navigator.geolocation) {
-            statusEl.innerText = "(Tarayıcı Konumu Desteklemiyor)";
+            statusEl.innerText = currentLang === 'TR' ? "(Konum Desteklenmiyor)" : "(Location Not Supported)";
             return;
         }
-        statusEl.innerText = "(Konum Alınıyor...)";
+        statusEl.innerText = currentLang === 'TR' ? "(Konum Alınıyor...)" : "(Fetching Location...)";
         
         navigator.geolocation.getCurrentPosition(position => {
             const lat = position.coords.latitude;
@@ -341,27 +480,34 @@
                         }
                         
                         weatherSelect.value = mappedWeather;
-                        statusEl.innerText = `(Konumdan Güncellendi ✓)`;
+                        statusEl.innerText = currentLang === 'TR' ? "(Konumdan Güncellendi ✓)" : "(Updated from Location ✓)";
                     }
                 })
                 .catch(() => {
-                    statusEl.innerText = "(Hava Alınamadı)";
+                    statusEl.innerText = currentLang === 'TR' ? "(Hava Alınamadı)" : "(Weather Unavailable)";
                 });
         }, () => {
-            statusEl.innerText = "(Konum İzni Reddedildi)";
+            statusEl.innerText = currentLang === 'TR' ? "(Konum İzni Reddedildi)" : "(Location Permission Denied)";
         }, { timeout: 10000 });
     }
+
     function updatePHRangeInfo() {
         const regionKey = document.getElementById('region').value;
         const range = cropRanges[regionKey] || { min: 6.0, max: 7.0 };
         const phLabel = document.getElementById('ph-label');
-        phLabel.innerHTML = `TOPRAK pH DEĞERİ / SOIL pH (İdeal Aralık / Ideal Range: ${range.min} - ${range.max}) [3.0 - 9.0]`;
+        
+        if(currentLang === 'TR') {
+            phLabel.innerHTML = `TOPRAK pH DEĞERİ / SOIL pH (İdeal Aralık / Ideal Range: ${range.min} - ${range.max}) [3.0 - 9.0]`;
+        } else {
+            phLabel.innerHTML = `SOIL pH VALUE (Ideal Range: ${range.min} - ${range.max}) [3.0 - 9.0]`;
+        }
         
         const phInput = document.getElementById('ph');
         if(phInput.value) {
             validatePH(phInput);
         }
     }
+
     function validatePH(input) {
         const val = parseFloat(input.value);
         const warn = document.getElementById('ph-warn');
@@ -370,16 +516,16 @@
         if(isNaN(val)) return;
         if(val < range.min || val > range.max) {
             warn.style.display = 'block';
-            warn.innerHTML = `⚠️ Girilen pH (${val}), ${range.name} için ideal bilimsel aralığın (${range.min} - ${range.max}) dışında!<br>⚠️ Entered pH (${val}) is outside the ideal scientific range (${range.min} - ${range.max}) for ${range.name}!`;
+            if(currentLang === 'TR') {
+                warn.innerHTML = `⚠️ Girilen pH (${val}), ${range.name} için ideal bilimsel aralığın (${range.min} - ${range.max}) dışında!`;
+            } else {
+                warn.innerHTML = `⚠️ Entered pH (${val}) is outside the ideal scientific range (${range.min} - ${range.max}) for ${range.name}!`;
+            }
         } else {
             warn.style.display = 'none';
         }
     }
-    function toggleLang() {
-        lang = lang === 'TR' ? 'EN' : 'TR';
-        updatePHRangeInfo();
-        loadGallery();
-    }
+
     function switchTab(tabName) {
         const analysisSec = document.getElementById('analysis-section');
         const biolabSec = document.getElementById('biolab-section');
@@ -424,6 +570,7 @@
             document.getElementById('form-area').style.display = 'block';
         }
     }
+
     // Akıllı Telefon Kamera ile RGB Piksel Renk Kalorimetresi Analizi
     function processBioCamera(event) {
         const file = event.target.files[0];
@@ -451,19 +598,20 @@
                 let avgG = totalG / count;
                 let avgB = totalB / count;
                 
-                // RGB yeşil yoğunluk oranına göre tahmini absorbans hesaplama
                 let estimatedAbs = (avgG / (avgR + avgB + 1)) * 0.85;
                 if(estimatedAbs > 1.5) estimatedAbs = 1.5;
                 if(estimatedAbs < 0.1) estimatedAbs = 0.1;
                 
                 document.getElementById('bio-absorbance').value = estimatedAbs.toFixed(3);
-                alert(`📱 Akıllı Kalorimetre Analizi Başarılı!\nOrtalama Yeşil Piksel Yoğunluğundan Tahmini Absorbans: ${estimatedAbs.toFixed(3)} olarak hesaplandı.`);
+                alert(currentLang === 'TR' ? 
+                    `📱 Akıllı Kalorimetre Analizi Başarılı!\nOrtalama Yeşil Piksel Yoğunluğundan Tahmini Absorbans: ${estimatedAbs.toFixed(3)} olarak hesaplandı.` : 
+                    `📱 Smart Colorimeter Analysis Successful!\nEstimated Absorbance from Average Green Pixel Density: ${estimatedAbs.toFixed(3)}.`);
             }
             img.src = e.target.result;
         }
         reader.readAsDataURL(file);
     }
-    // MEBİ Laboratuvarı Spektrofotometrik & Kalorimetrik Hesaplama Fonksiyonu
+
     function calculateBiolab(sendToSheet = false) {
         const plant = document.getElementById('bio-plant').value;
         const wl = document.getElementById('bio-wavelength').value;
@@ -472,29 +620,38 @@
         const resBox = document.getElementById('bio-result-box');
         
         if(isNaN(abs)) {
-            alert('Lütfen geçerli bir absorbans değeri giriniz!');
+            alert(currentLang === 'TR' ? 'Lütfen geçerli bir absorbans değeri giriniz!' : 'Please enter a valid absorbance value!');
             return;
         }
         
-        let conc = (abs * 12.7) / 1.0; // Arnon eşitliği basitleştirilmiş formülü
-        let pigmentName = wl === '663' ? 'Klorofil a' : (wl === '645' ? 'Klorofil b' : 'Karotenoit');
+        let conc = (abs * 12.7) / 1.0;
+        let pigmentName = wl === '663' ? 'Klorofil a / Chlorophyll a' : (wl === '645' ? 'Klorofil b / Chlorophyll b' : 'Karotenoit / Carotenoid');
         
         resBox.style.display = 'block';
-        resBox.innerHTML = `✅ <strong>MEBİ & Akıllı Kalorimetre Laboratuvar Sonucu:</strong><br>
-        • Bitki: ${plant}<br>
-        • Dalga Boyu / Yöntem: ${wl} nm (${pigmentName} - RGB Kalorimetre Destekli)<br>
-        • Ölçülen/Hesaplanan Absorbans: ${abs}<br>
-        • Hesaplanan Konsantrasyon: <strong>${conc.toFixed(2)} mg/L</strong><br>
-        <em>Durum: MEBİ protokolüne ve Brüksel Citizen Science standartlarına uygun olarak hesaplandı.</em>`;
+        if(currentLang === 'TR') {
+            resBox.innerHTML = `✅ <strong>MEBİ & Akıllı Kalorimetre Laboratuvar Sonucu:</strong><br>
+            • Bitki: ${plant}<br>
+            • Dalga Boyu / Yöntem: ${wl} nm (${pigmentName} - RGB Kalorimetre Destekli)<br>
+            • Ölçülen/Hesaplanan Absorbans: ${abs}<br>
+            • Hesaplanan Konsantrasyon: <strong>${conc.toFixed(2)} mg/L</strong><br>
+            <em>Durum: MEBİ protokolüne ve Brüksel Citizen Science standartlarına uygun olarak hesaplandı.</em>`;
+        } else {
+            resBox.innerHTML = `✅ <strong>MEB Lab & Smart Colorimeter Result:</strong><br>
+            • Plant: ${plant}<br>
+            • Wavelength / Method: ${wl} nm (${pigmentName} - RGB Colorimeter Supported)<br>
+            • Measured/Calculated Absorbance: ${abs}<br>
+            • Calculated Concentration: <strong>${conc.toFixed(2)} mg/L</strong><br>
+            <em>Status: Calculated in accordance with MEB protocol and Brussels Citizen Science standards.</em>`;
+        }
         
         if(sendToSheet) {
             document.getElementById('bio-sync-status').style.display = 'block';
             const formData = {
                 region: `MEBİ Lab - ${plant}`,
                 ph: "N/A (Lab)",
-                weather: "Lab Ortamı",
+                weather: "Lab Ortamı / Environment",
                 stress: `Konsantrasyon: ${conc.toFixed(2)} mg/L (${pigmentName})`,
-                notes: document.getElementById('bio-result-box').innerText.replace(/\n/g, " "),
+                notes: resBox.innerText.replace(/\n/g, " "),
                 photograph: "",
                 date: new Date().toLocaleString()
             };
@@ -507,6 +664,7 @@
             });
         }
     }
+
     function handleFileUpload(event) {
         const file = event.target.files[0];
         if(!file) return;
@@ -527,7 +685,7 @@
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, width, height);
                 const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
-                let caption = document.getElementById('photo-caption').value || 'Saha Çalışması / Field Study';
+                let caption = document.getElementById('photo-caption').value || (currentLang === 'TR' ? 'Saha Çalışması / Field Study' : 'Field Study');
                 
                 let gallery = JSON.parse(localStorage.getItem('agro_field_gallery') || '[]');
                 gallery.unshift({ img: compressedDataUrl, caption: caption, date: new Date().toLocaleDateString() });
@@ -540,12 +698,13 @@
         }
         reader.readAsDataURL(file);
     }
+
     function loadGallery() {
         const container = document.getElementById('gallery-container');
         let gallery = JSON.parse(localStorage.getItem('agro_field_gallery') || '[]');
         
         if(gallery.length === 0) {
-            container.innerHTML = `<div style="grid-column: span 2; text-align: center; font-size: 11px; color: #888; padding: 20px;">Henüz saha fotoğrafı eklenmedi. / No field photos added yet.</div>`;
+            container.innerHTML = `<div style="grid-column: span 2; text-align: center; font-size: 11px; color: #888; padding: 20px;">${currentLang === 'TR' ? 'Henüz saha fotoğrafı eklenmedi.' : 'No field photos added yet.'}</div>`;
             return;
         }
         container.innerHTML = '';
@@ -560,27 +719,31 @@
             container.appendChild(div);
         });
     }
+
     function deletePhoto(event, index) {
         event.stopPropagation();
-        if(confirm('Bu fotoğrafı silmek istediğinize emin misiniz? / Are you sure you want to delete this photo?')) {
+        if(confirm(currentLang === 'TR' ? 'Bu fotoğrafı silmek istediğinize emin misiniz?' : 'Are you sure you want to delete this photo?')) {
             let gallery = JSON.parse(localStorage.getItem('agro_field_gallery') || '[]');
             gallery.splice(index, 1);
             localStorage.setItem('agro_field_gallery', JSON.stringify(gallery));
             loadGallery();
         }
     }
+
     function openLightbox(imgSrc, caption) {
         document.getElementById('lightbox-img').src = imgSrc;
         document.getElementById('lightbox-caption').innerText = caption;
         document.getElementById('lightbox-modal').style.display = 'flex';
     }
+
     function closeLightbox() {
         document.getElementById('lightbox-modal').style.display = 'none';
     }
+
     function startSystem() {
         const phVal = document.getElementById('ph').value;
         if(!phVal) {
-            alert('Lütfen pH değerini giriniz! / Please enter pH value!');
+            alert(currentLang === 'TR' ? 'Lütfen pH değerini giriniz!' : 'Please enter pH value!');
             return;
         }
         document.getElementById('form-area').style.display = 'none';
@@ -594,16 +757,17 @@
             track = stream.getVideoTracks()[0];
         })
         .catch(err => {
-            alert('Kamera erişimi sağlanamadı: ' + err.message + ' / Camera access failed: ' + err.message);
+            alert((currentLang === 'TR' ? 'Kamera erişimi sağlanamadı: ' : 'Camera access failed: ') + err.message);
             resetSystem();
         });
     }
+
     function processAI() {
         c.width = v.videoWidth || 640;
         c.height = v.videoHeight || 480;
         const ctxCanvas = c.getContext('2d');
         ctxCanvas.drawImage(v, 0, 0, c.width, c.height);
-        // --- BİTKİ / YAPRAK KONTROLÜ (YEŞİL PİKSEL ORANI) ---
+        
         const imgData = ctxCanvas.getImageData(0, 0, c.width, c.height);
         const pixels = imgData.data;
         let greenCount = 0;
@@ -625,7 +789,7 @@
             document.getElementById('reset-btn').style.display = 'block';
             return;
         }
-        // ----------------------------------------------------
+
         lastCapturedImage = c.toDataURL('image/jpeg', 0.7);
         const previewEl = document.getElementById('preview-img');
         previewEl.src = lastCapturedImage;
@@ -634,6 +798,7 @@
         document.getElementById('cam-box').style.display = 'none';
         document.getElementById('error-box').style.display = 'none';
         document.getElementById('res-area').style.display = 'block';
+        
         const region = document.getElementById('region').value;
         const ph = document.getElementById('ph').value;
         const weather = document.getElementById('weather').value;
@@ -647,21 +812,34 @@
         let prescriptionText = "";
         
         if(phVal >= range.min && phVal <= range.max) {
-            statusText = `[OK] ${range.name} için ideal pH aralığında (${range.min}-${range.max}).<br>[OK] Optimal pH range for ${range.name} (${range.min}-${range.max}).`;
-            calibrationText = `🔬 Besin Durumu: Mikro element alımı dengede, klorofil sentezi kararlı.<br>🔬 Nutrient Status: Balanced micronutrient uptake, chlorophyll synthesis stable.`;
+            statusText = currentLang === 'TR' ? 
+                `[OK] ${range.name} için ideal pH aralığında (${range.min}-${range.max}).` : 
+                `[OK] Optimal pH range for ${range.name} (${range.min}-${range.max}).`;
+            calibrationText = currentLang === 'TR' ? 
+                `🔬 Besin Durumu: Mikro element alımı dengede, klorofil sentezi kararlı.` : 
+                `🔬 Nutrient Status: Balanced micronutrient uptake, chlorophyll synthesis stable.`;
         } else {
-            statusText = `[UYARI] pH (${phVal}) hedef aralıkta (${range.min}-${range.max}) değil! Stres gözlendi.<br>[WARNING] pH (${phVal}) out of target range (${range.min}-${range.max})! Stress observed.`;
-            calibrationText = `⚠️ Eksik Elementler & Tavsiye: pH sapması nedeniyle Demir (Fe), Manganez (Mn) ve Çinko (Zn) kilitlenmiştir. Amonyum Sülfat ile pH düşürülmeli ve Şelatlı Demir (Fe-EDDHA) takviyesi yapılmalıdır.<br>⚠️ Deficient Elements & Recommendation: Fe, Mn, Zn blocked due to pH shift. Lower pH with Ammonium Sulfate and apply Chelated Iron (Fe-EDDHA).`;
+            statusText = currentLang === 'TR' ? 
+                `[UYARI] pH (${phVal}) hedef aralıkta (${range.min}-${range.max}) değil! Stres gözlendi.` : 
+                `[WARNING] pH (${phVal}) out of target range (${range.min}-${range.max})! Stress observed.`;
+            calibrationText = currentLang === 'TR' ? 
+                `⚠️ Eksik Elementler & Tavsiye: pH sapması nedeniyle Demir (Fe), Manganez (Mn) ve Çinko (Zn) kilitlenmiştir. Amonyum Sülfat ile pH düşürülmeli ve Şelatlı Demir (Fe-EDDHA) takviyesi yapılmalıdır.` : 
+                `⚠️ Deficient Elements & Recommendation: Fe, Mn, Zn blocked due to pH shift. Lower pH with Ammonium Sulfate and apply Chelated Iron (Fe-EDDHA).`;
         }
         
-        greenDealText = `🇪🇺 AB Yeşil Mutabakatı: Öngörülen bu ekolojik ve dengeli reçete uygulandığında, kimyasal sızıntı önlenir ve karbon ayak izi düşürülerek AB standartlarına uyulmuş olur.<br>🇪🇺 EU Green Deal: Applying this ecological prescription prevents chemical leakage, reduces carbon footprint, and ensures compliance with EU standards.`;
+        greenDealText = currentLang === 'TR' ? 
+            `🇪🇺 AB Yeşil Mutabakatı: Öngörülen bu ekolojik ve dengeli reçete uygulandığında, kimyasal sızıntı önlenir ve karbon ayak izi düşürülerek AB standartlarına uyulmuş olur.` : 
+            `🇪🇺 EU Green Deal: Applying this ecological prescription prevents chemical leakage, reduces carbon footprint, and ensures compliance with EU standards.`;
         
         certificateText = `📜 EU GREEN DEAL SUSTAINABILITY CERTIFICATE #EU-2026-RIZE<br>
-        • Verified Crop / Ürün: ${range.name}<br>
-        • Carbon Footprint Reduction / Karbon Tasarrufu: %24.5 (Estimated)<br>
-        • Chemical Fertilizer Saved / Kimyasal Gübre Tasarrufu: 18.2 kg/da<br>
-        • Compliance Status / Uyum Durumu: APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)`;
-        prescriptionText = `💊 Reçete: Ekolojik iyileştirme ve hassas gübreleme protokolü devreye alındı.<br>💊 Prescription: Ecological improvement and precision fertilization protocol activated.`;
+        • Verified Crop: ${range.name}<br>
+        • Carbon Footprint Reduction: %24.5 (Estimated)<br>
+        • Chemical Fertilizer Saved: 18.2 kg/da<br>
+        • Compliance Status: APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)`;
+        
+        prescriptionText = currentLang === 'TR' ? 
+            `💊 Reçete: Ekolojik iyileştirme ve hassas gübreleme protokolü devreye alındı.` : 
+            `💊 Prescription: Ecological improvement and precision fertilization protocol activated.`;
         
         document.getElementById('hybrid-output').innerHTML = statusText;
         document.getElementById('calibration-output').innerHTML = calibrationText;
@@ -669,17 +847,16 @@
         document.getElementById('certificate-output').innerHTML = certificateText;
         document.getElementById('prescription-output').innerHTML = prescriptionText;
         
-        document.getElementById('res-output').innerText = `Analiz Tamamlandı / Analysis Completed.\nBölge / Region: ${range.name}\npH: ${ph}\nHava / Weather: ${weather}`;
+        document.getElementById('res-output').innerText = `Analysis Completed / Analiz Tamamlandı.\nRegion: ${range.name}\npH: ${ph}\nWeather: ${weather}`;
         drawStressChart(phVal >= range.min && phVal <= range.max);
         
         document.getElementById('sync-status').style.display = 'block';
         
-        // Google Sheets'e Veri Gönderme Bloğu
         const formData = {
             region: range.name,
             ph: ph,
             weather: weather,
-            stress: phVal >= range.min && phVal <= range.max ? "Normal / Stres Yok" : "Stres Var (pH Sapması)",
+            stress: phVal >= range.min && phVal <= range.max ? "Normal / No Stress" : "Stress (pH Shift)",
             notes: document.getElementById('res-output').innerText.replace(/\n/g, " "),
             photograph: lastCapturedImage,
             date: new Date().toLocaleString()
@@ -688,12 +865,11 @@
         fetch(SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)
         });
     }
+
     function drawStressChart(isOptimal) {
         const ctx = document.getElementById('stressChart').getContext('2d');
         if(myChart) { myChart.destroy(); }
@@ -705,7 +881,7 @@
                 labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5'],
                 datasets: [
                     {
-                        label: 'Müdahaleli Stres / With Intervention',
+                        label: currentLang === 'TR' ? 'Müdahaleli Stres' : 'With Intervention',
                         data: dataIntervention,
                         borderColor: '#2e7d32',
                         backgroundColor: 'rgba(46, 125, 50, 0.1)',
@@ -714,7 +890,7 @@
                         tension: 0.3
                     },
                     {
-                        label: 'Müdahalesiz Stres / No Intervention',
+                        label: currentLang === 'TR' ? 'Müdahalesiz Stres' : 'No Intervention',
                         data: dataNoIntervention,
                         borderColor: '#d32f2f',
                         backgroundColor: 'rgba(211, 47, 47, 0.1)',
@@ -733,6 +909,7 @@
             }
         });
     }
+
     function resetSystem() {
         document.getElementById('res-area').style.display = 'none';
         document.getElementById('form-area').style.display = 'block';
