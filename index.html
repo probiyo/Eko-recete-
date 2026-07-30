@@ -71,11 +71,11 @@
         #lightbox-caption { color: white; margin-top: 15px; font-size: 14px; font-weight: bold; text-align: center; }
         #lightbox-close { position: absolute; top: 20px; right: 25px; background: #d32f2f; color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         
-        #res-area { display: none; margin-top: 20px; padding: 20px; border: 2px solid #1b5e20; border-radius: 20px; background: #fff; }
-        .res-body { font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4; color: #1b5e20; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px; white-space: pre-wrap; }
+        #res-area { display: none; margin-top: 10px; padding: 15px; border: 2px solid #1b5e20; border-radius: 20px; background: #fff; }
+        .res-body { font-family: 'Segoe UI', sans-serif; font-size: 11px; line-height: 1.5; color: #2e7d32; background: #f4fdf4; border: 1px solid #c8e6c9; padding: 12px; border-radius: 12px; margin-bottom: 12px; font-weight: 600; }
         
         .captured-preview { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-bottom: 12px; border: 2px solid #ddd; display: none; }
-        .hybrid-note { background: #e3f2fd; border-left: 5px solid #2196f3; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #0d47a1; font-weight: bold; line-height: 1.4; }
+        .hybrid-note { background: #e3f2fd; border-left: 5px solid #2196f3; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #0d47a1; font-weight: bold; line-height: 1.4; border-radius: 0 10px 10px 0; }
         .green-deal-box { background: #e8f5e9; border-left: 5px solid #2e7d32; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #1b5e20; font-weight: bold; border-radius: 0 10px 10px 0; line-height: 1.4; }
         .certificate-box { background: #fff8e1; border: 2px dashed #fbc02d; padding: 12px; font-size: 11px; margin-bottom: 10px; color: #b78103; font-weight: bold; border-radius: 10px; line-height: 1.4; text-align: center; }
         .prescription-box { background: #fffde7; border-left: 5px solid #fbc02d; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #f57f17; font-weight: bold; border-radius: 0 10px 10px 0; line-height: 1.4; }
@@ -84,9 +84,9 @@
         
         .chart-box { background: #fafafa; padding: 12px; border-radius: 15px; margin-bottom: 12px; border: 1px solid #ddd; }
         .chart-container { position: relative; width: 100%; min-height: 200px; }
-        .expert-msg { background: #fff3e0; border-left: 5px solid #ff9800; padding: 10px; font-size: 11px; font-weight: bold; color: #e65100; margin-bottom: 15px; line-height: 1.4; }
+        .expert-msg { background: #fff3e0; border-left: 5px solid #ff9800; padding: 10px; font-size: 11px; font-weight: bold; color: #e65100; margin-bottom: 15px; line-height: 1.4; border-radius: 0 10px 10px 0; }
         .error-msg { color: var(--danger); font-weight: bold; text-align: center; padding: 20px; border: 2px dashed var(--danger); border-radius: 15px; display: none; margin-top: 10px; font-size: 13px; }
-        .ph-warning { color: var(--danger); font-size: 10px; font-weight: bold; margin-top: 5px; display: none; }
+        .ph-warning { color: var(--danger); font-size: 10px; font-weight: bold; margin-top: 8px; line-height: 1.4; display: none; background: #ffebee; padding: 8px; border-radius: 8px; border: 1px solid #ffcdd2; }
         .footer { font-size: 9px; color: #aaa; text-align: center; margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px; }
     </style>
 </head>
@@ -169,7 +169,7 @@
             ⚠️ NO PLANT DETECTED: Insufficient leaf/chlorophyll (green tissue) detected. Please capture a leaf image!
         </div>
         <div id="res-area">
-            <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;">BRÜSSEL PROJE RAPORU #EU-AGRO<br><span style="font-size:9px; font-weight:normal;">BRUSSELS PROJECT REPORT #EU-AGRO</span></div>
+            <div style="border-bottom: 2px solid #eee; margin-bottom: 12px; font-weight: bold; font-size: 13px; color: var(--primary);">BRÜSSEL PROJE RAPORU #EU-AGRO<br><span style="font-size:9px; font-weight:normal; color:#666;">BRUSSELS PROJECT REPORT #EU-AGRO</span></div>
             
             <div id="sync-status" class="sync-status" data-i18n="syncSuccess">✨ Saha + Lab Entegre Analiz Tamamlandı & Excel'e Aktarıldı!<br><span style="font-size:9px; font-weight:normal;">Integrated Field + Lab Analysis Completed & Synced to Excel!</span></div>
             
@@ -315,7 +315,7 @@
     let track;
     let myChart = null;
     let lastCapturedImage = "";
-    let lastAnalysisData = null; // Dil değişiminde raporu anında güncellemek için son analiz verisini tutuyoruz
+    let lastAnalysisData = null;
     const v = document.getElementById('v');
     const c = document.getElementById('canvas');
     
@@ -466,7 +466,6 @@
         updatePHRangeInfo();
         loadGallery();
         
-        // Eğer analiz sonucu halihazırda ekrandaysa, dil değiştiğinde raporu yeni dile göre tazele
         if(lastAnalysisData) {
             renderAnalysisOutputs(lastAnalysisData.isPhOptimal, lastAnalysisData.range, lastAnalysisData.phVal, lastAnalysisData.labChlorophyll, lastAnalysisData.ph, lastAnalysisData.weather);
         }
@@ -580,19 +579,26 @@
             tabBiolabBtn.classList.add('active');
             if(track) { track.stop(); }
             document.getElementById('cam-box').style.display = 'none';
-            document.getElementById('form-area').style.display = 'block';
+            // Eğer rapor açıksa form alanları kapalı kalmaya devam etsin diye kontrol
+            if(document.getElementById('res-area').style.display !== 'block') {
+                document.getElementById('form-area').style.display = 'block';
+            }
         } else if(tabName === 'field') {
             fieldSec.style.display = 'block';
             tabFieldBtn.classList.add('active');
             if(track) { track.stop(); }
             document.getElementById('cam-box').style.display = 'none';
-            document.getElementById('form-area').style.display = 'block';
+            if(document.getElementById('res-area').style.display !== 'block') {
+                document.getElementById('form-area').style.display = 'block';
+            }
         } else if(tabName === 'citizen') {
             citizenSec.style.display = 'block';
             tabCitizenBtn.classList.add('active');
             if(track) { track.stop(); }
             document.getElementById('cam-box').style.display = 'none';
-            document.getElementById('form-area').style.display = 'block';
+            if(document.getElementById('res-area').style.display !== 'block') {
+                document.getElementById('form-area').style.display = 'block';
+            }
         }
     }
     
@@ -819,6 +825,7 @@
         if(track) { track.stop(); }
         document.getElementById('cam-box').style.display = 'none';
         document.getElementById('error-box').style.display = 'none';
+        document.getElementById('form-area').style.display = 'none'; // ÇAKIŞMA GİDERİLDİ: Form alanı tamamen gizleniyor
         document.getElementById('res-area').style.display = 'block';
         
         const region = document.getElementById('region').value;
@@ -829,7 +836,6 @@
         const phVal = parseFloat(ph);
         let isPhOptimal = (phVal >= range.min && phVal <= range.max);
         
-        // Dil değişimlerinde tekrar render edebilmek için veriyi saklıyoruz
         lastAnalysisData = { isPhOptimal, range, phVal, labChlorophyll, ph, weather };
         
         renderAnalysisOutputs(isPhOptimal, range, phVal, labChlorophyll, ph, weather);
@@ -900,7 +906,11 @@
         document.getElementById('certificate-output').innerHTML = certificateText;
         document.getElementById('prescription-output').innerHTML = prescriptionText;
         
-        document.getElementById('res-output').innerText = (currentLang === 'TR' ? "Entegre Analiz Raporu" : "Integrated Analysis Report") + `\nRegion: ${range.name}\npH: ${ph}\nWeather: ${weather}\nLab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L`;
+        document.getElementById('res-output').innerHTML = `<strong>📋 ${currentLang === 'TR' ? 'Entegre Analiz Özeti' : 'Integrated Analysis Summary'}</strong><br>` +
+            `• ${currentLang === 'TR' ? 'Bölge/Ürün' : 'Region/Crop'}: ${range.name}<br>` +
+            `• pH: ${ph}<br>` +
+            `• ${currentLang === 'TR' ? 'Hava Durumu' : 'Weather'}: ${weather}<br>` +
+            `• Lab Klorofil a: ${labChlorophyll || 'N/A'} mg/L`;
         
         drawStressChart(isPhOptimal);
     }
