@@ -69,7 +69,6 @@
         .methodology-section { display: none; }
         .whitepaper-box { background: #fff; border: 1px solid #c8e6c9; padding: 15px; border-radius: 15px; font-size: 11px; line-height: 1.6; color: #2e7d32; margin-bottom: 12px; }
         .formula-card { background: #f1f8f2; border-left: 4px solid var(--primary); padding: 10px; font-family: monospace; font-size: 11px; margin: 10px 0; color: #1b5e20; }
-
         /* Lightbox Stilleri */
         #lightbox-modal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; }
         #lightbox-img { max-width: 90%; max-height: 80vh; border-radius: 12px; border: 2px solid #fff; box-shadow: 0 0 20px rgba(0,0,0,0.5); object-fit: contain; }
@@ -100,7 +99,7 @@
     <div id="lang-toggle" onclick="toggleLang()">EN / TR</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;">Rize Fatih Anatolian High School</span></div>
     <h1>GLOBAL AGRO DOCTOR</h1>
-    <div class="author">Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biology Expert & Project Lead</small></div>
+    <div class="author">Hazreti Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biology Expert & Project Lead</small></div>
     
     <!-- Navigasyon Sekmeleri -->
     <div class="nav-tabs">
@@ -119,7 +118,7 @@
                    <option value="tr-antakya-citrus">Antakya - Citrus (Narenciye) [İdeal pH: 6.0 - 7.5]</option>
                    <option value="tr-ege-olive">Ege - Olive & Olive Oil (Zeytin) [İdeal pH: 6.5 - 8.0]</option>
                    <option value="tr-ege-fig">Ege - Fig (İncir) [İdeal pH: 6.0 - 7.5]</option>
-                   <option value="tr-tea" selected>Turkey, Rize - Tea (Çay) [İdeal pH: 4.5 - 5.5]</option>
+                   <option value="tr-tea" selected>Turkey, Rize - Tea (Çay) [İdeal pH: 4.5 - 6.0]</option>
                    <option value="be-sugar">Brussels, BE - Sugar Beet (Şeker Pancarı) [İdeal pH: 6.0 - 7.0]</option>
                    <option value="nl-tulip">Netherlands - Tulips (Lale) [İdeal pH: 6.0 - 7.0]</option>
                    <option value="it-tomato">Italy - Tomatoes (Domates) [İdeal pH: 6.0 - 6.8]</option>
@@ -215,9 +214,13 @@
             
             <label data-i18n="lblSamplePlant">Numune Bitki Türü / Sample Plant</label>
             <select id="bio-plant">
-                <option value="Camellia sinensis">Çay Yaprağı (Camellia sinensis - Rize)</option>
-                <option value="Citrus sinensis">Narenciye Yaprağı (Citrus sinensis - Antakya)</option>
-                <option value="Olea europaea">Zeytin Yaprağı (Olea europaea - Ege)</option>
+                <option value="Camellia sinensis">Çay Yaprağı (Camellia sinensis - Rize) [İdeal pH: 4.5 - 6.0]</option>
+                <option value="Citrus sinensis">Narenciye Yaprağı (Citrus sinensis - Antakya) [İdeal pH: 6.0 - 7.5]</option>
+                <option value="Olea europaea">Zeytin Yaprağı (Olea europaea - Ege) [İdeal pH: 6.5 - 8.0]</option>
+                <option value="Ficus carica">İncir Yaprağı (Ficus carica - Ege) [İdeal pH: 6.0 - 7.5]</option>
+                <option value="Beta vulgaris">Şeker Pancarı (Beta vulgaris - Brüksel) [İdeal pH: 6.0 - 7.0]</option>
+                <option value="Tulipa gesneriana">Lale (Tulipa gesneriana - Hollanda) [İdeal pH: 6.0 - 7.0]</option>
+                <option value="Solanum lycopersicum">Domates (Solanum lycopersicum - İtalya) [İdeal pH: 6.0 - 6.8]</option>
             </select>
             <label data-i18n="lblWavelength">Spektrofotometre / Kalorimetre Dalga Boyu</label>
             <select id="bio-wavelength" disabled>
@@ -304,7 +307,7 @@
             <div id="partner-regions-lbl" style="font-size: 11px; font-weight: bold; margin-bottom: 5px; color: var(--primary);" data-i18n="partnerRegions">Katılımcı Pilot Bölgeler / Partner Regions:</div>
             <div class="network-list">
                 <div class="network-item">
-                    <span data-i18n="netRize">🌱 Rize Fatih Anadolu Lisesi (Çay / Tea) [pH: 4.5-5.5]</span>
+                    <span data-i18n="netRize">🌱 Rize Fatih Anadolu Lisesi (Çay / Tea) [pH: 4.5-6.0]</span>
                     <strong style="color: #2e7d32;" data-i18n="netActive">Aktif Hub / Active Hub</strong>
                 </div>
                 <div class="network-item">
@@ -320,7 +323,7 @@
                     <strong style="color: #2e7d32;" data-i18n="netSync">Senkronize / Synchronized</strong>
                 </div>
                 <div class="network-item">
-                    <span data-i18n="netBrussels">🇪🇺 Brüksel EU Okul Ağı (Pilot / EU School Network)</span>
+                    <span data-i18n="netBrussels">🇪🇺 Brüksel EU Okul Ağı (Pilot / EU School Network) [pH: 6.0-7.0]</span>
                     <strong style="color: #2e7d32;" data-i18n="netConnected">Bağlı / Connected</strong>
                 </div>
             </div>
@@ -328,7 +331,7 @@
         </div>
     </div>
     
-    <div class="footer">© 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
+    <div class="footer">© 2026 Hazreti Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
 </div>
 <div id="lightbox-modal" onclick="closeLightbox()">
     <button id="lightbox-close" onclick="closeLightbox()">&times;</button>
@@ -396,11 +399,11 @@
             statNodes: "Aktif Bölgesel Ağ / Active Nodes",
             statSamples: "Toplam Veri / Total Samples",
             partnerRegions: "Katılımcı Pilot Bölgeler / Partner Regions:",
-            netRize: "🌱 Rize Fatih Anadolu Lisesi (Çay / Tea) [pH: 4.5-5.5]",
+            netRize: "🌱 Rize Fatih Anadolu Lisesi (Çay / Tea) [pH: 4.5-6.0]",
             netAntakya: "🍊 Antakya (Narenciye / Citrus) [pH: 6.0-7.5]",
             netOlive: "🫒 Ege Bölgesi (Zeytin & Zeytinyağı / Olive) [pH: 6.5-8.0]",
             netFig: "🌿 Ege Bölgesi (İncir / Fig) [pH: 6.0-7.5]",
-            netBrussels: "🇪🇺 Brüksel EU Okul Ağı (Pilot / EU School Network)",
+            netBrussels: "🇪🇺 Brüksel EU Okul Ağı (Pilot / EU School Network) [pH: 6.0-7.0]",
             netActive: "Aktif Hub",
             netSync: "Senkronize",
             netConnected: "Bağlı",
@@ -456,11 +459,11 @@
             statNodes: "Active Regional Nodes",
             statSamples: "Total Samples",
             partnerRegions: "Partner Pilot Regions:",
-            netRize: "🌱 Rize Fatih Anatolian High School (Tea) [pH: 4.5-5.5]",
+            netRize: "🌱 Rize Fatih Anatolian High School (Tea) [pH: 4.5-6.0]",
             netAntakya: "🍊 Antakya (Citrus) [pH: 6.0-7.5]",
             netOlive: "🫒 Aegean Region (Olive & Olive Oil) [pH: 6.5-8.0]",
             netFig: "🌿 Aegean Region (Fig) [pH: 6.0-7.5]",
-            netBrussels: "🇪🇺 Brussels EU School Network (Pilot)",
+            netBrussels: "🇪🇺 Brussels EU School Network (Pilot) [pH: 6.0-7.0]",
             netActive: "Active Hub",
             netSync: "Synchronized",
             netConnected: "Connected",
@@ -472,7 +475,7 @@
         "tr-antakya-citrus": { min: 6.0, max: 7.5, name: "Antakya - Citrus (Narenciye)" },
         "tr-ege-olive": { min: 6.5, max: 8.0, name: "Ege - Olive & Olive Oil (Zeytin)" },
         "tr-ege-fig": { min: 6.0, max: 7.5, name: "Ege - Fig (İncir)" },
-        "tr-tea": { min: 4.5, max: 5.5, name: "Turkey, Rize - Tea (Çay)" },
+        "tr-tea": { min: 4.5, max: 6.0, name: "Turkey, Rize - Tea (Çay)" },
         "be-sugar": { min: 6.0, max: 7.0, name: "Brussels, BE - Sugar Beet (Şeker Pancarı)" },
         "nl-tulip": { min: 6.0, max: 7.0, name: "Netherlands - Tulips (Lale)" },
         "it-tomato": { min: 6.0, max: 6.8, name: "Italy - Tomatoes (Domates)" },
