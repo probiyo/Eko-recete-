@@ -99,7 +99,7 @@
     <div id="lang-toggle" onclick="toggleLang()">EN / TR</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;">Rize Fatih Anatolian High School</span></div>
     <h1>GLOBAL AGRO DOCTOR</h1>
-    <div class="author">Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biology Expert & Project Lead</small></div>
+    <div class="author">Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biyoloji Uzmanı & Proje Lideri</small></div>
     
     <!-- Navigasyon Sekmeleri -->
     <div class="nav-tabs">
@@ -832,10 +832,14 @@
         }
         document.getElementById('form-area').style.display = 'none';
         document.getElementById('cam-box').style.display = 'block';
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: 'environment' } } })
-        .catch(() => {
-            return navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-        })
+        
+        const constraints = {
+            video: {
+                facingMode: { ideal: 'environment' }
+            }
+        };
+
+        navigator.mediaDevices.getUserMedia(constraints)
         .then(stream => {
             v.srcObject = stream;
             track = stream.getVideoTracks()[0];
