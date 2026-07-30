@@ -929,7 +929,7 @@
         let prescriptionText = "";
         
         let isPhOptimal = (phVal >= range.min && phVal <= range.max);
-        let labTextInfo = labChlorophyll ? ` [Lab Klorofil a: ${labChlorophyll} mg/L]` : "";
+        let labTextInfo = labChlorophyll ? ` [Lab Chlorophyll a: ${labChlorophyll} mg/L]` : "";
         if(isPhOptimal) {
             statusText = currentLang === 'TR' ? 
                 `[OK] ${cropDisplayName} için ideal pH aralığında (${range.min}-${range.max}).${labTextInfo}` : 
@@ -956,13 +956,13 @@
             • Lab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L<br>
             • Carbon Footprint Reduction: %24.5 (Estimated)<br>
             • Compliance Status: APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)<br><br>
-            <span style="font-size:9px; font-weight:normal; color:#555;">🔴 DİKKAT: Bu belge ve karbon ayak izi azaltım verileri yalnızca "Rize Fatih Anadolu Lisesi AB Proje Simülasyonu" kapsamında üretilmiş öngörüsel verilere dayanmaktadır. Resmi ticari veya yasal bir geçerliliği yoktur.</span>` : 
+            <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ WARNING / CAUTION: This document and carbon footprint reduction data are based solely on predictive data generated within the scope of "Rize Fatih Anadolu Lisesi EU Project Simulation". It has no official commercial or legal validity.</span>` : 
             `📜 EU GREEN DEAL SUSTAINABILITY CERTIFICATE #EU-2026-RIZE<br>
             • Verified Crop: ${cropDisplayName}<br>
             • Lab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L<br>
             • Carbon Footprint Reduction: %24.5 (Estimated)<br>
             • Compliance Status: APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)<br><br>
-            <span style="font-size:9px; font-weight:normal; color:#555;">🔴 DİKKAT: This document and carbon footprint reduction data are based solely on predictive data generated within the scope of "Rize Fatih Anadolu Lisesi EU Project Simulation". It has no official commercial or legal validity.</span>`;
+            <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ WARNING / CAUTION: This document and carbon footprint reduction data are based solely on predictive data generated within the scope of "Rize Fatih Anadolu Lisesi EU Project Simulation". It has no official commercial or legal validity.</span>`;
         
         prescriptionText = currentLang === 'TR' ? 
             `💊 Entegre Ekolojik Reçete:\n1. Toprak pH dengelemesi için uygun organik düzenleyici uygulanmalı.\n2. 663 nm bandındaki pigment optimizasyonu için Şelatlı Demir (Fe-EDDHA) ve mikro element takviyesi sağlanmalı.` : 
