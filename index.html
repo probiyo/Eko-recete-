@@ -63,15 +63,15 @@
         .res-body { font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4; color: #1b5e20; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px; white-space: pre-wrap; }
         
         .captured-preview { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-bottom: 12px; border: 2px solid #ddd; display: none; }
-        .hybrid-note { background: #e3f2fd; border-left: 5px solid #2196f3; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #0d47a1; font-weight: bold; }
-        .green-deal-box { background: #e8f5e9; border-left: 5px solid #2e7d32; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #1b5e20; font-weight: bold; border-radius: 0 10px 10px 0; }
-        .prescription-box { background: #fffde7; border-left: 5px solid #fbc02d; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #f57f17; font-weight: bold; border-radius: 0 10px 10px 0; }
-        .calibration-box { background: #f3e5f5; border-left: 5px solid #ab47bc; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #4a148c; font-weight: bold; border-radius: 0 10px 10px 0; }
+        .hybrid-note { background: #e3f2fd; border-left: 5px solid #2196f3; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #0d47a1; font-weight: bold; line-height: 1.4; }
+        .green-deal-box { background: #e8f5e9; border-left: 5px solid #2e7d32; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #1b5e20; font-weight: bold; border-radius: 0 10px 10px 0; line-height: 1.4; }
+        .prescription-box { background: #fffde7; border-left: 5px solid #fbc02d; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #f57f17; font-weight: bold; border-radius: 0 10px 10px 0; line-height: 1.4; }
+        .calibration-box { background: #f3e5f5; border-left: 5px solid #ab47bc; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #4a148c; font-weight: bold; border-radius: 0 10px 10px 0; line-height: 1.4; }
         .sync-status { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; padding: 8px; border-radius: 10px; font-size: 11px; font-weight: bold; text-align: center; margin-bottom: 10px; display: none; line-height: 1.4; }
         
         .chart-box { background: #fafafa; padding: 12px; border-radius: 15px; margin-bottom: 12px; border: 1px solid #ddd; }
         .chart-container { position: relative; width: 100%; min-height: 200px; }
-        .expert-msg { background: #fff3e0; border-left: 5px solid #ff9800; padding: 10px; font-size: 11px; font-weight: bold; color: #e65100; margin-bottom: 15px; }
+        .expert-msg { background: #fff3e0; border-left: 5px solid #ff9800; padding: 10px; font-size: 11px; font-weight: bold; color: #e65100; margin-bottom: 15px; line-height: 1.4; }
         .error-msg { color: var(--danger); font-weight: bold; text-align: center; padding: 20px; border: 2px dashed var(--danger); border-radius: 15px; display: none; margin-top: 10px; font-size: 13px; }
         .ph-warning { color: var(--danger); font-size: 10px; font-weight: bold; margin-top: 5px; display: none; }
         .footer { font-size: 9px; color: #aaa; text-align: center; margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px; }
@@ -148,7 +148,7 @@
         <div id="res-area">
             <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;">BRÜSSEL PROJE RAPORU #EU-AGRO</div>
             
-            <div id="sync-status" class="sync-status">✨ Yerel Analiz Başarıyla Tamamlandı & Excel'e Aktarıldı!</div>
+            <div id="sync-status" class="sync-status">✨ Yerel Analiz Başarıyla Tamamlandı & Excel'e Aktarıldı!<br><span style="font-size:9px; font-weight:normal;">Local Analysis Successfully Completed & Synced to Excel!</span></div>
             <!-- Analiz Edilen Yaprak Fotoğrafı Önizlemesi -->
             <img id="preview-img" class="captured-preview" src="" alt="Captured Leaf">
             <div id="hybrid-output" class="hybrid-note"></div>
@@ -165,8 +165,8 @@
             </div>
             <div id="res-output" class="res-body"></div>
             <div id="expert-note" class="expert-msg">
-                [TR] ⚠️ UZMAN GÖRÜŞÜ: Çözülemeyen sorunlarda acil uzman desteği alınmalıdır.<br><br>
-                [EN] ⚠️ EXPERT ADVICE: Seek immediate expert support for unresolved issues.
+                ⚠️ UZMAN GÖRÜŞÜ: Çözülemeyen sorunlarda acil uzman desteği alınmalıdır.<br>
+                ⚠️ EXPERT ADVICE: Seek immediate expert support for unresolved issues.
             </div>
             
             <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/edit?usp=sharing" target="_blank" class="btn-excel">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
@@ -260,7 +260,7 @@
     function initApp() {
         loadGallery();
         updatePHRangeInfo();
-        fetchCurrentWeather(); // Sayfa açıldığında otomatik konumdan hava durumunu çekmeyi dener
+        fetchCurrentWeather();
     }
 
     // Open-Meteo API ile Konum Bazlı Otomatik Hava Durumu
@@ -276,8 +276,6 @@
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
             
-            const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2d,weather_code`;
-            
             fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=weathercode`)
                 .then(res => res.json())
                 .then(data => {
@@ -285,8 +283,6 @@
                         const code = data.current.weathercode;
                         const weatherSelect = document.getElementById('weather');
                         
-                        // WMO Weather interpretation codes (Open-Meteo standard)
-                        // 0: Clear sky, 1,2,3: Mainly clear, partly cloudy, overcast, 51-67: Rain, 71-77: Snow, 95-99: Thunderstorm/Frost risk
                         let mappedWeather = "Güneşli / Sunny";
                         if (code >= 1 && code <= 3) {
                             mappedWeather = "Bulutlu / Cloudy";
@@ -522,37 +518,41 @@
         const weather = document.getElementById('weather').value;
         const range = cropRanges[region] || { min: 6.0, max: 7.0 };
         const phVal = parseFloat(ph);
+        
         let statusText = "";
         let calibrationText = "";
         let greenDealText = "";
         let prescriptionText = "";
-        if(phVal >= range.min && phVal <= range.max) {
-            statusText = lang === 'TR' ? `[OK] ${range.name} için ideal pH aralığında (${range.min}-${range.max}).` : `[OK] Optimal pH range for ${range.name} (${range.min}-${range.max}).`;
-            calibrationText = lang === 'TR' ? "🔬 Kalibrasyon: Sensör referans aralığında, klorofil sentezi kararlı." : "🔬 Calibration: Sensor within reference range, chlorophyll synthesis stable.";
-        } else {
-            statusText = lang === 'TR' ? `[UYARI] pH (${phVal}) hedef aralıkta (${range.min}-${range.max}) değil! Stres gözlendi.` : `[WARNING] pH (${phVal}) out of target range (${range.min}-${range.max})! Stress observed.`;
-            calibrationText = lang === 'TR' ? "🔬 Kalibrasyon: pH sapması nedeniyle mikro element alımı (Fe/Mg) bloke olmuş olabilir." : "🔬 Calibration: Nutrient uptake (Fe/Mg) might be blocked due to pH shift.";
-        }
-        greenDealText = lang === 'TR' ? "🇪🇺 AB Yeşil Mutabakatı: Düşük karbon ayak izi ve organik gübreleme protokolü aktif." : "🇪🇺 EU Green Deal: Low carbon footprint & organic fertilization protocol active.";
-        prescriptionText = lang === 'TR' ? "💊 Reçete: Öngörülen ekolojik iyileştirme ve dengeli besleme planı uygulanmalıdır." : "💊 Prescription: Recommended ecological improvement and balanced feeding plan should be applied.";
-        document.getElementById('hybrid-output').innerText = statusText;
-        document.getElementById('calibration-output').innerText = calibrationText;
-        document.getElementById('green-deal-output').innerText = greenDealText;
-        document.getElementById('prescription-output').innerText = prescriptionText;
         
-        document.getElementById('res-output').innerText = lang === 'TR' ? `Analiz Tamamlandı.\nBölge: ${range.name}\npH: ${ph}\nHava: ${weather}` : `Analysis Completed.\nRegion: ${range.name}\npH: ${ph}\nWeather: ${weather}`;
+        if(phVal >= range.min && phVal <= range.max) {
+            statusText = `[OK] ${range.name} için ideal pH aralığında (${range.min}-${range.max}).<br>[OK] Optimal pH range for ${range.name} (${range.min}-${range.max}).`;
+            calibrationText = `🔬 Kalibrasyon: Sensör referans aralığında, klorofil sentezi kararlı.<br>🔬 Calibration: Sensor within reference range, chlorophyll synthesis stable.`;
+        } else {
+            statusText = `[UYARI] pH (${phVal}) hedef aralıkta (${range.min}-${range.max}) değil! Stres gözlendi.<br>[WARNING] pH (${phVal}) out of target range (${range.min}-${range.max})! Stress observed.`;
+            calibrationText = `🔬 Kalibrasyon: pH sapması nedeniyle mikro element alımı bloke olmuş olabilir.<br>🔬 Calibration: Nutrient uptake might be blocked due to pH shift.`;
+        }
+        
+        greenDealText = `🇪🇺 AB Yeşil Mutabakatı: Düşük karbon ayak izi ve organik gübreleme protokolü aktif.<br>🇪🇺 EU Green Deal: Low carbon footprint & organic fertilization protocol active.`;
+        prescriptionText = `💊 Reçete: Öngörülen ekolojik iyileştirme ve dengeli besleme planı uygulanmalıdır.<br>💊 Prescription: Recommended ecological improvement and balanced feeding plan should be applied.`;
+        
+        document.getElementById('hybrid-output').innerHTML = statusText;
+        document.getElementById('calibration-output').innerHTML = calibrationText;
+        document.getElementById('green-deal-output').innerHTML = greenDealText;
+        document.getElementById('prescription-output').innerHTML = prescriptionText;
+        
+        document.getElementById('res-output').innerText = `Analiz Tamamlandı / Analysis Completed.\nBölge / Region: ${range.name}\npH: ${ph}\nHava / Weather: ${weather}`;
         drawStressChart(phVal >= range.min && phVal <= range.max);
         
         document.getElementById('sync-status').style.display = 'block';
         
-        // Google Sheets'e Veri Gönderme Bloğu (Fotoğraf Eklendi)
+        // Google Sheets'e Veri Gönderme Bloğu
         const formData = {
             region: range.name,
             ph: ph,
             weather: weather,
             stress: phVal >= range.min && phVal <= range.max ? "Normal / Stres Yok" : "Stres Var (pH Sapması)",
             notes: document.getElementById('res-output').innerText.replace(/\n/g, " "),
-            photograph: lastCapturedImage, // Çekilen fotoğrafın base64 verisi
+            photograph: lastCapturedImage,
             date: new Date().toLocaleString()
         };
         
@@ -576,7 +576,7 @@
                 labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5'],
                 datasets: [
                     {
-                        label: lang === 'TR' ? 'Müdahaleli Stres / With Intervention' : 'Intervention Stress',
+                        label: 'Müdahaleli Stres / With Intervention',
                         data: dataIntervention,
                         borderColor: '#2e7d32',
                         backgroundColor: 'rgba(46, 125, 50, 0.1)',
@@ -585,7 +585,7 @@
                         tension: 0.3
                     },
                     {
-                        label: lang === 'TR' ? 'Müdahalesiz Stres / No Intervention' : 'No Intervention Stress',
+                        label: 'Müdahalesiz Stres / No Intervention',
                         data: dataNoIntervention,
                         borderColor: '#d32f2f',
                         backgroundColor: 'rgba(211, 47, 47, 0.1)',
