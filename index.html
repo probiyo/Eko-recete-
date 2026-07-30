@@ -555,6 +555,11 @@
         });
         updatePHRangeInfo();
         loadGallery();
+        
+        // Eğer analiz sonuç ekranı açıksa, dil değişiminde dinamik rapor metinlerini de güncelle
+        if(document.getElementById('res-area').style.display === 'block') {
+            updateDynamicReportTexts();
+        }
     }
     function fetchCurrentWeather() {
         const statusEl = document.getElementById('loc-status');
@@ -906,6 +911,9 @@
         document.getElementById('error-box').style.display = 'none';
         document.getElementById('res-area').style.display = 'block';
         
+        updateDynamicReportTexts();
+    }
+    function updateDynamicReportTexts() {
         const regionKey = document.getElementById('region').value;
         const ph = document.getElementById('ph').value;
         const weather = document.getElementById('weather').value;
@@ -928,7 +936,7 @@
                 `[OK] Optimal pH range for ${cropDisplayName} (${range.min}-${range.max}).${labTextInfo}`;
             calibrationText = currentLang === 'TR' ? 
                 `🔬 Saha & Lab Entegre Durum: Mikro element alımı dengeli, 663 nm klorofil sentezi kararlı.` : 
-                `🔬 Integrated Status: Balanced nutrient uptake, stable 663 nm chlorophyll synthesis.`;
+                `🔬 Integrated Field & Lab Status: Balanced nutrient uptake, stable 663 nm chlorophyll synthesis.`;
         } else {
             statusText = currentLang === 'TR' ? 
                 `[UYARI] pH (${phVal}) hedef aralıkta (${range.min}-${range.max}) değil! Stres gözlendi.${labTextInfo}` : 
