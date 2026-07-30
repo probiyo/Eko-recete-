@@ -17,8 +17,8 @@
         .author { text-align: center; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 15px; }
         
         /* Navigasyon / Sekme Menüsü */
-        .nav-tabs { display: flex; gap: 4px; margin-bottom: 15px; background: #e8f0e9; padding: 4px; border-radius: 14px; flex-wrap: wrap; }
-        .nav-tab { flex: 1; padding: 8px 4px; text-align: center; font-size: 9px; font-weight: 800; color: var(--primary); background: transparent; border: none; border-radius: 10px; cursor: pointer; transition: 0.2s; min-width: 70px; }
+        .nav-tabs { display: flex; gap: 4px; margin-bottom: 15px; background: #e8f0e9; padding: 4px; border-radius: 14px; }
+        .nav-tab { flex: 1; padding: 8px 4px; text-align: center; font-size: 9px; font-weight: 800; color: var(--primary); background: transparent; border: none; border-radius: 10px; cursor: pointer; transition: 0.2s; }
         .nav-tab.active { background: var(--primary); color: white; }
         
         .card { background: #f9fdfa; padding: 15px; border-radius: 20px; margin-bottom: 12px; border: 1px solid #e8f0e9; }
@@ -65,21 +65,17 @@
         .biolab-section { display: none; }
         .mebi-badge { background: #e0f2fe; border-left: 5px solid #0284c7; padding: 10px; font-size: 11px; margin-bottom: 12px; color: #0369a1; font-weight: bold; border-radius: 0 10px 10px 0; line-height: 1.4; }
         
-        /* Metodoloji / Whitepaper Sekmesi Stilleri */
-        .methodology-section { display: none; }
-        .whitepaper-box { background: #fff; border: 1px solid #c8e6c9; padding: 15px; border-radius: 15px; font-size: 11px; line-height: 1.6; color: #2e7d32; margin-bottom: 12px; }
-        .formula-card { background: #f1f8f2; border-left: 4px solid var(--primary); padding: 10px; font-family: monospace; font-size: 11px; margin: 10px 0; color: #1b5e20; }
         /* Lightbox Stilleri */
         #lightbox-modal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; }
         #lightbox-img { max-width: 90%; max-height: 80vh; border-radius: 12px; border: 2px solid #fff; box-shadow: 0 0 20px rgba(0,0,0,0.5); object-fit: contain; }
         #lightbox-caption { color: white; margin-top: 15px; font-size: 14px; font-weight: bold; text-align: center; }
         #lightbox-close { position: absolute; top: 20px; right: 25px; background: #d32f2f; color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         
-        #res-area { display: none; margin-top: 10px; padding: 15px; border: 2px solid #1b5e20; border-radius: 20px; background: #fff; }
-        .res-body { font-family: 'Segoe UI', sans-serif; font-size: 11px; line-height: 1.5; color: #2e7d32; background: #f4fdf4; border: 1px solid #c8e6c9; padding: 12px; border-radius: 12px; margin-bottom: 12px; font-weight: 600; }
+        #res-area { display: none; margin-top: 20px; padding: 20px; border: 2px solid #1b5e20; border-radius: 20px; background: #fff; }
+        .res-body { font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4; color: #1b5e20; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px; white-space: pre-wrap; }
         
         .captured-preview { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-bottom: 12px; border: 2px solid #ddd; display: none; }
-        .hybrid-note { background: #e3f2fd; border-left: 5px solid #2196f3; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #0d47a1; font-weight: bold; line-height: 1.4; border-radius: 0 10px 10px 0; }
+        .hybrid-note { background: #e3f2fd; border-left: 5px solid #2196f3; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #0d47a1; font-weight: bold; line-height: 1.4; }
         .green-deal-box { background: #e8f5e9; border-left: 5px solid #2e7d32; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #1b5e20; font-weight: bold; border-radius: 0 10px 10px 0; line-height: 1.4; }
         .certificate-box { background: #fff8e1; border: 2px dashed #fbc02d; padding: 12px; font-size: 11px; margin-bottom: 10px; color: #b78103; font-weight: bold; border-radius: 10px; line-height: 1.4; text-align: center; }
         .prescription-box { background: #fffde7; border-left: 5px solid #fbc02d; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #f57f17; font-weight: bold; border-radius: 0 10px 10px 0; line-height: 1.4; }
@@ -88,9 +84,9 @@
         
         .chart-box { background: #fafafa; padding: 12px; border-radius: 15px; margin-bottom: 12px; border: 1px solid #ddd; }
         .chart-container { position: relative; width: 100%; min-height: 200px; }
-        .expert-msg { background: #fff3e0; border-left: 5px solid #ff9800; padding: 10px; font-size: 11px; font-weight: bold; color: #e65100; margin-bottom: 15px; line-height: 1.4; border-radius: 0 10px 10px 0; }
+        .expert-msg { background: #fff3e0; border-left: 5px solid #ff9800; padding: 10px; font-size: 11px; font-weight: bold; color: #e65100; margin-bottom: 15px; line-height: 1.4; }
         .error-msg { color: var(--danger); font-weight: bold; text-align: center; padding: 20px; border: 2px dashed var(--danger); border-radius: 15px; display: none; margin-top: 10px; font-size: 13px; }
-        .ph-warning { color: var(--danger); font-size: 10px; font-weight: bold; margin-top: 8px; line-height: 1.4; display: none; background: #ffebee; padding: 8px; border-radius: 8px; border: 1px solid #ffcdd2; }
+        .ph-warning { color: var(--danger); font-size: 10px; font-weight: bold; margin-top: 5px; display: none; }
         .footer { font-size: 9px; color: #aaa; text-align: center; margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px; }
     </style>
 </head>
@@ -99,13 +95,12 @@
     <div id="lang-toggle" onclick="toggleLang()">EN / TR</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;">Rize Fatih Anatolian High School</span></div>
     <h1>GLOBAL AGRO DOCTOR</h1>
-    <div class="author">Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biyoloji Uzmanı & Proje Lideri</small></div>
+    <div class="author">Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biology Expert & Project Lead</small></div>
     
     <!-- Navigasyon Sekmeleri -->
     <div class="nav-tabs">
         <button id="tab-analysis-btn" class="nav-tab active" onclick="switchTab('analysis')" data-i18n="tabAnalysis">🌱 ANALİZ</button>
         <button id="tab-biolab-btn" class="nav-tab" onclick="switchTab('biolab')" data-i18n="tabBiolab">🧬 MEBİ LAB</button>
-        <button id="tab-methodology-btn" class="nav-tab" onclick="switchTab('methodology')" data-i18n="tabMethodology">📖 METODOLOJİ</button>
         <button id="tab-field-btn" class="nav-tab" onclick="switchTab('field')" data-i18n="tabField">📸 SAHA</button>
         <button id="tab-citizen-btn" class="nav-tab" onclick="switchTab('citizen')" data-i18n="tabCitizen">🌍 CITIZEN</button>
     </div>
@@ -115,14 +110,7 @@
             <div class="card">
                <label data-i18n="lblRegion">Bölge ve Ürün / Region & Crop</label>
                 <select id="region" onchange="updatePHRangeInfo()">
-                   <option value="tr-antakya-citrus">Antakya - Citrus (Narenciye) [İdeal pH: 6.0 - 7.5]</option>
-                   <option value="tr-ege-olive">Ege - Olive & Olive Oil (Zeytin) [İdeal pH: 6.5 - 8.0]</option>
-                   <option value="tr-ege-fig">Ege - Fig (İncir) [İdeal pH: 6.0 - 7.5]</option>
-                   <option value="tr-tea" selected>Turkey, Rize - Tea (Çay) [İdeal pH: 4.5 - 6.0]</option>
-                   <option value="be-sugar">Brussels, BE - Sugar Beet (Şeker Pancarı) [İdeal pH: 6.0 - 7.0]</option>
-                   <option value="nl-tulip">Netherlands - Tulips (Lale) [İdeal pH: 6.0 - 7.0]</option>
-                   <option value="it-tomato">Italy - Tomatoes (Domates) [İdeal pH: 6.0 - 6.8]</option>
-                   <option value="global-other">Global - Diğer / Other [İdeal pH: 6.0 - 7.0]</option>
+                   <!-- Dinamik olarak doldurulacak -->
                 </select>
                 <div class="other-opt" onclick="document.getElementById('region').value='global-other'; updatePHRangeInfo();" data-i18n="lblManualSelect">
                     + Global - Diğer / Other (Manual Selection)
@@ -141,7 +129,7 @@
                <input type="number" id="integrated-chlorophyll" step="0.1" placeholder="Örn: 6.5 mg/L" value="6.5">
             </div>
             <div class="card">
-               <label><span data-i18n="lblWeather">Hava Durumu / Weather Condition</span> <span id="loc-status" style="font-size:9px; color:#2e7d32; font-weight:normal;" data-i18n="locStatusWaiting">(Otomatik Konum Bekleniyor...)</span></label>
+               <label><span data-i18n="lblWeather">Hava Durumu / Weather Condition</span> <span id="loc-status" style="font-size:9px; color:#2e7d32; font-weight:normal;">(Otomatik Konum Bekleniyor...)</span></label>
                 <select id="weather">
                    <option value="Güneşli / Sunny">Güneşli / Sunny</option>
                    <option value="Bulutlu / Cloudy">Bulutlu / Cloudy</option>
@@ -174,7 +162,7 @@
             ⚠️ NO PLANT DETECTED: Insufficient leaf/chlorophyll (green tissue) detected. Please capture a leaf image!
         </div>
         <div id="res-area">
-            <div style="border-bottom: 2px solid #eee; margin-bottom: 12px; font-weight: bold; font-size: 13px; color: var(--primary);">BRÜSSEL PROJE RAPORU #EU-AGRO<br><span style="font-size:9px; font-weight:normal; color:#666;">BRUSSELS PROJECT REPORT #EU-AGRO</span></div>
+            <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;">BRÜSSEL PROJE RAPORU #EU-AGRO<br><span style="font-size:9px; font-weight:normal;">BRUSSELS PROJECT REPORT #EU-AGRO</span></div>
             
             <div id="sync-status" class="sync-status" data-i18n="syncSuccess">✨ Saha + Lab Entegre Analiz Tamamlandı & Excel'e Aktarıldı!<br><span style="font-size:9px; font-weight:normal;">Integrated Field + Lab Analysis Completed & Synced to Excel!</span></div>
             
@@ -214,14 +202,9 @@
             
             <label data-i18n="lblSamplePlant">Numune Bitki Türü / Sample Plant</label>
             <select id="bio-plant">
-                <option value="Turkey, Rize - Tea (Çay)">Turkey, Rize - Tea (Çay) [İdeal pH: 4.5 - 6.0]</option>
-                <option value="Antakya - Citrus (Narenciye)">Antakya - Citrus (Narenciye) [İdeal pH: 6.0 - 7.5]</option>
-                <option value="Ege - Olive & Olive Oil (Zeytin)">Ege - Olive & Olive Oil (Zeytin) [İdeal pH: 6.5 - 8.0]</option>
-                <option value="Ege - Fig (İncir)">Ege - Fig (İncir) [İdeal pH: 6.0 - 7.5]</option>
-                <option value="Brussels, BE - Sugar Beet (Şeker Pancarı)">Brussels, BE - Sugar Beet (Şeker Pancarı) [İdeal pH: 6.0 - 7.0]</option>
-                <option value="Netherlands - Tulips (Lale)">Netherlands - Tulips (Lale) [İdeal pH: 6.0 - 7.0]</option>
-                <option value="Italy - Tomatoes (Domates)">Italy - Tomatoes (Domates) [İdeal pH: 6.0 - 6.8]</option>
-                <option value="Global - Diğer / Other">Global - Diğer / Other [İdeal pH: 6.0 - 7.0]</option>
+                <option value="Camellia sinensis">Çay (Camellia sinensis - Rize)</option>
+                <option value="Citrus sinensis">Narenciye (Citrus sinensis - Antakya)</option>
+                <option value="Olea europaea">Zeytin (Olea europaea - Ege)</option>
             </select>
             <label data-i18n="lblWavelength">Spektrofotometre / Kalorimetre Dalga Boyu</label>
             <select id="bio-wavelength" disabled>
@@ -250,26 +233,6 @@
             <div id="bio-sync-status" class="sync-status" style="margin-top: 10px;" data-i18n="bioSyncSuccess">✨ MEBİ Lab Verisi Canlı Veri Tablosuna ve Analiz Modülüne Aktarıldı!</div>
             
             <div id="bio-result-box" style="display:none; margin-top:12px; background:#f0fdf4; border:1px solid #bbf7d0; padding:12px; border-radius:10px; font-size:11px; color:#166534; line-height:1.4;">
-            </div>
-        </div>
-    </div>
-    <!-- METODOLOJİ / WHITEPAPER SEKMESİ -->
-    <div id="methodology-section" class="methodology-section">
-        <div class="card">
-            <label data-i18n="methodTitle">📖 Bilimsel Metodoloji & Validasyon (Whitepaper)<br><span style="font-size:9px; font-weight:normal;">Scientific Rigor & Peer-Review Standards</span></label>
-            <div class="whitepaper-box">
-                <strong data-i18n="methodSub1">1. Akademik Dayanaklar (Campbell & Guyton):</strong><br>
-                <span data-i18n="methodDesc1">Sistemimiz; bitki fizyolojisinde fotosentetik pigmentlerin 663 nm dalga boyundaki (Klorofil a) maksimum absorpsiyon spektrumunu (Campbell Biology) ve toprak pH sapmalarının kök hücre membran geçirgenliği ile enzim kinetiğine etkilerini (Guyton and Hall Tıbbi Fizyoloji) esas alır.</span>
-                
-                <br><br>
-                <strong data-i18n="methodSub2">2. Stres Skoru Matematiksel Algoritması:</strong><br>
-                <span data-i18n="methodDesc2">Ham veriden stres skoruna geçiş, sabit eşik değerler yerine dinamik bir normalizasyon formülüyle hesaplanır:</span>
-                
-                <div class="formula-card">
-                    Stress Score = |pH_actual - pH_optimal_mean| × (12.5 / Chlorophyll_a_663nm)
-                </div>
-                
-                <span data-i18n="methodDesc3">Bu formül; pH sapmasının büyüklüğünü klorofil a konsantrasyonu ile oranlayarak Brüksel EU Green Deal denetimlerinde tam şeffaflık ve hakemli akademik standart (Peer-Review) sağlar.</span>
             </div>
         </div>
     </div>
@@ -308,23 +271,23 @@
             <div id="partner-regions-lbl" style="font-size: 11px; font-weight: bold; margin-bottom: 5px; color: var(--primary);" data-i18n="partnerRegions">Katılımcı Pilot Bölgeler / Partner Regions:</div>
             <div class="network-list">
                 <div class="network-item">
-                    <span data-i18n="netRize">🌱 Rize Fatih Anadolu Lisesi (Çay / Tea) [pH: 4.5-6.0]</span>
+                    <span data-i18n="netRize">🌱 Rize Fatih Anadolu Lisesi - Çay (*Camellia sinensis*) [pH: 4.5-6.0]</span>
                     <strong style="color: #2e7d32;" data-i18n="netActive">Aktif Hub / Active Hub</strong>
                 </div>
                 <div class="network-item">
-                    <span data-i18n="netAntakya">🍊 Antakya (Narenciye / Citrus) [pH: 6.0-7.5]</span>
+                    <span data-i18n="netAntakya">🍊 Antakya - Narenciye (*Citrus sinensis*) [pH: 6.0-7.5]</span>
                     <strong style="color: #2e7d32;" data-i18n="netSync">Senkronize / Synchronized</strong>
                 </div>
                 <div class="network-item">
-                    <span data-i18n="netOlive">🫒 Ege Bölgesi (Zeytin & Zeytinyağı / Olive) [pH: 6.5-8.0]</span>
+                    <span data-i18n="netOlive">🫒 Ege - Zeytin (*Olea europaea*) [pH: 6.5-8.0]</span>
                     <strong style="color: #2e7d32;" data-i18n="netSync">Senkronize / Synchronized</strong>
                 </div>
                 <div class="network-item">
-                    <span data-i18n="netFig">🌿 Ege Bölgesi (İncir / Fig) [pH: 6.0-7.5]</span>
+                    <span data-i18n="netFig">🌿 Ege - İncir (*Ficus carica*) [pH: 6.0-7.5]</span>
                     <strong style="color: #2e7d32;" data-i18n="netSync">Senkronize / Synchronized</strong>
                 </div>
                 <div class="network-item">
-                    <span data-i18n="netBrussels">🇪🇺 Brüksel EU Okul Ağı (Pilot / EU School Network) [pH: 6.0-7.0]</span>
+                    <span data-i18n="netBrussels">🇪🇺 Brussels - Şeker Pancarı (*Beta vulgaris*) [pH: 6.0-7.0]</span>
                     <strong style="color: #2e7d32;" data-i18n="netConnected">Bağlı / Connected</strong>
                 </div>
             </div>
@@ -345,16 +308,57 @@
     let track;
     let myChart = null;
     let lastCapturedImage = "";
-    let lastAnalysisData = null;
     const v = document.getElementById('v');
     const c = document.getElementById('canvas');
     
+    const cropRanges = {
+        "tr-tea": { 
+            min: 4.5, max: 6.0, 
+            TR: "Türkiye, Rize - Çay (*Camellia sinensis*) [İdeal pH: 4.5 - 6.0]", 
+            EN: "Turkey, Rize - Tea (*Camellia sinensis*) [Ideal pH: 4.5 - 6.0]" 
+        },
+        "tr-antakya-citrus": { 
+            min: 6.0, max: 7.5, 
+            TR: "Antakya - Narenciye (*Citrus sinensis*) [İdeal pH: 6.0 - 7.5]", 
+            EN: "Antakya - Citrus (*Citrus sinensis*) [Ideal pH: 6.0 - 7.5]" 
+        },
+        "tr-ege-olive": { 
+            min: 6.5, max: 8.0, 
+            TR: "Ege - Zeytin (*Olea europaea*) [İdeal pH: 6.5 - 8.0]", 
+            EN: "Ege - Olive (*Olea europaea*) [Ideal pH: 6.5 - 8.0]" 
+        },
+        "tr-ege-fig": { 
+            min: 6.0, max: 7.5, 
+            TR: "Ege - İncir (*Ficus carica*) [İdeal pH: 6.0 - 7.5]", 
+            EN: "Ege - Fig (*Ficus carica*) [Ideal pH: 6.0 - 7.5]" 
+        },
+        "be-sugar": { 
+            min: 6.0, max: 7.0, 
+            TR: "Brussels - Şeker Pancarı (*Beta vulgaris*) [İdeal pH: 6.0 - 7.0]", 
+            EN: "Brussels - Sugar Beet (*Beta vulgaris*) [Ideal pH: 6.0 - 7.0]" 
+        },
+        "nl-tulip": { 
+            min: 6.0, max: 7.0, 
+            TR: "Netherlands - Lale (*Tulipa gesneriana*) [İdeal pH: 6.0 - 7.0]", 
+            EN: "Netherlands - Tulips (*Tulipa gesneriana*) [Ideal pH: 6.0 - 7.0]" 
+        },
+        "it-tomato": { 
+            min: 6.0, max: 6.8, 
+            TR: "Italy - Domates (*Solanum lycopersicum*) [İdeal pH: 6.0 - 6.8]", 
+            EN: "Italy - Tomatoes (*Solanum lycopersicum*) [Ideal pH: 6.0 - 6.8]" 
+        },
+        "global-other": { 
+            min: 6.0, max: 7.0, 
+            TR: "Global - Diğer / Other [İdeal pH: 6.0 - 7.0]", 
+            EN: "Global - Other [Ideal pH: 6.0 - 7.0]" 
+        }
+    };
+
     const translations = {
         TR: {
             authorSub: "Biyoloji Uzmanı & Proje Lideri",
             tabAnalysis: "🌱 ANALİZ",
             tabBiolab: "🧬 MEBİ LAB",
-            tabMethodology: "📖 METODOLOJİ",
             tabField: "📸 SAHA",
             tabCitizen: "🌍 CITIZEN",
             lblRegion: "Bölge ve Ürün / Region & Crop",
@@ -364,7 +368,6 @@
             lblIntegratedLabDesc: "MEBİ Lab modülünden elde edilen konsantrasyon değerini giriniz (Opsiyonel):",
             lblWeather: "Hava Durumu / Weather Condition",
             lblAutoWeather: "📍 Konumdan Otomatik Hava Durumunu Güncelle",
-            locStatusWaiting: "(Otomatik Konum Bekleniyor...)",
             btnStartAnalyze: "ANALİZİ BAŞLAT / START ANALYZE",
             camHint: "⚠️ Öneri: Ölçüm doğruluğu için yaprak yüzeyindeki toz/su damlalarını temizleyiniz.",
             btnTakePhoto: "FOTOĞRAF ÇEK / TAKE PHOTO",
@@ -386,12 +389,6 @@
             lblAbsorbance: "Ölçülen / Hesaplanan Klorofil a Konsantrasyonu (mg/L)",
             btnBioCalc: "KLOROFİL a VERİSİNİ KAYDET & ANALİZE AKTAR",
             bioSyncSuccess: "✨ MEBİ Lab Verisi Canlı Veri Tablosuna ve Analiz Modülüne Aktarıldı!",
-            methodTitle: "📖 Bilimsel Metodoloji & Validasyon (Whitepaper)<br><span style='font-size:9px; font-weight:normal;'>Scientific Rigor & Peer-Review Standards</span>",
-            methodSub1: "1. Akademik Dayanaklar (Campbell & Guyton):",
-            methodDesc1: "Sistemimiz; bitki fizyolojisinde fotosentetik pigmentlerin 663 nm dalga boyundaki (Klorofil a) maksimum absorpsiyon spektrumunu (Campbell Biology) ve toprak pH sapmalarının kök hücre membran geçirgenliği ile enzim kinetiğine etkilerini (Guyton and Hall Tıbbi Fizyoloji) esas alır.",
-            methodSub2: "2. Stres Skoru Matematiksel Algoritması:",
-            methodDesc2: "Ham veriden stres skoruna geçiş, sabit eşik değerler yerine dinamik bir normalizasyon formülüyle hesaplanır:",
-            methodDesc3: "Bu formül; pH sapmasının büyüklüğünü klorofil a konsantrasyonu ile oranlayarak Brüksel EU Green Deal denetimlerinde tam şeffaflık ve hakemli akademik standart (Peer-Review) sağlar.",
             fieldTitle: "📸 Saha ve Öğrenci Araştırma Fotoğrafları<br><span style='font-size:9px; font-weight:normal;'>Field & Student Research Photos Gallery</span>",
             uploadMain: "Fotoğraf Seç veya Yükle / Choose Photo",
             uploadSub: "Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları",
@@ -400,11 +397,11 @@
             statNodes: "Aktif Bölgesel Ağ / Active Nodes",
             statSamples: "Toplam Veri / Total Samples",
             partnerRegions: "Katılımcı Pilot Bölgeler / Partner Regions:",
-            netRize: "🌱 Rize Fatih Anadolu Lisesi (Çay / Tea) [pH: 4.5-6.0]",
-            netAntakya: "🍊 Antakya (Narenciye / Citrus) [pH: 6.0-7.5]",
-            netOlive: "🫒 Ege Bölgesi (Zeytin & Zeytinyağı / Olive) [pH: 6.5-8.0]",
-            netFig: "🌿 Ege Bölgesi (İncir / Fig) [pH: 6.0-7.5]",
-            netBrussels: "🇪🇺 Brüksel EU Okul Ağı (Pilot / EU School Network) [pH: 6.0-7.0]",
+            netRize: "🌱 Rize Fatih Anadolu Lisesi - Çay (*Camellia sinensis*) [pH: 4.5-6.0]",
+            netAntakya: "🍊 Antakya - Narenciye (*Citrus sinensis*) [pH: 6.0-7.5]",
+            netOlive: "🫒 Ege - Zeytin (*Olea europaea*) [pH: 6.5-8.0]",
+            netFig: "🌿 Ege - İncir (*Ficus carica*) [pH: 6.0-7.5]",
+            netBrussels: "🇪🇺 Brussels - Şeker Pancarı (*Beta vulgaris*) [pH: 6.0-7.0]",
             netActive: "Aktif Hub",
             netSync: "Senkronize",
             netConnected: "Bağlı",
@@ -414,7 +411,6 @@
             authorSub: "Biology Expert & Project Lead",
             tabAnalysis: "🌱 ANALYSIS",
             tabBiolab: "🧬 MEB LAB",
-            tabMethodology: "📖 METHOD",
             tabField: "📸 FIELD",
             tabCitizen: "🌍 CITIZEN",
             lblRegion: "Region & Crop",
@@ -424,7 +420,6 @@
             lblIntegratedLabDesc: "Enter concentration value obtained from MEB Lab module (Optional):",
             lblWeather: "Weather Condition",
             lblAutoWeather: "📍 Update Weather from Location Automatically",
-            locStatusWaiting: "(Fetching Location...)",
             btnStartAnalyze: "START ANALYSIS",
             camHint: "⚠️ Tip: Clean dust/water drops on leaf surface for measurement accuracy.",
             btnTakePhoto: "TAKE PHOTO",
@@ -434,7 +429,7 @@
             expertNotice: "⚠️ EXPERT ADVICE: Seek immediate expert support for unresolved issues.",
             btnLiveSheet: "📊 LIVE DATA SHEET",
             btnPrintReport: "📥 PRINT REPORT / SAVE PDF",
-            btnNewAnalyze: "NEW ANALYSIS",
+            btnNewAnalysis: "NEW ANALYSIS",
             bioLabTitle: "🧬 MEB Lab & Biology Laboratory Module<br><span style='font-size:9px; font-weight:normal;'>Chlorophyll a Extraction & Smart Colorimeter Analysis</span>",
             bioBadge: "📚 <strong>MEB Curriculum Aligned:</strong> Factors affecting photosynthesis rate and low-cost smartphone colorimetry protocol. (Brussels STEM & Citizen Science Compliant)",
             lblSamplePlant: "Sample Plant Type",
@@ -446,12 +441,6 @@
             lblAbsorbance: "Measured / Calculated Chlorophyll a Concentration (mg/L)",
             btnBioCalc: "SAVE CHLOROPHYLL a DATA & SEND TO ANALYSIS",
             bioSyncSuccess: "✨ MEB Lab Data Successfully Sent to Live Data Sheet & Analysis Module!",
-            methodTitle: "📖 Scientific Methodology & Validation (Whitepaper)<br><span style='font-size:9px; font-weight:normal;'>Scientific Rigor & Peer-Review Standards</span>",
-            methodSub1: "1. Academic Foundations (Campbell & Guyton):",
-            methodDesc1: "Our system is based on the maximum absorption spectrum of photosynthetic pigments at 663 nm (Chlorophyll a) (Campbell Biology) and the effects of soil pH shifts on root cell membrane permeability and enzyme kinetics (Guyton and Hall Textbook of Medical Physiology).",
-            methodSub2: "2. Stress Score Mathematical Algorithm:",
-            methodDesc2: "Transition from raw data to stress score is calculated via a dynamic normalization formula instead of fixed thresholds:",
-            methodDesc3: "This formula normalizes the magnitude of pH shift against chlorophyll a concentration, ensuring complete transparency and peer-review academic standards for Brussels EU Green Deal audits.",
             fieldTitle: "📸 Field & Student Research Photos<br><span style='font-size:9px; font-weight:normal;'>Field & Student Research Photos Gallery</span>",
             uploadMain: "Choose or Upload Photo",
             uploadSub: "Group photos with students, laboratory and field studies",
@@ -460,39 +449,45 @@
             statNodes: "Active Regional Nodes",
             statSamples: "Total Samples",
             partnerRegions: "Partner Pilot Regions:",
-            netRize: "🌱 Rize Fatih Anatolian High School (Tea) [pH: 4.5-6.0]",
-            netAntakya: "🍊 Antakya (Citrus) [pH: 6.0-7.5]",
-            netOlive: "🫒 Aegean Region (Olive & Olive Oil) [pH: 6.5-8.0]",
-            netFig: "🌿 Aegean Region (Fig) [pH: 6.0-7.5]",
-            netBrussels: "🇪🇺 Brussels EU School Network (Pilot) [pH: 6.0-7.0]",
+            netRize: "🌱 Turkey, Rize - Tea (*Camellia sinensis*) [Ideal pH: 4.5 - 6.0]",
+            netAntakya: "🍊 Antakya - Citrus (*Citrus sinensis*) [Ideal pH: 6.0 - 7.5]",
+            netOlive: "🫒 Ege - Olive (*Olea europaea*) [Ideal pH: 6.5 - 8.0]",
+            netFig: "🌿 Ege - Fig (*Ficus carica*) [Ideal pH: 6.0 - 7.5]",
+            netBrussels: "🇪🇺 Brussels - Sugar Beet (*Beta vulgaris*) [Ideal pH: 6.0 - 7.0]",
             netActive: "Active Hub",
             netSync: "Synchronized",
             netConnected: "Connected",
             btnUpdateNetwork: "🔄 UPDATE NETWORK"
         }
     };
-    
-    const cropRanges = {
-        "tr-antakya-citrus": { min: 6.0, max: 7.5, name: "Antakya - Citrus (Narenciye)" },
-        "tr-ege-olive": { min: 6.5, max: 8.0, name: "Ege - Olive & Olive Oil (Zeytin)" },
-        "tr-ege-fig": { min: 6.0, max: 7.5, name: "Ege - Fig (İncir)" },
-        "tr-tea": { min: 4.5, max: 6.0, name: "Turkey, Rize - Tea (Çay)" },
-        "be-sugar": { min: 6.0, max: 7.0, name: "Brussels, BE - Sugar Beet (Şeker Pancarı)" },
-        "nl-tulip": { min: 6.0, max: 7.0, name: "Netherlands - Tulips (Lale)" },
-        "it-tomato": { min: 6.0, max: 6.8, name: "Italy - Tomatoes (Domates)" },
-        "global-other": { min: 6.0, max: 7.0, name: "Global - Diğer / Other" }
-    };
-    
+
     function initApp() {
+        populateDropdown();
         loadGallery();
         updatePHRangeInfo();
         fetchCurrentWeather();
     }
-    
+
+    function populateDropdown() {
+        const select = document.getElementById('region');
+        const currentSelection = select.value || 'tr-tea';
+        select.innerHTML = '';
+        
+        for (let key in cropRanges) {
+            const opt = document.createElement('option');
+            opt.value = key;
+            opt.textContent = cropRanges[key][currentLang];
+            select.appendChild(opt);
+        }
+        select.value = currentSelection;
+    }
+
     function toggleLang() {
         currentLang = currentLang === 'TR' ? 'EN' : 'TR';
         document.getElementById('lang-toggle').innerText = currentLang === 'TR' ? 'EN / TR' : 'TR / EN';
         
+        populateDropdown();
+
         const elements = document.querySelectorAll('[data-i18n]');
         elements.forEach(el => {
             const key = el.getAttribute('data-i18n');
@@ -509,12 +504,8 @@
         });
         updatePHRangeInfo();
         loadGallery();
-        
-        if(lastAnalysisData) {
-            renderAnalysisOutputs(lastAnalysisData.stressScore, lastAnalysisData.range, lastAnalysisData.phVal, lastAnalysisData.labChlorophyll, lastAnalysisData.ph, lastAnalysisData.weather);
-        }
     }
-    
+
     function fetchCurrentWeather() {
         const statusEl = document.getElementById('loc-status');
         if (!navigator.geolocation) {
@@ -558,7 +549,7 @@
             statusEl.innerText = currentLang === 'TR' ? "(Konum İzni Reddedildi)" : "(Location Permission Denied)";
         }, { timeout: 10000 });
     }
-    
+
     function updatePHRangeInfo() {
         const regionKey = document.getElementById('region').value;
         const range = cropRanges[regionKey] || { min: 6.0, max: 7.0 };
@@ -575,7 +566,7 @@
             validatePH(phInput);
         }
     }
-    
+
     function validatePH(input) {
         const val = parseFloat(input.value);
         const warn = document.getElementById('ph-warn');
@@ -585,37 +576,33 @@
         if(val < range.min || val > range.max) {
             warn.style.display = 'block';
             if(currentLang === 'TR') {
-                warn.innerHTML = `⚠️ Girilen pH (${val}), ${range.name} için ideal bilimsel aralığın (${range.min} - ${range.max}) dışında!`;
+                warn.innerHTML = `⚠️ Girilen pH (${val}), seçilen bitki için ideal bilimsel aralığın (${range.min} - ${range.max}) dışında!`;
             } else {
-                warn.innerHTML = `⚠️ Entered pH (${val}) is outside the ideal scientific range (${range.min} - ${range.max}) for ${range.name}!`;
+                warn.innerHTML = `⚠️ Entered pH (${val}) is outside the ideal scientific range (${range.min} - ${range.max}) for this crop!`;
             }
         } else {
             warn.style.display = 'none';
         }
     }
-    
+
     function switchTab(tabName) {
         const analysisSec = document.getElementById('analysis-section');
         const biolabSec = document.getElementById('biolab-section');
-        const methodologySec = document.getElementById('methodology-section');
         const fieldSec = document.getElementById('field-section');
         const citizenSec = document.getElementById('citizen-section');
         
         const tabAnalysisBtn = document.getElementById('tab-analysis-btn');
         const tabBiolabBtn = document.getElementById('tab-biolab-btn');
-        const tabMethodologyBtn = document.getElementById('tab-methodology-btn');
         const tabFieldBtn = document.getElementById('tab-field-btn');
         const tabCitizenBtn = document.getElementById('tab-citizen-btn');
         
         analysisSec.style.display = 'none';
         biolabSec.style.display = 'none';
-        methodologySec.style.display = 'none';
         fieldSec.style.display = 'none';
         citizenSec.style.display = 'none';
         
         tabAnalysisBtn.classList.remove('active');
         tabBiolabBtn.classList.remove('active');
-        tabMethodologyBtn.classList.remove('active');
         tabFieldBtn.classList.remove('active');
         tabCitizenBtn.classList.remove('active');
         
@@ -627,36 +614,22 @@
             tabBiolabBtn.classList.add('active');
             if(track) { track.stop(); }
             document.getElementById('cam-box').style.display = 'none';
-            if(document.getElementById('res-area').style.display !== 'block') {
-                document.getElementById('form-area').style.display = 'block';
-            }
-        } else if(tabName === 'methodology') {
-            methodologySec.style.display = 'block';
-            tabMethodologyBtn.classList.add('active');
-            if(track) { track.stop(); }
-            document.getElementById('cam-box').style.display = 'none';
-            if(document.getElementById('res-area').style.display !== 'block') {
-                document.getElementById('form-area').style.display = 'block';
-            }
+            document.getElementById('form-area').style.display = 'block';
         } else if(tabName === 'field') {
             fieldSec.style.display = 'block';
             tabFieldBtn.classList.add('active');
             if(track) { track.stop(); }
             document.getElementById('cam-box').style.display = 'none';
-            if(document.getElementById('res-area').style.display !== 'block') {
-                document.getElementById('form-area').style.display = 'block';
-            }
+            document.getElementById('form-area').style.display = 'block';
         } else if(tabName === 'citizen') {
             citizenSec.style.display = 'block';
             tabCitizenBtn.classList.add('active');
             if(track) { track.stop(); }
             document.getElementById('cam-box').style.display = 'none';
-            if(document.getElementById('res-area').style.display !== 'block') {
-                document.getElementById('form-area').style.display = 'block';
-            }
+            document.getElementById('form-area').style.display = 'block';
         }
     }
-    
+
     function processBioCamera(event) {
         const file = event.target.files[0];
         if(!file) return;
@@ -699,7 +672,7 @@
         }
         reader.readAsDataURL(file);
     }
-    
+
     function calculateBiolab(sendToSheet = false) {
         const plant = document.getElementById('bio-plant').value;
         const concInput = document.getElementById('bio-absorbance');
@@ -748,7 +721,7 @@
             });
         }
     }
-    
+
     function handleFileUpload(event) {
         const file = event.target.files[0];
         if(!file) return;
@@ -782,7 +755,7 @@
         }
         reader.readAsDataURL(file);
     }
-    
+
     function loadGallery() {
         const container = document.getElementById('gallery-container');
         let gallery = JSON.parse(localStorage.getItem('agro_field_gallery') || '[]');
@@ -803,7 +776,7 @@
             container.appendChild(div);
         });
     }
-    
+
     function deletePhoto(event, index) {
         event.stopPropagation();
         if(confirm(currentLang === 'TR' ? 'Bu fotoğrafı silmek istediğinize emin misiniz?' : 'Are you sure you want to delete this photo?')) {
@@ -813,17 +786,17 @@
             loadGallery();
         }
     }
-    
+
     function openLightbox(imgSrc, caption) {
         document.getElementById('lightbox-img').src = imgSrc;
         document.getElementById('lightbox-caption').innerText = caption;
         document.getElementById('lightbox-modal').style.display = 'flex';
     }
-    
+
     function closeLightbox() {
         document.getElementById('lightbox-modal').style.display = 'none';
     }
-    
+
     function startSystem() {
         const phVal = document.getElementById('ph').value;
         if(!phVal) {
@@ -832,14 +805,10 @@
         }
         document.getElementById('form-area').style.display = 'none';
         document.getElementById('cam-box').style.display = 'block';
-        
-        const constraints = {
-            video: {
-                facingMode: { ideal: 'environment' }
-            }
-        };
-
-        navigator.mediaDevices.getUserMedia(constraints)
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: 'environment' } } })
+        .catch(() => {
+            return navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        })
         .then(stream => {
             v.srcObject = stream;
             track = stream.getVideoTracks()[0];
@@ -849,7 +818,7 @@
             resetSystem();
         });
     }
-    
+
     function processAI() {
         c.width = v.videoWidth || 640;
         c.height = v.videoHeight || 480;
@@ -884,31 +853,70 @@
         if(track) { track.stop(); }
         document.getElementById('cam-box').style.display = 'none';
         document.getElementById('error-box').style.display = 'none';
-        document.getElementById('form-area').style.display = 'none';
         document.getElementById('res-area').style.display = 'block';
         
-        const region = document.getElementById('region').value;
+        const regionKey = document.getElementById('region').value;
         const ph = document.getElementById('ph').value;
         const weather = document.getElementById('weather').value;
-        const labChlorophyll = parseFloat(document.getElementById('integrated-chlorophyll').value) || 6.5;
-        const range = cropRanges[region] || { min: 6.0, max: 7.0 };
+        const labChlorophyll = document.getElementById('integrated-chlorophyll').value;
+        const range = cropRanges[regionKey] || { min: 6.0, max: 7.0 };
+        const cropDisplayName = range[currentLang];
         const phVal = parseFloat(ph);
         
-        const idealMean = (range.min + range.max) / 2;
-        const phDeviation = Math.abs(phVal - idealMean);
-        const stressScoreVal = phDeviation * (12.5 / labChlorophyll);
-        let isPhOptimal = (phVal >= range.min && phVal <= range.max && stressScoreVal < 1.5);
+        let statusText = "";
+        let calibrationText = "";
+        let greenDealText = "";
+        let certificateText = "";
+        let prescriptionText = "";
         
-        lastAnalysisData = { stressScore: stressScoreVal, range, phVal, labChlorophyll, ph, weather };
+        let isPhOptimal = (phVal >= range.min && phVal <= range.max);
+        let labTextInfo = labChlorophyll ? ` [Lab Klorofil a: ${labChlorophyll} mg/L]` : "";
+        if(isPhOptimal) {
+            statusText = currentLang === 'TR' ? 
+                `[OK] ${cropDisplayName} için ideal pH aralığında (${range.min}-${range.max}).${labTextInfo}` : 
+                `[OK] Optimal pH range for ${cropDisplayName} (${range.min}-${range.max}).${labTextInfo}`;
+            calibrationText = currentLang === 'TR' ? 
+                `🔬 Saha & Lab Entegre Durum: Mikro element alımı dengeli, 663 nm klorofil sentezi kararlı.` : 
+                `🔬 Integrated Status: Balanced nutrient uptake, stable 663 nm chlorophyll synthesis.`;
+        } else {
+            statusText = currentLang === 'TR' ? 
+                `[UYARI] pH (${phVal}) hedef aralıkta (${range.min}-${range.max}) değil! Stres gözlendi.${labTextInfo}` : 
+                `[WARNING] pH (${phVal}) out of target range (${range.min}-${range.max})! Stress observed.${labTextInfo}`;
+            calibrationText = currentLang === 'TR' ? 
+                `⚠️ Entegre Teşhis: Toprak pH sapması ve iklimsel koşullar nedeniyle klorofil a sentezinde blokaj oluştu.` : 
+                `⚠️ Integrated Diagnosis: Chlorophyll a synthesis blocked due to pH shift and climate factors.`;
+        }
         
-        renderAnalysisOutputs(stressScoreVal, range, phVal, labChlorophyll, ph, weather);
+        greenDealText = currentLang === 'TR' ? 
+            `🇪🇺 AB Yeşil Mutabakatı: Öngörülen bu ekolojik ve hassas reçete uygulandığında, kimyasal sızıntı önlenir ve karbon ayak izi düşürülerek AB standartlarına uyulmuş olur.` : 
+            `🇪🇺 EU Green Deal: Applying this ecological prescription prevents chemical leakage, reduces carbon footprint, and ensures compliance with EU standards.`;
+        
+        certificateText = `📜 EU GREEN DEAL SUSTAINABILITY CERTIFICATE #EU-2026-RIZE<br>
+        • Verified Crop: ${cropDisplayName}<br>
+        • Lab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L<br>
+        • Carbon Footprint Reduction: %24.5 (Estimated)<br>
+        • Compliance Status: APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)`;
+        
+        prescriptionText = currentLang === 'TR' ? 
+            `💊 Entegre Ekolojik Reçete:\n1. Toprak pH dengelemesi için uygun organik düzenleyici uygulanmalı.\n2. 663 nm bandındaki pigment optimizasyonu için Şelatlı Demir (Fe-EDDHA) ve mikro element takviyesi sağlanmalı.` : 
+            `💊 Integrated Ecological Prescription:\n1. Apply organic modifier for soil pH balance.\n2. Provide Chelated Iron (Fe-EDDHA) and micronutrients for 663 nm pigment optimization.`;
+        
+        document.getElementById('hybrid-output').innerHTML = statusText;
+        document.getElementById('calibration-output').innerHTML = calibrationText;
+        document.getElementById('green-deal-output').innerHTML = greenDealText;
+        document.getElementById('certificate-output').innerHTML = certificateText;
+        document.getElementById('prescription-output').innerHTML = prescriptionText;
+        
+        document.getElementById('res-output').innerText = `Integrated Analysis / Entegre Analiz Raporu\nRegion & Crop: ${cropDisplayName}\npH: ${ph}\nWeather: ${weather}\nLab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L`;
+        
+        drawStressChart(isPhOptimal);
         document.getElementById('sync-status').style.display = 'block';
         
         const formData = {
-            region: range.name,
+            region: cropDisplayName,
             ph: ph,
             weather: weather,
-            stress: isPhOptimal ? `Normal (Score: ${stressScoreVal.toFixed(2)}, Lab: ${labChlorophyll} mg/L)` : `Stress/pH Shift (Score: ${stressScoreVal.toFixed(2)}, Lab: ${labChlorophyll} mg/L)`,
+            stress: isPhOptimal ? `Normal (Lab: ${labChlorophyll || 'N/A'} mg/L)` : `Stress/pH Shift (Lab: ${labChlorophyll || 'N/A'} mg/L)`,
             notes: document.getElementById('res-output').innerText.replace(/\n/g, " "),
             photograph: lastCapturedImage,
             date: new Date().toLocaleString()
@@ -921,72 +929,7 @@
             body: JSON.stringify(formData)
         });
     }
-    
-    function renderAnalysisOutputs(stressScoreVal, range, phVal, labChlorophyll, ph, weather) {
-        let statusText = "";
-        let calibrationText = "";
-        let greenDealText = "";
-        let certificateText = "";
-        let prescriptionText = "";
-        
-        let isOptimal = stressScoreVal < 1.5 && (phVal >= range.min && phVal <= range.max);
-        let labTextInfo = labChlorophyll ? ` [Lab Chlorophyll a: ${labChlorophyll} mg/L, Score: ${stressScoreVal.toFixed(2)}]` : "";
-        
-        if(currentLang === 'TR') {
-            labTextInfo = labChlorophyll ? ` [Lab Klorofil a: ${labChlorophyll} mg/L, Stres Skoru: ${stressScoreVal.toFixed(2)}]` : "";
-            if(isOptimal) {
-                statusText = `[OK] ${range.name} için ideal pH aralığında (${range.min}-${range.max}). Akademik Stres Skoru: ${stressScoreVal.toFixed(2)}.${labTextInfo}`;
-                calibrationText = `🔬 Saha & Lab Entegre Durum: Mikro element alımı dengeli, 663 nm klorofil sentezi kararlı (Campbell & Guyton Standardı).`;
-            } else {
-                statusText = `[UYARI] pH (${phVal}) veya Stres Skoru (${stressScoreVal.toFixed(2)}) eşik sınırda değil! pH Sapması saptandı.${labTextInfo}`;
-                calibrationText = `⚠️ Entegre Teşhis: Toprak pH sapması ve enzim kinetiği blokajı nedeniyle klorofil a sentezinde sapma oluştu.`;
-            }
-            greenDealText = `🇪🇺 AB Yeşil Mutabakatı: Öngörülen bu ekolojik ve hassas reçete uygulandığında, kimyasal sızıntı önlenir ve karbon ayak izi düşürülerek AB standartlarına uyulmuş olur.`;
-            certificateText = `📜 EU GREEN DEAL SUSTAINABILITY CERTIFICATE #EU-2026-RIZE<br>
-            • Doğrulanan Ürün / Verified Crop: ${range.name}<br>
-            • Lab Klorofil a (663 nm): ${labChlorophyll || 'N/A'} mg/L<br>
-            • Akademik Stres Skoru (Peer-Review): ${stressScoreVal.toFixed(2)}<br>
-            • Karbon Ayak İzi Azaltımı / Carbon Footprint Reduction: %24.5 (Tahmini / Estimated)<br>
-            • Uyumluluk Durumu / Compliance Status: BRÜSSEL TERMİNALİ İÇİN ONAYLANDI (ISO-14001 & AB Yeşil Mutabakat Uyumlu)`;
-            prescriptionText = `💊 Entegre Ekolojik Reçete ve Spesifik Girdi Yönetimi:\n` +
-                `1. Organik Düzenleyici: Çay tarımının asidik karakterine ve tampon kapasitesine uygun olarak, humik-fulvik asit ekstreleri veya olgunlaştırılmış kompost/ahır gübresi ile toprak yapısı iyileştirilmeli.\n` +
-                `2. Spesifik Mikro Elementler: Çayın klorofil a sentezini ve 663 nm bandındaki optik verimini doğrudan desteklemek amacıyla Demir (Fe) yanında Bor (B), Çinko (Zn) ve Mangan (Mn) element takviyeleri eksiksiz sağlanmalı.`;
-        } else {
-            if(isOptimal) {
-                statusText = `[OK] Optimal pH range for ${range.name} (${range.min}-${range.max}). Academic Stress Score: ${stressScoreVal.toFixed(2)}.${labTextInfo}`;
-                calibrationText = `🔬 Integrated Status: Balanced nutrient uptake, stable 663 nm chlorophyll synthesis (Campbell & Guyton Standard).`;
-            } else {
-                statusText = `[WARNING] pH (${phVal}) or Stress Score (${stressScoreVal.toFixed(2)}) out of optimal range! pH Shift observed.${labTextInfo}`;
-                calibrationText = `⚠️ Integrated Diagnosis: Chlorophyll a synthesis blocked due to pH shift and enzyme kinetics.`;
-            }
-            greenDealText = `🇪🇺 EU Green Deal: Applying this ecological prescription prevents chemical leakage, reduces carbon footprint, and ensures compliance with EU standards.`;
-            certificateText = `📜 EU GREEN DEAL SUSTAINABILITY CERTIFICATE #EU-2026-RIZE<br>
-            • Verified Crop: ${range.name}<br>
-            • Lab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L<br>
-            • Academic Stress Score (Peer-Review): ${stressScoreVal.toFixed(2)}<br>
-            • Carbon Footprint Reduction: %24.5 (Estimated)<br>
-            • Compliance Status: APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)`;
-            prescriptionText = `💊 Integrated Ecological Prescription & Specific Nutrient Management:\n` +
-                `1. Organic Modifier: Improve soil structure and buffer capacity using humic-fulvic acid extracts or well-composted farmyard manure suitable for tea farming.\n` +
-                `2. Specific Micronutrients: Directly support chlorophyll a synthesis and 663 nm optical efficiency by supplementing Boron (B), Zinc (Zn), and Manganese (Mn) alongside Iron.`;
-        }
-        
-        document.getElementById('hybrid-output').innerHTML = statusText;
-        document.getElementById('calibration-output').innerHTML = calibrationText;
-        document.getElementById('green-deal-output').innerHTML = greenDealText;
-        document.getElementById('certificate-output').innerHTML = certificateText;
-        document.getElementById('prescription-output').innerHTML = prescriptionText;
-        
-        document.getElementById('res-output').innerHTML = `<strong>📋 ${currentLang === 'TR' ? 'Entegre Analiz Özeti' : 'Integrated Analysis Summary'}</strong><br>` +
-            `• ${currentLang === 'TR' ? 'Bölge/Ürün' : 'Region/Crop'}: ${range.name}<br>` +
-            `• pH: ${ph}<br>` +
-            `• ${currentLang === 'TR' ? 'Hava Durumu' : 'Weather'}: ${weather}<br>` +
-            `• Lab Klorofil a: ${labChlorophyll || 'N/A'} mg/L<br>` +
-            `• Stres Skoru (Algoritma): ${stressScoreVal.toFixed(2)}`;
-        
-        drawStressChart(isOptimal);
-    }
-    
+
     function drawStressChart(isOptimal) {
         const ctx = document.getElementById('stressChart').getContext('2d');
         if(myChart) { myChart.destroy(); }
@@ -1026,14 +969,13 @@
             }
         });
     }
-    
+
     function resetSystem() {
         document.getElementById('res-area').style.display = 'none';
         document.getElementById('form-area').style.display = 'block';
         document.getElementById('preview-img').style.display = 'none';
         document.getElementById('sync-status').style.display = 'none';
         document.getElementById('error-box').style.display = 'none';
-        lastAnalysisData = null;
     }
 </script>
 </body>
