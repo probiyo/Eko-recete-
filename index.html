@@ -214,13 +214,14 @@
             
             <label data-i18n="lblSamplePlant">Numune Bitki Türü / Sample Plant</label>
             <select id="bio-plant">
-                <option value="Camellia sinensis">Çay Yaprağı (Camellia sinensis - Rize) [İdeal pH: 4.5 - 6.0]</option>
-                <option value="Citrus sinensis">Narenciye Yaprağı (Citrus sinensis - Antakya) [İdeal pH: 6.0 - 7.5]</option>
-                <option value="Olea europaea">Zeytin Yaprağı (Olea europaea - Ege) [İdeal pH: 6.5 - 8.0]</option>
-                <option value="Ficus carica">İncir Yaprağı (Ficus carica - Ege) [İdeal pH: 6.0 - 7.5]</option>
-                <option value="Beta vulgaris">Şeker Pancarı (Beta vulgaris - Brüksel) [İdeal pH: 6.0 - 7.0]</option>
-                <option value="Tulipa gesneriana">Lale (Tulipa gesneriana - Hollanda) [İdeal pH: 6.0 - 7.0]</option>
-                <option value="Solanum lycopersicum">Domates (Solanum lycopersicum - İtalya) [İdeal pH: 6.0 - 6.8]</option>
+                <option value="Turkey, Rize - Tea (Çay)">Turkey, Rize - Tea (Çay) [İdeal pH: 4.5 - 6.0]</option>
+                <option value="Antakya - Citrus (Narenciye)">Antakya - Citrus (Narenciye) [İdeal pH: 6.0 - 7.5]</option>
+                <option value="Ege - Olive & Olive Oil (Zeytin)">Ege - Olive & Olive Oil (Zeytin) [İdeal pH: 6.5 - 8.0]</option>
+                <option value="Ege - Fig (İncir)">Ege - Fig (İncir) [İdeal pH: 6.0 - 7.5]</option>
+                <option value="Brussels, BE - Sugar Beet (Şeker Pancarı)">Brussels, BE - Sugar Beet (Şeker Pancarı) [İdeal pH: 6.0 - 7.0]</option>
+                <option value="Netherlands - Tulips (Lale)">Netherlands - Tulips (Lale) [İdeal pH: 6.0 - 7.0]</option>
+                <option value="Italy - Tomatoes (Domates)">Italy - Tomatoes (Domates) [İdeal pH: 6.0 - 6.8]</option>
+                <option value="Global - Diğer / Other">Global - Diğer / Other [İdeal pH: 6.0 - 7.0]</option>
             </select>
             <label data-i18n="lblWavelength">Spektrofotometre / Kalorimetre Dalga Boyu</label>
             <select id="bio-wavelength" disabled>
@@ -391,7 +392,7 @@
             methodSub2: "2. Stres Skoru Matematiksel Algoritması:",
             methodDesc2: "Ham veriden stres skoruna geçiş, sabit eşik değerler yerine dinamik bir normalizasyon formülüyle hesaplanır:",
             methodDesc3: "Bu formül; pH sapmasının büyüklüğünü klorofil a konsantrasyonu ile oranlayarak Brüksel EU Green Deal denetimlerinde tam şeffaflık ve hakemli akademik standart (Peer-Review) sağlar.",
-            fieldTitle: "📸 Saha and Öğrenci Araştırma Fotoğrafları<br><span style='font-size:9px; font-weight:normal;'>Field & Student Research Photos Gallery</span>",
+            fieldTitle: "📸 Saha ve Öğrenci Araştırma Fotoğrafları<br><span style='font-size:9px; font-weight:normal;'>Field & Student Research Photos Gallery</span>",
             uploadMain: "Fotoğraf Seç veya Yükle / Choose Photo",
             uploadSub: "Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları",
             captionPlaceholder: "Açıklama giriniz...",
@@ -889,7 +890,6 @@
         const range = cropRanges[region] || { min: 6.0, max: 7.0 };
         const phVal = parseFloat(ph);
         
-        // Akademik Validasyon & Dinamik Stres Skoru Formülü (Campbell & Guyton Esaslı)
         const idealMean = (range.min + range.max) / 2;
         const phDeviation = Math.abs(phVal - idealMean);
         const stressScoreVal = phDeviation * (12.5 / labChlorophyll);
