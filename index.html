@@ -114,7 +114,7 @@
                 <div id="ph-warn" class="ph-warning">⚠️ [TR] Girilen pH değeri seçilen bitki için ideal bilimsel aralığın dışında! <br>⚠️ [EN] Entered pH value is out of the ideal scientific range for this crop!</div>
             </div>
             <div class="card">
-               <label>Hava Durumu / Weather Condition</label>
+               <label>Hava Durumu / Weather Condition <span id="loc-status" style="font-size:9px; color:#2e7d32; font-weight:normal;">(Otomatik Konum Bekleniyor...)</span></label>
                 <select id="weather">
                    <option value="Güneşli / Sunny">Güneşli / Sunny</option>
                    <option value="Bulutlu / Cloudy">Bulutlu / Cloudy</option>
@@ -123,6 +123,9 @@
                    <option value="Karlı / Snowy">Karlı / Snowy</option>
                    <option value="Don Tehlikesi / Frost Risk">Don Tehlikesi / Frost Risk</option>
                 </select>
+                <div class="other-opt" onclick="fetchCurrentWeather()" style="font-size: 11px; padding: 8px; margin-top: 5px;">
+                    📍 Konumdan Otomatik Hava Durumunu Güncelle / Fetch Weather
+                </div>
             </div>
             <button id="start-btn" class="btn-main" onclick="startSystem()">ANALİZİ BAŞLAT / START ANALYZE</button>
         </div>
@@ -257,7 +260,58 @@
     function initApp() {
         loadGallery();
         updatePHRangeInfo();
+        fetchCurrentWeather(); // Sayfa açıldığında otomatik konumdan hava durumunu çekmeyi dener
     }
+
+    // Open-Meteo API ile Konum Bazlı Otomatik Hava Durumu
+    function fetchCurrentWeather() {
+        const statusEl = document.getElementById('loc-status');
+        if (!navigator.geolocation) {
+            statusEl.innerText = "(Tarayıcı Konumu Desteklemiyor)";
+            return;
+        }
+        statusEl.innerText = "(Konum Alınıyor...)";
+        
+        navigator.geolocation.getCurrentPosition(position => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            
+            const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2d,weather_code`;
+            
+            fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=weathercode`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.current) {
+                        const code = data.current.weathercode;
+                        const weatherSelect = document.getElementById('weather');
+                        
+                        // WMO Weather interpretation codes (Open-Meteo standard)
+                        // 0: Clear sky, 1,2,3: Mainly clear, partly cloudy, overcast, 51-67: Rain, 71-77: Snow, 95-99: Thunderstorm/Frost risk
+                        let mappedWeather = "Güneşli / Sunny";
+                        if (code >= 1 && code <= 3) {
+                            mappedWeather = "Bulutlu / Cloudy";
+                        } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
+                            mappedWeather = "Yağmurlu / Rainy";
+                        } else if (code === 45 || code === 48) {
+                            mappedWeather = "Sisli / Foggy";
+                        } else if (code >= 71 && code <= 77) {
+                            mappedWeather = "Karlı / Snowy";
+                        } else if (code >= 95) {
+                            mappedWeather = "Don Tehlikesi / Frost Risk";
+                        }
+                        
+                        weatherSelect.value = mappedWeather;
+                        statusEl.innerText = `(Konumdan Güncellendi ✓)`;
+                    }
+                })
+                .catch(() => {
+                    statusEl.innerText = "(Hava Alınamadı)";
+                });
+        }, () => {
+            statusEl.innerText = "(Konum İzni Reddedildi)";
+        }, { timeout: 10000 });
+    }
+
     function updatePHRangeInfo() {
         const regionKey = document.getElementById('region').value;
         const range = cropRanges[regionKey] || { min: 6.0, max: 7.0 };
