@@ -17,8 +17,8 @@
         .author { text-align: center; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 15px; }
         
         /* Navigasyon / Sekme Menüsü */
-        .nav-tabs { display: flex; gap: 4px; margin-bottom: 15px; background: #e8f0e9; padding: 4px; border-radius: 14px; }
-        .nav-tab { flex: 1; padding: 8px 4px; text-align: center; font-size: 9px; font-weight: 800; color: var(--primary); background: transparent; border: none; border-radius: 10px; cursor: pointer; transition: 0.2s; }
+        .nav-tabs { display: flex; gap: 4px; margin-bottom: 15px; background: #e8f0e9; padding: 4px; border-radius: 14px; flex-wrap: wrap; }
+        .nav-tab { flex: 1; padding: 8px 4px; text-align: center; font-size: 9px; font-weight: 800; color: var(--primary); background: transparent; border: none; border-radius: 10px; cursor: pointer; transition: 0.2s; min-width: 70px; }
         .nav-tab.active { background: var(--primary); color: white; }
         
         .card { background: #f9fdfa; padding: 15px; border-radius: 20px; margin-bottom: 12px; border: 1px solid #e8f0e9; }
@@ -64,6 +64,11 @@
         /* MEBİ & Biyoloji Laboratuvarı Sekmesi Stilleri */
         .biolab-section { display: none; }
         .mebi-badge { background: #e0f2fe; border-left: 5px solid #0284c7; padding: 10px; font-size: 11px; margin-bottom: 12px; color: #0369a1; font-weight: bold; border-radius: 0 10px 10px 0; line-height: 1.4; }
+
+        /* Metodoloji / Whitepaper Sekmesi Stilleri */
+        .methods-section { display: none; }
+        .methods-content { font-size: 11px; line-height: 1.5; color: #333; }
+        .methods-content h3 { color: var(--primary); font-size: 13px; margin-top: 12px; margin-bottom: 4px; border-bottom: 1px solid #e8f0e9; padding-bottom: 3px; }
         
         /* Lightbox Stilleri */
         #lightbox-modal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; }
@@ -101,6 +106,7 @@
     <div class="nav-tabs">
         <button id="tab-analysis-btn" class="nav-tab active" onclick="switchTab('analysis')" data-i18n="tabAnalysis">🌱 ANALİZ</button>
         <button id="tab-biolab-btn" class="nav-tab" onclick="switchTab('biolab')" data-i18n="tabBiolab">🧬 MEBİ LAB</button>
+        <button id="tab-methods-btn" class="nav-tab" onclick="switchTab('methods')" data-i18n="tabMethods">📖 METODOLOJİ</button>
         <button id="tab-field-btn" class="nav-tab" onclick="switchTab('field')" data-i18n="tabField">📸 SAHA</button>
         <button id="tab-citizen-btn" class="nav-tab" onclick="switchTab('citizen')" data-i18n="tabCitizen">🌍 CITIZEN</button>
     </div>
@@ -234,6 +240,30 @@
             </div>
         </div>
     </div>
+    <!-- BİLİMSEL METODOLOJİ VE WHITE_PAPER SEKMESİ -->
+    <div id="methods-section" class="methods-section">
+        <div class="card">
+            <label data-i18n="methodsMainTitle">📖 Bilimsel Metodoloji & Whitepaper (Scientific Rigor)<br><span style="font-size:9px; font-weight:normal;">Campbell Biology, Guyton & EU Green Deal Standartları</span></label>
+            
+            <div class="mebi-badge" data-i18n="methodsBadge">
+                🇪🇺 <strong>Brüksel Gözüyle Hakemli Standart:</strong> Avrupa Yeşil Mutabakatı jüri denetimlerinde, ham veriden stres skoruna geçiş algoritmalarının şeffaflığı ve akademik dayanağı esastır[cite: 4].
+            </div>
+
+            <div class="methods-content">
+                <h3 data-i18n="mDesignTitle">1. Araştırma Tasarımı (Research Design)</h3>
+                <p data-i18n="mDesignDesc">Bu çalışma; bitki fizyolojisi ve toprak pH dinamiklerinin klorofil a sentezi üzerindeki etkilerini inceleyen, hem nicel laboratuvar ekstraksiyonlarını hem de yapay zekâ tabanlı sahada gözlemsel ve deneysel verileri harmanlayan hibrit bir model üzerine kurulmuştur[cite: 4].</p>
+
+                <h3 data-i18n="mSampleTitle">2. Materyaller ve Örneklem (Materials and Sample)</h3>
+                <p data-i18n="mSampleDesc">Araştırmada rasyonel tarım pilot bölgelerinden temin edilen bitki yaprak örnekleri (*Camellia sinensis*, *Citrus sinensis*, *Olea europaea* vb.) ile spektrofotometrik analizler için standart aseton ekstraktı çözeltileri kullanılmıştır[cite: 4].</p>
+
+                <h3 data-i18n="mCollectionTitle">3. Veri Toplama Süreci (Data Collection)</h3>
+                <p data-i18n="mCollectionDesc">Spektrofotometre dalga boyu seçimi klorofil a için optimize edilerek 663 nm absorpsiyon değerleri kaydedilir[cite: 4]. pH ölçümleri hassas elektrotlu pH metrelerle yapılır. "Stres Skoru" (Normal / Stresli pH Shift) dönüşümleri hakemli akademik eşik değerlerine dayandırılmıştır[cite: 4].</p>
+
+                <h3 data-i18n="mAnalysisTitle">4. Veri Analizi (Data Analysis)</h3>
+                <p data-i18n="mAnalysisDesc">Elde edilen optik yoğunluk ve pH sapma verileri, Campbell Biology ve Guyton fizyoloji prensiplerine uygun olarak istatistiksel regresyon modelleriyle değerlendirilmekte ve karbon ayak izi optimizasyonuna dönüştürülmektedir[cite: 4].</p>
+            </div>
+        </div>
+    </div>
     <!-- SAHA ÇALIŞMALARI SEKMESİ -->
     <div id="field-section" class="field-section">
         <div class="card">
@@ -356,6 +386,7 @@
             authorSub: "Biyoloji Uzmanı & Proje Lideri",
             tabAnalysis: "🌱 ANALİZ",
             tabBiolab: "🧬 MEBİ LAB",
+            tabMethods: "📖 METODOLOJİ",
             tabField: "📸 SAHA",
             tabCitizen: "🌍 CITIZEN",
             lblRegion: "Bölge ve Ürün / Region & Crop",
@@ -386,6 +417,16 @@
             lblAbsorbance: "Ölçülen / Hesaplanan Klorofil a Konsantrasyonu (mg/L)",
             btnBioCalc: "KLOROFİL a VERİSİNİ KAYDET & ANALİZE AKTAR",
             bioSyncSuccess: "✨ MEBİ Lab Verisi Canlı Veri Tablosuna ve Analiz Modülüne Aktarıldı!",
+            methodsMainTitle: "📖 Bilimsel Metodoloji & Whitepaper (Scientific Rigor)<br><span style='font-size:9px; font-weight:normal;'>Campbell Biology, Guyton & EU Green Deal Standartları</span>",
+            methodsBadge: "🇪🇺 <strong>Brüksel Gözüyle Hakemli Standart:</strong> Avrupa Yeşil Mutabakatı jüri denetimlerinde, ham veriden stres skoruna geçiş algoritmalarının şeffaflığı ve akademik dayanağı esastır.",
+            mDesignTitle: "1. Araştırma Tasarımı (Research Design)",
+            mDesignDesc: "Bu çalışma; bitki fizyolojisi ve toprak pH dinamiklerinin klorofil a sentezi üzerindeki etkilerini inceleyen, hem nicel laboratuvar ekstraksiyonlarını hem de yapay zekâ tabanlı sahada gözlemsel ve deneysel verileri harmanlayan hibrit bir model üzerine kurulmuştur.",
+            mSampleTitle: "2. Materyaller ve Örneklem (Materials and Sample)",
+            mSampleDesc: "Araştırmada rasyonel tarım pilot bölgelerinden temin edilen bitki yaprak örnekleri (*Camellia sinensis*, *Citrus sinensis*, *Olea europaea* vb.) ile spektrofotometrik analizler için standart aseton ekstraktı çözeltileri kullanılmıştır.",
+            mCollectionTitle: "3. Veri Toplama Süreci (Data Collection)",
+            mCollectionDesc: "Spektrofotometre dalga boyu seçimi klorofil a için optimize edilerek 663 nm absorpsiyon değerleri kaydedilir. pH ölçümleri hassas elektrotlu pH metrelerle yapılır. 'Stres Skoru' (Normal / Stresli pH Shift) dönüşümleri hakemli akademik eşik değerlerine dayandırılmıştır.",
+            mAnalysisTitle: "4. Veri Analizi (Data Analysis)",
+            mAnalysisDesc: "Elde edilen optik yoğunluk ve pH sapma verileri, Campbell Biology ve Guyton fizyoloji prensiplerine uygun olarak istatistiksel regresyon modelleriyle değerlendirilmekte ve karbon ayak izi optimizasyonuna dönüştürülmektedir.",
             fieldTitle: "📸 Saha ve Öğrenci Araştırma Fotoğrafları<br><span style='font-size:9px; font-weight:normal;'>Field & Student Research Photos Gallery</span>",
             uploadMain: "Fotoğraf Seç veya Yükle / Choose Photo",
             uploadSub: "Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları",
@@ -408,6 +449,7 @@
             authorSub: "Biology Expert & Project Lead",
             tabAnalysis: "🌱 ANALYSIS",
             tabBiolab: "🧬 MEB LAB",
+            tabMethods: "📖 METHODS",
             tabField: "📸 FIELD",
             tabCitizen: "🌍 CITIZEN",
             lblRegion: "Region & Crop",
@@ -438,6 +480,16 @@
             lblAbsorbance: "Measured / Calculated Chlorophyll a Concentration (mg/L)",
             btnBioCalc: "SAVE CHLOROPHYLL a DATA & SEND TO ANALYSIS",
             bioSyncSuccess: "✨ MEB Lab Data Successfully Sent to Live Data Sheet & Analysis Module!",
+            methodsMainTitle: "📖 Scientific Methodology & Whitepaper (Scientific Rigor)<br><span style='font-size:9px; font-weight:normal;'>Campbell Biology, Guyton & EU Green Deal Standards</span>",
+            methodsBadge: "🇪🇺 <strong>Brussels Peer-Review Standard:</strong> In EU Green Deal jury audits, transparency and academic basis of algorithms moving from raw data to stress score are essential.",
+            mDesignTitle: "1. Research Design",
+            mDesignDesc: "This study is built on a hybrid model combining quantitative laboratory extractions and AI-based observational/experimental field data examining plant physiology and soil pH dynamics on chlorophyll a synthesis.",
+            mSampleTitle: "2. Materials and Sample",
+            mSampleDesc: "Plant leaf samples (*Camellia sinensis*, *Citrus sinensis*, *Olea europaea*, etc.) sourced from rational agriculture pilot regions and standard acetone extract solutions for spectrophotometric analysis were used.",
+            mCollectionTitle: "3. Data Collection",
+            mCollectionDesc: "Spectrophotometer wavelength selection was optimized for chlorophyll a, recording 663 nm absorption values. pH measurements were performed with precision electrode pH meters. 'Stress Score' (Normal / Stresli pH Shift) transformations were grounded on peer-reviewed academic threshold values.",
+            mAnalysisTitle: "4. Data Analysis",
+            mAnalysisDesc: "Obtained optical density and pH deviation data are evaluated using statistical regression models in accordance with Campbell Biology and Guyton physiology principles and converted into carbon footprint optimization.",
             fieldTitle: "📸 Field & Student Research Photos<br><span style='font-size:9px; font-weight:normal;'>Field & Student Research Photos Gallery</span>",
             uploadMain: "Choose or Upload Photo",
             uploadSub: "Group photos with students, laboratory and field studies",
@@ -588,21 +640,25 @@
     function switchTab(tabName) {
         const analysisSec = document.getElementById('analysis-section');
         const biolabSec = document.getElementById('biolab-section');
+        const methodsSec = document.getElementById('methods-section');
         const fieldSec = document.getElementById('field-section');
         const citizenSec = document.getElementById('citizen-section');
         
         const tabAnalysisBtn = document.getElementById('tab-analysis-btn');
         const tabBiolabBtn = document.getElementById('tab-biolab-btn');
+        const tabMethodsBtn = document.getElementById('tab-methods-btn');
         const tabFieldBtn = document.getElementById('tab-field-btn');
         const tabCitizenBtn = document.getElementById('tab-citizen-btn');
         
         analysisSec.style.display = 'none';
         biolabSec.style.display = 'none';
+        methodsSec.style.display = 'none';
         fieldSec.style.display = 'none';
         citizenSec.style.display = 'none';
         
         tabAnalysisBtn.classList.remove('active');
         tabBiolabBtn.classList.remove('active');
+        tabMethodsBtn.classList.remove('active');
         tabFieldBtn.classList.remove('active');
         tabCitizenBtn.classList.remove('active');
         
@@ -612,6 +668,12 @@
         } else if(tabName === 'biolab') {
             biolabSec.style.display = 'block';
             tabBiolabBtn.classList.add('active');
+            if(track) { track.stop(); }
+            document.getElementById('cam-box').style.display = 'none';
+            document.getElementById('form-area').style.display = 'block';
+        } else if(tabName === 'methods') {
+            methodsSec.style.display = 'block';
+            tabMethodsBtn.classList.add('active');
             if(track) { track.stop(); }
             document.getElementById('cam-box').style.display = 'none';
             document.getElementById('form-area').style.display = 'block';
