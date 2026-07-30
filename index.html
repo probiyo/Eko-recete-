@@ -64,7 +64,6 @@
         /* MEBİ & Biyoloji Laboratuvarı Sekmesi Stilleri */
         .biolab-section { display: none; }
         .mebi-badge { background: #e0f2fe; border-left: 5px solid #0284c7; padding: 10px; font-size: 11px; margin-bottom: 12px; color: #0369a1; font-weight: bold; border-radius: 0 10px 10px 0; line-height: 1.4; }
-
         /* Metodoloji / Whitepaper Sekmesi Stilleri */
         .methods-section { display: none; }
         .methods-content { font-size: 11px; line-height: 1.5; color: #333; }
@@ -248,17 +247,13 @@
             <div class="mebi-badge" data-i18n="methodsBadge">
                 🇪🇺 <strong>Brüksel Gözüyle Hakemli Standart:</strong> Avrupa Yeşil Mutabakatı jüri denetimlerinde, ham veriden stres skoruna geçiş algoritmalarının şeffaflığı ve akademik dayanağı esastır[cite: 4].
             </div>
-
             <div class="methods-content">
                 <h3 data-i18n="mDesignTitle">1. Araştırma Tasarımı (Research Design)</h3>
                 <p data-i18n="mDesignDesc">Bu çalışma; bitki fizyolojisi ve toprak pH dinamiklerinin klorofil a sentezi üzerindeki etkilerini inceleyen, hem nicel laboratuvar ekstraksiyonlarını hem de yapay zekâ tabanlı sahada gözlemsel ve deneysel verileri harmanlayan hibrit bir model üzerine kurulmuştur[cite: 4].</p>
-
                 <h3 data-i18n="mSampleTitle">2. Materyaller ve Örneklem (Materials and Sample)</h3>
                 <p data-i18n="mSampleDesc">Araştırmada rasyonel tarım pilot bölgelerinden temin edilen bitki yaprak örnekleri (*Camellia sinensis*, *Citrus sinensis*, *Olea europaea* vb.) ile spektrofotometrik analizler için standart aseton ekstraktı çözeltileri kullanılmıştır[cite: 4].</p>
-
                 <h3 data-i18n="mCollectionTitle">3. Veri Toplama Süreci (Data Collection)</h3>
                 <p data-i18n="mCollectionDesc">Spektrofotometre dalga boyu seçimi klorofil a için optimize edilerek 663 nm absorpsiyon değerleri kaydedilir[cite: 4]. pH ölçümleri hassas elektrotlu pH metrelerle yapılır. "Stres Skoru" (Normal / Stresli pH Shift) dönüşümleri hakemli akademik eşik değerlerine dayandırılmıştır[cite: 4].</p>
-
                 <h3 data-i18n="mAnalysisTitle">4. Veri Analizi (Data Analysis)</h3>
                 <p data-i18n="mAnalysisDesc">Elde edilen optik yoğunluk ve pH sapma verileri, Campbell Biology ve Guyton fizyoloji prensiplerine uygun olarak istatistiksel regresyon modelleriyle değerlendirilmekte ve karbon ayak izi optimizasyonuna dönüştürülmektedir[cite: 4].</p>
             </div>
@@ -947,11 +942,19 @@
             `🇪🇺 AB Yeşil Mutabakatı: Öngörülen bu ekolojik ve hassas reçete uygulandığında, kimyasal sızıntı önlenir ve karbon ayak izi düşürülerek AB standartlarına uyulmuş olur.` : 
             `🇪🇺 EU Green Deal: Applying this ecological prescription prevents chemical leakage, reduces carbon footprint, and ensures compliance with EU standards.`;
         
-        certificateText = `📜 EU GREEN DEAL SUSTAINABILITY CERTIFICATE #EU-2026-RIZE<br>
-        • Verified Crop: ${cropDisplayName}<br>
-        • Lab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L<br>
-        • Carbon Footprint Reduction: %24.5 (Estimated)<br>
-        • Compliance Status: APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)`;
+        certificateText = currentLang === 'TR' ? 
+            `📜 EU GREEN DEAL SUSTAINABILITY CERTIFICATE #EU-2026-RIZE<br>
+            • Verified Crop: ${cropDisplayName}<br>
+            • Lab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L<br>
+            • Carbon Footprint Reduction: %24.5 (Estimated)<br>
+            • Compliance Status: APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)<br><br>
+            <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ YASAL / AKADEMİK ÇEKİNCE (DISCLAIMER): Bu belge ve karbon ayak izi azaltım verileri yalnızca "Rize Fatih Anadolu Lisesi AB Proje Simülasyonu" kapsamında üretilmiş öngörüsel verilere dayanmaktadır. Resmi ticari veya yasal bir geçerliliği yoktur.</span>` : 
+            `📜 EU GREEN DEAL SUSTAINABILITY CERTIFICATE #EU-2026-RIZE<br>
+            • Verified Crop: ${cropDisplayName}<br>
+            • Lab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L<br>
+            • Carbon Footprint Reduction: %24.5 (Estimated)<br>
+            • Compliance Status: APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)<br><br>
+            <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ LEGAL / ACADEMIC DISCLAIMER: This document and carbon footprint reduction data are based solely on predictive data generated within the scope of "Rize Fatih Anadolu Lisesi EU Project Simulation". It has no official commercial or legal validity.</span>`;
         
         prescriptionText = currentLang === 'TR' ? 
             `💊 Entegre Ekolojik Reçete:\n1. Toprak pH dengelemesi için uygun organik düzenleyici uygulanmalı.\n2. 663 nm bandındaki pigment optimizasyonu için Şelatlı Demir (Fe-EDDHA) ve mikro element takviyesi sağlanmalı.` : 
