@@ -262,7 +262,6 @@
         updatePHRangeInfo();
         fetchCurrentWeather();
     }
-
     // Open-Meteo API ile Konum Bazlı Otomatik Hava Durumu
     function fetchCurrentWeather() {
         const statusEl = document.getElementById('loc-status');
@@ -307,7 +306,6 @@
             statusEl.innerText = "(Konum İzni Reddedildi)";
         }, { timeout: 10000 });
     }
-
     function updatePHRangeInfo() {
         const regionKey = document.getElementById('region').value;
         const range = cropRanges[regionKey] || { min: 6.0, max: 7.0 };
@@ -508,14 +506,14 @@
         
         if(phVal >= range.min && phVal <= range.max) {
             statusText = `[OK] ${range.name} için ideal pH aralığında (${range.min}-${range.max}).<br>[OK] Optimal pH range for ${range.name} (${range.min}-${range.max}).`;
-            calibrationText = `🔬 Kalibrasyon: Sensör referans aralığında, klorofil sentezi kararlı.<br>🔬 Calibration: Sensor within reference range, chlorophyll synthesis stable.`;
+            calibrationText = `🔬 Besin Durumu: Mikro element alımı dengede, klorofil sentezi kararlı.<br>🔬 Nutrient Status: Balanced micronutrient uptake, chlorophyll synthesis stable.`;
         } else {
             statusText = `[UYARI] pH (${phVal}) hedef aralıkta (${range.min}-${range.max}) değil! Stres gözlendi.<br>[WARNING] pH (${phVal}) out of target range (${range.min}-${range.max})! Stress observed.`;
-            calibrationText = `🔬 Kalibrasyon: pH sapması nedeniyle mikro element alımı (Fe/Mg) bloke olmuş olabilir.<br>🔬 Calibration: Nutrient uptake (Fe/Mg) might be blocked due to pH shift.`;
+            calibrationText = `⚠️ Eksik Elementler & Tavsiye: pH sapması nedeniyle Demir (Fe), Manganez (Mn) ve Çinko (Zn) kilitlenmiştir. Amonyum Sülfat ile pH düşürülmeli ve Şelatlı Demir (Fe-EDDHA) takviyesi yapılmalıdır.<br>⚠️ Deficient Elements & Recommendation: Fe, Mn, Zn blocked due to pH shift. Lower pH with Ammonium Sulfate and apply Chelated Iron (Fe-EDDHA).`;
         }
         
-        greenDealText = `🇪🇺 AB Yeşil Mutabakatı: Düşük karbon ayak izi ve organik gübreleme protokolü aktif.<br>🇪🇺 EU Green Deal: Low carbon footprint & organic fertilization protocol active.`;
-        prescriptionText = `💊 Reçete: Öngörülen ekolojik iyileştirme ve dengeli besleme planı uygulanmalıdır.<br>💊 Prescription: Recommended ecological improvement and balanced feeding plan should be applied.`;
+        greenDealText = `🇪🇺 AB Yeşil Mutabakatı: Öngörülen bu ekolojik ve dengeli reçete uygulandığında, kimyasal sızıntı önlenir ve karbon ayak izi düşürülerek AB standartlarına uyulmuş olur.<br>🇪🇺 EU Green Deal: Applying this ecological prescription prevents chemical leakage, reduces carbon footprint, and ensures compliance with EU standards.`;
+        prescriptionText = `💊 Reçete: Ekolojik iyileştirme ve hassas gübreleme protokolü devreye alındı.<br>💊 Prescription: Ecological improvement and precision fertilization protocol activated.`;
         
         document.getElementById('hybrid-output').innerHTML = statusText;
         document.getElementById('calibration-output').innerHTML = calibrationText;
