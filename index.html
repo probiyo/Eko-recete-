@@ -193,7 +193,7 @@
             </div>
             
             <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/edit?usp=sharing" target="_blank" class="btn-excel" data-i18n="btnLiveSheet">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
-            <div class="btn-save" onclick="window.print()" data-i18n="btnPrintReport">📥 RAPORU YAZDIR / PDF KAYDET</div>
+            <div class="btn-save" onclick="window.print()" data-i18n="btnPrintReport">📥 RAPORu YAZDIR / PDF KAYDET</div>
             <button id="reset-btn" class="btn-reset" onclick="resetSystem()" style="display:block;" data-i18n="btnNewAnalyze">YENİ ANALİZ / NEW ANALYZE</button>
         </div>
     </div>
@@ -939,8 +939,8 @@
         }
         
         greenDealText = currentLang === 'TR' ? 
-            `🇪🇺 AB Yeşil Mutabakatı: Öngörülen bu ekolojik ve hassas reçete uygulandığında, kimyasal sızıntı önlenir ve karbon ayak izi düşürülerek AB standartlarına uyulmuş olur.` : 
-            `🇪🇺 EU Green Deal: Applying this ecological prescription prevents chemical leakage, reduces carbon footprint, and ensures compliance with EU standards.`;
+            `🇪🇺 AB Yeşil Mutabakatı: Öngörülen bu ekolojik ve hassas reçete uygulandığında, kimyasal sızıntı önlenir ve karbon ayak izi düşürülerek AB standartlarına uyulmuş olur. <br><br><strong>Bu belge Proje Kapsamlı Simülasyon Verileridir.</strong>` : 
+            `🇪🇺 EU Green Deal: Applying this ecological prescription prevents chemical leakage, reduces carbon footprint, and ensures compliance with EU standards. <br><br><strong>Bu belge Proje Kapsamlı Simülasyon Verileridir.</strong>`;
         
         certificateText = currentLang === 'TR' ? 
             `📜 EU GREEN DEAL SUSTAINABILITY CERTIFICATE #EU-2026-RIZE<br>
@@ -948,12 +948,14 @@
             • Lab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L<br>
             • Carbon Footprint Reduction: %24.5 (Estimated)<br>
             • Compliance Status: APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)<br><br>
+            <strong>Bu belge Proje Kapsamlı Simülasyon Verileridir.</strong><br><br>
             <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ YASAL / AKADEMİK ÇEKİNCE (DISCLAIMER): Bu belge ve karbon ayak izi azaltım verileri yalnızca "Rize Fatih Anadolu Lisesi AB Proje Simülasyonu" kapsamında üretilmiş öngörüsel verilere dayanmaktadır. Resmi ticari veya yasal bir geçerliliği yoktur.</span>` : 
             `📜 EU GREEN DEAL SUSTAINABILITY CERTIFICATE #EU-2026-RIZE<br>
             • Verified Crop: ${cropDisplayName}<br>
             • Lab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L<br>
             • Carbon Footprint Reduction: %24.5 (Estimated)<br>
             • Compliance Status: APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)<br><br>
+            <strong>Bu belge Proje Kapsamlı Simülasyon Verileridir.</strong><br><br>
             <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ LEGAL / ACADEMIC DISCLAIMER: This document and carbon footprint reduction data are based solely on predictive data generated within the scope of "Rize Fatih Anadolu Lisesi EU Project Simulation". It has no official commercial or legal validity.</span>`;
         
         prescriptionText = currentLang === 'TR' ? 
