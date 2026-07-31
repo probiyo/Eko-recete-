@@ -925,6 +925,7 @@
         const range = cropRanges[regionKey] || { min: 6.0, max: 7.0 };
         const cropDisplayName = range[currentLang];
         const phVal = parseFloat(ph);
+        const chlVal = parseFloat(labChlorophyll) || 6.5;
         
         let statusText = "";
         let calibrationText = "";
@@ -934,6 +935,7 @@
         
         let isPhOptimal = (phVal >= range.min && phVal <= range.max);
         let labTextInfo = labChlorophyll ? ` [Lab Chlorophyll a: ${labChlorophyll} mg/L]` : "";
+        
         if(isPhOptimal) {
             statusText = currentLang === 'TR' ? 
                 `[OK] ${cropDisplayName} için ideal pH aralığında (${range.min}-${range.max}).${labTextInfo}` : 
@@ -968,9 +970,28 @@
             • Uyumluluk Durumu / Compliance Status: BRÜSSEL TERMİNALİ İÇİN ONAYLANDI / APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)<br><br>
             <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ UYARI / CAUTION: Bu belge ve karbon ayak izi azaltım verileri yalnızca "Rize Fatih Anadolu Lisesi AB Proje Simülasyonu" kapsamında üretilen öngörüsel verilere dayanmaktadır. Resmî ticari veya hukuki geçerliliği yoktur.<br>This document and carbon footprint reduction data are based solely on predictive data generated within the scope of "Rize Fatih Anadolu Lisesi EU Project Simulation". It has no official commercial or legal validity.</span>`;
         
-        prescriptionText = currentLang === 'TR' ? 
-            `💊 Entegre Ekolojik Reçete:\n1. Toprak pH dengelemesi için uygun organik düzenleyici (Kompost, Humus, Leonardit veya Çiftlik Gübresi) uygulanmalı.\n2. 663 nm bandındaki pigment optimizasyonu için Şelatlı Demir (Fe-EDDHA) ile birlikte Çinko (Zn), Manganez (Mn), Bor (B), Bakır (Cu) ve Molibden (Mo) mikro element takviyesi sağlanmalı.` : 
-            `💊 Integrated Ecological Prescription:\n1. Apply organic modifier (Compost, Humus, Leonardite or Farmyard Manure) for soil pH balance.\n2. Provide Chelated Iron (Fe-EDDHA) along with Zinc (Zn), Manganese (Mn), Boron (B), Copper (Cu), and Molybdenum (Mo) micronutrients for 663 nm pigment optimization.`;
+        // BİLİMSEL VE DİNAMİK REÇETE OLUŞTURMA MANTIĞI (Campbell Biology & Guyton Fizyolojisi Esaslı)
+        if (phVal < range.min) {
+            // Asidik Stres / Düşük pH Durumu (< Alt Sınır)
+            prescriptionText = currentLang === 'TR' ? 
+                `💊 Dinamik Ekolojik Reçete (Aşırı Asidik Toprak Düzeltmesi):\n1. Toprak pH seviyesi (${phVal}) ideal eşiğin altındadır; kök bölgesindeki hidrojen iyonu toksisitesini ve alüminyum/demir blokajını gidermek için tarımsal kireç (CaCO3 veya CaMg(CO3)2) uygulaması yapılmalıdır.\n2. 663 nm klorofil a sentezini desteklemek ve klorozu önlemek için folyer yoldan şelatlı demir (Fe-EDDHA) ile magnezyum sülfat (MgSO4) takviyesi sağlanmalıdır.` : 
+                `💊 Dynamic Ecological Prescription (Acidic Soil Correction):\n1. Soil pH (${phVal}) is below threshold; apply agricultural lime (CaCO3 or CaMg(CO3)2) to neutralize proton toxicity and nutrient lockout.\n2. Apply foliar chelated iron (Fe-EDDHA) and magnesium sulfate (MgSO4) to support 663 nm chlorophyll a synthesis and prevent chlorosis.`;
+        } else if (phVal > range.max) {
+            // Alkali Stres / Yüksek pH Durumu (> Üst Sınır)
+            prescriptionText = currentLang === 'TR' ? 
+                `💊 Dinamik Ekolojik Reçete (Alkali / Kısıtlı Toprak Düzeltmesi):\n1. Toprak pH seviyesi (${phVal}) ideal eşiğin üzerindedir; mikro element (Fe, Mn, Zn, Cu) alımını kısıtlayan karbonat birikimini kırmak için elementel kükürt veya organik asit içerikli düzenleyiciler (Hümik/Fulvik Asit) uygulanmalıdır.\n2. Fosfor ve demir fiksasyonunu önlemek adına damla sulama ile asidik karakterli gübreleme protokolüne geçilmeli, 663 nm pigment aktivasyonu izlenmelidir.` : 
+                `💊 Dynamic Ecological Prescription (Alkaline Soil Correction):\n1. Soil pH (${phVal}) is above threshold; apply elemental sulfur or organic acid conditioners (Humic/Fulvic acids) to overcome micronutrient fixation.\n2. Switch to acidic fertigation protocol to prevent phosphorus/iron precipitation and optimize 663 nm pigment activity.`;
+        } else if (chlVal < 4.0) {
+            // pH Normal ama Klorofil / Pigment Sentezi Zayıf / Kloroz Durumu
+            prescriptionText = currentLang === 'TR' ? 
+                `💊 Dinamik Ekolojik Reçete (Düşük Klorofil / Kloroz Müdahalesi):\n1. Toprak pH'ı ideal aralıkta (${phVal}) olmasına rağmen klorofil a konsantrasyonu (${chlVal} mg/L) düşüktür; azot (N) ve magnezyum (Mg) eksikliğine karşı azotlu gübre ile Magnezyum Şelat kombinasyonu verilmelidir.\n2. Kloroplast fotosentez kapasitesini artırmak için amino asit bazlı biyostimülanlar ve demir (Fe) mikro takviyesi uygulanmalıdır.` : 
+                `💊 Dynamic Ecological Prescription (Low Chlorophyll / Chlorosis Intervention):\n1. Though soil pH is optimal (${phVal}), chlorophyll a concentration (${chlVal} mg/L) is low; apply nitrogen and magnesium chelate combination.\n2. Administer amino acid-based biostimulants and iron (Fe) micronutrients to boost chloroplast photosynthetic capacity.`;
+        } else {
+            // İdeal Durum (Optimal pH ve Stabil Klorofil)
+            prescriptionText = currentLang === 'TR' ? 
+                `💊 Dinamik Ekolojik Reçete (Optimum Koruma & Sürdürülebilirlik):\n1. Toprak pH (${phVal}) ve klorofil a konsantrasyonu (${chlVal} mg/L) optimum seviyededir; mevcut dengenin korunması için kompost destekli organik idame gübrelemesine devam edilmelidir.\n2. 663 nm fotosentetik verimliliği sabitlemek amacıyla dengeli NPK ve eser element (Zn, B, Mo) idame takviyesi yapılabilir.` : 
+                `💊 Dynamic Ecological Prescription (Optimal Protection & Sustainability):\n1. Soil pH (${phVal}) and chlorophyll a concentration (${chlVal} mg/L) are at optimum levels; maintain current balance with compost-supported organic maintenance.\n2. Apply balanced NPK and trace element (Zn, B, Mo) maintenance to stabilize 663 nm photosynthetic efficiency.`;
+        }
         
         document.getElementById('hybrid-output').innerHTML = statusText;
         document.getElementById('calibration-output').innerHTML = calibrationText;
