@@ -167,7 +167,7 @@
             ⚠️ NO PLANT DETECTED: Insufficient leaf/chlorophyll (green tissue) detected. Please capture a leaf image!
         </div>
         <div id="res-area">
-            <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;">BRÜSSEL PROJE RAPORU #EU-AGRO<br><span style="font-size:9px; font-weight:normal;">BRUSSELS PROJECT REPORT #EU-AGRO</span></div>
+            <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;"><span data-i18n="reportHeaderTitle">BRÜSSEL PROJE RAPORU #EU-AGRO</span><br><span style="font-size:9px; font-weight:normal;" data-i18n="reportHeaderSub">BRUSSELS PROJECT REPORT #EU-AGRO</span></div>
             
             <div id="sync-status" class="sync-status" data-i18n="syncSuccess">✨ Saha + Lab Entegre Analiz Tamamlandı & Excel'e Aktarıldı!<br><span style="font-size:9px; font-weight:normal;">Integrated Field + Lab Analysis Completed & Synced to Excel!</span></div>
             
@@ -396,6 +396,8 @@
             btnTakePhoto: "FOTOĞRAF ÇEK / TAKE PHOTO",
             errorPlant: "⚠️ BİTKİ ALGILANAMADI: Yeterli yaprak/klorofil (yeşil doku) tespit edilemedi. Lütfen yaprak görüntüsü çekiniz!",
             syncSuccess: "✨ Saha + Lab Entegre Analiz Tamamlandı & Excel'e Aktarıldı!",
+            reportHeaderTitle: "BRÜSSEL PROJE RAPORU #EU-AGRO",
+            reportHeaderSub: "BRUSSELS PROJECT REPORT #EU-AGRO",
             chartTitle: "📈 Karşılaştırmalı 5 Günlük Stres Trendi (Müdahaleli vs Müdahalesiz)",
             expertNotice: "⚠️ UZMAN GÖRÜŞÜ: Çözülemeyen sorunlarda acil uzman desteği alınmalıdır.",
             btnLiveSheet: "📊 CANLI VERİ TABLOSU / LIVE DATA SHEET",
@@ -459,6 +461,8 @@
             btnTakePhoto: "TAKE PHOTO",
             errorPlant: "⚠️ NO PLANT DETECTED: Insufficient leaf/chlorophyll tissue detected. Please capture a leaf image!",
             syncSuccess: "✨ Integrated Field + Lab Analysis Completed & Synced to Excel!",
+            reportHeaderTitle: "BRUSSELS PROJECT REPORT #EU-AGRO",
+            reportHeaderSub: "BRUSSELS PROJECT REPORT #EU-AGRO",
             chartTitle: "📈 Comparative 5-Day Stress Trend (Intervention vs No Intervention)",
             expertNotice: "⚠️ EXPERT ADVICE: Seek immediate expert support for unresolved issues.",
             btnLiveSheet: "📊 LIVE DATA SHEET",
@@ -952,17 +956,17 @@
         
         certificateText = currentLang === 'TR' ? 
             `📜 EU GREEN DEAL SUSTAINABILITY CERTIFICATE #EU-2026-RIZE<br>
-            • Verified Crop: ${cropDisplayName}<br>
-            • Lab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L<br>
-            • Carbon Footprint Reduction: %24.5 (Estimated)<br>
-            • Compliance Status: APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)<br><br>
-            <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ WARNING / CAUTION: This document and carbon footprint reduction data are based solely on predictive data generated within the scope of "Rize Fatih Anadolu Lisesi EU Project Simulation". It has no official commercial or legal validity.</span>` : 
+            • Doğrulanan Ürün / Verified Crop: ${cropDisplayName}<br>
+            • Lab Klorofil a (663 nm) / Lab Chlorophyll a: ${labChlorophyll || 'N/A'} mg/L<br>
+            • Karbon Ayak İzi Azaltımı / Carbon Footprint Reduction: %24.5 (Tahmini / Estimated)<br>
+            • Uyumluluk Durumu / Compliance Status: BRÜSSEL TERMİNALİ İÇİN ONAYLANDI / APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)<br><br>
+            <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ UYARI / CAUTION: Bu belge ve karbon ayak izi azaltım verileri yalnızca "Rize Fatih Anadolu Lisesi AB Proje Simülasyonu" kapsamında üretilen öngörüsel verilere dayanmaktadır. Resmî ticari veya hukuki geçerliliği yoktur.<br>This document and carbon footprint reduction data are based solely on predictive data generated within the scope of "Rize Fatih Anadolu Lisesi EU Project Simulation". It has no official commercial or legal validity.</span>` : 
             `📜 EU GREEN DEAL SUSTAINABILITY CERTIFICATE #EU-2026-RIZE<br>
-            • Verified Crop: ${cropDisplayName}<br>
-            • Lab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L<br>
-            • Carbon Footprint Reduction: %24.5 (Estimated)<br>
-            • Compliance Status: APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)<br><br>
-            <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ WARNING / CAUTION: This document and carbon footprint reduction data are based solely on predictive data generated within the scope of "Rize Fatih Anadolu Lisesi EU Project Simulation". It has no official commercial or legal validity.</span>`;
+            • Doğrulanan Ürün / Verified Crop: ${cropDisplayName}<br>
+            • Lab Klorofil a (663 nm) / Lab Chlorophyll a: ${labChlorophyll || 'N/A'} mg/L<br>
+            • Karbon Ayak İzi Azaltımı / Carbon Footprint Reduction: %24.5 (Tahmini / Estimated)<br>
+            • Uyumluluk Durumu / Compliance Status: BRÜSSEL TERMİNALİ İÇİN ONAYLANDI / APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)<br><br>
+            <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ UYARI / CAUTION: Bu belge ve karbon ayak izi azaltım verileri yalnızca "Rize Fatih Anadolu Lisesi AB Proje Simülasyonu" kapsamında üretilen öngörüsel verilere dayanmaktadır. Resmî ticari veya hukuki geçerliliği yoktur.<br>This document and carbon footprint reduction data are based solely on predictive data generated within the scope of "Rize Fatih Anadolu Lisesi EU Project Simulation". It has no official commercial or legal validity.</span>`;
         
         prescriptionText = currentLang === 'TR' ? 
             `💊 Entegre Ekolojik Reçete:\n1. Toprak pH dengelemesi için uygun organik düzenleyici uygulanmalı.\n2. 663 nm bandındaki pigment optimizasyonu için Şelatlı Demir (Fe-EDDHA) ve mikro element takviyesi sağlanmalı.` : 
