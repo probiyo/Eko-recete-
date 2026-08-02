@@ -97,7 +97,7 @@
 <body onload="initApp()">
 <div class="container">
     <div id="lang-toggle" onclick="toggleLang()">EN / TR</div>
-    <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;">Rize Fatih Anatolian High School</span></div>
+    <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;" data-i18n="schoolSub">Rize Fatih Anatolian High School</span></div>
     <h1>GLOBAL AGRO DOCTOR</h1>
     <div class="author">Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biology Expert & Project Lead</small></div>
     
@@ -125,7 +125,7 @@
             <div class="card">
                <label id="ph-label" data-i18n="lblSoilPH">TOPRAK pH DEĞERİ / SOIL pH (3.0 - 9.0)</label>
                 <input type="number" id="ph" step="0.1" min="3.0" max="9.0" placeholder="Ex: 6.5" value="4.8" oninput="validatePH(this)">
-                <div id="ph-warn" class="ph-warning">⚠️ Girilen pH değeri seçilen bitki için ideal bilimsel aralığın dışında! <br>⚠️ Entered pH value is out of the ideal scientific range for this crop!</div>
+                <div id="ph-warn" class="ph-warning" data-i18n="phWarnText">⚠️ Girilen pH değeri seçilen bitki için ideal bilimsel aralığın dışında! <br>⚠️ Entered pH value is out of the ideal scientific range for this crop!</div>
             </div>
             <!-- Lab Verisini Analiz Ekranına Entegre Etme Alanı -->
             <div class="card" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
@@ -134,14 +134,14 @@
                <input type="number" id="integrated-chlorophyll" step="0.1" placeholder="Örn: 6.5 mg/L" value="6.5">
             </div>
             <div class="card">
-               <label><span data-i18n="lblWeather">Hava Durumu / Weather Condition</span> <span id="loc-status" style="font-size:9px; color:#2e7d32; font-weight:normal;">(Otomatik Konum Bekleniyor...)</span></label>
+               <label><span data-i18n="lblWeather">Hava Durumu / Weather Condition</span> <span id="loc-status" style="font-size:9px; color:#2e7d32; font-weight:normal;" data-i18n="locStatusWaiting">(Otomatik Konum Bekleniyor...)</span></label>
                 <select id="weather">
-                   <option value="Güneşli / Sunny">Güneşli / Sunny</option>
-                   <option value="Bulutlu / Cloudy">Bulutlu / Cloudy</option>
-                   <option value="Yağmurlu / Rainy">Yağmurlu / Rainy</option>
-                   <option value="Sisli / Foggy">Sisli / Foggy</option>
-                   <option value="Karlı / Snowy">Karlı / Snowy</option>
-                   <option value="Don Tehlikesi / Frost Risk">Don Tehlikesi / Frost Risk</option>
+                   <option value="Güneşli / Sunny" data-i18n="optSunny">Güneşli / Sunny</option>
+                   <option value="Bulutlu / Cloudy" data-i18n="optCloudy">Bulutlu / Cloudy</option>
+                   <option value="Yağmurlu / Rainy" data-i18n="optRainy">Yağmurlu / Rainy</option>
+                   <option value="Sisli / Foggy" data-i18n="optFoggy">Sisli / Foggy</option>
+                   <option value="Karlı / Snowy" data-i18n="optSnowy">Karlı / Snowy</option>
+                   <option value="Don Tehlikesi / Frost Risk" data-i18n="optFrost">Don Tehlikesi / Frost Risk</option>
                 </select>
                 <div class="other-opt" onclick="fetchCurrentWeather()" style="font-size: 11px; padding: 8px; margin-top: 5px;" data-i18n="lblAutoWeather">
                     📍 Konumdan Otomatik Hava Durumunu Güncelle / Fetch Weather
@@ -206,27 +206,25 @@
             </div>
             
             <!-- YENİ EKLENEN KALİBRASYON VE EKSTRAKT REHBERİ KUTULARI -->
-            <div style="background: #fdf4ff; border: 1px dashed #d946ef; padding: 10px; border-radius: 10px; margin-bottom: 12px; font-size: 10px; color: #86198f; line-height: 1.4;">
+            <div style="background: #fdf4ff; border: 1px dashed #d946ef; padding: 10px; border-radius: 10px; margin-bottom: 12px; font-size: 10px; color: #86198f; line-height: 1.4;" data-i18n="bioCalibTipBox">
                 💡 <strong>Kalibrasyon & Ölçüm İpuçları (Calibration Tip):</strong><br>
                 1. Telefon kamerasını yaprağa veya tüpe sabit bir açıyla (dik) tutun.<br>
                 2. Ortam ışığını sabitlemek için gölgede veya standart ışık kaynağı altında çekim yapın.<br>
                 3. Yaprak yüzeyindeki toz veya su damlalarını önceden kurulayın.
             </div>
-
-            <div style="background: #f0fdf4; border: 1px solid #86efac; padding: 10px; border-radius: 10px; margin-bottom: 12px; font-size: 10px; color: #166534; line-height: 1.4;">
+            <div style="background: #f0fdf4; border: 1px solid #86efac; padding: 10px; border-radius: 10px; margin-bottom: 12px; font-size: 10px; color: #166534; line-height: 1.4;" data-i18n="bioExtractGuideBox">
                 🌿 <strong>Yaprak Ekstraktı Nasıl Hazırlanır? (Basit Protokol):</strong><br>
                 • <strong>1. Adım:</strong> 1 gram taze yaprak örneğini ince kıyıp havan veya tüp içerisine alın.<br>
-                • <strong>2. Adım:</strong> Üzerine 10 ml %95'lik Aseton (veya saf etil alkol) ekleyin.<y/br>
+                • <strong>2. Adım:</strong> Üzerine 10 ml %95'lik Aseton (veya saf etil alkol) ekleyin.<br>
                 • <strong>3. Adım:</strong> İyice ezip süzerek berrak yeşil sıvı ekstraktı elde edin ve kamerayla ölçün.
             </div>
-
             <label data-i18n="lblSamplePlant">Numune Bitki Türü / Sample Plant</label>
             <select id="bio-plant">
                <!-- Dinamik olarak doldurulacak -->
             </select>
             <label data-i18n="lblWavelength">Spektrofotometre / Kalorimetre Dalga Boyu</label>
             <select id="bio-wavelength" disabled>
-                <option value="663">663 nm (Klorofil a - Maksimum Absorpsiyon)</option>
+                <option value="663" data-i18n="optWavelength">663 nm (Klorofil a - Maksimum Absorpsiyon)</option>
             </select>
             
             <!-- Kamera / Dosya Seçimli Akıllı Renk (RGB) Analizi Alanı -->
@@ -393,6 +391,7 @@
     };
     const translations = {
         TR: {
+            schoolSub: "Rize Fatih Anatolian High School",
             authorSub: "Biyoloji Uzmanı & Proje Lideri",
             tabAnalysis: "🌱 ANALİZ",
             tabBiolab: "🧬 MEBİ LAB",
@@ -402,26 +401,37 @@
             lblRegion: "Bölge ve Ürün / Region & Crop",
             lblManualSelect: "+ Global - Diğer / Other (Manuel Seçim)",
             lblSoilPH: "TOPRAK pH DEĞERİ / SOIL pH (3.0 - 9.0)",
+            phWarnText: "⚠️ Girilen pH değeri seçilen bitki için ideal bilimsel aralığın dışında! <br>⚠️ Entered pH value is out of the ideal scientific range for this crop!",
             lblIntegratedLab: "🧬 Laboratuvar Klorofil a (663 nm) Verisi Entegrasyonu",
             lblIntegratedLabDesc: "MEBİ Lab modülünden elde edilen konsantrasyon değerini giriniz (Opsiyonel):",
             lblWeather: "Hava Durumu / Weather Condition",
+            locStatusWaiting: "(Otomatik Konum Bekleniyor...)",
+            optSunny: "Güneşli / Sunny",
+            optCloudy: "Bulutlu / Cloudy",
+            optRainy: "Yağmurlu / Rainy",
+            optFoggy: "Sisli / Foggy",
+            optSnowy: "Karlı / Snowy",
+            optFrost: "Don Tehlikesi / Frost Risk",
             lblAutoWeather: "📍 Konumdan Otomatik Hava Durumunu Güncelle",
             btnStartAnalyze: "ANALİZİ BAŞLAT / START ANALYZE",
-            camHint: "⚠️ Öneri: Ölçüm doğruluğu için yaprak yüzeyindeki toz/su damlalarını temizleyiniz.",
+            camHint: "⚠️ Öneri: Ölçüm doğruluğu için yaprak yüzeyindeki toz/su damlalarını temizleyiniz.<br>⚠️ Tip: Clean dust/water drops on leaf for accuracy.",
             btnTakePhoto: "FOTOĞRAF ÇEK / TAKE PHOTO",
-            errorPlant: "⚠️ BİTKİ ALGILANAMADI: Yeterli yaprak/klorofil (yeşil doku) tespit edilemedi. Lütfen yaprak görüntüsü çekiniz!",
-            syncSuccess: "✨ Saha + Lab Entegre Analiz Tamamlandı & Excel'e Aktarıldı!",
+            errorPlant: "⚠️ BİTKİ ALGILANAMADI: Yeterli yaprak/klorofil (yeşil doku) tespit edilemedi. Lütfen yaprak görüntüsü çekiniz!<br>⚠️ NO PLANT DETECTED: Insufficient leaf/chlorophyll (green tissue) detected. Please capture a leaf image!",
+            syncSuccess: "✨ Saha + Lab Entegre Analiz Tamamlandı & Excel'e Aktarıldı!<br><span style='font-size:9px; font-weight:normal;'>Integrated Field + Lab Analysis Completed & Synced to Excel!</span>",
             reportHeaderTitle: "BRÜSSEL PROJE RAPORU #EU-AGRO",
             reportHeaderSub: "BRUSSELS PROJECT REPORT #EU-AGRO",
-            chartTitle: "📈 Karşılaştırmalı 5 Günlük Stres Trendi (Müdahaleli vs Müdahalesiz)",
-            expertNotice: "⚠️ UZMAN GÖRÜŞÜ: Çözülemeyen sorunlarda acil uzman desteği alınmalıdır.",
+            chartTitle: "📈 Karşılaştırmalı 5 Günlük Stres Trendi (Müdahaleli vs Müdahalesiz)<br>Comparative 5-Day Stress Trend (Intervention vs No Intervention)",
+            expertNotice: "⚠️ UZMAN GÖRÜŞÜ: Çözülemeyen sorunlarda acil uzman desteği alınmalıdır.<br>⚠️ EXPERT ADVICE: Seek immediate expert support for unresolved issues.",
             btnLiveSheet: "📊 CANLI VERİ TABLOSU / LIVE DATA SHEET",
             btnPrintReport: "📥 RAPORU YAZDIR / PDF KAYDET",
             btnNewAnalyze: "YENİ ANALİZ / NEW ANALYZE",
             bioLabTitle: "🧬 MEBİ & Biyoloji Laboratuvarı Modülü<br><span style='font-size:9px; font-weight:normal;'>Klorofil a Ekstraksiyonu & Akıllı Kalorimetre Analizi</span>",
             bioBadge: "📚 <strong>MEB Güncel Kazanım Uyumlu:</strong> Fotosentez hızını etkileyen faktörler ve düşük maliyetli akıllı telefon kalorimetresi protokolü. (Brüksel STEM & Citizen Science Uyumlu)",
+            bioCalibTipBox: "💡 <strong>Kalibrasyon & Ölçüm İpuçları (Calibration Tip):</strong><br>1. Telefon kamerasını yaprağa veya tüpe sabit bir açıyla (dik) tutun.<br>2. Ortam ışığını sabitlemek için gölgede veya standart ışık kaynağı altında çekim yapın.<br>3. Yaprak yüzeyindeki toz veya su damlalarını önceden kurulayın.",
+            bioExtractGuideBox: "🌿 <strong>Yaprak Ekstraktı Nasıl Hazırlanır? (Basit Protokol):</strong><br>• <strong>1. Adım:</strong> 1 gram taze yaprak örneğini ince kıyıp havan veya tüp içerisine alın.<br>• <strong>2. Adım:</strong> Üzerine 10 ml %95'lik Aseton (veya saf etil alkol) ekleyin.<br>• <strong>3. Adım:</strong> İyice ezip süzerek berrak yeşil sıvı ekstraktı elde edin ve kamerayla ölçün.",
             lblSamplePlant: "Numune Bitki Türü / Sample Plant",
             lblWavelength: "Spektrofotometre / Kalorimetre Dalga Boyu",
+            optWavelength: "663 nm (Klorofil a - Maksimum Absorpsiyon)",
             bioCamHeader: "📸 Yaprak Ekstraktı Kamera / Fotoğraf Analizi",
             bioCamDesc: "Kameradan canlı çekim yapın veya cihazınızdan fotoğraf/dosya yükleyin:",
             btnBioCamDirect: "📸 Kamera ile Çek",
@@ -436,13 +446,13 @@
             mSampleTitle: "2. Materyaller ve Örneklem (Materials and Sample)",
             mSampleDesc: "Araştırmada rasyonel tarım pilot bölgelerinden temin edilen bitki yaprak örnekleri (*Camellia sinensis*, *Citrus sinensis*, *Olea europaea* vb.) ile spektrofotometrik analizler için standart aseton ekstraktı çözeltileri kullanılmıştır.",
             mCollectionTitle: "3. Veri Toplama Süreci (Data Collection)",
-            mCollectionDesc: "Spektrofotometre dalga boyu seçimi klorofil a için optimize edilerek 663 nm absorpsiyon değerleri kaydedilir. pH ölçümleri hassas elektrotlu pH metrelerle yapılır. 'Stres Skoru' (Normal / Stresli pH Shift) dönüşümleri hakemli akademik eşik değerlerine dayandırılmıştır.",
+            mCollectionDesc: "Spektrofotometre dalga boyu seçimi klorofil a için optimize edilerek 663 nm absorpsiyon değerleri kaydedilir. pH ölçümleri hassas elektrotlu pH metrelerle yapılır. \"Stres Skoru\" (Normal / Stresli pH Shift) dönüşümleri hakemli akademik eşik değerlerine dayandırılmıştır.",
             mAnalysisTitle: "4. Veri Analizi (Data Analysis)",
             mAnalysisDesc: "Elde edilen optik yoğunluk ve pH sapma verileri, Campbell Biology ve Guyton fizyoloji prensiplerine uygun olarak istatistiksel regresyon modelleriyle değerlendirilmekte ve karbon ayak izi optimizasyonuna dönüştürülmektedir.",
             fieldTitle: "📸 Saha ve Öğrenci Araştırma Fotoğrafları<br><span style='font-size:9px; font-weight:normal;'>Field & Student Research Photos Gallery</span>",
             uploadMain: "Fotoğraf Seç veya Yükle / Choose Photo",
             uploadSub: "Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları",
-            captionPlaceholder: "Açıklama giriniz...",
+            captionPlaceholder: "Açıklama giriniz / Enter caption...",
             citizenTitle: "🌍 Açık Kaynaklı Tarım Veritabanı<br><span style='font-size:9px; font-weight:normal;'>Citizen Science & International Network Hub</span>",
             statNodes: "Aktif Bölgesel Ağ / Active Nodes",
             statSamples: "Toplam Veri / Total Samples",
@@ -452,12 +462,13 @@
             netOlive: "🫒 Ege - Zeytin (*Olea europaea*) [pH: 6.5-8.0]",
             netFig: "🌿 Ege - İncir (*Ficus carica*) [pH: 6.0-7.5]",
             netBrussels: "🇪🇺 Brussels - Şeker Pancarı (*Beta vulgaris*) [pH: 6.0-7.0]",
-            netActive: "Aktif Hub",
-            netSync: "Senkronize",
-            netConnected: "Bağlı",
+            netActive: "Aktif Hub / Active Hub",
+            netSync: "Senkronize / Synchronized",
+            netConnected: "Bağlı / Connected",
             btnUpdateNetwork: "🔄 AĞI GÜNCELLE / UPDATE NETWORK"
         },
         EN: {
+            schoolSub: "Rize Fatih Anatolian High School",
             authorSub: "Biology Expert & Project Lead",
             tabAnalysis: "🌱 ANALYSIS",
             tabBiolab: "🧬 MEB LAB",
@@ -467,26 +478,37 @@
             lblRegion: "Region & Crop",
             lblManualSelect: "+ Global - Other (Manual Selection)",
             lblSoilPH: "SOIL pH VALUE (3.0 - 9.0)",
+            phWarnText: "⚠️ Entered pH value is out of the ideal scientific range for this crop!",
             lblIntegratedLab: "🧬 Laboratory Chlorophyll a (663 nm) Integration",
             lblIntegratedLabDesc: "Enter concentration value obtained from MEB Lab module (Optional):",
             lblWeather: "Weather Condition",
+            locStatusWaiting: "(Fetching Location...)",
+            optSunny: "Sunny",
+            optCloudy: "Cloudy",
+            optRainy: "Rainy",
+            optFoggy: "Foggy",
+            optSnowy: "Snowy",
+            optFrost: "Frost Risk",
             lblAutoWeather: "📍 Update Weather from Location Automatically",
             btnStartAnalyze: "START ANALYSIS",
             camHint: "⚠️ Tip: Clean dust/water drops on leaf surface for measurement accuracy.",
             btnTakePhoto: "TAKE PHOTO",
             errorPlant: "⚠️ NO PLANT DETECTED: Insufficient leaf/chlorophyll tissue detected. Please capture a leaf image!",
-            syncSuccess: "✨ Integrated Field + Lab Analysis Completed & Synced to Excel!",
+            syncSuccess: "✨ Integrated Field + Lab Analysis Completed & Synced to Excel!<br><span style='font-size:9px; font-weight:normal;'>Integrated Field + Lab Analysis Completed & Synced to Excel!</span>",
             reportHeaderTitle: "BRUSSELS PROJECT REPORT #EU-AGRO",
             reportHeaderSub: "BRUSSELS PROJECT REPORT #EU-AGRO",
             chartTitle: "📈 Comparative 5-Day Stress Trend (Intervention vs No Intervention)",
             expertNotice: "⚠️ EXPERT ADVICE: Seek immediate expert support for unresolved issues.",
             btnLiveSheet: "📊 LIVE DATA SHEET",
             btnPrintReport: "📥 PRINT REPORT / SAVE PDF",
-            btnNewAnalysis: "NEW ANALYSIS",
+            btnNewAnalyze: "NEW ANALYSIS",
             bioLabTitle: "🧬 MEB Lab & Biology Laboratory Module<br><span style='font-size:9px; font-weight:normal;'>Chlorophyll a Extraction & Smart Colorimeter Analysis</span>",
             bioBadge: "📚 <strong>MEB Curriculum Aligned:</strong> Factors affecting photosynthesis rate and low-cost smartphone colorimetry protocol. (Brussels STEM & Citizen Science Compliant)",
+            bioCalibTipBox: "💡 <strong>Calibration Tip:</strong><br>1. Hold the phone camera perpendicular to the leaf or tube.<br>2. Shoot in shade or under a standard light source to fix ambient light.<br>3. Pre-dry dust or water drops on the leaf surface.",
+            bioExtractGuideBox: "🌿 <strong>How to Prepare Leaf Extract? (Simple Protocol):</strong><br>• <strong>Step 1:</strong> Chop 1 gram of fresh leaf sample finely into a mortar or tube.<br>• <strong>Step 2:</strong> Add 10 ml of 95% Acetone (or pure ethyl alcohol).<br>• <strong>Step 3:</strong> Mash well and filter to obtain clear green liquid extract and measure with camera.",
             lblSamplePlant: "Sample Plant Type",
             lblWavelength: "Spectrophotometer / Colorimeter Wavelength",
+            optWavelength: "663 nm (Chlorophyll a - Maximum Absorption)",
             bioCamHeader: "📸 Leaf Extract Camera / Photo Analysis",
             bioCamDesc: "Take a live photo with camera or upload a photo/file from your device:",
             btnBioCamDirect: "📸 Capture via Camera",
@@ -996,11 +1018,11 @@
             • Uyumluluk Durumu / Compliance Status: BRÜSSEL TERMİNALİ İÇİN ONAYLANDI / APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)<br><br>
             <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ UYARI / CAUTION: Bu belge ve karbon ayak izi azaltım verileri yalnızca "Rize Fatih Anadolu Lisesi AB Proje Simülasyonu" kapsamında üretilen öngörüsel verilere dayanmaktadır. Resmî ticari veya hukuki geçerliliği yoktur.<br>This document and carbon footprint reduction data are based solely on predictive data generated within the scope of "Rize Fatih Anadolu Lisesi EU Project Simulation". It has no official commercial or legal validity.</span>` : 
             `📜 EU GREEN DEAL SUSTAINABILITY CERTIFICATE #EU-2026-RIZE<br>
-            • Doğrulanan Ürün / Verified Crop: ${cropDisplayName}<br>
-            • Lab Klorofil a (663 nm) / Lab Chlorophyll a: ${labChlorophyll || 'N/A'} mg/L<br>
-            • Karbon Ayak İzi Azaltımı / Carbon Footprint Reduction: %24.5 (Tahmini / Estimated)<br>
-            • Uyumluluk Durumu / Compliance Status: BRÜSSEL TERMİNALİ İÇİN ONAYLANDI / APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)<br><br>
-            <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ UYARI / CAUTION: Bu belge ve karbon ayak izi azaltım verileri yalnızca "Rize Fatih Anadolu Lisesi AB Proje Simülasyonu" kapsamında üretilen öngörüsel verilere dayanmaktadır. Resmî ticari veya hukuki geçerliliği yoktur.<br>This document and carbon footprint reduction data are based solely on predictive data generated within the scope of "Rize Fatih Anadolu Lisesi EU Project Simulation". It has no official commercial or legal validity.</span>`;
+            • Verified Crop: ${cropDisplayName}<br>
+            • Lab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L<br>
+            • Carbon Footprint Reduction: 24.5% (Estimated)<br>
+            • Compliance Status: APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)<br><br>
+            <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ CAUTION: This document and carbon footprint reduction data are based solely on predictive data generated within the scope of "Rize Fatih Anadolu Lisesi EU Project Simulation". It has no official commercial or legal validity.</span>`;
         
         document.getElementById('hybrid-output').innerHTML = statusText;
         document.getElementById('calibration-output').innerHTML = calibrationText;
