@@ -358,42 +358,50 @@
         "tr-tea": { 
             min: 4.5, max: 6.0, 
             TR: "Türkiye, Rize - Çay (*Camellia sinensis*) [İdeal pH: 4.5 - 6.0]", 
-            EN: "Turkey, Rize - Tea (*Camellia sinensis*) [Ideal pH: 4.5 - 6.0]" 
+            EN: "Turkey, Rize - Tea (*Camellia sinensis*) [Ideal pH: 4.5 - 6.0]",
+            chartLabelTR: "Rize (Çay)", chartLabelEN: "Rize (Tea)"
         },
         "tr-antakya-citrus": { 
             min: 6.0, max: 7.5, 
             TR: "Antakya - Narenciye (*Citrus sinensis*) [İdeal pH: 6.0 - 7.5]", 
-            EN: "Antakya - Citrus (*Citrus sinensis*) [Ideal pH: 6.0 - 7.5]" 
+            EN: "Antakya - Citrus (*Citrus sinensis*) [Ideal pH: 6.0 - 7.5]",
+            chartLabelTR: "Antakya (Narenciye)", chartLabelEN: "Antakya (Citrus)"
         },
         "tr-ege-olive": { 
             min: 6.5, max: 8.0, 
             TR: "Ege - Zeytin (*Olea europaea*) [İdeal pH: 6.5 - 8.0]", 
-            EN: "Ege - Olive (*Olea europaea*) [Ideal pH: 6.5 - 8.0]" 
+            EN: "Ege - Olive (*Olea europaea*) [Ideal pH: 6.5 - 8.0]",
+            chartLabelTR: "Ege (Zeytin)", chartLabelEN: "Aegean (Olive)"
         },
         "tr-ege-fig": { 
             min: 6.0, max: 7.5, 
             TR: "Ege - İncir (*Ficus carica*) [İdeal pH: 6.0 - 7.5]", 
-            EN: "Ege - Fig (*Ficus carica*) [Ideal pH: 6.0 - 7.5]" 
+            EN: "Ege - Fig (*Ficus carica*) [Ideal pH: 6.0 - 7.5]",
+            chartLabelTR: "Ege (İncir)", chartLabelEN: "Aegean (Fig)"
         },
         "be-sugar": { 
             min: 6.0, max: 7.0, 
             TR: "Brussels - Şeker Pancarı (*Beta vulgaris*) [İdeal pH: 6.0 - 7.0]", 
-            EN: "Brussels - Sugar Beet (*Beta vulgaris*) [Ideal pH: 6.0 - 7.0]" 
+            EN: "Brussels - Sugar Beet (*Beta vulgaris*) [Ideal pH: 6.0 - 7.0]",
+            chartLabelTR: "Brussels (Pancar)", chartLabelEN: "Brussels (Sugar Beet)"
         },
         "nl-tulip": { 
             min: 6.0, max: 7.0, 
             TR: "Netherlands - Lale (*Tulipa gesneriana*) [İdeal pH: 6.0 - 7.0]", 
-            EN: "Netherlands - Tulips (*Tulipa gesneriana*) [Ideal pH: 6.0 - 7.0]" 
+            EN: "Netherlands - Tulips (*Tulipa gesneriana*) [Ideal pH: 6.0 - 7.0]",
+            chartLabelTR: "Netherlands (Lale)", chartLabelEN: "Netherlands (Tulips)"
         },
         "it-tomato": { 
             min: 6.0, max: 6.8, 
             TR: "Italy - Domates (*Solanum lycopersicum*) [İdeal pH: 6.0 - 6.8]", 
-            EN: "Italy - Tomatoes (*Solanum lycopersicum*) [Ideal pH: 6.0 - 6.8]" 
+            EN: "Italy - Tomatoes (*Solanum lycopersicum*) [Ideal pH: 6.0 - 6.8]",
+            chartLabelTR: "Italy (Domates)", chartLabelEN: "Italy (Tomatoes)"
         },
         "global-other": { 
             min: 6.0, max: 7.0, 
             TR: "Global - Diğer / Other [İdeal pH: 6.0 - 7.0]", 
-            EN: "Global - Other [Ideal pH: 6.0 - 7.0]" 
+            EN: "Global - Other [Ideal pH: 6.0 - 7.0]",
+            chartLabelTR: "Global (Diğer)", chartLabelEN: "Global (Other)"
         }
     };
     const translations = {
@@ -614,10 +622,14 @@
         const ctx = document.getElementById('geoDistributionChart').getContext('2d');
         if(geoChart) { geoChart.destroy(); }
         
+        const labelsArr = currentLang === 'TR' ? 
+            [cropRanges["tr-tea"].chartLabelTR, cropRanges["tr-antakya-citrus"].chartLabelTR, cropRanges["tr-ege-olive"].chartLabelTR, cropRanges["tr-ege-fig"].chartLabelTR, cropRanges["be-sugar"].chartLabelTR] : 
+            [cropRanges["tr-tea"].chartLabelEN, cropRanges["tr-antakya-citrus"].chartLabelEN, cropRanges["tr-ege-olive"].chartLabelEN, cropRanges["tr-ege-fig"].chartLabelEN, cropRanges["be-sugar"].chartLabelEN];
+
         geoChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Rize (Çay)', 'Antakya (Narenciye)', 'Ege (Zeytin)', 'Ege (İncir)', 'Brussels (Pancar)'],
+                labels: labelsArr,
                 datasets: [{
                     data: dynamicData,
                     backgroundColor: [
@@ -637,6 +649,15 @@
                     legend: {
                         position: 'bottom',
                         labels: { boxWidth: 10, font: { size: 9 } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                let value = context.raw || 0;
+                                return ` ${label}: ${value}`;
+                            }
+                        }
                     }
                 }
             }
