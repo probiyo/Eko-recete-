@@ -303,7 +303,6 @@
                     <div id="stat-samples-lbl" class="stat-label" data-i18n="statSamples">Toplam Veri / Total Samples</div>
                 </div>
             </div>
-
             <!-- Coğrafi Dağılım / Harita Modülü Mini Görselleştirmesi -->
             <div class="chart-box" style="margin-bottom: 15px;">
                 <label style="text-align:center; margin-bottom:8px; font-size: 10px;" data-i18n="geoChartTitle">📊 Bölgesel Veri Dağılımı / Regional Data Distribution</label>
@@ -311,7 +310,6 @@
                    <canvas id="geoDistributionChart"></canvas>
                </div>
             </div>
-
             <div id="partner-regions-lbl" style="font-size: 11px; font-weight: bold; margin-bottom: 5px; color: var(--primary);" data-i18n="partnerRegions">Katılımcı Pilot Bölgeler / Partner Regions:</div>
             <div class="network-list">
                 <div class="network-item">
@@ -564,27 +562,56 @@
         fetchSheetTotalRows();
     }
     
-    // Google Sheets'ten gerçek veri satır sayısını dinamik çeken fonksiyon (JSONP / CORS-proxy alternatifi olarak public CSV veya Apps Script endpoint)
+    // Google Sheets'ten gerçek verileri dinamik çekip grafiği güncelleyen fonksiyon
     function fetchSheetTotalRows() {
-        // Google Sheets CSV Export URL from published or shared link, or dynamic fetch
         const sheetCsvUrl = 'https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/export?format=csv';
         
         fetch(sheetCsvUrl)
             .then(response => response.text())
             .then(data => {
                 const rows = data.split('\n').filter(row => row.trim().length > 0);
-                const totalCount = rows.length > 1 ? rows.length - 1 : 142; // Header düşülür
+                const totalCount = rows.length > 1 ? rows.length - 1 : 142;
                 document.getElementById('stat-total-samples').innerText = totalCount;
-                drawGeoDistributionChart();
+                
+                // Excel satırlarından gelen verileri sayarak dinamik dağılım hesaplama
+                let regionCounts = { "Rize": 0, "Antakya": 0, "Ege": 0, "Brussels": 0, "Diğer": 0 };
+                
+                for(let i = 1; i < rows.length; i++) {
+                    const cols = rows[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    if(cols.length > 1) {
+                        const bolgeVerisi = cols[1].toLowerCase();
+                        if(bolgeVerisi.includes("rize") || bolgeVerisi.includes("çay") || bolgeVerisi.includes("tea")) {
+                            regionCounts["Rize"]++;
+                        } else if(bolgeVerisi.includes("antakya") || bolgeVerisi.includes("citrus") || bolgeVerisi.includes("narenciye")) {
+                            regionCounts["Antakya"]++;
+                        } else if(bolgeVerisi.includes("ege") || bolgeVerisi.includes("zeytin") || bolgeVerisi.includes("incir") || bolgeVerisi.includes("olive") || bolgeVerisi.includes("fig")) {
+                            regionCounts["Ege"]++;
+                        } else if(bolgeVerisi.includes("brussels") || bolgeVerisi.includes("pancar") || bolgeVerisi.includes("sugar")) {
+                            regionCounts["Brussels"]++;
+                        } else {
+                            regionCounts["Diğer"]++;
+                        }
+                    }
+                }
+                
+                // Eğer Excel verisi boş veya eşleşmezse varsayılan minimum pay ver
+                const totalFiltered = Object.values(regionCounts).reduce((a, b) => a + b, 0);
+                let chartData = totalFiltered > 0 ? [
+                    regionCounts["Rize"],
+                    regionCounts["Antakya"],
+                    regionCounts["Ege"],
+                    regionCounts["Brussels"],
+                    regionCounts["Diğer"]
+                ] : [5, 0, 0, 0, 0];
+
+                drawGeoDistributionChart(chartData);
             })
             .catch(() => {
-                // Fallback if CORS blocks direct CSV fetch
-                document.getElementById('stat-total-samples').innerText = "142+";
-                drawGeoDistributionChart();
+                document.getElementById('stat-total-samples').innerText = "5";
+                drawGeoDistributionChart([5, 0, 0, 0, 0]);
             });
     }
-
-    function drawGeoDistributionChart() {
+    function drawGeoDistributionChart(dynamicData = [5, 0, 0, 0, 0]) {
         const ctx = document.getElementById('geoDistributionChart').getContext('2d');
         if(geoChart) { geoChart.destroy(); }
         
@@ -593,7 +620,7 @@
             data: {
                 labels: ['Rize (Çay)', 'Antakya (Narenciye)', 'Ege (Zeytin)', 'Ege (İncir)', 'Brussels (Pancar)'],
                 datasets: [{
-                    data: [35, 30, 25, 20, 32],
+                    data: dynamicData,
                     backgroundColor: [
                         '#1b5e20',
                         '#ff9800',
@@ -616,7 +643,6 @@
             }
         });
     }
-
     function populateDropdowns() {
         const selectRegion = document.getElementById('region');
         const selectBioPlant = document.getElementById('bio-plant');
@@ -662,7 +688,7 @@
         });
         updatePHRangeInfo();
         loadGallery();
-        drawGeoDistributionChart();
+        fetchSheetTotalRows();
         
         if(document.getElementById('res-area').style.display === 'block') {
             updateDynamicReportTexts();
@@ -796,7 +822,7 @@
             if(track) { track.stop(); }
             document.getElementById('cam-box').style.display = 'none';
             document.getElementById('form-area').style.display = 'block';
-            setTimeout(() => { drawGeoDistributionChart(); }, 200);
+            setTimeout(() => { fetchSheetTotalRows(); }, 200);
         }
     }
     function processBioCamera(event) {
