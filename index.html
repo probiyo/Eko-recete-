@@ -603,7 +603,6 @@
                     regionCounts["Brussels"],
                     regionCounts["Diğer"]
                 ] : [5, 0, 0, 0, 0];
-
                 drawGeoDistributionChart(chartData);
             })
             .catch(() => {
@@ -1181,6 +1180,24 @@
                 maintainAspectRatio: false,
                 scales: {
                     y: { beginAtZero: true, max: 100 }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            generateLabels: function(chart) {
+                                const original = Chart.defaults.plugins.legend.labels.generateLabels;
+                                const labels = original.call(this, chart);
+                                labels.forEach(label => {
+                                    if (label.text === 'Müdahaleli Stres' || label.text === 'With Intervention') {
+                                        label.text = currentLang === 'TR' ? 'Müdahaleli Stres' : 'With Intervention';
+                                    } else if (label.text === 'Müdahalesiz Stres' || label.text === 'No Intervention') {
+                                        label.text = currentLang === 'TR' ? 'Müdahalesiz Stres' : 'No Intervention';
+                                    }
+                                });
+                                return labels;
+                            }
+                        }
+                    }
                 }
             }
         });
