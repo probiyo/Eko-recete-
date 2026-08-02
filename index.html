@@ -865,10 +865,7 @@
         }
         document.getElementById('form-area').style.display = 'none';
         document.getElementById('cam-box').style.display = 'block';
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: 'environment' } } })
-        .catch(() => {
-            return navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-        })
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
         .then(stream => {
             v.srcObject = stream;
             track = stream.getVideoTracks()[0];
