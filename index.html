@@ -46,11 +46,11 @@
         .upload-zone { border: 2px dashed var(--primary); padding: 20px; border-radius: 15px; text-align: center; background: #f9fdfa; cursor: pointer; margin-bottom: 12px; }
         .upload-zone:hover { background: #f1f8f2; }
         .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
-        .gallery-item { position: relative; border-radius: 12px; overflow: hidden; border: 2px solid #ddd; background: #000; height: 130px; cursor: pointer; }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; transition: transform 0.2s; }
+        .gallery-item { position: relative; border-radius: 12px; overflow: hidden; border: 2px solid #ddd; background: #000; height: 160px; display: flex; flex-direction: column; cursor: pointer; }
+        .gallery-item img { width: 100%; height: 100px; object-fit: cover; opacity: 0.9; transition: transform 0.2s; }
         .gallery-item:hover img { transform: scale(1.03); }
         .gallery-item .del-photo { position: absolute; top: 5px; right: 5px; background: rgba(211,47,47,0.8); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 2; }
-        .gallery-caption { font-size: 10px; color: #555; text-align: center; margin-top: 4px; font-weight: bold; }
+        .gallery-item-input { width: 100%; border: none; border-top: 1px solid #ddd; padding: 6px 8px; font-size: 10px; background: #fff; box-sizing: border-box; outline: none; }
         
         /* Vatandaş Bilimi / Uluslararası Ağ Sekmesi Stilleri */
         .citizen-section { display: none; }
@@ -282,9 +282,6 @@
                 <div id="upload-txt-sub" style="font-size: 9px; color: #666; margin-top: 3px;" data-i18n="uploadSub">Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları</div>
             </div>
             <input type="file" id="file-input" accept="image/*" style="display:none" onchange="handleFileUpload(event)">
-            <div style="display: flex; gap: 5px; margin-bottom: 10px;">
-                <input type="text" id="photo-caption" placeholder="Açıklama giriniz / Enter caption..." style="font-size: 12px; padding: 8px;" data-i18n-placeholder="captionPlaceholder">
-            </div>
             <div id="gallery-container" class="gallery-grid"></div>
         </div>
     </div>
@@ -454,7 +451,7 @@
             btnBioFileSelect: "📁 Dosya / Galeri Seç",
             lblAbsorbance: "Ölçülen / Hesaplanan Klorofil a Konsantrasyonu (mg/L)",
             btnBioCalc: "KLOROFİL a VERİSİNİ KAYDET & ANALİZE AKTAR",
-            bioSyncSuccess: "✨ MEBİ Lab Verisi Canlı Veri Tablosuna ve Analiz Modülüne Aktarıldı!",
+            bioSyncSuccess: "✨ MEB Lab Verisi Canlı Veri Tablosuna ve Analiz Modülüne Aktarıldı!",
             methodsMainTitle: "📖 Bilimsel Metodoloji & Whitepaper (Scientific Rigor)<br><span style='font-size:9px; font-weight:normal;'>Campbell Biology, Guyton & EU Green Deal Standartları</span>",
             methodsBadge: "🇪🇺 <strong>Brüksel Gözüyle Hakemli Standart:</strong> Avrupa Yeşil Mutabakatı jüri denetimlerinde, ham veriden stres skoruna geçiş algoritmalarının şeffaflığı ve akademik dayanağı esastır.",
             mDesignTitle: "1. Araştırma Tasarımı (Research Design)",
@@ -468,7 +465,6 @@
             fieldTitle: "📸 Saha ve Öğrenci Araştırma Fotoğrafları<br><span style='font-size:9px; font-weight:normal;'>Field & Student Research Photos Gallery</span>",
             uploadMain: "Fotoğraf Seç veya Yükle / Choose Photo",
             uploadSub: "Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları",
-            captionPlaceholder: "Açıklama giriniz / Enter caption...",
             citizenTitle: "🌍 Açık Kaynaklı Tarım Veritabanı<br><span style='font-size:9px; font-weight:normal;'>Citizen Science & International Network Hub</span>",
             statNodes: "Aktif Bölgesel Ağ / Active Nodes",
             statSamples: "Toplam Veri / Total Samples",
@@ -546,7 +542,6 @@
             fieldTitle: "📸 Field & Student Research Photos<br><span style='font-size:9px; font-weight:normal;'>Field & Student Research Photos Gallery</span>",
             uploadMain: "Choose or Upload Photo",
             uploadSub: "Group photos with students, laboratory and field studies",
-            captionPlaceholder: "Enter caption...",
             citizenTitle: "🌍 Open Source Agriculture Database<br><span style='font-size:9px; font-weight:normal;'>Citizen Science & International Network Hub</span>",
             statNodes: "Active Regional Nodes",
             statSamples: "Total Samples",
@@ -625,7 +620,6 @@
         const labelsArr = currentLang === 'TR' ? 
             [cropRanges["tr-tea"].chartLabelTR, cropRanges["tr-antakya-citrus"].chartLabelTR, cropRanges["tr-ege-olive"].chartLabelTR, cropRanges["tr-ege-fig"].chartLabelTR, cropRanges["be-sugar"].chartLabelTR] : 
             [cropRanges["tr-tea"].chartLabelEN, cropRanges["tr-antakya-citrus"].chartLabelEN, cropRanges["tr-ege-olive"].chartLabelEN, cropRanges["tr-ege-fig"].chartLabelEN, cropRanges["be-sugar"].chartLabelEN];
-
         geoChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
@@ -697,13 +691,6 @@
             const key = el.getAttribute('data-i18n');
             if(translations[currentLang][key]) {
                 el.innerHTML = translations[currentLang][key];
-            }
-        });
-        const placeholders = document.querySelectorAll('[data-i18n-placeholder]');
-        placeholders.forEach(el => {
-            const key = el.getAttribute('data-i18n-placeholder');
-            if(translations[currentLang][key]) {
-                el.placeholder = translations[currentLang][key];
             }
         });
         updatePHRangeInfo();
@@ -958,18 +945,24 @@
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, width, height);
                 const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
-                let caption = document.getElementById('photo-caption').value || (currentLang === 'TR' ? 'Saha Çalışması / Field Study' : 'Field Study');
+                let caption = currentLang === 'TR' ? 'Saha Çalışması / Field Study' : 'Field Study';
                 
                 let gallery = JSON.parse(localStorage.getItem('agro_field_gallery') || '[]');
-                gallery.unshift({ img: compressedDataUrl, caption: caption, date: new Date().toLocaleDateString() });
+                gallery.unshift({ file: compressedDataUrl, caption: caption });
                 localStorage.setItem('agro_field_gallery', JSON.stringify(gallery));
-                document.getElementById('photo-caption').value = '';
                 document.getElementById('file-input').value = '';
                 loadGallery();
             }
             img.src = e.target.result;
         }
         reader.readAsDataURL(file);
+    }
+    function updateCaption(index, newCaption) {
+        let gallery = JSON.parse(localStorage.getItem('agro_field_gallery') || '[]');
+        if(gallery[index]) {
+            gallery[index].caption = newCaption;
+            localStorage.setItem('agro_field_gallery', JSON.stringify(gallery));
+        }
     }
     function loadGallery() {
         const container = document.getElementById('gallery-container');
@@ -985,8 +978,8 @@
             div.className = 'gallery-item';
             div.innerHTML = `
                 <button class="del-photo" onclick="deletePhoto(event, ${index})">&times;</button>
-                <img src="${item.img}" onclick="openLightbox('${item.img}', '${item.caption.replace(/'/g, "\\'")}')">
-                <div class="gallery-caption">${item.caption}</div>
+                <img src="${item.file}" onclick="openLightbox('${item.file}', '${(item.caption || '').replace(/'/g, "\\'")}')">
+                <input type="text" class="gallery-item-input" value="${item.caption || ''}" placeholder="${currentLang === 'TR' ? 'Açıklama giriniz...' : 'Enter caption...'}" oninput="updateCaption(${index}, this.value)">
             `;
             container.appendChild(div);
         });
