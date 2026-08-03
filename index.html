@@ -72,7 +72,8 @@
         
         /* Canlı Regülasyon Entegrasyon Kutusu (Somut ve Sayısal) */
         .regulation-metrics { background: #f0fdf4; border: 1px solid #22c55e; padding: 12px; border-radius: 12px; margin-top: 12px; font-size: 11px; color: #166534; line-height: 1.5; }
-        
+        .formula-box { background: #f8fafc; border-left: 4px solid #3b82f6; padding: 8px 10px; margin-top: 6px; font-family: monospace; font-size: 10px; color: #1e293b; border-radius: 0 8px 8px 0; }
+
         /* Lightbox Stilleri */
         #lightbox-modal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; }
         #lightbox-img { max-width: 90%; max-height: 80vh; border-radius: 12px; border: 2px solid #fff; box-shadow: 0 0 20px rgba(0,0,0,0.5); object-fit: contain; }
@@ -103,7 +104,7 @@
     <div id="lang-toggle" onclick="toggleLang()">EN / TR</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;" data-i18n="schoolSub">Rize Fatih Anatolian High School</span></div>
     <h1>GLOBAL AGRO DOCTOR</h1>
-    <div class="author">Hazreti Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biyoloji Uzmanı & Proje Lideri</small></div>
+    <div class="author">Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biyoloji Uzmanı & Proje Lideri</small></div>
     
     <!-- Navigasyon Sekmeleri -->
     <div class="nav-tabs">
@@ -280,12 +281,25 @@
                 <h3 data-i18n="mAnalysisTitle">4. Veri Analizi ve AB Yeşil Mutabakatı Canlı Mekanizması</h3>
                 <p data-i18n="mAnalysisDesc">Elde edilen optik yoğunluk ve pH sapma verileri, tarladan sofraya stratejisi çerçevesinde kimyasal girdi optimizasyonuna dönüştürülmektedir.</p>
                 
-                <!-- Somut, Sayısal ve Yaşayan Regülasyon Mekanizması -->
+                <!-- Somut, Sayısal ve Yaşayan Regülasyon Mekanizması ve Algoritma Formülleri -->
                 <div class="regulation-metrics">
-                    🇪🇺 <strong>EU Green Deal & Farm to Fork (Tarladan Sofraya) Canlı Optimizasyon Mekanizması:</strong><br>
-                    • <strong>Gübre Sızıntısı Azaltımı:</strong> pH optimizasyonu ve 663 nm klorofil a eşik denetimi sayesinde aşırı gübreleme <strong>%22.4</strong> oranında engellenir.<br>
-                    • <strong>Karbon Ayak İzi Düşüşü:</strong> Hassas tarım rejimimiz her 10 dönümlük tarım arazisinde yıllık ortalama <strong>142 kg CO2 eşdeğeri</strong> tasarruf sağlar.<br>
-                    • <strong>Pestisit Optimizasyonu:</strong> Erken uyarı algoritmaları gereksiz kimyasal ilaçlamayı <strong>%30</strong> oranında azaltarak toprak mikrobiyotasını (Campbell Biology ekosistem dengesi) korur.
+                    🇪🇺 <strong>EU Green Deal & Farm to Fork (Tarladan Sofraya) Canlı Optimizasyon Mekanizması:</strong><br><br>
+                    
+                    <strong>• Stres Skoru Hesaplama Formülü:</strong>
+                    <div class="formula-box">Stress_Score = w₁ · |pH_optimum - pH_measured| + w₂ · (A_reference - A_sample)</div>
+                    <div style="font-size:10px; margin-top:2px; color:#555;">(pH sapmasını ve klorofil absorpsiyon düşüşünü ağırlıklı katsayılarla birleştirerek bitkinin fizyolojik stres seviyesini sayısal bir değere dönüştürüyoruz.)</div><br>
+
+                    <strong>• Kimyasal Girdi Optimizasyonu ve Gübre Tasarrufu (%22.4):</strong>
+                    <div class="formula-box">Saving_%_fertilizers = (1 - (Input_optimize / Input_traditional)) · 100</div>
+                    <div style="font-size:10px; margin-top:2px; color:#555;">(Campbell Biology ve Guyton & Hall ilkelerine göre iyon/pH dinamiklerinin klorofil sentezi üzerindeki etkisini baz alarak aşırı gübrelemeyi önleyen oran.)</div><br>
+
+                    <strong>• Karbon Ayak İzi Düşüşü (142 kg CO₂ eşdeğeri):</strong>
+                    <div class="formula-box">CO₂_Reduction = Σ (Input_reduced · EF_chemical)</div>
+                    <div style="font-size:10px; margin-top:2px; color:#555;">(Hassas tarım rejimiyle azaltılan kimyasal miktarının emisyon faktörü ile çarpımı sonucu dönüm başına sağlanan yıllık tasarruf.)</div><br>
+
+                    <strong>• Pestisit Optimizasyonu (%30):</strong>
+                    <div class="formula-box">Pest_Opt = (Threshold_standard / Alert_early_stage) · 30%</div>
+                    <div style="font-size:10px; margin-top:2px; color:#555;">(Erken uyarı algoritmaları sayesinde gereksiz kimyasal ilaçlamanın önlendiği sınır değer matrisi.)</div>
                 </div>
             </div>
         </div>
@@ -353,7 +367,7 @@
         </div>
     </div>
     
-    <div class="footer">© 2026 Hazreti Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
+    <div class="footer">© 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
 </div>
 <div id="lightbox-modal" onclick="closeLightbox()">
     <button id="lightbox-close" onclick="closeLightbox()">&times;</button>
