@@ -281,21 +281,21 @@
                 <p data-i18n="mAnalysisDesc">Elde edilen optik yoğunluk ve pH sapma verileri, tarladan sofraya stratejisi çerçevesinde kimyasal girdi optimizasyonuna dönüştürülmektedir.</p>
                 
                 <!-- Somut, Sayısal ve Yaşayan Regülasyon Mekanizması ve Algoritma Formülleri -->
-                <div class="regulation-metrics">
+                <div class="regulation-metrics" data-i18n="regMetricsBox">
                     🇪🇺 <strong>EU Green Deal & Farm to Fork (Tarladan Sofraya) Canlı Optimizasyon Mekanizması:</strong><br><br>
                     
                     <strong>• Stres Skoru Hesaplama Formülü:</strong>
                     <div class="formula-box">Stress_Score = w₁ · |pH_optimum - pH_measured| + w₂ · (A_reference - A_sample)</div>
-                    <div style="font-size:10px; margin-top:2px; color:#555;">(pH sapmasını ve klorofil absorpsiyon düşüşünü ağırlıklı katsayılarla birleştirerek bitkinin fizyolojik stres seviyesini sayısal bir değere dönüştürüyoruz.)</div><br>
+                    <div style="font-size:10px; margin-top:2px; color:#555;" data-i18n="regFormulaDesc1">(pH sapmasını ve klorofil absorpsiyon düşüşünü ağırlıklı katsayılarla birleştirerek bitkinin fizyolojik stres seviyesini sayısal bir değere dönüştürüyoruz.)</div><br>
                     <strong>• Kimyasal Girdi Optimizasyonu ve Gübre Tasarrufu (%22.4):</strong>
                     <div class="formula-box">Saving_%_fertilizers = (1 - (Input_optimize / Input_traditional)) · 100</div>
-                    <div style="font-size:10px; margin-top:2px; color:#555;">(Campbell Biology ve Guyton & Hall ilkelerine göre iyon/pH dinamiklerinin klorofil sentezi üzerindeki etkisini baz alarak aşırı gübrelemeyi önleyen oran.)</div><br>
+                    <div style="font-size:10px; margin-top:2px; color:#555;" data-i18n="regFormulaDesc2">(Campbell Biology ve Guyton & Hall ilkelerine göre iyon/pH dinamiklerinin klorofil sentezi üzerindeki etkisini baz alarak aşırı gübrelemeyi önleyen oran.)</div><br>
                     <strong>• Karbon Ayak İzi Düşüşü (142 kg CO₂ eşdeğeri):</strong>
                     <div class="formula-box">CO₂_Reduction = Σ (Input_reduced · EF_chemical)</div>
-                    <div style="font-size:10px; margin-top:2px; color:#555;">(Hassas tarım rejimiyle azaltılan kimyasal miktarının emisyon faktörü ile çarpımı sonucu dönüm başına sağlanan yıllık tasarruf.)</div><br>
+                    <div style="font-size:10px; margin-top:2px; color:#555;" data-i18n="regFormulaDesc3">(Hassas tarım rejimiyle azaltılan kimyasal miktarının emisyon faktörü ile çarpımı sonucu dönüm başına sağlanan yıllık tasarruf.)</div><br>
                     <strong>• Pestisit Optimizasyonu (%30):</strong>
                     <div class="formula-box">Pest_Opt = (Threshold_standard / Alert_early_stage) · 30%</div>
-                    <div style="font-size:10px; margin-top:2px; color:#555;">(Erken uyarı algoritmaları sayesinde gereksiz kimyasal ilaçlamanın önlendiği sınır değer matrisi.)</div>
+                    <div style="font-size:10px; margin-top:2px; color:#555;" data-i18n="regFormulaDesc4">(Erken uyarı algoritmaları sayesinde gereksiz kimyasal ilaçlamanın önlendiği sınır değer matrisi.)</div>
                 </div>
             </div>
         </div>
@@ -485,13 +485,14 @@
             methodsMainTitle: "📖 Bilimsel Metodoloji & Whitepaper (Scientific Rigor)<br><span style='font-size:9px; font-weight:normal;'>Campbell Biology, Guyton & EU Green Deal Standartları</span>",
             methodsBadge: "🇪🇺 <strong>Brüksel Gözüyle Hakemli Standart:</strong> Avrupa Yeşil Mutabakatı jüri denetimlerinde, ham veriden stres skoruna geçiş algoritmalarının şeffaflığı ve akademik dayanağı esastır.",
             mDesignTitle: "1. Araştırma Tasarımı (Research Design)",
-            mDesignDesc: "Bu çalışma; Campbell Biology ve Guyton fizyoloji prensiplerine dayalı hibrit bir model üzerine kurulmuştur.",
+            mDesignDesc: "Bu çalışma; Campbell Biology prensiplerine göre bitki fizyolojisi ve Guyton & Hall Tıbbi Fizyoloji ilkelerine göre iyon/pH dinamiklerinin klorofil a sentezi üzerindeki etkilerini inceleyen hibrit bir model üzerine kurulmuştur.",
             mSampleTitle: "2. Materyaller ve Örneklem (Materials and Sample)",
-            mSampleDesc: "Araştırmada pilot bölgelerden temin edilen bitki örnekleri ve aseton ekstraktları kullanılmıştır.",
+            mSampleDesc: "Araştırmada rasyonel tarım pilot bölgelerinden temin edilen bitki yaprak örnekleri (*Camellia sinensis*, *Citrus sinensis*, *Olea europaea* vb.) ile spektrofotometrik analizler için standart aseton ekstraktı çözeltileri kullanılmıştır.",
             mCollectionTitle: "3. Veri Toplama Süreci (Data Collection)",
-            mCollectionDesc: "Spektrofotometre dalga boyu optimizasyonu 663 nm üzerinden gerçekleştirilmiştir.",
-            mAnalysisTitle: "4. Veri Analizi (Data Analysis)",
-            mAnalysisDesc: "İstatistiksel modeller EU Green Deal hedefleriyle entegre edilmiştir.",
+            mCollectionDesc: "Spektrofotometre dalga boyu seçimi klorofil a için optimize edilerek 663 nm absorpsiyon değerleri kaydedilir. pH ölçümleri hassas elektrotlu pH metrelerle veya alternatif ekstraksiyon protokolleriyle yapılır.",
+            mAnalysisTitle: "4. Veri Analizi ve AB Yeşil Mutabakatı Canlı Mekanizması",
+            mAnalysisDesc: "Elde edilen optik yoğunluk ve pH sapma verileri, tarladan sofraya stratejisi çerçevesinde kimyasal girdi optimizasyonuna dönüştürülmektedir.",
+            regMetricsBox: "🇪🇺 <strong>EU Green Deal & Farm to Fork (Tarladan Sofraya) Canlı Optimizasyon Mekanizması:</strong><br><br><strong>• Stres Skoru Hesaplama Formülü:</strong><div class='formula-box'>Stress_Score = w₁ · |pH_optimum - pH_measured| + w₂ · (A_reference - A_sample)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(pH sapmasını ve klorofil absorpsiyon düşüşünü ağırlıklı katsayılarla birleştirerek bitkinin fizyolojik stres seviyesini sayısal bir değere dönüştürüyoruz.)</div><br><strong>• Kimyasal Girdi Optimizasyonu ve Gübre Tasarrufu (%22.4):</strong><div class='formula-box'>Saving_%_fertilizers = (1 - (Input_optimize / Input_traditional)) · 100</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Campbell Biology ve Guyton & Hall ilkelerine göre iyon/pH dinamiklerinin klorofil sentezi üzerindeki etkisini baz alarak aşırı gübrelemeyi önleyen oran.)</div><br><strong>• Karbon Ayak İzi Düşüşü (142 kg CO₂ eşdeğeri):</strong><div class='formula-box'>CO₂_Reduction = Σ (Input_reduced · EF_chemical)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Hassas tarım rejimiyle azaltılan kimyasal miktarının emisyon faktörü ile çarpımı sonucu dönüm başına sağlanan yıllık tasarruf.)</div><br><strong>• Pestisit Optimizasyonu (%30):</strong><div class='formula-box'>Pest_Opt = (Threshold_standard / Alert_early_stage) · 30%</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Erken uyarı algoritmaları sayesinde gereksiz kimyasal ilaçlamanın önlendiği sınır değer matrisi.)</div>",
             fieldTitle: "📸 Saha ve Öğrenci Araştırma Fotoğrafları<br><span style='font-size:9px; font-weight:normal;'>Field & Student Research Photos Gallery</span>",
             uploadMain: "Fotoğraf Seç veya Yükle / Choose Photo",
             uploadSub: "Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları",
@@ -563,13 +564,14 @@
             methodsMainTitle: "📖 Scientific Methodology & Whitepaper (Scientific Rigor)<br><span style='font-size:9px; font-weight:normal;'>Campbell Biology, Guyton & EU Green Deal Standards</span>",
             methodsBadge: "🇪🇺 <strong>Brussels Peer-Review Standard:</strong> In EU Green Deal jury audits, transparency and academic basis of algorithms moving from raw data to stress score are essential.",
             mDesignTitle: "1. Research Design",
-            mDesignDesc: "Built on Campbell Biology and Guyton physiology principles.",
+            mDesignDesc: "Built on Campbell Biology and Guyton physiology principles to investigate the effects of ion/pH dynamics on chlorophyll a synthesis.",
             mSampleTitle: "2. Materials and Sample",
-            mSampleDesc: "Leaf samples and acetone extracts from pilot regions.",
+            mSampleDesc: "Leaf samples (*Camellia sinensis*, *Citrus sinensis*, *Olea europaea*, etc.) procured from rational agriculture pilot regions and standard acetone extract solutions for spectrophotometric analyses.",
             mCollectionTitle: "3. Data Collection",
-            mCollectionDesc: "Spectrophotometer wavelength optimized at 663 nm.",
-            mAnalysisTitle: "4. Data Analysis",
-            mAnalysisDesc: "Statistical models integrated with EU Green Deal targets.",
+            mCollectionDesc: "Spectrophotometer wavelength optimized at 663 nm for chlorophyll a absorption. pH measurements performed with precise electrode pH meters or alternative extraction protocols.",
+            mAnalysisTitle: "4. Data Analysis & EU Green Deal Live Mechanism",
+            mAnalysisDesc: "Obtained optical density and pH deviation data are converted into chemical input optimization within the framework of the Farm to Fork strategy.",
+            regMetricsBox: "🇪🇺 <strong>EU Green Deal & Farm to Fork Live Optimization Mechanism:</strong><br><br><strong>• Stress Score Calculation Formula:</strong><div class='formula-box'>Stress_Score = w₁ · |pH_optimum - pH_measured| + w₂ · (A_reference - A_sample)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Converting plant physiological stress level into a numerical value by combining pH deviation and chlorophyll absorption drop with weighted coefficients.)</div><br><strong>• Chemical Input Optimization & Fertilizer Saving (22.4%):</strong><div class='formula-box'>Saving_%_fertilizers = (1 - (Input_optimize / Input_traditional)) · 100</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Ratio preventing over-fertilization based on ion/pH dynamics effects on chlorophyll synthesis according to Campbell Biology and Guyton & Hall principles.)</div><br><strong>• Carbon Footprint Reduction (142 kg CO₂ equivalent):</strong><div class='formula-box'>CO₂_Reduction = Σ (Input_reduced · EF_chemical)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Annual savings per decare resulting from multiplying the chemical amount reduced through precision agriculture regime by emission factor.)</div><br><strong>• Pesticide Optimization (30%):</strong><div class='formula-box'>Pest_Opt = (Threshold_standard / Alert_early_stage) · 30%</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Threshold limit matrix preventing unnecessary chemical spraying thanks to early warning algorithms.)</div>",
             fieldTitle: "📸 Field & Student Research Photos<br><span style='font-size:9px; font-weight:normal;'>Field & Student Research Photos Gallery</span>",
             uploadMain: "Choose or Upload Photo",
             uploadSub: "Group photos with students, laboratory and field studies",
