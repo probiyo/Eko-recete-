@@ -745,46 +745,64 @@
     }
     function fetchCurrentWeather() {
         const statusEl = document.getElementById('loc-status');
+        statusEl.innerText = currentLang === 'TR' ? "(Otomatik Hava Alınıyor...)" : "(Fetching Auto Weather...)";
+        
+        fetch('https://ipapi.co/json/')
+            .then(res => res.json())
+            .then(locData => {
+                if(locData && locData.latitude && locData.longitude) {
+                    getWeatherByCoords(locData.latitude, locData.longitude, "(Otomatik Senkronize Edildi ✓)");
+                } else {
+                    tryBrowserGeolocation();
+                }
+            })
+            .catch(() => {
+                tryBrowserGeolocation();
+            });
+    }
+
+    function tryBrowserGeolocation() {
+        const statusEl = document.getElementById('loc-status');
         if (!navigator.geolocation) {
             statusEl.innerText = currentLang === 'TR' ? "(Konum Desteklenmiyor)" : "(Location Not Supported)";
             return;
         }
-        statusEl.innerText = currentLang === 'TR' ? "(Konum Alınıyor...)" : "(Fetching Location...)";
-        
         navigator.geolocation.getCurrentPosition(position => {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-            
-            fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=weathercode`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data && data.current) {
-                        const code = data.current.weathercode;
-                        const weatherSelect = document.getElementById('weather');
-                        
-                        let mappedWeather = "Güneşli / Sunny";
-                        if (code >= 1 && code <= 3) {
-                            mappedWeather = "Bulutlu / Cloudy";
-                        } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
-                            mappedWeather = "Yağmurlu / Rainy";
-                        } else if (code === 45 || code === 48) {
-                            mappedWeather = "Sisli / Foggy";
-                        } else if (code >= 71 && code <= 77) {
-                            mappedWeather = "Karlı / Snowy";
-                        } else if (code >= 95) {
-                            mappedWeather = "Don Tehlikesi / Frost Risk";
-                        }
-                        
-                        weatherSelect.value = mappedWeather;
-                        statusEl.innerText = currentLang === 'TR' ? "(Konumdan Güncellendi ✓)" : "(Updated from Location ✓)";
-                    }
-                })
-                .catch(() => {
-                    statusEl.innerText = currentLang === 'TR' ? "(Hava Alınamadı)" : "(Weather Unavailable)";
-                });
+            getWeatherByCoords(position.coords.latitude, position.coords.longitude, "(Konumdan Güncellendi ✓)");
         }, () => {
-            statusEl.innerText = currentLang === 'TR' ? "(Konum İzni Reddedildi)" : "(Location Permission Denied)";
+            statusEl.innerText = currentLang === 'TR' ? "(Varsayılan Değer Kullanılıyor)" : "(Using Default Value)";
         }, { timeout: 10000 });
+    }
+
+    function getWeatherByCoords(lat, lon, successMsg) {
+        const statusEl = document.getElementById('loc-status');
+        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=weathercode`)
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.current) {
+                    const code = data.current.weathercode;
+                    const weatherSelect = document.getElementById('weather');
+                    
+                    let mappedWeather = "Güneşli / Sunny";
+                    if (code >= 1 && code <= 3) {
+                        mappedWeather = "Bulutlu / Cloudy";
+                    } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
+                        mappedWeather = "Yağmurlu / Rainy";
+                    } else if (code === 45 || code === 48) {
+                        mappedWeather = "Sisli / Foggy";
+                    } else if (code >= 71 && code <= 77) {
+                        mappedWeather = "Karlı / Snowy";
+                    } else if (code >= 95) {
+                        mappedWeather = "Don Tehlikesi / Frost Risk";
+                    }
+                    
+                    weatherSelect.value = mappedWeather;
+                    statusEl.innerText = currentLang === 'TR' ? successMsg : "(Auto Synchronized ✓)";
+                }
+            })
+            .catch(() => {
+                statusEl.innerText = currentLang === 'TR' ? "(Hava Alınamadı)" : "(Weather Unavailable)";
+            });
     }
     function updatePHRangeInfo() {
         const regionKey = document.getElementById('region').value;
