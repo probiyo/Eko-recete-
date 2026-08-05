@@ -149,7 +149,7 @@
                    <option value="Karlı / Snowy" data-i18n="optSnowy">Karlı / Snowy</option>
                    <option value="Don Tehlikesi / Frost Risk" data-i18n="optFrost">Don Tehlikesi / Frost Risk</option>
                 </select>
-                <div class="other-opt" onclick="fetchCurrentWeather()" style="font-size: 11px; padding: 8px; margin-top: 5px;" data-i18n="lblAutoWeather">
+                <div class="other-opt" id="fetchWeatherBtn" onclick="fetchCurrentWeather()" style="font-size: 11px; padding: 8px; margin-top: 5px;" data-i18n="lblAutoWeather">
                     📍 Konumdan Otomatik Hava Durumunu Güncelle / Fetch Weather
                 </div>
             </div>
@@ -745,10 +745,39 @@
     }
     function fetchCurrentWeather() {
         const statusEl = document.getElementById('loc-status');
-        statusEl.innerText = currentLang === 'TR' ? "(Senkronize Edildi ✓)" : "(Synchronized ✓)";
-        const weatherSelect = document.getElementById('weather');
-        if(!weatherSelect.value) {
-            weatherSelect.value = "Güneşli / Sunny";
+        if (navigator.geolocation) {
+            statusEl.innerText = currentLang === 'TR' ? "(Konum İsteniyor...)" : "(Fetching Location...)";
+            navigator.geolocation.getCurrentPosition(position => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                statusEl.innerText = currentLang === 'TR' ? `(Konum: ${lat.toFixed(1)}, ${lon.toFixed(1)} ✓)` : `(Loc: ${lat.toFixed(1)}, ${lon.toFixed(1)} ✓)`;
+                
+                fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if(data && data.current_weather) {
+                            const code = data.current_weather.weathercode;
+                            const weatherSelect = document.getElementById('weather');
+                            if(code <= 1) weatherSelect.value = "Güneşli / Sunny";
+                            else if(code <= 3) weatherSelect.value = "Bulutlu / Cloudy";
+                            else if(code <= 67) weatherSelect.value = "Yağmurlu / Rainy";
+                            else if(code <= 77) weatherSelect.value = "Karlı / Snowy";
+                            else weatherSelect.value = "Sisli / Foggy";
+                        }
+                    })
+                    .catch(() => {
+                        const weatherSelect = document.getElementById('weather');
+                        if(!weatherSelect.value) weatherSelect.value = "Güneşli / Sunny";
+                    });
+            }, () => {
+                statusEl.innerText = currentLang === 'TR' ? "(Konum Alınamadı)" : "(Location Failed)";
+                const weatherSelect = document.getElementById('weather');
+                if(!weatherSelect.value) weatherSelect.value = "Güneşli / Sunny";
+            });
+        } else {
+            statusEl.innerText = currentLang === 'TR' ? "(Desteklenmiyor)" : "(Not Supported)";
+            const weatherSelect = document.getElementById('weather');
+            if(!weatherSelect.value) weatherSelect.value = "Güneşli / Sunny";
         }
     }
     function updatePHRangeInfo() {
@@ -1157,4 +1186,3 @@
 </script>
 </body>
 </html>
-```[cite: 4]
