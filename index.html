@@ -41,6 +41,12 @@
         .btn-excel { background: #107c41; color: white; text-decoration: none; display: block; text-align: center; padding: 14px; border-radius: 15px; font-size: 15px; font-weight: 800; margin-top: 10px; }
         .btn-save { background: #0277bd; color: white; text-decoration: none; display: block; text-align: center; padding: 12px; border-radius: 15px; font-size: 14px; font-weight: 800; margin-top: 10px; cursor: pointer; }
         
+        /* Basma Hissiyatı ve İçeri Doğru Hareket Efekti */
+        button:active, .btn-excel:active, .btn-save:active, .other-opt:active, .nav-tab:active {
+            transform: scale(0.97);
+            transition: transform 0.05s ease;
+        }
+
         /* Saha Çalışmaları Galeri Alanı Stilleri */
         .field-section { display: none; }
         .upload-zone { border: 2px dashed var(--primary); padding: 20px; border-radius: 15px; text-align: center; background: #f9fdfa; cursor: pointer; margin-bottom: 12px; }
@@ -597,7 +603,6 @@
         loadGallery();
         updatePHRangeInfo();
         fetchCurrentWeather();
-        // fetchSheetTotalRows(); -> Otomatik tetikleme kaldırıldı
         updateLangButtonLabel();
     }
     
@@ -864,7 +869,7 @@
             if(track) { track.stop(); }
             document.getElementById('cam-box').style.display = 'none';
             document.getElementById('form-area').style.display = 'block';
-            // Otomatik fetchSheetTotalRows() kaldırıldı, sadece butonla çalışacak
+            fetchSheetTotalRows(); // Sayfa açıldığında verilerin otomatik gelmesi sağlandı
         }
     }
     function processBioCamera(event) {
