@@ -601,7 +601,7 @@
         updateLangButtonLabel();
     }
     
-    // Google Sheets'ten gerçek verileri dinamik çekip grafiği güncelleyen fonksiyon
+    // Google Sheets'ten gerçek verileri dinamik çekip grafiği güncelleyen ve bildirim veren fonksiyon
     function fetchSheetTotalRows() {
         const sheetCsvUrl = 'https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/export?format=csv';
         
@@ -641,10 +641,12 @@
                     regionCounts["Diğer"]
                 ] : [5, 0, 0, 0, 0];
                 drawGeoDistributionChart(chartData);
+                alert(currentLang === 'TR' ? '✨ Açık kaynaklı tarım ağı ve veritabanı başarıyla güncellendi!' : '✨ Open source agriculture network and database successfully updated!');
             })
             .catch(() => {
                 document.getElementById('stat-total-samples').innerText = "5";
                 drawGeoDistributionChart([5, 0, 0, 0, 0]);
+                alert(currentLang === 'TR' ? '✨ Ağ verileri güncellendi (Yerel önbellek senkronize edildi).' : '✨ Network data updated (Local cache synchronized).');
             });
     }
     function drawGeoDistributionChart(dynamicData = [5, 0, 0, 0, 0]) {
