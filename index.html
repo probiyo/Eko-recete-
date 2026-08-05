@@ -11,10 +11,7 @@
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 10px; color: #333; }
         .container { max-width: 480px; margin: auto; background: white; padding: 20px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; position: relative; }
         
-        #lang-toggle-container { position: absolute; top: 15px; right: 15px; display: flex; gap: 4px; }
-        .lang-btn { background: #eee; border: 1px solid #ccc; padding: 5px 8px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 11px; display: flex; align-items: center; }
-        .lang-btn:hover { background: #e0e0e0; }
-
+        #lang-toggle { position: absolute; top: 20px; right: 20px; background: #eee; border: 1px solid #ccc; padding: 5px 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; }
         .school-tag { font-size: 10px; color: #777; text-align: center; text-transform: uppercase; letter-spacing: 1.5px; line-height: 1.4; }
         h1 { text-align: center; color: var(--primary); font-size: 20px; margin: 5px 0; }
         .author { text-align: center; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 15px; }
@@ -103,34 +100,7 @@
 </head>
 <body onload="initApp()">
 <div class="container">
-    <div id="lang-toggle-container">
-        <!-- Türkçe Butonu -->
-        <button class="lang-btn" onclick="setLanguage('TR')">
-          <svg width="18" height="12" viewBox="0 0 1200 800" style="vertical-align: middle; margin-right: 4px; border-radius: 2px;">
-            <rect width="1200" height="800" fill="#e30a17"/>
-            <path d="M425 400c0 137.8-111.8 249.6-249.6 249.6-39.7 0-77.2-9.6-110.4-26.6 61.2 55.7 142.9 90.6 233 90.6 186.2 0 337.3-151.1 337.3-337.3S555.2 62.7 369 62.7c-90.1 0-171.8 34.9-233 90.6 33.2-17 70.7-26.6 110.4-26.6C313.2 150.4 425 262.2 425 400z" fill="#fff"/>
-            <path d="M520 400l176.4-57.3-109 150.1V307.2l109 150.1z" fill="#fff"/>
-          </svg>
-          TR
-        </button>
-
-        <!-- İngilizce Butonu -->
-        <button class="lang-btn" onclick="setLanguage('EN')">
-          <svg width="18" height="12" viewBox="0 0 600 300" style="vertical-align: middle; margin-right: 4px; border-radius: 2px;">
-            <clipPath id="s"><path d="M0,0 v300 h600 v-300 z"/></clipPath>
-            <clipPath id="t"><path d="M300,150 h300 v150 z v-300 h-300 z h-300 v-150 z v300 h300 z"/></clipPath>
-            <g clip-path="url(#s)">
-              <path d="M0,0 v300 h600 v-300 z" fill="#012169"/>
-              <path d="M0,0 L600,300 M600,0 L0,300" stroke="#fff" stroke-width="60"/>
-              <path d="M0,0 L600,300 M600,0 L0,300" clip-path="url(#t)" stroke="#C8102E" stroke-width="40"/>
-              <path d="M300,0 v300 M0,150 h600" stroke="#fff" stroke-width="100"/>
-              <path d="M300,0 v300 M0,150 h600" stroke="#C8102E" stroke-width="60"/>
-            </g>
-          </svg>
-          EN
-        </button>
-    </div>
-    
+    <div id="lang-toggle" onclick="toggleLang()">Dil: Türkçe</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;" data-i18n="schoolSub">Rize Fatih Anatolian High School</span></div>
     <h1>GLOBAL AGRO DOCTOR</h1>
     <div class="author">Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biyoloji Uzmanı & Proje Lideri</small></div>
@@ -531,7 +501,7 @@
             statSamples: "Toplam Veri / Total Samples",
             partnerRegions: "Katılımcı Pilot Bölgeler / Partner Regions:",
             netRize: "🌱 Rize Fatih Anadolu Lisesi - Çay (*Camellia sinensis*) [pH: 4.5-6.0]",
-            netAntakya: "🍊 Antakya - Narenciye (*Citrus sinensis* / *Citrus sinensis*) [pH: 6.0-7.5]",
+            netAntakya: "🍊 Antakya - Narenciye (*Citrus sinensis*) [pH: 6.0-7.5]",
             netOlive: "🫒 Ege - Zeytin (*Olea europaea*) [pH: 6.5-8.0]",
             netFig: "🌿 Ege - İncir (*Ficus carica*) [pH: 6.0-7.5]",
             netBrussels: "🇪🇺 Brussels - Şeker Pancarı (*Beta vulgaris*) [pH: 6.0-7.0]",
@@ -601,7 +571,7 @@
             mCollectionDesc: "Spectrophotometer wavelength optimized at 663 nm for chlorophyll a absorption. pH measurements performed with precise electrode pH meters or alternative extraction protocols.",
             mAnalysisTitle: "4. Data Analysis & EU Green Deal Live Mechanism",
             mAnalysisDesc: "Obtained optical density and pH deviation data are converted into chemical input optimization within the framework of the Farm to Fork strategy.",
-            regMetricsBox: "🇪🇺 <strong>EU Green Deal & Farm to Fork Live Optimization Mechanism:</strong><br><br><strong>• Stress Score Calculation Formula:</strong><div class='formula-box'>Stress_Score = w₁ · |pH_optimum - pH_measured| + w₂ · (A_reference - A_sample)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Converting plant physiological stress level into a numerical value by combining pH deviation and chlorophyll absorption drop with weighted coefficients.)</div><br><strong>• Chemical Input Optimization & Fertilizer Saving (22.4%):</strong><div class='formula-box'>Saving_%_fertilizers = (1 - (Input_optimize / Input_traditional)) · 100</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Ratio preventing over-fertilization based on ion/pH dynamics effects on chlorophyll synthesis according to Campbell Biology and Guyton & Hall principles.)</div><br><strong>• Carbon Footprint Reduction (142 kg CO₂ equivalent):</strong><div class='formula-box'>CO₂_Reduction = Σ (Input_reduced · EF_chemical)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Annual savings per decare resulting from multiplying the chemical amount reduced through precision agriculture regime by emission factor.)</div><br><strong>• Pesticide Optimization (30%):</strong><div class='formula-box'>Pest_Opt = (Threshold_standard / Alert_early_stage) · 30%</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Threshold limit matrix preventing unnecessary chemical spraying thanks to early warning algorithms.)</div>",
+            regMetricsBox: "🇪🇺 <strong>EU Green Deal & Farm to Fork Live Optimization Mechanism:</strong><br><br><strong>• Stress Score Calculation Formula:</strong><div class='formula-box'>Stress_Score = w₁ · |pH_optimum - pH_measured| + w₂ · (A_reference - A_sample)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Converting plant physiological stress level into a numerical value by combining pH deviation and chlorophyll absorption drop with weighted coefficients.)</div><br><strong>• Chemical Input Optimization & Fertilizer Saving (22.4%):</strong><div class='formula-box'>Saving_%_fertilizers = (1 - (Input_optimize / Input_traditional)) · 100</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Ratio preventing over-fertilization based on ion/pH dynamics effects on chlorophyll synthesis according to Campbell Biology and Guyton & Hall principles.)</div><br><strong>• Carbon Footprint Reduction (142 kg CO₂ equivalent):</strong><div class='formula-box'>CO₂_Reduction = Σ (Input_reduced · EF_chemical)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Annual savings per decare resulting from multiplying the chemical amount reduced through precision agriculture regime by emission factor.)</div><br><strong>• Pesticide Optimization (30%):}</strong><div class='formula-box'>Pest_Opt = (Threshold_standard / Alert_early_stage) · 30%</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Threshold limit matrix preventing unnecessary chemical spraying thanks to early warning algorithms.)</div>",
             fieldTitle: "📸 Field & Student Research Photos<br><span style='font-size:9px; font-weight:normal;'>Field & Student Research Photos Gallery</span>",
             uploadMain: "Choose or Upload Photo",
             uploadSub: "Group photos with students, laboratory and field studies",
@@ -626,15 +596,9 @@
         updatePHRangeInfo();
         fetchCurrentWeather();
         fetchSheetTotalRows();
+        updateLangButtonLabel();
     }
     
-    function setLanguage(lang) {
-        const targetLang = lang.toUpperCase();
-        if (currentLang !== targetLang) {
-            toggleLang();
-        }
-    }
-
     // Google Sheets'ten gerçek verileri dinamik çekip grafiği güncelleyen fonksiyon
     function fetchSheetTotalRows() {
         const sheetCsvUrl = 'https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/export?format=csv';
@@ -749,8 +713,17 @@
         selectRegion.value = currentRegionSelection;
         selectBioPlant.value = currentBioSelection;
     }
+    function updateLangButtonLabel() {
+        const toggleBtn = document.getElementById('lang-toggle');
+        if (currentLang === 'TR') {
+            toggleBtn.innerText = 'Dil: Türkçe';
+        } else {
+            toggleBtn.innerText = 'Language: English';
+        }
+    }
     function toggleLang() {
         currentLang = currentLang === 'TR' ? 'EN' : 'TR';
+        updateLangButtonLabel();
         
         populateDropdowns();
         const elements = document.querySelectorAll('[data-i18n]');
