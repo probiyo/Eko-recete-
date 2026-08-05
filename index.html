@@ -11,7 +11,9 @@
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 10px; color: #333; }
         .container { max-width: 480px; margin: auto; background: white; padding: 20px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; position: relative; }
         
-        #lang-toggle { position: absolute; top: 20px; right: 20px; background: #eee; border: 1px solid #ccc; padding: 5px 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; }
+        #lang-toggle { position: absolute; top: 20px; right: 20px; background: #eee; border: 1px solid #ccc; padding: 6px 12px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.2s; }
+        #lang-toggle:hover { background: #e0e0e0; }
+        
         .school-tag { font-size: 10px; color: #777; text-align: center; text-transform: uppercase; letter-spacing: 1.5px; line-height: 1.4; }
         h1 { text-align: center; color: var(--primary); font-size: 20px; margin: 5px 0; }
         .author { text-align: center; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 15px; }
@@ -100,7 +102,7 @@
 </head>
 <body onload="initApp()">
 <div class="container">
-    <div id="lang-toggle" onclick="toggleLang()">🇹🇷 Türkçe</div>
+    <div id="lang-toggle" onclick="toggleLang()">🇹🇷 TR</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;" data-i18n="schoolSub">Rize Fatih Anatolian High School</span></div>
     <h1>GLOBAL AGRO DOCTOR</h1>
     <div class="author">Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biyoloji Uzmanı & Proje Lideri</small></div>
@@ -571,7 +573,7 @@
             mCollectionDesc: "Spectrophotometer wavelength optimized at 663 nm for chlorophyll a absorption. pH measurements performed with precise electrode pH meters or alternative extraction protocols.",
             mAnalysisTitle: "4. Data Analysis & EU Green Deal Live Mechanism",
             mAnalysisDesc: "Obtained optical density and pH deviation data are converted into chemical input optimization within the framework of the Farm to Fork strategy.",
-            regMetricsBox: "🇪🇺 <strong>EU Green Deal & Farm to Fork Live Optimization Mechanism:</strong><br><br><strong>• Stress Score Calculation Formula:</strong><div class='formula-box'>Stress_Score = w₁ · |pH_optimum - pH_measured| + w₂ · (A_reference - A_sample)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Converting plant physiological stress level into a numerical value by combining pH deviation and chlorophyll absorption drop with weighted coefficients.)</div><br><strong>• Chemical Input Optimization & Fertilizer Saving (22.4%):</strong><div class='formula-box'>Saving_%_fertilizers = (1 - (Input_optimize / Input_traditional)) · 100</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Ratio preventing over-fertilization based on ion/pH dynamics effects on chlorophyll synthesis according to Campbell Biology and Guyton & Hall principles.)</div><br><strong>• Carbon Footprint Reduction (142 kg CO₂ equivalent):</strong><div class='formula-box'>CO₂_Reduction = Σ (Input_reduced · EF_chemical)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Annual savings per decare resulting from multiplying the chemical amount reduced through precision agriculture regime by emission factor.)</div><br><strong>• Pesticide Optimization (30%):}</strong><div class='formula-box'>Pest_Opt = (Threshold_standard / Alert_early_stage) · 30%</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Threshold limit matrix preventing unnecessary chemical spraying thanks to early warning algorithms.)</div>",
+            regMetricsBox: "🇪🇺 <strong>EU Green Deal & Farm to Fork Live Optimization Mechanism:</strong><br><br><strong>• Stress Score Calculation Formula:</strong><div class='formula-box'>Stress_Score = w₁ · |pH_optimum - pH_measured| + w₂ · (A_reference - A_sample)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Converting plant physiological stress level into a numerical value by combining pH deviation and chlorophyll absorption drop with weighted coefficients.)</div><br><strong>• Chemical Input Optimization & Fertilizer Saving (22.4%):</strong><div class='formula-box'>Saving_%_fertilizers = (1 - (Input_optimize / Input_traditional)) · 100</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Ratio preventing over-fertilization based on ion/pH dynamics effects on chlorophyll synthesis according to Campbell Biology and Guyton & Hall principles.)</div><br><strong>• Carbon Footprint Reduction (142 kg CO₂ equivalent):</strong><div class='formula-box'>CO₂_Reduction = Σ (Input_reduced · EF_chemical)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Annual savings per decare resulting from multiplying the chemical amount reduced through precision agriculture regime by emission factor.)</div><br><strong>• Pesticide Optimization (30%):</strong><div class='formula-box'>Pest_Opt = (Threshold_standard / Alert_early_stage) · 30%</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Threshold limit matrix preventing unnecessary chemical spraying thanks to early warning algorithms.)</div>",
             fieldTitle: "📸 Field & Student Research Photos<br><span style='font-size:9px; font-weight:normal;'>Field & Student Research Photos Gallery</span>",
             uploadMain: "Choose or Upload Photo",
             uploadSub: "Group photos with students, laboratory and field studies",
@@ -716,9 +718,9 @@
     function updateLangButtonLabel() {
         const toggleBtn = document.getElementById('lang-toggle');
         if (currentLang === 'TR') {
-            toggleBtn.innerText = '🇹🇷 Türkçe';
+            toggleBtn.innerHTML = '🇹🇷 TR';
         } else {
-            toggleBtn.innerText = '🇪🇺 English';
+            toggleBtn.innerHTML = '🇬🇧 ENG';
         }
     }
     function toggleLang() {
