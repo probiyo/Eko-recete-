@@ -59,7 +59,9 @@
         .stat-number { font-size: 18px; font-weight: 800; color: var(--primary); }
         .stat-label { font-size: 9px; color: #555; margin-top: 2px; font-weight: bold; }
         .network-list { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
-        .network-item { background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 10px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
+        .network-item { background: #fff; border: 1px solid #ddd; padding: 8px 10px; border-radius: 10px; font-size: 10px; display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+        .network-item span { flex: 1; min-width: 0; word-break: break-word; }
+        .network-item strong { white-space: nowrap; font-size: 9px; }
         
         /* MEBİ & Biyoloji Laboratuvarı Sekmesi Stilleri */
         .biolab-section { display: none; }
@@ -501,7 +503,7 @@
             statSamples: "Toplam Veri / Total Samples",
             partnerRegions: "Katılımcı Pilot Bölgeler / Partner Regions:",
             netRize: "🌱 Rize Fatih Anadolu Lisesi - Çay (*Camellia sinensis*) [pH: 4.5-6.0]",
-            netAntakya: "🍊 Antakya - Narenciye (*Citrus sinensis*) [pH: 6.0-7.5]",
+            netAntakya: "🍊 Antakya - Narenciye (*Citrus sinensis* / *Citrus sinensis*) [pH: 6.0-7.5]",
             netOlive: "🫒 Ege - Zeytin (*Olea europaea*) [pH: 6.5-8.0]",
             netFig: "🌿 Ege - İncir (*Ficus carica*) [pH: 6.0-7.5]",
             netBrussels: "🇪🇺 Brussels - Şeker Pancarı (*Beta vulgaris*) [pH: 6.0-7.0]",
@@ -571,7 +573,7 @@
             mCollectionDesc: "Spectrophotometer wavelength optimized at 663 nm for chlorophyll a absorption. pH measurements performed with precise electrode pH meters or alternative extraction protocols.",
             mAnalysisTitle: "4. Data Analysis & EU Green Deal Live Mechanism",
             mAnalysisDesc: "Obtained optical density and pH deviation data are converted into chemical input optimization within the framework of the Farm to Fork strategy.",
-            regMetricsBox: "🇪🇺 <strong>EU Green Deal & Farm to Fork Live Optimization Mechanism:</strong><br><br><strong>• Stress Score Calculation Formula:</strong><div class='formula-box'>Stress_Score = w₁ · |pH_optimum - pH_measured| + w₂ · (A_reference - A_sample)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Converting plant physiological stress level into a numerical value by combining pH deviation and chlorophyll absorption drop with weighted coefficients.)</div><br><strong>• Chemical Input Optimization & Fertilizer Saving (22.4%):</strong><div class='formula-box'>Saving_%_fertilizers = (1 - (Input_optimize / Input_traditional)) · 100</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Ratio preventing over-fertilization based on ion/pH dynamics effects on chlorophyll synthesis according to Campbell Biology and Guyton & Hall principles.)</div><br><strong>• Carbon Footprint Reduction (142 kg CO₂ equivalent):</strong><div class='formula-box'>CO₂_Reduction = Σ (Input_reduced · EF_chemical)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Annual savings per decare resulting from multiplying the chemical amount reduced through precision agriculture regime by emission factor.)</div><br><strong>• Pesticide Optimization (30%):}</strong><div class='formula-box'>Pest_Opt = (Threshold_standard / Alert_early_stage) · 30%</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Threshold limit matrix preventing unnecessary chemical spraying thanks to early warning algorithms.)</div>",
+            regMetricsBox: "🇪🇺 <strong>EU Green Deal & Farm to Fork Live Optimization Mechanism:</strong><br><br><strong>• Stress Score Calculation Formula:</strong><div class='formula-box'>Stress_Score = w₁ · |pH_optimum - pH_measured| + w₂ · (A_reference - A_sample)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Converting plant physiological stress level into a numerical value by combining pH deviation and chlorophyll absorption drop with weighted coefficients.)</div><br><strong>• Chemical Input Optimization & Fertilizer Saving (22.4%):</strong><div class='formula-box'>Saving_%_fertilizers = (1 - (Input_optimize / Input_traditional)) · 100</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Ratio preventing over-fertilization based on ion/pH dynamics effects on chlorophyll synthesis according to Campbell Biology and Guyton & Hall principles.)</div><br><strong>• Carbon Footprint Reduction (142 kg CO₂ equivalent):</strong><div class='formula-box'>CO₂_Reduction = Σ (Input_reduced · EF_chemical)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Annual savings per decare resulting from multiplying the chemical amount reduced through precision agriculture regime by emission factor.)</div><br><strong>• Pesticide Optimization (30%):</strong><div class='formula-box'>Pest_Opt = (Threshold_standard / Alert_early_stage) · 30%</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Threshold limit matrix preventing unnecessary chemical spraying thanks to early warning algorithms.)</div>",
             fieldTitle: "📸 Field & Student Research Photos<br><span style='font-size:9px; font-weight:normal;'>Field & Student Research Photos Gallery</span>",
             uploadMain: "Choose or Upload Photo",
             uploadSub: "Group photos with students, laboratory and field studies",
