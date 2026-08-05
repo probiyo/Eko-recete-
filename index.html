@@ -171,7 +171,7 @@
                     ⚠️ Tip: Clean dust/water drops on leaf for accuracy.
                </div>
             </div>
-            <button id="snap-btn" class="btn-snap" onclick="processAI(); resetSystem();" data-i18n="btnTakePhoto">FOTOĞRAF ÇEK / TAKE PHOTO</button>
+            <button id="snap-btn" class="btn-snap" onclick="processAI()" data-i18n="btnTakePhoto">FOTOĞRAF ÇEK / TAKE PHOTO</button>
         </div>
         <div id="error-box" class="error-msg" data-i18n="errorPlant">
             ⚠️ BİTKİ ALGILANAMADI: Yeterli yaprak/klorofil (yeşil doku) tespit edilemedi. Lütfen yaprak görüntüsü çekiniz!<br>
@@ -844,6 +844,11 @@
         if(tabName === 'analysis') {
             analysisSec.style.display = 'block';
             tabAnalysisBtn.classList.add('active');
+            document.getElementById('form-area').style.display = 'block';
+            document.getElementById('res-area').style.display = 'none';
+            document.getElementById('cam-box').style.display = 'none';
+            document.getElementById('error-box').style.display = 'none';
+            if(track) { track.stop(); }
         } else if(tabName === 'biolab') {
             biolabSec.style.display = 'block';
             tabBiolabBtn.classList.add('active');
@@ -868,7 +873,7 @@
             if(track) { track.stop(); }
             document.getElementById('cam-box').style.display = 'none';
             document.getElementById('form-area').style.display = 'block';
-            fetchSheetTotalRows(); // Sayfa açıldığında verilerin otomatik gelmesi sağlandı
+            fetchSheetTotalRows();
         }
     }
     function processBioCamera(event) {
