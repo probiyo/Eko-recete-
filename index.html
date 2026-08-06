@@ -45,7 +45,6 @@
             transform: scale(0.97);
             transition: transform 0.05s ease;
         }
-        
         .field-section { display: none; }
         .upload-zone { border: 2px dashed var(--primary); padding: 20px; border-radius: 15px; text-align: center; background: #f9fdfa; cursor: pointer; margin-bottom: 12px; }
         .upload-zone:hover { background: #f1f8f2; }
@@ -93,7 +92,7 @@
         .sync-status { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; padding: 8px; border-radius: 10px; font-size: 11px; font-weight: bold; text-align: center; margin-bottom: 10px; display: none; line-height: 1.4; }
         
         .chart-box { background: #fafafa; padding: 12px; border-radius: 15px; margin-bottom: 12px; border: 1px solid #ddd; }
-        .chart-container { position: relative; width: 100%; height: 220px; min-height: 220px; }
+        .chart-container { position: relative; width: 100%; min-height: 200px; }
         .expert-msg { background: #fff3e0; border-left: 5px solid #ff9800; padding: 10px; font-size: 11px; font-weight: bold; color: #e65100; margin-bottom: 15px; line-height: 1.4; }
         .error-msg { color: var(--danger); font-weight: bold; text-align: center; padding: 20px; border: 2px dashed var(--danger); border-radius: 15px; display: none; margin-top: 10px; font-size: 13px; }
         .ph-warning { color: var(--danger); font-size: 10px; font-weight: bold; margin-top: 5px; display: none; }
@@ -157,6 +156,7 @@
             
             <button id="start-btn" class="btn-main" onclick="startSystem()" data-i18n="btnStartAnalyze">ANALİZİ BAŞLAT / START ANALYZE</button>
         </div>
+        
         <div id="cam-box">
             <video id="v" autoplay playsinline></video>
             <canvas id="canvas"></canvas>
@@ -169,10 +169,12 @@
             </div>
             <button id="snap-btn" class="btn-snap" onclick="processAI()" data-i18n="btnTakePhoto">FOTOĞRAF ÇEK / TAKE PHOTO</button>
         </div>
+        
         <div id="error-box" class="error-msg" data-i18n="errorPlant">
             ⚠️ BİTKİ ALGILANAMADI: Yeterli yaprak/klorofil (yeşil doku) tespit edilemedi. Lütfen yaprak görüntüsü çekiniz!<br>
             ⚠️ NO PLANT DETECTED: Insufficient leaf/chlorophyll (green tissue) detected. Please capture a leaf image!
         </div>
+        
         <div id="res-area">
             <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;"><span data-i18n="reportHeaderTitle">BRÜSSEL PROJE RAPORU #EU-AGRO</span><br><span style="font-size:9px; font-weight:normal;" data-i18n="reportHeaderSub">BRUSSELS PROJECT REPORT #EU-AGRO</span></div>
             
@@ -192,6 +194,7 @@
                    <canvas id="stressChart"></canvas>
                </div>
             </div>
+            
             <div id="res-output" class="res-body"></div>
             <div id="expert-note" class="expert-msg" data-i18n="expertNotice">
                 ⚠️ UZMAN GÖRÜŞÜ: Çözülemeyen sorunlarda acil uzman desteği alınmalıdır.<br>
@@ -203,6 +206,7 @@
             <button id="reset-btn" class="btn-reset" onclick="resetSystem()" style="display:block;" data-i18n="btnNewAnalyze">YENİ ANALİZ / NEW ANALYZE</button>
         </div>
     </div>
+    
     <!-- MEBİ & BİYOLOJİ LABORATUVARI SEKMESİ -->
     <div id="biolab-section" class="biolab-section">
         <div class="card">
@@ -217,22 +221,26 @@
                 • <strong>2. Adım:</strong> Çözelti süzgeç kâğıdından geçirilerek berrak sıvı faz elde edilir.<br>
                 • <strong>3. Adım:</strong> Elde edilen berrak sıvıya pH çubuğu/kağıdı batırılır veya kırmızı lahana suyu indikatörü damlatılarak renk değişim sklasıyla pH tespiti gerçekleştirilir.
             </div>
+            
             <div style="background: #fdf4ff; border: 1px dashed #d946ef; padding: 10px; border-radius: 10px; margin-bottom: 12px; font-size: 10px; color: #86198f; line-height: 1.4;" data-i18n="bioCalibTipBox">
                 💡 <strong>Kalibrasyon & Ölçüm İpuçları (Calibration Tip):</strong><br>
                 1. Telefon kamerasını yaprağa veya tüpe sabit bir açıyla (dik) tutun.<br>
                 2. Ortam ışığını sabitlemek için gölgede veya standart ışık kaynağı altında çekim yapın.<br>
                 3. Yaprak yüzeyindeki toz veya su damlalarını önceden kurulayın.
             </div>
+            
             <div style="background: #f0fdf4; border: 1px solid #86efac; padding: 10px; border-radius: 10px; margin-bottom: 12px; font-size: 10px; color: #166534; line-height: 1.4;" data-i18n="bioExtractGuideBox">
                 🌿 <strong>Yaprak Ekstraktı Nasıl Hazırlanır? (Basit Protokol):</strong><br>
                 • <strong>1. Adım:</strong> 1 gram taze yaprak örneğini ince kıyıp havan veya tüp içerisine alın.<br>
                 • <strong>2. Adım:</strong> Üzerine 10 ml %95'lik Aseton (veya saf etil alkol) ekleyin.<br>
                 • <strong>3. Adım:</strong> İyice ezip süzerek berrak yeşil sıvı ekstraktı elde edin ve kamerayla ölçün.
             </div>
+            
             <label data-i18n="lblSamplePlant">Numune Bitki Türü / Sample Plant</label>
             <select id="bio-plant">
                <!-- Dinamik olarak doldurulacak -->
             </select>
+            
             <label data-i18n="lblWavelength">Spektrofotometre / Kalorimetre Dalga Boyu</label>
             <select id="bio-wavelength" disabled>
                 <option value="663" data-i18n="optWavelength">663 nm (Klorofil a - Maksimum Absorpsiyon)</option>
@@ -258,10 +266,10 @@
             
             <div id="bio-sync-status" class="sync-status" style="margin-top: 10px;" data-i18n="bioSyncSuccess">✨ MEBİ Lab Verisi Canlı Veri Tablosuna ve Analiz Modülüne Aktarıldı!</div>
             
-            <div id="bio-result-box" style="display:none; margin-top:12px; background:#f0fdf4; border:1px solid #bbf7d0; padding:12px; border-radius:10px; font-size:11px; color:#166534; line-height:1.4;">
-            </div>
+            <div id="bio-result-box" style="display:none; margin-top:12px; background:#f0fdf4; border:1px solid #bbf7d0; padding:12px; border-radius:10px; font-size:11px; color:#166534; line-height:1.4;"></div>
         </div>
     </div>
+    
     <!-- BİLİMSEL METODOLOJİ VE WHITE_PAPER SEKMESİ -->
     <div id="methods-section" class="methods-section">
         <div class="card">
@@ -282,7 +290,6 @@
                 
                 <div class="regulation-metrics" data-i18n="regMetricsBox">
                     🇪🇺 <strong>EU Green Deal & Farm to Fork (Tarladan Sofraya) Canlı Optimizasyon Mekanizması:</strong><br><br>
-                    
                     <strong>• Stres Skoru Hesaplama Formülü:</strong>
                     <div class="formula-box">Stress_Score = w₁ · |pH_optimum - pH_measured| + w₂ · (A_reference - A_sample)</div>
                     <div style="font-size:10px; margin-top:2px; color:#555;" data-i18n="regFormulaDesc1">(pH sapmasını ve klorofil absorpsiyon düşüşünü ağırlıklı katsayılarla birleştirerek bitkinin fizyolojik stres seviyesini sayısal bir değere dönüştürüyoruz.)</div><br>
@@ -299,6 +306,7 @@
             </div>
         </div>
     </div>
+    
     <!-- SAHA ÇALIŞMALARI SEKMESİ -->
     <div id="field-section" class="field-section">
         <div class="card">
@@ -313,6 +321,7 @@
             <div id="gallery-container" class="gallery-grid"></div>
         </div>
     </div>
+    
     <!-- CITIZEN SCIENCE SEKMESİ -->
     <div id="citizen-section" class="citizen-section">
         <div class="card">
@@ -335,6 +344,7 @@
                    <canvas id="geoDistributionChart"></canvas>
                </div>
             </div>
+            
             <div id="partner-regions-lbl" style="font-size: 11px; font-weight: bold; margin-bottom: 5px; color: var(--primary);" data-i18n="partnerRegions">Katılımcı Pilot Bölgeler / Partner Regions:</div>
             <div class="network-list">
                 <div class="network-item">
@@ -364,11 +374,13 @@
     
     <div class="footer">© 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anatolian High School</div>
 </div>
+
 <div id="lightbox-modal" onclick="closeLightbox()">
     <button id="lightbox-close" onclick="closeLightbox()">&times;</button>
     <img id="lightbox-img" src="" alt="Zoomed Photo">
     <div id="lightbox-caption"></div>
 </div>
+
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSfNJ-wahBs-bJn5AIJjHTvGNM19WpMKvEDij-6j8pM6ej2-VDdZCcFIak4DcXYxpv/exec';
     let currentLang = 'TR';
@@ -429,6 +441,7 @@
             chartLabelTR: "Global (Diğer)", chartLabelEN: "Global (Other)"
         }
     };
+
     const translations = {
         TR: {
             schoolSub: "Rize Fatih Anatolian High School",
@@ -589,6 +602,7 @@
             btnUpdateNetwork: "🔄 UPDATE NETWORK"
         }
     };
+
     function initApp() {
         populateDropdowns();
         loadGallery();
@@ -642,78 +656,6 @@
                 drawGeoDistributionChart([5, 0, 0, 0, 0]);
             });
     }
-    
-    function drawStressChart(phVal, chlorophyllVal) {
-        const ctx = document.getElementById('stressChart').getContext('2d');
-        if(myChart) { myChart.destroy(); }
-        
-        let baseStress = Math.abs(phVal - 5.2) * 15 + (10 - chlorophyllVal) * 3;
-        if(baseStress < 10) baseStress = 12;
-        if(baseStress > 90) baseStress = 85;
-        
-        const dataIntervention = [
-            Math.round(baseStress),
-            Math.round(baseStress * 0.8),
-            Math.round(baseStress * 0.55),
-            Math.round(baseStress * 0.35),
-            Math.round(baseStress * 0.2)
-        ];
-        const dataNoIntervention = [
-            Math.round(baseStress),
-            Math.round(baseStress * 1.15),
-            Math.round(baseStress * 1.35),
-            Math.round(baseStress * 1.55),
-            Math.round(baseStress * 1.8)
-        ];
-        
-        myChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: currentLang === 'TR' ? ['1. Gün', '2. Gün', '3. Gün', '4. Gün', '5. Gün'] : ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5'],
-                datasets: [
-                    {
-                        label: currentLang === 'TR' ? 'Müdahaleli Stres Trendi (Önerilen Reçete)' : 'Intervention Stress Trend (Recommended)',
-                        data: dataIntervention,
-                        borderColor: '#2e7d32',
-                        backgroundColor: 'rgba(46, 125, 50, 0.1)',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.3
-                    },
-                    {
-                        label: currentLang === 'TR' ? 'Müdahalesiz Stres Trendi (Geleneksel)' : 'No Intervention Stress Trend (Traditional)',
-                        data: dataNoIntervention,
-                        borderColor: '#d32f2f',
-                        backgroundColor: 'rgba(211, 47, 47, 0.1)',
-                        borderWidth: 2,
-                        borderDash: [5, 5],
-                        fill: false,
-                        tension: 0.3
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        ticks: { font: { size: 9 } }
-                    },
-                    x: {
-                        ticks: { font: { size: 9 } }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { boxWidth: 12, font: { size: 9 } }
-                    }
-                }
-            }
-        });
-    }
 
     function drawGeoDistributionChart(dynamicData = [5, 0, 0, 0, 0]) {
         const ctx = document.getElementById('geoDistributionChart').getContext('2d');
@@ -728,13 +670,7 @@
                 labels: labelsArr,
                 datasets: [{
                     data: dynamicData,
-                    backgroundColor: [
-                        '#1b5e20',
-                        '#ff9800',
-                        '#8bc34a',
-                        '#4caf50',
-                        '#2196f3'
-                    ],
+                    backgroundColor: ['#1b5e20', '#ff9800', '#8bc34a', '#4caf50', '#2196f3'],
                     borderWidth: 1
                 }]
             },
@@ -759,6 +695,7 @@
             }
         });
     }
+
     function populateDropdowns() {
         const selectRegion = document.getElementById('region');
         const selectBioPlant = document.getElementById('bio-plant');
@@ -783,6 +720,7 @@
         selectRegion.value = currentRegionSelection;
         selectBioPlant.value = currentBioSelection;
     }
+
     function updateLangButtonLabel() {
         const toggleBtn = document.getElementById('lang-toggle');
         if (currentLang === 'TR') {
@@ -791,6 +729,7 @@
             toggleBtn.innerText = 'Language: English';
         }
     }
+
     function toggleLang() {
         currentLang = currentLang === 'TR' ? 'EN' : 'TR';
         updateLangButtonLabel();
@@ -810,6 +749,7 @@
             updateDynamicReportTexts();
         }
     }
+
     function fetchCurrentWeather() {
         const statusEl = document.getElementById('loc-status');
         if (navigator.geolocation) {
@@ -847,6 +787,7 @@
             if(!weatherSelect.value) weatherSelect.value = "Güneşli / Sunny";
         }
     }
+
     function updatePHRangeInfo() {
         const regionKey = document.getElementById('region').value;
         const range = cropRanges[regionKey] || { min: 6.0, max: 7.0 };
@@ -863,6 +804,7 @@
             validatePH(phInput);
         }
     }
+
     function validatePH(input) {
         const val = parseFloat(input.value);
         const warn = document.getElementById('ph-warn');
@@ -880,6 +822,7 @@
             warn.style.display = 'none';
         }
     }
+
     function switchTab(tabName) {
         const analysisSec = document.getElementById('analysis-section');
         const biolabSec = document.getElementById('biolab-section');
@@ -940,6 +883,7 @@
             fetchSheetTotalRows();
         }
     }
+
     function processBioCamera(event) {
         const file = event.target.files[0];
         if(!file) return;
@@ -982,6 +926,7 @@
         }
         reader.readAsDataURL(file);
     }
+
     function calculateBiolab(sendToSheet = false) {
         const plantKey = document.getElementById('bio-plant').value;
         const range = cropRanges[plantKey] || { min: 6.0, max: 7.0 };
@@ -1033,6 +978,7 @@
             });
         }
     }
+
     function handleFileUpload(event) {
         const file = event.target.files[0];
         if(!file) return;
@@ -1065,6 +1011,7 @@
         }
         reader.readAsDataURL(file);
     }
+
     function updateCaption(index, newCaption) {
         let gallery = JSON.parse(localStorage.getItem('agro_field_gallery') || '[]');
         if(gallery[index]) {
@@ -1072,6 +1019,7 @@
             localStorage.setItem('agro_field_gallery', JSON.stringify(gallery));
         }
     }
+
     function loadGallery() {
         const container = document.getElementById('gallery-container');
         let gallery = JSON.parse(localStorage.getItem('agro_field_gallery') || '[]');
@@ -1092,6 +1040,7 @@
             container.appendChild(div);
         });
     }
+
     function deletePhoto(event, index) {
         event.stopPropagation();
         if(confirm(currentLang === 'TR' ? 'Bu fotoğrafı silmek istediğinize emin misiniz?' : 'Are you sure you want to delete this photo?')) {
@@ -1101,14 +1050,17 @@
             loadGallery();
         }
     }
+
     function openLightbox(imgSrc, caption) {
         document.getElementById('lightbox-img').src = imgSrc;
         document.getElementById('lightbox-caption').innerText = caption;
         document.getElementById('lightbox-modal').style.display = 'flex';
     }
+
     function closeLightbox() {
         document.getElementById('lightbox-modal').style.display = 'none';
     }
+
     function startSystem() {
         const phVal = document.getElementById('ph').value;
         if(!phVal) {
@@ -1127,6 +1079,7 @@
             resetSystem();
         });
     }
+
     function processAI() {
         c.width = v.videoWidth || 640;
         c.height = v.videoHeight || 480;
@@ -1164,35 +1117,68 @@
         document.getElementById('res-area').style.display = 'block';
         
         updateDynamicReportTexts();
+        drawStressChart(); // Grafik verisini işleyen ve çizen fonksiyon tetikleyicisi
+    }
+
+    // Chart.js 5 Günlük Karşılaştırmalı Stres Trendi Çizim Fonksiyonu
+    function drawStressChart() {
+        const ctx = document.getElementById('stressChart').getContext('2d');
+        if(myChart) { myChart.destroy(); }
         
-        // Verileri Google Sheets'e otomatik gönder
-        const regionKey = document.getElementById('region').value;
-        const phVal = document.getElementById('ph').value;
-        const weatherVal = document.getElementById('weather').value;
-        const labChlorophyll = document.getElementById('integrated-chlorophyll').value;
-        const cropName = cropRanges[regionKey] ? cropRanges[regionKey][currentLang] : regionKey;
-        
-        const formData = {
-            region: cropName,
-            ph: phVal,
-            weather: weatherVal,
-            stress: `pH: ${phVal}, Lab Klorofil a: ${labChlorophyll || 'N/A'} mg/L`,
-            notes: `Otomatik Saha Analizi Tamamlandı.`,
-            photograph: lastCapturedImage ? "Fotoğraf Mevcut" : "Yok",
-            date: new Date().toLocaleString()
-        };
-        
-        fetch(SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData)
-        }).then(() => {
-            document.getElementById('sync-status').style.display = 'block';
-        }).catch(() => {
-            document.getElementById('sync-status').style.display = 'block';
+        const labelsArr = currentLang === 'TR' ? 
+            ['1. Gün', '2. Gün', '3. Gün', '4. Gün', '5. Gün'] : 
+            ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5'];
+            
+        myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labelsArr,
+                datasets: [
+                    {
+                        label: currentLang === 'TR' ? 'Müdahaleli (Reçeteli)' : 'Intervention (Prescribed)',
+                        data: [65, 52, 38, 24, 15],
+                        borderColor: '#2e7d32',
+                        backgroundColor: 'rgba(46, 125, 50, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3
+                    },
+                    {
+                        label: currentLang === 'TR' ? 'Müdahalesiz (Kontrol)' : 'No Intervention (Control)',
+                        data: [65, 70, 78, 85, 92],
+                        borderColor: '#d32f2f',
+                        backgroundColor: 'rgba(211, 47, 47, 0.05)',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        fill: false,
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { boxWidth: 12, font: { size: 10 } }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: currentLang === 'TR' ? 'Stres İndeksi (%)' : 'Stress Index (%)',
+                            font: { size: 10 }
+                        }
+                    }
+                }
+            }
         });
     }
+
     function updateAnalysis(pH, chlorophyll, weather) {
         let recipeTextTR = "";
         let recipeTextEN = "";
@@ -1216,6 +1202,7 @@
             recipeBox.innerHTML = `🔥 <strong>${currentLang === 'TR' ? 'Entegre Ekolojik Reçete' : 'Integrated Ecological Prescription'} / Integrated Ecological Prescription:</strong><br>${currentLang === 'TR' ? recipeTextTR : recipeTextEN}`;
         }
     }
+
     function updateDynamicReportTexts() {
         const regionKey = document.getElementById('region').value;
         const ph = document.getElementById('ph').value;
@@ -1274,11 +1261,6 @@
         updateAnalysis(phVal, chlorophyllVal, weather);
         
         document.getElementById('res-output').innerText = `Integrated Analysis / Entegre Analiz Raporu\nRegion & Crop: ${cropDisplayName}\npH: ${ph}\nWeather: ${weather}\nLab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L`;
-        
-        // Grafik çizimini tetikle
-        setTimeout(() => {
-            drawStressChart(phVal, chlorophyllVal);
-        }, 100);
     }
     
     function resetSystem() {
