@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --primary: #1b5e20; --accent: #ffd700; --danger: #d32f2f; --bg: #f4f7f5; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 10px; color: #333; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 10px; color: #333; }
         .container { max-width: 480px; margin: auto; background: white; padding: 20px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; position: relative; }
         
         #lang-toggle { position: absolute; top: 20px; right: 20px; background: #eee; border: 1px solid #ccc; padding: 5px 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; }
@@ -16,7 +16,6 @@
         h1 { text-align: center; color: var(--primary); font-size: 20px; margin: 5px 0; }
         .author { text-align: center; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 15px; }
         
-        /* Navigasyon / Sekme Menüsü */
         .nav-tabs { display: flex; gap: 4px; margin-bottom: 15px; background: #e8f0e9; padding: 4px; border-radius: 14px; flex-wrap: wrap; }
         .nav-tab { flex: 1; padding: 8px 4px; text-align: center; font-size: 9px; font-weight: 800; color: var(--primary); background: transparent; border: none; border-radius: 10px; cursor: pointer; transition: 0.2s; min-width: 70px; }
         .nav-tab.active { background: var(--primary); color: white; }
@@ -41,11 +40,8 @@
         .btn-excel { background: #107c41; color: white; text-decoration: none; display: block; text-align: center; padding: 14px; border-radius: 15px; font-size: 15px; font-weight: 800; margin-top: 10px; }
         .btn-save { background: #0277bd; color: white; text-decoration: none; display: block; text-align: center; padding: 12px; border-radius: 15px; font-size: 14px; font-weight: 800; margin-top: 10px; cursor: pointer; }
         
-        button:active, .btn-excel:active, .btn-save:active, .other-opt:active, .nav-tab:active {
-            transform: scale(0.97);
-            transition: transform 0.05s ease;
-        }
-        .field-section { display: none; }
+        button:active, .btn-excel:active, .btn-save:active, .other-opt:active, .nav-tab:active { transform: scale(0.97); transition: transform 0.05s ease; }
+        .field-section, .citizen-section, .biolab-section, .methods-section { display: none; }
         .upload-zone { border: 2px dashed var(--primary); padding: 20px; border-radius: 15px; text-align: center; background: #f9fdfa; cursor: pointer; margin-bottom: 12px; }
         .upload-zone:hover { background: #f1f8f2; }
         .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
@@ -55,7 +51,6 @@
         .gallery-item .del-photo { position: absolute; top: 5px; right: 5px; background: rgba(211,47,47,0.8); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 2; }
         .gallery-item-input { width: 100%; border: none; border-top: 1px solid #ddd; padding: 6px 8px; font-size: 10px; background: #fff; box-sizing: border-box; outline: none; }
         
-        .citizen-section { display: none; }
         .citizen-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
         .stat-card { background: #e8f5e9; border: 1px solid #a5d6a7; padding: 12px; border-radius: 12px; text-align: center; }
         .stat-number { font-size: 18px; font-weight: 800; color: var(--primary); }
@@ -65,10 +60,7 @@
         .network-item span { flex: 1; min-width: 0; word-break: break-word; }
         .network-item strong { white-space: nowrap; font-size: 9px; }
         
-        .biolab-section { display: none; }
         .mebi-badge { background: #e0f2fe; border-left: 5px solid #0284c7; padding: 10px; font-size: 11px; margin-bottom: 12px; color: #0369a1; font-weight: bold; border-radius: 0 10px 10px 0; line-height: 1.4; }
-        
-        .methods-section { display: none; }
         .methods-content { font-size: 11px; line-height: 1.5; color: #333; }
         .methods-content h3 { color: var(--primary); font-size: 13px; margin-top: 12px; margin-bottom: 4px; border-bottom: 1px solid #e8f0e9; padding-bottom: 3px; }
         
@@ -114,13 +106,14 @@
         <button id="tab-field-btn" class="nav-tab" onclick="switchTab('field')" data-i18n="tabField">📸 SAHA</button>
         <button id="tab-citizen-btn" class="nav-tab" onclick="switchTab('citizen')" data-i18n="tabCitizen">🌍 CITIZEN</button>
     </div>
+
     <!-- AGRO ANALİZ SEKMESİ -->
     <div id="analysis-section">
         <div id="form-area">
             <div class="card">
                <label data-i18n="lblRegion">Bölge ve Ürün / Region & Crop</label>
                 <select id="region" onchange="updatePHRangeInfo()">
-                   <!-- Dinamik olarak doldurulacak -->
+                   <!-- Dinamik Doldurulur -->
                 </select>
                 <div class="other-opt" onclick="document.getElementById('region').value='global-other'; updatePHRangeInfo();" data-i18n="lblManualSelect">
                     + Global - Diğer / Other (Manual Selection)
@@ -157,7 +150,7 @@
             <button id="start-btn" class="btn-main" onclick="startSystem()" data-i18n="btnStartAnalyze">ANALİZİ BAŞLAT / START ANALYZE</button>
         </div>
         
-        <div id="cam-box" style="display:none;">
+        <div id="cam-box">
             <video id="v" autoplay playsinline></video>
             <canvas id="canvas"></canvas>
             <div class="scan-ui">
@@ -180,14 +173,13 @@
             
             <div id="sync-status" class="sync-status" data-i18n="syncSuccess">✨ Saha + Lab Entegre Analiz Tamamlandı & Excel'e Aktarıldı!<br><span style="font-size:9px; font-weight:normal;">Integrated Field + Lab Analysis Completed & Synced to Excel!</span></div>
             
-            <img id="preview-img" class="captured-preview" src="" alt="Captured Leaf" style="display:none;">
+            <img id="preview-img" class="captured-preview" src="" alt="Captured Leaf">
             <div id="hybrid-output" class="hybrid-note"></div>
             <div id="calibration-output" class="calibration-box"></div>
             <div id="green-deal-output" class="green-deal-box"></div>
             <div id="certificate-output" class="certificate-box"></div>
             <div id="prescription-output" class="prescription-box"></div>
             
-            <!-- Çift Senaryolu Prediktif Stres Simülasyon Grafiği -->
             <div class="chart-box">
                 <label style="text-align:center; margin-bottom:8px; font-size: 11px;" data-i18n="chartTitle">📈 Karşılaştırmalı 5 Günlük Stres Trendi (Müdahaleli vs Müdahalesiz)<br>Comparative 5-Day Stress Trend (Intervention vs No Intervention)</label>
                 <div class="chart-container">
@@ -238,7 +230,7 @@
             
             <label data-i18n="lblSamplePlant">Numune Bitki Türü / Sample Plant</label>
             <select id="bio-plant">
-               <!-- Dinamik olarak doldurulacak -->
+               <!-- Dinamik Doldurulur -->
             </select>
             
             <label data-i18n="lblWavelength">Spektrofotometre / Kalorimetre Dalga Boyu</label>
@@ -265,12 +257,11 @@
             <button class="btn-main" style="margin-top: 12px; font-size: 13px; padding: 12px;" onclick="calculateBiolab(true)" data-i18n="btnBioCalc">KLOROFİL a VERİSİNİ KAYDET & ANALİZE AKTAR</button>
             
             <div id="bio-sync-status" class="sync-status" style="margin-top: 10px;" data-i18n="bioSyncSuccess">✨ MEB Lab Verisi Canlı Veri Tablosuna ve Analiz Modülüne Aktarıldı!</div>
-            
             <div id="bio-result-box" style="display:none; margin-top:12px; background:#f0fdf4; border:1px solid #bbf7d0; padding:12px; border-radius:10px; font-size:11px; color:#166534; line-height:1.4;"></div>
         </div>
     </div>
     
-    <!-- BİLİMSEL METODOLOJİ VE WHITE_PAPER SEKMESİ -->
+    <!-- BİLİMSEL METODOLOJİ SEKMESİ -->
     <div id="methods-section" class="methods-section">
         <div class="card">
             <label data-i18n="methodsMainTitle">📖 Bilimsel Metodoloji & Whitepaper (Scientific Rigor)<br><span style="font-size:9px; font-weight:normal;">Campbell Biology, Guyton & EU Green Deal Standartları</span></label>
@@ -374,18 +365,21 @@
     
     <div class="footer">© 2026 Hazreti Yusuf İhsan HAMAMCI - Rize Fatih Anatolian High School</div>
 </div>
+
 <div id="lightbox-modal" onclick="closeLightbox()">
     <button id="lightbox-close" onclick="closeLightbox()">&times;</button>
     <img id="lightbox-img" src="" alt="Zoomed Photo">
     <div id="lightbox-caption"></div>
 </div>
+
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSfNJ-wahBs-bJn5AIJjHTvGNM19WpMKvEDij-6j8pM6ej2-VDdZCcFIak4DcXYxpv/exec';
     let currentLang = 'TR';
-    let track;
+    let mediaStreamTrack = null;
     let myChart = null;
     let geoChart = null;
     let lastCapturedImage = "";
+    
     const v = document.getElementById('v');
     const c = document.getElementById('canvas');
     
@@ -393,52 +387,45 @@
         "tr-tea": { 
             min: 4.5, max: 6.0, 
             TR: "Türkiye, Rize - Çay (*Camellia sinensis*) [İdeal pH: 4.5 - 6.0]", 
-            EN: "Turkey, Rize - Tea (*Camellia sinensis*) [Ideal pH: 4.5 - 6.0]",
-            chartLabelTR: "Rize (Çay)", chartLabelEN: "Rize (Tea)"
+            EN: "Turkey, Rize - Tea (*Camellia sinensis*) [Ideal pH: 4.5 - 6.0]"
         },
         "tr-antakya-citrus": { 
             min: 6.0, max: 7.5, 
             TR: "Antakya - Narenciye (*Citrus sinensis*) [İdeal pH: 6.0 - 7.5]", 
-            EN: "Antakya - Citrus (*Citrus sinensis*) [Ideal pH: 6.0 - 7.5]",
-            chartLabelTR: "Antakya (Narenciye)", chartLabelEN: "Antakya (Citrus)"
+            EN: "Antakya - Citrus (*Citrus sinensis*) [Ideal pH: 6.0 - 7.5]"
         },
         "tr-ege-olive": { 
             min: 6.5, max: 8.0, 
             TR: "Ege - Zeytin (*Olea europaea*) [İdeal pH: 6.5 - 8.0]", 
-            EN: "Ege - Olive (*Olea europaea*) [Ideal pH: 6.5 - 8.0]",
-            chartLabelTR: "Ege (Zeytin)", chartLabelEN: "Aegean (Olive)"
+            EN: "Aegean - Olive (*Olea europaea*) [Ideal pH: 6.5 - 8.0]"
         },
         "tr-ege-fig": { 
             min: 6.0, max: 7.5, 
             TR: "Ege - İncir (*Ficus carica*) [İdeal pH: 6.0 - 7.5]", 
-            EN: "Ege - Fig (*Ficus carica*) [Ideal pH: 6.0 - 7.5]",
-            chartLabelTR: "Ege (İncir)", chartLabelEN: "Aegean (Fig)"
+            EN: "Aegean - Fig (*Ficus carica*) [Ideal pH: 6.0 - 7.5]"
         },
         "be-sugar": { 
             min: 6.0, max: 7.0, 
             TR: "Brussels - Şeker Pancarı (*Beta vulgaris*) [İdeal pH: 6.0 - 7.0]", 
-            EN: "Brussels - Sugar Beet (*Beta vulgaris*) [Ideal pH: 6.0 - 7.0]",
-            chartLabelTR: "Brussels (Pancar)", chartLabelEN: "Brussels (Sugar Beet)"
+            EN: "Brussels - Sugar Beet (*Beta vulgaris*) [Ideal pH: 6.0 - 7.0]"
         },
         "nl-tulip": { 
             min: 6.0, max: 7.0, 
             TR: "Netherlands - Lale (*Tulipa gesneriana*) [İdeal pH: 6.0 - 7.0]", 
-            EN: "Netherlands - Tulips (*Tulipa gesneriana*) [Ideal pH: 6.0 - 7.0]",
-            chartLabelTR: "Netherlands (Lale)", chartLabelEN: "Netherlands (Tulips)"
+            EN: "Netherlands - Tulips (*Tulipa gesneriana*) [Ideal pH: 6.0 - 7.0]"
         },
         "it-tomato": { 
             min: 6.0, max: 6.8, 
             TR: "Italy - Domates (*Solanum lycopersicum*) [İdeal pH: 6.0 - 6.8]", 
-            EN: "Italy - Tomatoes (*Solanum lycopersicum*) [Ideal pH: 6.0 - 6.8]",
-            chartLabelTR: "Italy (Domates)", chartLabelEN: "Italy (Tomatoes)"
+            EN: "Italy - Tomatoes (*Solanum lycopersicum*) [Ideal pH: 6.0 - 6.8]"
         },
         "global-other": { 
             min: 6.0, max: 7.0, 
             TR: "Global - Diğer / Other [İdeal pH: 6.0 - 7.0]", 
-            EN: "Global - Other [Ideal pH: 6.0 - 7.0]",
-            chartLabelTR: "Global (Diğer)", chartLabelEN: "Global (Other)"
+            EN: "Global - Other [Ideal pH: 6.0 - 7.0]"
         }
     };
+
     const translations = {
         TR: {
             schoolSub: "Rize Fatih Anatolian High School",
@@ -510,7 +497,7 @@
             statSamples: "Toplam Veri / Total Samples",
             partnerRegions: "Katılımcı Pilot Bölgeler / Partner Regions:",
             netRize: "🌱 Rize Fatih Anadolu Lisesi - Çay (*Camellia sinensis*) [pH: 4.5-6.0]",
-            netAntakya: "🍊 Antakya - Narenciye (*Citrus sinensis* / *Citrus sinensis*) [pH: 6.0-7.5]",
+            netAntakya: "🍊 Antakya - Narenciye (*Citrus sinensis*) [pH: 6.0-7.5]",
             netOlive: "🫒 Ege - Zeytin (*Olea europaea*) [pH: 6.5-8.0]",
             netFig: "🌿 Ege - İncir (*Ficus carica*) [pH: 6.0-7.5]",
             netBrussels: "🇪🇺 Brussels - Şeker Pancarı (*Beta vulgaris*) [pH: 6.0-7.0]",
@@ -589,7 +576,7 @@
             statSamples: "Total Samples",
             partnerRegions: "Partner Pilot Regions:",
             netRize: "🌱 Turkey, Rize - Tea (*Camellia sinensis*) [Ideal pH: 4.5 - 6.0]",
-            netAntakya: "🍊 Antakya - Citrus (*Citrus sinensis*) [IdealPS: 6.0 - 7.5]",
+            netAntakya: "🍊 Antakya - Citrus (*Citrus sinensis*) [Ideal pH: 6.0 - 7.5]",
             netOlive: "🫒 Ege - Olive (*Olea europaea*) [Ideal pH: 6.5 - 8.0]",
             netFig: "🌿 Ege - Fig (*Ficus carica*) [Ideal pH: 6.0 - 7.5]",
             netBrussels: "🇪🇺 Brussels - Sugar Beet (*Beta vulgaris*) [Ideal pH: 6.0 - 7.0]",
@@ -599,75 +586,45 @@
             btnUpdateNetwork: "🔄 UPDATE NETWORK"
         }
     };
+
     function initApp() {
         populateDropdowns();
         loadGallery();
         updatePHRangeInfo();
         fetchCurrentWeather();
         updateLangButtonLabel();
-        drawGeoDistributionChart([5, 0, 0, 0, 0]);
+        drawGeoDistributionChart([5, 2, 3, 2, 1]);
     }
-    
-    function fetchSheetTotalRows() {
-        const sheetCsvUrl = 'https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/export?format=csv';
-        
-        fetch(sheetCsvUrl)
-            .then(response => response.text())
-            .then(data => {
-                const rows = data.split('\n').filter(row => row.trim().length > 0);
-                const totalCount = rows.length > 1 ? rows.length - 1 : 142;
-                const sampleEl = document.getElementById('stat-total-samples');
-                if (sampleEl) sampleEl.innerText = totalCount;
-                
-                let regionCounts = { "Rize": 0, "Antakya": 0, "Ege": 0, "Brussels": 0, "Diğer": 0 };
-                
-                for(let i = 1; i < rows.length; i++) {
-                    const cols = rows[i].split(',');
-                    if(cols.length > 0 && cols[0]) {
-                        let regionName = cols[0].toLowerCase();
-                        if(regionName.includes('rize')) regionCounts["Rize"]++;
-                        else if(regionName.includes('antakya')) regionCounts["Antakya"]++;
-                        else if(regionName.includes('ege')) regionCounts["Ege"]++;
-                        else if(regionName.includes('brussels')) regionCounts["Brussels"]++;
-                        else regionCounts["Diğer"]++;
-                    }
-                }
-                
-                const countsArray = [
-                    regionCounts["Rize"] || 5,
-                    regionCounts["Antakya"] || 2,
-                    regionCounts["Ege"] || 3,
-                    regionCounts["Brussels"] || 2,
-                    regionCounts["Diğer"] || 1
-                ];
-                drawGeoDistributionChart(countsArray);
-            })
-            .catch(err => {
-                console.log("Sheet fetch fallback:", err);
-                const sampleEl = document.getElementById('stat-total-samples');
-                if (sampleEl) sampleEl.innerText = "142";
-                drawGeoDistributionChart([5, 2, 3, 2, 1]);
-            });
-    }
+
     function populateDropdowns() {
         const regionSelect = document.getElementById('region');
         const bioPlantSelect = document.getElementById('bio-plant');
         if (!regionSelect || !bioPlantSelect) return;
+
+        const selectedRegion = regionSelect.value;
+        const selectedBio = bioPlantSelect.value;
+
         regionSelect.innerHTML = '';
         bioPlantSelect.innerHTML = '';
-        
+
         for (const [key, val] of Object.entries(cropRanges)) {
+            const textContent = currentLang === 'TR' ? val.TR : val.EN;
+            
             const opt1 = document.createElement('option');
             opt1.value = key;
-            opt1.text = currentLang === 'TR' ? val.TR : val.EN;
+            opt1.innerText = textContent;
             regionSelect.appendChild(opt1);
-            
+
             const opt2 = document.createElement('option');
             opt2.value = key;
-            opt2.text = currentLang === 'TR' ? val.TR : val.EN;
+            opt2.innerText = textContent;
             bioPlantSelect.appendChild(opt2);
         }
+
+        if (selectedRegion) regionSelect.value = selectedRegion;
+        if (selectedBio) bioPlantSelect.value = selectedBio;
     }
+
     function updatePHRangeInfo() {
         const regEl = document.getElementById('region');
         if (!regEl) return;
@@ -675,12 +632,15 @@
         const range = cropRanges[reg] || { min: 6.0, max: 7.0 };
         const phInput = document.getElementById('ph');
         if (!phInput) return;
-        if (!phInput.value || phInput.value == "4.8") {
+        
+        if (!phInput.dataset.modified) {
             phInput.value = ((range.min + range.max) / 2).toFixed(1);
         }
         validatePH(phInput);
     }
+
     function validatePH(input) {
+        input.dataset.modified = "true";
         const regEl = document.getElementById('region');
         if (!regEl) return;
         const reg = regEl.value;
@@ -688,71 +648,54 @@
         const val = parseFloat(input.value);
         const warn = document.getElementById('ph-warn');
         if (!warn) return;
-        if (val < range.min || val > range.max) {
+        
+        if (isNaN(val) || val < range.min || val > range.max) {
             warn.style.display = 'block';
         } else {
             warn.style.display = 'none';
         }
     }
+
     function toggleLang() {
         currentLang = currentLang === 'TR' ? 'EN' : 'TR';
-        const toggleBtn = document.getElementById('lang-toggle');
-        if (toggleBtn) toggleBtn.innerText = currentLang === 'TR' ? 'Dil: Türkçe' : 'Lang: English';
+        updateLangButtonLabel();
         populateDropdowns();
         updateUIFAST();
     }
+
     function updateLangButtonLabel() {
         const toggleBtn = document.getElementById('lang-toggle');
         if (toggleBtn) toggleBtn.innerText = currentLang === 'TR' ? 'Dil: Türkçe' : 'Lang: English';
     }
+
     function updateUIFAST() {
         const t = translations[currentLang];
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
-            if (t[key]) {
-                el.innerHTML = t[key];
-            }
+            if (t[key]) el.innerHTML = t[key];
         });
         updatePHRangeInfo();
     }
+
     function switchTab(tabName) {
         document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
-        const analysisSec = document.getElementById('analysis-section');
-        const biolabSec = document.getElementById('biolab-section');
-        const methodsSec = document.getElementById('methods-section');
-        const fieldSec = document.getElementById('field-section');
-        const citizenSec = document.getElementById('citizen-section');
-
-        if (analysisSec) analysisSec.style.display = 'none';
-        if (biolabSec) biolabSec.style.display = 'none';
-        if (methodsSec) methodsSec.style.display = 'none';
-        if (fieldSec) fieldSec.style.display = 'none';
-        if (citizenSec) citizenSec.style.display = 'none';
         
-        if (tabName === 'analysis') {
-            const btn = document.getElementById('tab-analysis-btn');
-            if (btn) btn.classList.add('active');
-            if (analysisSec) analysisSec.style.display = 'block';
-        } else if (tabName === 'biolab') {
-            const btn = document.getElementById('tab-biolab-btn');
-            if (btn) btn.classList.add('active');
-            if (biolabSec) biolabSec.style.display = 'block';
-        } else if (tabName === 'methods') {
-            const btn = document.getElementById('tab-methods-btn');
-            if (btn) btn.classList.add('active');
-            if (methodsSec) methodsSec.style.display = 'block';
-        } else if (tabName === 'field') {
-            const btn = document.getElementById('tab-field-btn');
-            if (btn) btn.classList.add('active');
-            if (fieldSec) fieldSec.style.display = 'block';
-            loadGallery();
-        } else if (tabName === 'citizen') {
-            const btn = document.getElementById('tab-citizen-btn');
-            if (btn) btn.classList.add('active');
-            if (citizenSec) citizenSec.style.display = 'block';
-            fetchSheetTotalRows();
-        }
+        const sections = ['analysis', 'biolab', 'methods', 'field', 'citizen'];
+        sections.forEach(sec => {
+            const el = document.getElementById(`${sec}-section`);
+            if (el) el.style.display = 'none';
+        });
+
+        const activeBtn = document.getElementById(`tab-${tabName}-btn`);
+        const activeSec = document.getElementById(`${tabName}-section`);
+        
+        if (activeBtn) activeBtn.classList.add('active');
+        if (activeSec) activeSec.style.display = 'block';
+
+        if (tabName === 'field') loadGallery();
+        if (tabName === 'citizen') fetchSheetTotalRows();
     }
+
     function fetchCurrentWeather() {
         const weatherSelect = document.getElementById('weather');
         const locStatus = document.getElementById('loc-status');
@@ -762,23 +705,20 @@
             navigator.geolocation.getCurrentPosition(position => {
                 const lat = position.coords.latitude;
                 if (weatherSelect) {
-                    if (lat > 40.5) {
-                        weatherSelect.value = "Bulutlu / Cloudy";
-                    } else {
-                        weatherSelect.value = "Güneşli / Sunny";
-                    }
+                    weatherSelect.value = lat > 40.5 ? "Bulutlu / Cloudy" : "Güneşli / Sunny";
                 }
             }, () => {
-                console.log("Geolocation fallback");
+                console.log("Geolocation devredışı / varsayılan kullanılıyor.");
             });
         }
     }
+
     function startSystem() {
         const formArea = document.getElementById('form-area');
         const camBox = document.getElementById('cam-box');
         const errorBox = document.getElementById('error-box');
         const resArea = document.getElementById('res-area');
-
+        
         if (formArea) formArea.style.display = 'none';
         if (camBox) camBox.style.display = 'block';
         if (errorBox) errorBox.style.display = 'none';
@@ -787,14 +727,15 @@
         navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
             .then(stream => {
                 if (v) v.srcObject = stream;
-                track = stream.getVideoTracks()[0];
+                mediaStreamTrack = stream.getVideoTracks()[0];
             })
             .catch(err => {
-                alert("Kamera erişimi sağlanamadı / Camera access error: " + err);
+                alert("Kamera hatası: " + err.message);
                 if (formArea) formArea.style.display = 'block';
                 if (camBox) camBox.style.display = 'none';
             });
     }
+
     function processAI() {
         if (!v || !c) return;
         c.width = v.videoWidth || 640;
@@ -804,21 +745,24 @@
         
         lastCapturedImage = c.toDataURL('image/png');
         
-        if (track) track.stop();
+        if (mediaStreamTrack) {
+            mediaStreamTrack.stop();
+            mediaStreamTrack = null;
+        }
+        
         const camBox = document.getElementById('cam-box');
         if (camBox) camBox.style.display = 'none';
         
         const frameData = ctx.getImageData(0, 0, c.width, c.height);
         let greenPixels = 0;
         let totalSampled = 0;
+        
         for (let i = 0; i < frameData.data.length; i += 30) {
             const r = frameData.data[i];
             const g = frameData.data[i+1];
             const b = frameData.data[i+2];
             totalSampled++;
-            if (g > r && g > b && g > 40) {
-                greenPixels++;
-            }
+            if (g > r && g > b && g > 40) greenPixels++;
         }
         
         const greenRatio = greenPixels / totalSampled;
@@ -833,14 +777,15 @@
         
         generateReport(greenRatio);
     }
+
     function generateReport(greenRatio) {
         const regionEl = document.getElementById('region');
         const phEl = document.getElementById('ph');
         const weatherEl = document.getElementById('weather');
         const chlEl = document.getElementById('integrated-chlorophyll');
-
+        
         const regionKey = regionEl ? regionEl.value : "tr-tea";
-        const range = cropRanges[regionKey] || { min: 6.0, max: 7.0, TR: "Genel" };
+        const range = cropRanges[regionKey] || { min: 6.0, max: 7.0, TR: "Genel", EN: "General" };
         const phVal = phEl ? parseFloat(phEl.value) : 6.0;
         const weather = weatherEl ? weatherEl.value : "Güneşli";
         const integratedChl = chlEl ? (parseFloat(chlEl.value) || 6.5) : 6.5;
@@ -911,9 +856,11 @@
             status: isIdeal ? 'Optimum' : 'Stres'
         });
     }
+
     function stressStatus(score) {
         return score < 3.0 ? score + " (Düşük / Low)" : score + " (Yüksek Stres / High Stress)";
     }
+
     function drawStressChart(currentScore) {
         const canvasEl = document.getElementById('stressChart');
         if (!canvasEl) return;
@@ -921,8 +868,8 @@
         if (myChart) myChart.destroy();
         
         const base = parseFloat(currentScore);
-        const dataIntervention = [base, Math.max(1.0, (base*0.85).toFixed(1)), Math.max(1.0, (base*0.7).toFixed(1)), Math.max(1.0, (base*0.5).toFixed(1)), Math.max(1.0, (base*0.35).toFixed(1))];
-        const dataNoIntervention = [base, (base*1.1).toFixed(1), (base*1.25).toFixed(1), (base*1.4).toFixed(1), (base*1.6).toFixed(1)];
+        const dataIntervention = [base, Math.max(1.0, parseFloat((base*0.85).toFixed(1))), Math.max(1.0, parseFloat((base*0.7).toFixed(1))), Math.max(1.0, parseFloat((base*0.5).toFixed(1))), Math.max(1.0, parseFloat((base*0.35).toFixed(1)))];
+        const dataNoIntervention = [base, parseFloat((base*1.1).toFixed(1)), parseFloat((base*1.25).toFixed(1)), parseFloat((base*1.4).toFixed(1)), parseFloat((base*1.6).toFixed(1))];
         
         myChart = new Chart(ctx, {
             type: 'line',
@@ -950,12 +897,11 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                scales: {
-                    y: { beginAtZero: true, max: 10 }
-                }
+                scales: { y: { beginAtZero: true, max: 10 } }
             }
         });
     }
+
     function drawGeoDistributionChart(counts) {
         const canvasEl = document.getElementById('geoDistributionChart');
         if (!canvasEl) return;
@@ -976,12 +922,11 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                scales: {
-                    y: { beginAtZero: true }
-                }
+                scales: { y: { beginAtZero: true } }
             }
         });
     }
+
     function sendDataToExcel(data) {
         const payload = {
             region: data.region,
@@ -1002,50 +947,92 @@
             const syncStatus = document.getElementById('sync-status');
             if (syncStatus) syncStatus.style.display = 'block';
         }).catch(err => {
-            console.log("Excel sync error:", err);
+            console.error("Excel senkronizasyon hatası:", err);
         });
     }
+
+    function fetchSheetTotalRows() {
+        const sheetCsvUrl = 'https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/export?format=csv';
+        
+        fetch(sheetCsvUrl)
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').filter(row => row.trim().length > 0);
+                const totalCount = rows.length > 1 ? rows.length - 1 : 142;
+                const sampleEl = document.getElementById('stat-total-samples');
+                if (sampleEl) sampleEl.innerText = totalCount;
+                
+                let regionCounts = { "Rize": 0, "Antakya": 0, "Ege": 0, "Brussels": 0, "Diğer": 0 };
+                
+                for(let i = 1; i < rows.length; i++) {
+                    const cols = rows[i].split(',');
+                    if(cols.length > 0 && cols[0]) {
+                        let regionName = cols[0].toLowerCase();
+                        if(regionName.includes('rize')) regionCounts["Rize"]++;
+                        else if(regionName.includes('antakya')) regionCounts["Antakya"]++;
+                        else if(regionName.includes('ege')) regionCounts["Ege"]++;
+                        else if(regionName.includes('brussels')) regionCounts["Brussels"]++;
+                        else regionCounts["Diğer"]++;
+                    }
+                }
+                
+                const countsArray = [
+                    regionCounts["Rize"] || 5,
+                    regionCounts["Antakya"] || 2,
+                    regionCounts["Ege"] || 3,
+                    regionCounts["Brussels"] || 2,
+                    regionCounts["Diğer"] || 1
+                ];
+                drawGeoDistributionChart(countsArray);
+            })
+            .catch(err => {
+                console.warn("Sheet çekme fallback devrede:", err);
+                const sampleEl = document.getElementById('stat-total-samples');
+                if (sampleEl) sampleEl.innerText = "142";
+                drawGeoDistributionChart([5, 2, 3, 2, 1]);
+            });
+    }
+
     function calculateBiolab(syncToMain = false) {
         const plantEl = document.getElementById('bio-plant');
         const absEl = document.getElementById('bio-absorbance');
         const plant = plantEl ? plantEl.value : "";
-        const abs = absEl ? (parseFloat(absEl.value) || 6.5) : 6.5;
+        const chlConc = absEl ? (parseFloat(absEl.value) || 6.5) : 6.5;
         
-        const mgL = (abs * 11.85).toFixed(2);
         const resBox = document.getElementById('bio-result-box');
         if (resBox) {
             resBox.style.display = 'block';
             resBox.innerHTML = currentLang === 'TR' ?
-                `✅ <strong>MEBİ Lab Hesaplama Sonucu:</strong> Optik ölçüm ve 663 nm dalga boyu kalibrasyonuna göre Klorofil a Konsantrasyonu = <strong>${mgL} mg/L</strong>` :
-                `✅ <strong>MEB Lab Calculation Result:</strong> Chlorophyll a Concentration based on 663 nm optical calibration = <strong>${mgL} mg/L</strong>`;
+                `✅ <strong>MEBİ Lab Hesaplama Sonucu:</strong> Optik ölçüm ve 663 nm dalga boyu kalibrasyonuna göre Klorofil a Konsantrasyonu = <strong>${chlConc.toFixed(2)} mg/L</strong>` :
+                `✅ <strong>MEB Lab Calculation Result:</strong> Chlorophyll a Concentration based on 663 nm optical calibration = <strong>${chlConc.toFixed(2)} mg/L</strong>`;
         }
             
         if (syncToMain) {
             const intChl = document.getElementById('integrated-chlorophyll');
-            if (intChl) intChl.value = mgL;
+            if (intChl) intChl.value = chlConc.toFixed(1);
+            
             const bioSyncStatus = document.getElementById('bio-sync-status');
             if (bioSyncStatus) {
                 bioSyncStatus.style.display = 'block';
-                setTimeout(() => {
-                    bioSyncStatus.style.display = 'none';
-                }, 4000);
+                setTimeout(() => { bioSyncStatus.style.display = 'none'; }, 4000);
             }
             
             sendDataToExcel({
                 region: plant,
                 ph: 6.0,
-                chlorophyll: mgL,
+                chlorophyll: chlConc,
                 weather: 'MEB Lab',
                 stress: '2.1',
                 status: 'Lab Entegre'
             });
         }
     }
+
     function processBioCamera(event) {
         const file = event.target.files[0];
         if (!file) return;
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function() {
             const randomVal = (5.0 + Math.random() * 4.5).toFixed(1);
             const bioAbs = document.getElementById('bio-absorbance');
             if (bioAbs) bioAbs.value = randomVal;
@@ -1053,17 +1040,23 @@
         };
         reader.readAsDataURL(file);
     }
+
     function resetSystem() {
         const formArea = document.getElementById('form-area');
         const resArea = document.getElementById('res-area');
         const syncStatus = document.getElementById('sync-status');
         const previewImg = document.getElementById('preview-img');
-
+        
         if (formArea) formArea.style.display = 'block';
         if (resArea) resArea.style.display = 'none';
         if (syncStatus) syncStatus.style.display = 'none';
         if (previewImg) previewImg.style.display = 'none';
+        
+        const phInput = document.getElementById('ph');
+        if (phInput) delete phInput.dataset.modified;
+        updatePHRangeInfo();
     }
+
     function handleFileUpload(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -1076,6 +1069,7 @@
         };
         reader.readAsDataURL(file);
     }
+
     function loadGallery() {
         const container = document.getElementById('gallery-container');
         if (!container) return;
@@ -1101,6 +1095,7 @@
             container.appendChild(div);
         });
     }
+
     function updatePhotoDesc(index, newDesc) {
         let gallery = JSON.parse(localStorage.getItem('agro_gallery') || '[]');
         if (gallery[index]) {
@@ -1108,12 +1103,14 @@
             localStorage.setItem('agro_gallery', JSON.stringify(gallery));
         }
     }
+
     function deletePhoto(index) {
         let gallery = JSON.parse(localStorage.getItem('agro_gallery') || '[]');
         gallery.splice(index, 1);
         localStorage.setItem('agro_gallery', JSON.stringify(gallery));
         loadGallery();
     }
+
     function openLightbox(imgSrc, caption) {
         const modal = document.getElementById('lightbox-modal');
         const img = document.getElementById('lightbox-img');
@@ -1122,6 +1119,7 @@
         if (img) img.src = imgSrc;
         if (cap) cap.innerText = caption;
     }
+
     function closeLightbox() {
         const modal = document.getElementById('lightbox-modal');
         if (modal) modal.style.display = 'none';
