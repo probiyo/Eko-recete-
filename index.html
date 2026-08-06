@@ -157,7 +157,7 @@
             <button id="start-btn" class="btn-main" onclick="startSystem()" data-i18n="btnStartAnalyze">ANALİZİ BAŞLAT / START ANALYZE</button>
         </div>
         
-        <div id="cam-box">
+        <div id="cam-box" style="display:none;">
             <video id="v" autoplay playsinline></video>
             <canvas id="canvas"></canvas>
             <div class="scan-ui">
@@ -180,7 +180,7 @@
             
             <div id="sync-status" class="sync-status" data-i18n="syncSuccess">✨ Saha + Lab Entegre Analiz Tamamlandı & Excel'e Aktarıldı!<br><span style="font-size:9px; font-weight:normal;">Integrated Field + Lab Analysis Completed & Synced to Excel!</span></div>
             
-            <img id="preview-img" class="captured-preview" src="" alt="Captured Leaf">
+            <img id="preview-img" class="captured-preview" src="" alt="Captured Leaf" style="display:none;">
             <div id="hybrid-output" class="hybrid-note"></div>
             <div id="calibration-output" class="calibration-box"></div>
             <div id="green-deal-output" class="green-deal-box"></div>
@@ -352,7 +352,7 @@
                     <strong style="color: #2e7d32;" data-i18n="netActive">Aktif Hub / Active Hub</strong>
                 </div>
                 <div class="network-item">
-                    <span data-i18n="netAntakya">🍊 Antakya - Narenciye (*Citrus sinensis* / *Citrus sinensis*) [pH: 6.0-7.5]</span>
+                    <span data-i18n="netAntakya">🍊 Antakya - Narenciye (*Citrus sinensis*) [pH: 6.0-7.5]</span>
                     <strong style="color: #2e7d32;" data-i18n="netSync">Senkronize / Synchronized</strong>
                 </div>
                 <div class="network-item">
@@ -616,7 +616,8 @@
             .then(data => {
                 const rows = data.split('\n').filter(row => row.trim().length > 0);
                 const totalCount = rows.length > 1 ? rows.length - 1 : 142;
-                document.getElementById('stat-total-samples').innerText = totalCount;
+                const sampleEl = document.getElementById('stat-total-samples');
+                if (sampleEl) sampleEl.innerText = totalCount;
                 
                 let regionCounts = { "Rize": 0, "Antakya": 0, "Ege": 0, "Brussels": 0, "Diğer": 0 };
                 
@@ -643,13 +644,15 @@
             })
             .catch(err => {
                 console.log("Sheet fetch fallback:", err);
-                document.getElementById('stat-total-samples').innerText = "142";
+                const sampleEl = document.getElementById('stat-total-samples');
+                if (sampleEl) sampleEl.innerText = "142";
                 drawGeoDistributionChart([5, 2, 3, 2, 1]);
             });
     }
     function populateDropdowns() {
         const regionSelect = document.getElementById('region');
         const bioPlantSelect = document.getElementById('bio-plant');
+        if (!regionSelect || !bioPlantSelect) return;
         regionSelect.innerHTML = '';
         bioPlantSelect.innerHTML = '';
         
@@ -666,19 +669,25 @@
         }
     }
     function updatePHRangeInfo() {
-        const reg = document.getElementById('region').value;
+        const regEl = document.getElementById('region');
+        if (!regEl) return;
+        const reg = regEl.value;
         const range = cropRanges[reg] || { min: 6.0, max: 7.0 };
         const phInput = document.getElementById('ph');
+        if (!phInput) return;
         if (!phInput.value || phInput.value == "4.8") {
             phInput.value = ((range.min + range.max) / 2).toFixed(1);
         }
         validatePH(phInput);
     }
     function validatePH(input) {
-        const reg = document.getElementById('region').value;
+        const regEl = document.getElementById('region');
+        if (!regEl) return;
+        const reg = regEl.value;
         const range = cropRanges[reg] || { min: 6.0, max: 7.0 };
         const val = parseFloat(input.value);
         const warn = document.getElementById('ph-warn');
+        if (!warn) return;
         if (val < range.min || val > range.max) {
             warn.style.display = 'block';
         } else {
@@ -687,12 +696,14 @@
     }
     function toggleLang() {
         currentLang = currentLang === 'TR' ? 'EN' : 'TR';
-        document.getElementById('lang-toggle').innerText = currentLang === 'TR' ? 'Dil: Türkçe' : 'Lang: English';
+        const toggleBtn = document.getElementById('lang-toggle');
+        if (toggleBtn) toggleBtn.innerText = currentLang === 'TR' ? 'Dil: Türkçe' : 'Lang: English';
         populateDropdowns();
         updateUIFAST();
     }
     function updateLangButtonLabel() {
-        document.getElementById('lang-toggle').innerText = currentLang === 'TR' ? 'Dil: Türkçe' : 'Lang: English';
+        const toggleBtn = document.getElementById('lang-toggle');
+        if (toggleBtn) toggleBtn.innerText = currentLang === 'TR' ? 'Dil: Türkçe' : 'Lang: English';
     }
     function updateUIFAST() {
         const t = translations[currentLang];
@@ -706,43 +717,56 @@
     }
     function switchTab(tabName) {
         document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
-        document.getElementById('analysis-section').style.display = 'none';
-        document.getElementById('biolab-section').style.display = 'none';
-        document.getElementById('methods-section').style.display = 'none';
-        document.getElementById('field-section').style.display = 'none';
-        document.getElementById('citizen-section').style.display = 'none';
+        const analysisSec = document.getElementById('analysis-section');
+        const biolabSec = document.getElementById('biolab-section');
+        const methodsSec = document.getElementById('methods-section');
+        const fieldSec = document.getElementById('field-section');
+        const citizenSec = document.getElementById('citizen-section');
+
+        if (analysisSec) analysisSec.style.display = 'none';
+        if (biolabSec) biolabSec.style.display = 'none';
+        if (methodsSec) methodsSec.style.display = 'none';
+        if (fieldSec) fieldSec.style.display = 'none';
+        if (citizenSec) citizenSec.style.display = 'none';
         
         if (tabName === 'analysis') {
-            document.getElementById('tab-analysis-btn').classList.add('active');
-            document.getElementById('analysis-section').style.display = 'block';
+            const btn = document.getElementById('tab-analysis-btn');
+            if (btn) btn.classList.add('active');
+            if (analysisSec) analysisSec.style.display = 'block';
         } else if (tabName === 'biolab') {
-            document.getElementById('tab-biolab-btn').classList.add('active');
-            document.getElementById('biolab-section').style.display = 'block';
+            const btn = document.getElementById('tab-biolab-btn');
+            if (btn) btn.classList.add('active');
+            if (biolabSec) biolabSec.style.display = 'block';
         } else if (tabName === 'methods') {
-            document.getElementById('tab-methods-btn').classList.add('active');
-            document.getElementById('methods-section').style.display = 'block';
+            const btn = document.getElementById('tab-methods-btn');
+            if (btn) btn.classList.add('active');
+            if (methodsSec) methodsSec.style.display = 'block';
         } else if (tabName === 'field') {
-            document.getElementById('tab-field-btn').classList.add('active');
-            document.getElementById('field-section').style.display = 'block';
+            const btn = document.getElementById('tab-field-btn');
+            if (btn) btn.classList.add('active');
+            if (fieldSec) fieldSec.style.display = 'block';
             loadGallery();
         } else if (tabName === 'citizen') {
-            document.getElementById('tab-citizen-btn').classList.add('active');
-            document.getElementById('citizen-section').style.display = 'block';
+            const btn = document.getElementById('tab-citizen-btn');
+            if (btn) btn.classList.add('active');
+            if (citizenSec) citizenSec.style.display = 'block';
             fetchSheetTotalRows();
         }
     }
     function fetchCurrentWeather() {
         const weatherSelect = document.getElementById('weather');
         const locStatus = document.getElementById('loc-status');
-        locStatus.innerText = currentLang === 'TR' ? '(Rize/Antakya Hub Senkronize ✓)' : '(Hub Synchronized ✓)';
+        if (locStatus) locStatus.innerText = currentLang === 'TR' ? '(Rize/Antakya Hub Senkronize ✓)' : '(Hub Synchronized ✓)';
         
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(position => {
                 const lat = position.coords.latitude;
-                if (lat > 40.5) {
-                    weatherSelect.value = "Bulutlu / Cloudy";
-                } else {
-                    weatherSelect.value = "Güneşli / Sunny";
+                if (weatherSelect) {
+                    if (lat > 40.5) {
+                        weatherSelect.value = "Bulutlu / Cloudy";
+                    } else {
+                        weatherSelect.value = "Güneşli / Sunny";
+                    }
                 }
             }, () => {
                 console.log("Geolocation fallback");
@@ -750,23 +774,29 @@
         }
     }
     function startSystem() {
-        document.getElementById('form-area').style.display = 'none';
-        document.getElementById('cam-box').style.display = 'block';
-        document.getElementById('error-box').style.display = 'none';
-        document.getElementById('res-area').style.display = 'none';
+        const formArea = document.getElementById('form-area');
+        const camBox = document.getElementById('cam-box');
+        const errorBox = document.getElementById('error-box');
+        const resArea = document.getElementById('res-area');
+
+        if (formArea) formArea.style.display = 'none';
+        if (camBox) camBox.style.display = 'block';
+        if (errorBox) errorBox.style.display = 'none';
+        if (resArea) resArea.style.display = 'none';
         
         navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
             .then(stream => {
-                v.srcObject = stream;
+                if (v) v.srcObject = stream;
                 track = stream.getVideoTracks()[0];
             })
             .catch(err => {
                 alert("Kamera erişimi sağlanamadı / Camera access error: " + err);
-                document.getElementById('form-area').style.display = 'block';
-                document.getElementById('cam-box').style.display = 'none';
+                if (formArea) formArea.style.display = 'block';
+                if (camBox) camBox.style.display = 'none';
             });
     }
     function processAI() {
+        if (!v || !c) return;
         c.width = v.videoWidth || 640;
         c.height = v.videoHeight || 480;
         const ctx = c.getContext('2d');
@@ -775,9 +805,9 @@
         lastCapturedImage = c.toDataURL('image/png');
         
         if (track) track.stop();
-        document.getElementById('cam-box').style.display = 'none';
+        const camBox = document.getElementById('cam-box');
+        if (camBox) camBox.style.display = 'none';
         
-        // Simüle edilmiş yaprak kontrolü (Yeşil oran kontrolü)
         const frameData = ctx.getImageData(0, 0, c.width, c.height);
         let greenPixels = 0;
         let totalSampled = 0;
@@ -794,53 +824,81 @@
         const greenRatio = greenPixels / totalSampled;
         
         if (greenRatio < 0.08) {
-            document.getElementById('error-box').style.display = 'block';
-            document.getElementById('form-area').style.display = 'block';
+            const errorBox = document.getElementById('error-box');
+            const formArea = document.getElementById('form-area');
+            if (errorBox) errorBox.style.display = 'block';
+            if (formArea) formArea.style.display = 'block';
             return;
         }
         
         generateReport(greenRatio);
     }
     function generateReport(greenRatio) {
-        const regionKey = document.getElementById('region').value;
+        const regionEl = document.getElementById('region');
+        const phEl = document.getElementById('ph');
+        const weatherEl = document.getElementById('weather');
+        const chlEl = document.getElementById('integrated-chlorophyll');
+
+        const regionKey = regionEl ? regionEl.value : "tr-tea";
         const range = cropRanges[regionKey] || { min: 6.0, max: 7.0, TR: "Genel" };
-        const phVal = parseFloat(document.getElementById('ph').value);
-        const weather = document.getElementById('weather').value;
-        const integratedChl = parseFloat(document.getElementById('integrated-chlorophyll').value) || 6.5;
+        const phVal = phEl ? parseFloat(phEl.value) : 6.0;
+        const weather = weatherEl ? weatherEl.value : "Güneşli";
+        const integratedChl = chlEl ? (parseFloat(chlEl.value) || 6.5) : 6.5;
         
         const cropTitle = currentLang === 'TR' ? range.TR : range.EN;
         const isIdeal = phVal >= range.min && phVal <= range.max;
         const stressScore = isIdeal ? (1.2 + Math.random() * 0.5).toFixed(1) : (4.8 + Math.random() * 2.1).toFixed(1);
         
-        document.getElementById('preview-img').style.display = 'block';
-        document.getElementById('preview-img').src = lastCapturedImage;
+        const previewImg = document.getElementById('preview-img');
+        if (previewImg) {
+            previewImg.style.display = 'block';
+            previewImg.src = lastCapturedImage;
+        }
         
-        document.getElementById('hybrid-output').innerHTML = currentLang === 'TR' ?
-            `🧬 <strong>Hibrit Entegrasyon Sonucu:</strong> ${cropTitle} | pH: ${phVal} | Klorofil a (663 nm): <strong>${integratedChl} mg/L</strong>` :
-            `🧬 <strong>Hybrid Integration Result:</strong> ${cropTitle} | pH: ${phVal} | Chlorophyll a (663 nm): <strong>${integratedChl} mg/L</strong>`;
+        const hybridOut = document.getElementById('hybrid-output');
+        if (hybridOut) {
+            hybridOut.innerHTML = currentLang === 'TR' ?
+                `🧬 <strong>Hibrit Entegrasyon Sonucu:</strong> ${cropTitle} | pH: ${phVal} | Klorofil a (663 nm): <strong>${integratedChl} mg/L</strong>` :
+                `🧬 <strong>Hybrid Integration Result:</strong> ${cropTitle} | pH: ${phVal} | Chlorophyll a (663 nm): <strong>${integratedChl} mg/L</strong>`;
+        }
             
-        document.getElementById('calibration-output').innerHTML = currentLang === 'TR' ?
-            `💡 <strong>Kalibrasyon & Spektrofotometre Verisi:</strong> Optik Yoğunluk (OD663) = ${(integratedChl / 11.85).toFixed(3)} | Kalibrasyon Katsayısı k = 0.985` :
-            `💡 <strong>Calibration & Spectrophotometer Data:</strong> Optical Density (OD663) = ${(integratedChl / 11.85).toFixed(3)} | Calibration Factor k = 0.985`;
+        const calibOut = document.getElementById('calibration-output');
+        if (calibOut) {
+            calibOut.innerHTML = currentLang === 'TR' ?
+                `💡 <strong>Kalibrasyon & Spektrofotometre Verisi:</strong> Optik Yoğunluk (OD663) = ${(integratedChl / 11.85).toFixed(3)} | Kalibrasyon Katsayısı k = 0.985` :
+                `💡 <strong>Calibration & Spectrophotometer Data:</strong> Optical Density (OD663) = ${(integratedChl / 11.85).toFixed(3)} | Calibration Factor k = 0.985`;
+        }
             
-        document.getElementById('green-deal-output').innerHTML = currentLang === 'TR' ?
-            `🇪🇺 <strong>AB Yeşil Mutabakatı Uyumluluk Raporu:</strong> Hassas gübreleme rejimiyle <strong>%22.4 gübre tasarrufu</strong> ve dönüm başına <strong>142 kg CO₂ eşdeğeri</strong> karbon azaltımı sağlandı.` :
-            `🇪🇺 <strong>EU Green Deal Compliance Report:</strong> Precision fertilization regime achieved <strong>22.4% fertilizer savings</strong> and <strong>142 kg CO₂ equivalent</strong> carbon reduction per decare.`;
+        const greenDealOut = document.getElementById('green-deal-output');
+        if (greenDealOut) {
+            greenDealOut.innerHTML = currentLang === 'TR' ?
+                `🇪🇺 <strong>AB Yeşil Mutabakatı Uyumluluk Raporu:</strong> Hassas gübreleme rejimiyle <strong>%22.4 gübre tasarrufu</strong> ve dönüm başına <strong>142 kg CO₂ eşdeğeri</strong> karbon azaltımı sağlandı.` :
+                `🇪🇺 <strong>EU Green Deal Compliance Report:</strong> Precision fertilization regime achieved <strong>22.4% fertilizer savings</strong> and <strong>142 kg CO₂ equivalent</strong> carbon reduction per decare.`;
+        }
             
-        document.getElementById('certificate-output').innerHTML = currentLang === 'TR' ?
-            `🏆 <strong>Brussels Agri-Tech Sertifika Onayı:</strong> Bu analiz Brüksel STEM & Citizen Science kriterlerine uygun olarak Rize Fatih Anadolu Lisesi araştırma laboratuvarında doğrulanmıştır.` :
-            `🏆 <strong>Brussels Agri-Tech Certificate Approval:</strong> This analysis is verified at Rize Fatih Anatolian High School research lab in accordance with Brussels STEM & Citizen Science criteria.`;
+        const certOut = document.getElementById('certificate-output');
+        if (certOut) {
+            certOut.innerHTML = currentLang === 'TR' ?
+                `🏆 <strong>Brussels Agri-Tech Sertifika Onayı:</strong> Bu analiz Brüksel STEM & Citizen Science kriterlerine uygun olarak Rize Fatih Anadolu Lisesi araştırma laboratuvarında doğrulanmıştır.` :
+                `🏆 <strong>Brussels Agri-Tech Certificate Approval:</strong> This analysis is verified at Rize Fatih Anatolian High School research lab in accordance with Brussels STEM & Citizen Science criteria.`;
+        }
             
-        document.getElementById('prescription-output').innerHTML = currentLang === 'TR' ?
-            `💊 <strong>Agronomik Reçete & Müdahale Planı:</strong> ${isIdeal ? "Bitki fizyolojik durumu optimum düzeyde. Standart mikro element takviyesi yeterlidir." : "Toprak pH sapması tespit edildi! Kök bölgesinde iyon alımını dengelemek için humik asit ve şelatlı demir uygulaması önerilir."}` :
-            `💊 <strong>Agronomic Prescription & Intervention Plan:</strong> ${isIdeal ? "Plant physiological status is optimum. Standard micro-element supplementation is sufficient." : "Soil pH deviation detected! Humic acid and chelated iron application recommended to balance root ion uptake."}`;
+        const prescOut = document.getElementById('prescription-output');
+        if (prescOut) {
+            prescOut.innerHTML = currentLang === 'TR' ?
+                `💊 <strong>Agronomik Reçete & Müdahale Planı:</strong> ${isIdeal ? "Bitki fizyolojik durumu optimum düzeyde. Standart mikro element takviyesi yeterlidir." : "Toprak pH sapması tespit edildi! Kök bölgesinde iyon alımını dengelemek için humik asit ve şelatlı demir uygulaması önerilir."}` :
+                `💊 <strong>Agronomic Prescription & Intervention Plan:</strong> ${isIdeal ? "Plant physiological status is optimum. Standard micro-element supplementation is sufficient." : "Soil pH deviation detected! Humic acid and chelated iron application recommended to balance root ion uptake."}`;
+        }
             
         const reportText = currentLang === 'TR' ?
             `=== GLOBAL AGRO DOCTOR ANALİZ RAPORU ===\nBölge/Ürün: ${cropTitle}\nÖlçülen Toprak pH: ${phVal} (İdeal: ${range.min}-${range.max})\nKlorofil a (663nm): ${integratedChl} mg/L\nHava Durumu: ${weather}\nFizyolojik Stres Skoru: ${stressStatus(stressScore)}\nDurum: ${isIdeal ? 'Optimum Gelişim' : 'Stres Uyarısı / Müdahale Gerekli'}\nLider: Hazreti Yusuf İhsan HAMAMCI\nKurum: Rize Fatih Anadolu Lisesi` :
             `=== GLOBAL AGRO DOCTOR ANALYSIS REPORT ===\nRegion/Crop: ${cropTitle}\nMeasured Soil pH: ${phVal} (Ideal: ${range.min}-${range.max})\nChlorophyll a (663nm): ${integratedChl} mg/L\nWeather Condition: ${weather}\nPhysiological Stress Score: ${stressStatus(stressScore)}\nStatus: ${isIdeal ? 'Optimum Growth' : 'Stress Alert / Intervention Required'}\nLeader: Hazreti Yusuf İhsan HAMAMCI\nInstitution: Rize Fatih Anatolian High School`;
             
-        document.getElementById('res-output').innerText = reportText;
-        document.getElementById('res-area').style.display = 'block';
+        const resOutput = document.getElementById('res-output');
+        if (resOutput) resOutput.innerText = reportText;
+        
+        const resArea = document.getElementById('res-area');
+        if (resArea) resArea.style.display = 'block';
         
         drawStressChart(stressScore);
         
@@ -857,7 +915,9 @@
         return score < 3.0 ? score + " (Düşük / Low)" : score + " (Yüksek Stres / High Stress)";
     }
     function drawStressChart(currentScore) {
-        const ctx = document.getElementById('stressChart').getContext('2d');
+        const canvasEl = document.getElementById('stressChart');
+        if (!canvasEl) return;
+        const ctx = canvasEl.getContext('2d');
         if (myChart) myChart.destroy();
         
         const base = parseFloat(currentScore);
@@ -897,7 +957,9 @@
         });
     }
     function drawGeoDistributionChart(counts) {
-        const ctx = document.getElementById('geoDistributionChart').getContext('2d');
+        const canvasEl = document.getElementById('geoDistributionChart');
+        if (!canvasEl) return;
+        const ctx = canvasEl.getContext('2d');
         if (geoChart) geoChart.destroy();
         
         geoChart = new Chart(ctx, {
@@ -937,28 +999,37 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         }).then(() => {
-            document.getElementById('sync-status').style.display = 'block';
+            const syncStatus = document.getElementById('sync-status');
+            if (syncStatus) syncStatus.style.display = 'block';
         }).catch(err => {
             console.log("Excel sync error:", err);
         });
     }
     function calculateBiolab(syncToMain = false) {
-        const plant = document.getElementById('bio-plant').value;
-        const abs = parseFloat(document.getElementById('bio-absorbance').value) || 6.5;
+        const plantEl = document.getElementById('bio-plant');
+        const absEl = document.getElementById('bio-absorbance');
+        const plant = plantEl ? plantEl.value : "";
+        const abs = absEl ? (parseFloat(absEl.value) || 6.5) : 6.5;
         
         const mgL = (abs * 11.85).toFixed(2);
         const resBox = document.getElementById('bio-result-box');
-        resBox.style.display = 'block';
-        resBox.innerHTML = currentLang === 'TR' ?
-            `✅ <strong>MEBİ Lab Hesaplama Sonucu:</strong> Optik ölçüm ve 663 nm dalga boyu kalibrasyonuna göre Klorofil a Konsantrasyonu = <strong>${mgL} mg/L</strong>` :
-            `✅ <strong>MEB Lab Calculation Result:</strong> Chlorophyll a Concentration based on 663 nm optical calibration = <strong>${mgL} mg/L</strong>`;
+        if (resBox) {
+            resBox.style.display = 'block';
+            resBox.innerHTML = currentLang === 'TR' ?
+                `✅ <strong>MEBİ Lab Hesaplama Sonucu:</strong> Optik ölçüm ve 663 nm dalga boyu kalibrasyonuna göre Klorofil a Konsantrasyonu = <strong>${mgL} mg/L</strong>` :
+                `✅ <strong>MEB Lab Calculation Result:</strong> Chlorophyll a Concentration based on 663 nm optical calibration = <strong>${mgL} mg/L</strong>`;
+        }
             
         if (syncToMain) {
-            document.getElementById('integrated-chlorophyll').value = mgL;
-            document.getElementById('bio-sync-status').style.display = 'block';
-            setTimeout(() => {
-                document.getElementById('bio-sync-status').style.display = 'none';
-            }, 4000);
+            const intChl = document.getElementById('integrated-chlorophyll');
+            if (intChl) intChl.value = mgL;
+            const bioSyncStatus = document.getElementById('bio-sync-status');
+            if (bioSyncStatus) {
+                bioSyncStatus.style.display = 'block';
+                setTimeout(() => {
+                    bioSyncStatus.style.display = 'none';
+                }, 4000);
+            }
             
             sendDataToExcel({
                 region: plant,
@@ -976,16 +1047,22 @@
         const reader = new FileReader();
         reader.onload = function(e) {
             const randomVal = (5.0 + Math.random() * 4.5).toFixed(1);
-            document.getElementById('bio-absorbance').value = randomVal;
+            const bioAbs = document.getElementById('bio-absorbance');
+            if (bioAbs) bioAbs.value = randomVal;
             calculateBiolab(true);
         };
         reader.readAsDataURL(file);
     }
     function resetSystem() {
-        document.getElementById('form-area').style.display = 'block';
-        document.getElementById('res-area').style.display = 'none';
-        document.getElementById('sync-status').style.display = 'none';
-        document.getElementById('preview-img').style.display = 'none';
+        const formArea = document.getElementById('form-area');
+        const resArea = document.getElementById('res-area');
+        const syncStatus = document.getElementById('sync-status');
+        const previewImg = document.getElementById('preview-img');
+
+        if (formArea) formArea.style.display = 'block';
+        if (resArea) resArea.style.display = 'none';
+        if (syncStatus) syncStatus.style.display = 'none';
+        if (previewImg) previewImg.style.display = 'none';
     }
     function handleFileUpload(event) {
         const file = event.target.files[0];
@@ -1001,6 +1078,7 @@
     }
     function loadGallery() {
         const container = document.getElementById('gallery-container');
+        if (!container) return;
         let gallery = JSON.parse(localStorage.getItem('agro_gallery') || '[]');
         
         if (gallery.length === 0) {
@@ -1037,12 +1115,16 @@
         loadGallery();
     }
     function openLightbox(imgSrc, caption) {
-        document.getElementById('lightbox-modal').style.display = 'flex';
-        document.getElementById('lightbox-img').src = imgSrc;
-        document.getElementById('lightbox-caption').innerText = caption;
+        const modal = document.getElementById('lightbox-modal');
+        const img = document.getElementById('lightbox-img');
+        const cap = document.getElementById('lightbox-caption');
+        if (modal) modal.style.display = 'flex';
+        if (img) img.src = imgSrc;
+        if (cap) cap.innerText = caption;
     }
     function closeLightbox() {
-        document.getElementById('lightbox-modal').style.display = 'none';
+        const modal = document.getElementById('lightbox-modal');
+        if (modal) modal.style.display = 'none';
     }
 </script>
 </body>
