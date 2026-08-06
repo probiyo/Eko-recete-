@@ -104,7 +104,7 @@
     <div id="lang-toggle" onclick="toggleLang()">Dil: Türkçe</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;" data-i18n="schoolSub">Rize Fatih Anatolian High School</span></div>
     <h1>GLOBAL AGRO DOCTOR</h1>
-    <div class="author">Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biyoloji Uzmanı & Proje Lideri</small></div>
+    <div class="author">Hazreti Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biyoloji Uzmanı & Proje Lideri</small></div>
     
     <!-- Navigasyon Sekmeleri -->
     <div class="nav-tabs">
@@ -202,7 +202,7 @@
             </div>
             
             <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/edit?usp=sharing" target="_blank" class="btn-excel" data-i18n="btnLiveSheet">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
-            <div class="btn-save" onclick="window.print()" data-i18n="btnPrintReport">📥 RAPORu YAZDIR / PDF KAYDET</div>
+            <div class="btn-save" onclick="window.print()" data-i18n="btnPrintReport">📥 RAPORU YAZDIR / PDF KAYDET</div>
             <button id="reset-btn" class="btn-reset" onclick="resetSystem()" style="display:block;" data-i18n="btnNewAnalyze">YENİ ANALİZ / NEW ANALYZE</button>
         </div>
     </div>
@@ -372,7 +372,7 @@
         </div>
     </div>
     
-    <div class="footer">© 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anatolian High School</div>
+    <div class="footer">© 2026 Hazreti Yusuf İhsan HAMAMCI - Rize Fatih Anatolian High School</div>
 </div>
 <div id="lightbox-modal" onclick="closeLightbox()">
     <button id="lightbox-close" onclick="closeLightbox()">&times;</button>
@@ -837,8 +837,8 @@
             `💊 <strong>Agronomic Prescription & Intervention Plan:</strong> ${isIdeal ? "Plant physiological status is optimum. Standard micro-element supplementation is sufficient." : "Soil pH deviation detected! Humic acid and chelated iron application recommended to balance root ion uptake."}`;
             
         const reportText = currentLang === 'TR' ?
-            `=== GLOBAL AGRO DOCTOR ANALİZ RAPORU ===\nBölge/Ürün: ${cropTitle}\nÖlçülen Toprak pH: ${phVal} (İdeal: ${range.min}-${range.max})\nKlorofil a (663nm): ${integratedChl} mg/L\nHava Durumu: ${weather}\nFizyolojik Stres Skoru: ${stressStatus(stressScore)}\nDurum: ${isIdeal ? 'Optimum Gelişim' : 'Stres Uyarısı / Müdahale Gerekli'}\nLider: Yusuf İhsan HAMAMCI\nKurum: Rize Fatih Anadolu Lisesi` :
-            `=== GLOBAL AGRO DOCTOR ANALYSIS REPORT ===\nRegion/Crop: ${cropTitle}\nMeasured Soil pH: ${phVal} (Ideal: ${range.min}-${range.max})\nChlorophyll a (663nm): ${integratedChl} mg/L\nWeather Condition: ${weather}\nPhysiological Stress Score: ${stressStatus(stressScore)}\nStatus: ${isIdeal ? 'Optimum Growth' : 'Stress Alert / Intervention Required'}\nLeader: Yusuf İhsan HAMAMCI\nInstitution: Rize Fatih Anatolian High School`;
+            `=== GLOBAL AGRO DOCTOR ANALİZ RAPORU ===\nBölge/Ürün: ${cropTitle}\nÖlçülen Toprak pH: ${phVal} (İdeal: ${range.min}-${range.max})\nKlorofil a (663nm): ${integratedChl} mg/L\nHava Durumu: ${weather}\nFizyolojik Stres Skoru: ${stressStatus(stressScore)}\nDurum: ${isIdeal ? 'Optimum Gelişim' : 'Stres Uyarısı / Müdahale Gerekli'}\nLider: Hazreti Yusuf İhsan HAMAMCI\nKurum: Rize Fatih Anadolu Lisesi` :
+            `=== GLOBAL AGRO DOCTOR ANALYSIS REPORT ===\nRegion/Crop: ${cropTitle}\nMeasured Soil pH: ${phVal} (Ideal: ${range.min}-${range.max})\nChlorophyll a (663nm): ${integratedChl} mg/L\nWeather Condition: ${weather}\nPhysiological Stress Score: ${stressStatus(stressScore)}\nStatus: ${isIdeal ? 'Optimum Growth' : 'Stress Alert / Intervention Required'}\nLeader: Hazreti Yusuf İhsan HAMAMCI\nInstitution: Rize Fatih Anatolian High School`;
             
         document.getElementById('res-output').innerText = reportText;
         document.getElementById('res-area').style.display = 'block';
