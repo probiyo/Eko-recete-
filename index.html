@@ -41,11 +41,6 @@
         .btn-excel { background: #107c41; color: white; text-decoration: none; display: block; text-align: center; padding: 14px; border-radius: 15px; font-size: 15px; font-weight: 800; margin-top: 10px; }
         .btn-save { background: #0277bd; color: white; text-decoration: none; display: block; text-align: center; padding: 12px; border-radius: 15px; font-size: 14px; font-weight: 800; margin-top: 10px; cursor: pointer; }
         
-        /* Basma Hissiyatı ve İçeri Doğru Hareket Efekti */
-        button:active, .btn-excel:active, .btn-save:active, .other-opt:active, .nav-tab:active {
-            transform: scale(0.97);
-            transition: transform 0.05s ease;
-        }
         /* Saha Çalışmaları Galeri Alanı Stilleri */
         .field-section { display: none; }
         .upload-zone { border: 2px dashed var(--primary); padding: 20px; border-radius: 15px; text-align: center; background: #f9fdfa; cursor: pointer; margin-bottom: 12px; }
@@ -145,7 +140,7 @@
                <input type="number" id="integrated-chlorophyll" step="0.1" placeholder="Örn: 6.5 mg/L" value="6.5">
             </div>
             <div class="card">
-               <label><span data-i18n="lblWeather">Hava Durumu / Weather Condition</span> <span id="loc-status" style="font-size:9px; color:#2e7d32; font-weight:normal;" data-i18n="locStatusWaiting">(Senkronize Edildi ✓)</span></label>
+               <label><span data-i18n="lblWeather">Hava Durumu / Weather Condition</span> <span id="loc-status" style="font-size:9px; color:#2e7d32; font-weight:normal;" data-i18n="locStatusWaiting">(Otomatik Konum Bekleniyor...)</span></label>
                 <select id="weather">
                    <option value="Güneşli / Sunny" data-i18n="optSunny">Güneşli / Sunny</option>
                    <option value="Bulutlu / Cloudy" data-i18n="optCloudy">Bulutlu / Cloudy</option>
@@ -154,7 +149,7 @@
                    <option value="Karlı / Snowy" data-i18n="optSnowy">Karlı / Snowy</option>
                    <option value="Don Tehlikesi / Frost Risk" data-i18n="optFrost">Don Tehlikesi / Frost Risk</option>
                 </select>
-                <div class="other-opt" id="fetchWeatherBtn" onclick="fetchCurrentWeather()" style="font-size: 11px; padding: 8px; margin-top: 5px;" data-i18n="lblAutoWeather">
+                <div class="other-opt" onclick="fetchCurrentWeather()" style="font-size: 11px; padding: 8px; margin-top: 5px;" data-i18n="lblAutoWeather">
                     📍 Konumdan Otomatik Hava Durumunu Güncelle / Fetch Weather
                 </div>
             </div>
@@ -171,7 +166,7 @@
                     ⚠️ Tip: Clean dust/water drops on leaf for accuracy.
                </div>
             </div>
-            <button id="snap-btn" class="btn-snap" onclick="processAI(); resetSystem();" data-i18n="btnTakePhoto">FOTOĞRAF ÇEK / TAKE PHOTO</button>
+            <button id="snap-btn" class="btn-snap" onclick="processAI()" data-i18n="btnTakePhoto">FOTOĞRAF ÇEK / TAKE PHOTO</button>
         </div>
         <div id="error-box" class="error-msg" data-i18n="errorPlant">
             ⚠️ BİTKİ ALGILANAMADI: Yeterli yaprak/klorofil (yeşil doku) tespit edilemedi. Lütfen yaprak görüntüsü çekiniz!<br>
@@ -453,7 +448,7 @@
             lblIntegratedLab: "🧬 Laboratuvar Klorofil a (663 nm) Verisi Entegrasyonu",
             lblIntegratedLabDesc: "MEBİ Lab modülünden elde edilen konsantrasyon değerini giriniz (Opsiyonel):",
             lblWeather: "Hava Durumu / Weather Condition",
-            locStatusWaiting: "(Senkronize Edildi ✓)",
+            locStatusWaiting: "(Otomatik Konum Bekleniyor...)",
             optSunny: "Güneşli / Sunny",
             optCloudy: "Bulutlu / Cloudy",
             optRainy: "Yağmurlu / Rainy",
@@ -532,7 +527,7 @@
             lblIntegratedLab: "🧬 Laboratory Chlorophyll a (663 nm) Integration",
             lblIntegratedLabDesc: "Enter concentration value obtained from MEB Lab module (Optional):",
             lblWeather: "Weather Condition",
-            locStatusWaiting: "(Synchronized ✓)",
+            locStatusWaiting: "(Fetching Location...)",
             optSunny: "Sunny",
             optCloudy: "Cloudy",
             optRainy: "Rainy",
@@ -602,6 +597,7 @@
         loadGallery();
         updatePHRangeInfo();
         fetchCurrentWeather();
+        fetchSheetTotalRows();
         updateLangButtonLabel();
     }
     
@@ -741,6 +737,7 @@
         });
         updatePHRangeInfo();
         loadGallery();
+        fetchSheetTotalRows();
         
         if(document.getElementById('res-area').style.display === 'block') {
             updateDynamicReportTexts();
@@ -748,40 +745,64 @@
     }
     function fetchCurrentWeather() {
         const statusEl = document.getElementById('loc-status');
-        if (navigator.geolocation) {
-            statusEl.innerText = currentLang === 'TR' ? "(Konum İsteniyor...)" : "(Fetching Location...)";
-            navigator.geolocation.getCurrentPosition(position => {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-                statusEl.innerText = currentLang === 'TR' ? `(Konum: ${lat.toFixed(1)}, ${lon.toFixed(1)} ✓)` : `(Loc: ${lat.toFixed(1)}, ${lon.toFixed(1)} ✓)`;
-                
-                fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if(data && data.current_weather) {
-                            const code = data.current_weather.weathercode;
-                            const weatherSelect = document.getElementById('weather');
-                            if(code <= 1) weatherSelect.value = "Güneşli / Sunny";
-                            else if(code <= 3) weatherSelect.value = "Bulutlu / Cloudy";
-                            else if(code <= 67) weatherSelect.value = "Yağmurlu / Rainy";
-                            else if(code <= 77) weatherSelect.value = "Karlı / Snowy";
-                            else weatherSelect.value = "Sisli / Foggy";
-                        }
-                    })
-                    .catch(() => {
-                        const weatherSelect = document.getElementById('weather');
-                        if(!weatherSelect.value) weatherSelect.value = "Güneşli / Sunny";
-                    });
-            }, () => {
-                statusEl.innerText = currentLang === 'TR' ? "(Konum Alınamadı)" : "(Location Failed)";
-                const weatherSelect = document.getElementById('weather');
-                if(!weatherSelect.value) weatherSelect.value = "Güneşli / Sunny";
+        statusEl.innerText = currentLang === 'TR' ? "(Otomatik Hava Alınıyor...)" : "(Fetching Auto Weather...)";
+        
+        fetch('https://ipapi.co/json/')
+            .then(res => res.json())
+            .then(locData => {
+                if(locData && locData.latitude && locData.longitude) {
+                    getWeatherByCoords(locData.latitude, locData.longitude, "(Otomatik Senkronize Edildi ✓)");
+                } else {
+                    tryBrowserGeolocation();
+                }
+            })
+            .catch(() => {
+                tryBrowserGeolocation();
             });
-        } else {
-            statusEl.innerText = currentLang === 'TR' ? "(Desteklenmiyor)" : "(Not Supported)";
-            const weatherSelect = document.getElementById('weather');
-            if(!weatherSelect.value) weatherSelect.value = "Güneşli / Sunny";
+    }
+
+    function tryBrowserGeolocation() {
+        const statusEl = document.getElementById('loc-status');
+        if (!navigator.geolocation) {
+            statusEl.innerText = currentLang === 'TR' ? "(Konum Desteklenmiyor)" : "(Location Not Supported)";
+            return;
         }
+        navigator.geolocation.getCurrentPosition(position => {
+            getWeatherByCoords(position.coords.latitude, position.coords.longitude, "(Konumdan Güncellendi ✓)");
+        }, () => {
+            statusEl.innerText = currentLang === 'TR' ? "(Varsayılan Değer Kullanılıyor)" : "(Using Default Value)";
+        }, { timeout: 10000 });
+    }
+
+    function getWeatherByCoords(lat, lon, successMsg) {
+        const statusEl = document.getElementById('loc-status');
+        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=weathercode`)
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.current) {
+                    const code = data.current.weathercode;
+                    const weatherSelect = document.getElementById('weather');
+                    
+                    let mappedWeather = "Güneşli / Sunny";
+                    if (code >= 1 && code <= 3) {
+                        mappedWeather = "Bulutlu / Cloudy";
+                    } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
+                        mappedWeather = "Yağmurlu / Rainy";
+                    } else if (code === 45 || code === 48) {
+                        mappedWeather = "Sisli / Foggy";
+                    } else if (code >= 71 && code <= 77) {
+                        mappedWeather = "Karlı / Snowy";
+                    } else if (code >= 95) {
+                        mappedWeather = "Don Tehlikesi / Frost Risk";
+                    }
+                    
+                    weatherSelect.value = mappedWeather;
+                    statusEl.innerText = currentLang === 'TR' ? successMsg : "(Auto Synchronized ✓)";
+                }
+            })
+            .catch(() => {
+                statusEl.innerText = currentLang === 'TR' ? "(Hava Alınamadı)" : "(Weather Unavailable)";
+            });
     }
     function updatePHRangeInfo() {
         const regionKey = document.getElementById('region').value;
@@ -868,7 +889,7 @@
             if(track) { track.stop(); }
             document.getElementById('cam-box').style.display = 'none';
             document.getElementById('form-area').style.display = 'block';
-            fetchSheetTotalRows(); // Sayfa açıldığında verilerin otomatik gelmesi sağlandı
+            setTimeout(() => { fetchSheetTotalRows(); }, 200);
         }
     }
     function processBioCamera(event) {
