@@ -202,7 +202,7 @@
             </div>
             
             <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/edit?usp=sharing" target="_blank" class="btn-excel" data-i18n="btnLiveSheet">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
-            <div class="btn-save" onclick="window.print()" data-i18n="btnPrintReport">📥 RAPORU YAZDIR / PDF KAYDET</div>
+            <div class="btn-save" onclick="window.print()" data-i18n="btnPrintReport">📥 RAPORu YAZDIR / PDF KAYDET</div>
             <button id="reset-btn" class="btn-reset" onclick="resetSystem()" style="display:block;" data-i18n="btnNewAnalyze">YENİ ANALİZ / NEW ANALYZE</button>
         </div>
     </div>
@@ -264,7 +264,7 @@
             
             <button class="btn-main" style="margin-top: 12px; font-size: 13px; padding: 12px;" onclick="calculateBiolab(true)" data-i18n="btnBioCalc">KLOROFİL a VERİSİNİ KAYDET & ANALİZE AKTAR</button>
             
-            <div id="bio-sync-status" class="sync-status" style="margin-top: 10px;" data-i18n="bioSyncSuccess">✨ MEBİ Lab Verisi Canlı Veri Tablosuna ve Analiz Modülüne Aktarıldı!</div>
+            <div id="bio-sync-status" class="sync-status" style="margin-top: 10px;" data-i18n="bioSyncSuccess">✨ MEB Lab Verisi Canlı Veri Tablosuna ve Analiz Modülüne Aktarıldı!</div>
             
             <div id="bio-result-box" style="display:none; margin-top:12px; background:#f0fdf4; border:1px solid #bbf7d0; padding:12px; border-radius:10px; font-size:11px; color:#166534; line-height:1.4;"></div>
         </div>
@@ -812,9 +812,8 @@
         const isIdeal = phVal >= range.min && phVal <= range.max;
         const stressScore = isIdeal ? (1.2 + Math.random() * 0.5).toFixed(1) : (4.8 + Math.random() * 2.1).toFixed(1);
         
-        const previewImg = document.getElementById('preview-img');
-        previewImg.style.display = 'block';
-        previewImg.src = lastCapturedImage;
+        document.getElementById('preview-img').style.display = 'block';
+        document.getElementById('preview-img').src = lastCapturedImage;
         
         document.getElementById('hybrid-output').innerHTML = currentLang === 'TR' ?
             `🧬 <strong>Hibrit Entegrasyon Sonucu:</strong> ${cropTitle} | pH: ${phVal} | Klorofil a (663 nm): <strong>${integratedChl} mg/L</strong>` :
@@ -845,7 +844,6 @@
         
         drawStressChart(stressScore);
         
-        // Google Sheets / Excel'e otomatik veri gönderimi
         sendDataToExcel({
             region: cropTitle,
             ph: phVal,
@@ -977,7 +975,6 @@
         if (!file) return;
         const reader = new FileReader();
         reader.onload = function(e) {
-            // Yaprak ekstraktı renginden otomatik klorofil simülasyonu
             const randomVal = (5.0 + Math.random() * 4.5).toFixed(1);
             document.getElementById('bio-absorbance').value = randomVal;
             calculateBiolab(true);
