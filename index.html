@@ -104,7 +104,7 @@
     <div id="lang-toggle" onclick="toggleLang()">Dil: Türkçe</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;" data-i18n="schoolSub">Rize Fatih Anatolian High School</span></div>
     <h1>GLOBAL AGRO DOCTOR</h1>
-    <div class="author">Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biyoloji Uzmanı & Proje Lideri</small></div>
+    <div class="author">Hazreti Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biyoloji Uzmanı & Proje Lideri</small></div>
     
     <!-- Navigasyon Sekmeleri -->
     <div class="nav-tabs">
@@ -202,7 +202,7 @@
             </div>
             
             <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/edit?usp=sharing" target="_blank" class="btn-excel" data-i18n="btnLiveSheet">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
-            <div class="btn-save" onclick="window.print()" data-i18n="btnPrintReport">📥 RAPORU YAZDIR / PDF KAYDET</div>
+            <div class="btn-save" onclick="window.print()" data-i18n="btnPrintReport">📥 RAPORu YAZDIR / PDF KAYDET</div>
             <button id="reset-btn" class="btn-reset" onclick="resetSystem()" style="display:block;" data-i18n="btnNewAnalyze">YENİ ANALİZ / NEW ANALYZE</button>
         </div>
     </div>
@@ -372,15 +372,13 @@
         </div>
     </div>
     
-    <div class="footer">© 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anatolian High School</div>
+    <div class="footer">© 2026 Hazreti Yusuf İhsan HAMAMCI - Rize Fatih Anatolian High School</div>
 </div>
-
 <div id="lightbox-modal" onclick="closeLightbox()">
     <button id="lightbox-close" onclick="closeLightbox()">&times;</button>
     <img id="lightbox-img" src="" alt="Zoomed Photo">
     <div id="lightbox-caption"></div>
 </div>
-
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSfNJ-wahBs-bJn5AIJjHTvGNM19WpMKvEDij-6j8pM6ej2-VDdZCcFIak4DcXYxpv/exec';
     let currentLang = 'TR';
@@ -441,7 +439,6 @@
             chartLabelTR: "Global (Diğer)", chartLabelEN: "Global (Other)"
         }
     };
-
     const translations = {
         TR: {
             schoolSub: "Rize Fatih Anatolian High School",
@@ -592,7 +589,7 @@
             statSamples: "Total Samples",
             partnerRegions: "Partner Pilot Regions:",
             netRize: "🌱 Turkey, Rize - Tea (*Camellia sinensis*) [Ideal pH: 4.5 - 6.0]",
-            netAntakya: "🍊 Antakya - Citrus (*Citrus sinensis*) [Ideal pH: 6.0 - 7.5]",
+            netAntakya: "🍊 Antakya - Citrus (*Citrus sinensis*) [IdealPS: 6.0 - 7.5]",
             netOlive: "🫒 Ege - Olive (*Olea europaea*) [Ideal pH: 6.5 - 8.0]",
             netFig: "🌿 Ege - Fig (*Ficus carica*) [Ideal pH: 6.0 - 7.5]",
             netBrussels: "🇪🇺 Brussels - Sugar Beet (*Beta vulgaris*) [Ideal pH: 6.0 - 7.0]",
@@ -602,13 +599,13 @@
             btnUpdateNetwork: "🔄 UPDATE NETWORK"
         }
     };
-
     function initApp() {
         populateDropdowns();
         loadGallery();
         updatePHRangeInfo();
         fetchCurrentWeather();
         updateLangButtonLabel();
+        drawGeoDistributionChart([5, 0, 0, 0, 0]); // Başlangıçta grafik boş kalmasın diye çağrıldı
     }
     
     function fetchSheetTotalRows() {
@@ -656,9 +653,10 @@
                 drawGeoDistributionChart([5, 0, 0, 0, 0]);
             });
     }
-
     function drawGeoDistributionChart(dynamicData = [5, 0, 0, 0, 0]) {
-        const ctx = document.getElementById('geoDistributionChart').getContext('2d');
+        const canvasEl = document.getElementById('geoDistributionChart');
+        if(!canvasEl) return;
+        const ctx = canvasEl.getContext('2d');
         if(geoChart) { geoChart.destroy(); }
         
         const labelsArr = currentLang === 'TR' ? 
@@ -695,7 +693,6 @@
             }
         });
     }
-
     function populateDropdowns() {
         const selectRegion = document.getElementById('region');
         const selectBioPlant = document.getElementById('bio-plant');
@@ -720,7 +717,6 @@
         selectRegion.value = currentRegionSelection;
         selectBioPlant.value = currentBioSelection;
     }
-
     function updateLangButtonLabel() {
         const toggleBtn = document.getElementById('lang-toggle');
         if (currentLang === 'TR') {
@@ -729,7 +725,6 @@
             toggleBtn.innerText = 'Language: English';
         }
     }
-
     function toggleLang() {
         currentLang = currentLang === 'TR' ? 'EN' : 'TR';
         updateLangButtonLabel();
@@ -747,9 +742,10 @@
         
         if(document.getElementById('res-area').style.display === 'block') {
             updateDynamicReportTexts();
+            drawStressChart();
         }
+        drawGeoDistributionChart([5, 0, 0, 0, 0]);
     }
-
     function fetchCurrentWeather() {
         const statusEl = document.getElementById('loc-status');
         if (navigator.geolocation) {
@@ -787,7 +783,6 @@
             if(!weatherSelect.value) weatherSelect.value = "Güneşli / Sunny";
         }
     }
-
     function updatePHRangeInfo() {
         const regionKey = document.getElementById('region').value;
         const range = cropRanges[regionKey] || { min: 6.0, max: 7.0 };
@@ -804,7 +799,6 @@
             validatePH(phInput);
         }
     }
-
     function validatePH(input) {
         const val = parseFloat(input.value);
         const warn = document.getElementById('ph-warn');
@@ -822,7 +816,6 @@
             warn.style.display = 'none';
         }
     }
-
     function switchTab(tabName) {
         const analysisSec = document.getElementById('analysis-section');
         const biolabSec = document.getElementById('biolab-section');
@@ -883,7 +876,6 @@
             fetchSheetTotalRows();
         }
     }
-
     function processBioCamera(event) {
         const file = event.target.files[0];
         if(!file) return;
@@ -926,7 +918,6 @@
         }
         reader.readAsDataURL(file);
     }
-
     function calculateBiolab(sendToSheet = false) {
         const plantKey = document.getElementById('bio-plant').value;
         const range = cropRanges[plantKey] || { min: 6.0, max: 7.0 };
@@ -978,7 +969,6 @@
             });
         }
     }
-
     function handleFileUpload(event) {
         const file = event.target.files[0];
         if(!file) return;
@@ -1011,7 +1001,6 @@
         }
         reader.readAsDataURL(file);
     }
-
     function updateCaption(index, newCaption) {
         let gallery = JSON.parse(localStorage.getItem('agro_field_gallery') || '[]');
         if(gallery[index]) {
@@ -1019,9 +1008,9 @@
             localStorage.setItem('agro_field_gallery', JSON.stringify(gallery));
         }
     }
-
     function loadGallery() {
         const container = document.getElementById('gallery-container');
+        if(!container) return;
         let gallery = JSON.parse(localStorage.getItem('agro_field_gallery') || '[]');
         
         if(gallery.length === 0) {
@@ -1040,7 +1029,6 @@
             container.appendChild(div);
         });
     }
-
     function deletePhoto(event, index) {
         event.stopPropagation();
         if(confirm(currentLang === 'TR' ? 'Bu fotoğrafı silmek istediğinize emin misiniz?' : 'Are you sure you want to delete this photo?')) {
@@ -1050,17 +1038,14 @@
             loadGallery();
         }
     }
-
     function openLightbox(imgSrc, caption) {
         document.getElementById('lightbox-img').src = imgSrc;
         document.getElementById('lightbox-caption').innerText = caption;
         document.getElementById('lightbox-modal').style.display = 'flex';
     }
-
     function closeLightbox() {
         document.getElementById('lightbox-modal').style.display = 'none';
     }
-
     function startSystem() {
         const phVal = document.getElementById('ph').value;
         if(!phVal) {
@@ -1079,7 +1064,6 @@
             resetSystem();
         });
     }
-
     function processAI() {
         c.width = v.videoWidth || 640;
         c.height = v.videoHeight || 480;
@@ -1119,10 +1103,11 @@
         updateDynamicReportTexts();
         drawStressChart(); // Grafik verisini işleyen ve çizen fonksiyon tetikleyicisi
     }
-
     // Chart.js 5 Günlük Karşılaştırmalı Stres Trendi Çizim Fonksiyonu
     function drawStressChart() {
-        const ctx = document.getElementById('stressChart').getContext('2d');
+        const canvasEl = document.getElementById('stressChart');
+        if(!canvasEl) return;
+        const ctx = canvasEl.getContext('2d');
         if(myChart) { myChart.destroy(); }
         
         const labelsArr = currentLang === 'TR' ? 
@@ -1178,7 +1163,6 @@
             }
         });
     }
-
     function updateAnalysis(pH, chlorophyll, weather) {
         let recipeTextTR = "";
         let recipeTextEN = "";
@@ -1202,7 +1186,6 @@
             recipeBox.innerHTML = `🔥 <strong>${currentLang === 'TR' ? 'Entegre Ekolojik Reçete' : 'Integrated Ecological Prescription'} / Integrated Ecological Prescription:</strong><br>${currentLang === 'TR' ? recipeTextTR : recipeTextEN}`;
         }
     }
-
     function updateDynamicReportTexts() {
         const regionKey = document.getElementById('region').value;
         const ph = document.getElementById('ph').value;
