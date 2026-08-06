@@ -59,9 +59,7 @@
         .stat-number { font-size: 18px; font-weight: 800; color: var(--primary); }
         .stat-label { font-size: 9px; color: #555; margin-top: 2px; font-weight: bold; }
         .network-list { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
-        .network-item { background: #fff; border: 1px solid #ddd; padding: 8px 10px; border-radius: 10px; font-size: 10px; display: flex; justify-content: space-between; align-items: center; gap: 6px; }
-        .network-item span { flex: 1; min-width: 0; word-break: break-word; }
-        .network-item strong { white-space: nowrap; font-size: 9px; }
+        .network-item { background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 10px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
         
         /* MEBİ & Biyoloji Laboratuvarı Sekmesi Stilleri */
         .biolab-section { display: none; }
@@ -102,7 +100,7 @@
 </head>
 <body onload="initApp()">
 <div class="container">
-    <div id="lang-toggle" onclick="toggleLang()">Dil: Türkçe</div>
+    <div id="lang-toggle" onclick="toggleLang()">EN / TR</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;" data-i18n="schoolSub">Rize Fatih Anatolian High School</span></div>
     <h1>GLOBAL AGRO DOCTOR</h1>
     <div class="author">Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biyoloji Uzmanı & Proje Lideri</small></div>
@@ -345,7 +343,7 @@
                     <strong style="color: #2e7d32;" data-i18n="netActive">Aktif Hub / Active Hub</strong>
                 </div>
                 <div class="network-item">
-                    <span data-i18n="netAntakya">🍊 Antakya - Narenciye (*Citrus sinensis* / *Citrus sinensis*) [pH: 6.0-7.5]</span>
+                    <span data-i18n="netAntakya">🍊 Antakya - Narenciye (*Citrus sinensis*) [pH: 6.0-7.5]</span>
                     <strong style="color: #2e7d32;" data-i18n="netSync">Senkronize / Synchronized</strong>
                 </div>
                 <div class="network-item">
@@ -365,7 +363,7 @@
         </div>
     </div>
     
-    <div class="footer">© 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anatolian High School</div>
+    <div class="footer">© 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anadolu Lisesi</div>
 </div>
 <div id="lightbox-modal" onclick="closeLightbox()">
     <button id="lightbox-close" onclick="closeLightbox()">&times;</button>
@@ -503,7 +501,7 @@
             statSamples: "Toplam Veri / Total Samples",
             partnerRegions: "Katılımcı Pilot Bölgeler / Partner Regions:",
             netRize: "🌱 Rize Fatih Anadolu Lisesi - Çay (*Camellia sinensis*) [pH: 4.5-6.0]",
-            netAntakya: "🍊 Antakya - Narenciye (*Citrus sinensis* / *Citrus sinensis*) [pH: 6.0-7.5]",
+            netAntakya: "🍊 Antakya - Narenciye (*Citrus sinensis*) [pH: 6.0-7.5]",
             netOlive: "🫒 Ege - Zeytin (*Olea europaea*) [pH: 6.5-8.0]",
             netFig: "🌿 Ege - İncir (*Ficus carica*) [pH: 6.0-7.5]",
             netBrussels: "🇪🇺 Brussels - Şeker Pancarı (*Beta vulgaris*) [pH: 6.0-7.0]",
@@ -598,7 +596,6 @@
         updatePHRangeInfo();
         fetchCurrentWeather();
         fetchSheetTotalRows();
-        updateLangButtonLabel();
     }
     
     // Google Sheets'ten gerçek verileri dinamik çekip grafiği güncelleyen fonksiyon
@@ -715,17 +712,9 @@
         selectRegion.value = currentRegionSelection;
         selectBioPlant.value = currentBioSelection;
     }
-    function updateLangButtonLabel() {
-        const toggleBtn = document.getElementById('lang-toggle');
-        if (currentLang === 'TR') {
-            toggleBtn.innerText = 'Dil: Türkçe';
-        } else {
-            toggleBtn.innerText = 'Language: English';
-        }
-    }
     function toggleLang() {
         currentLang = currentLang === 'TR' ? 'EN' : 'TR';
-        updateLangButtonLabel();
+        document.getElementById('lang-toggle').innerText = currentLang === 'TR' ? 'EN / TR' : 'TR / EN';
         
         populateDropdowns();
         const elements = document.querySelectorAll('[data-i18n]');
@@ -745,64 +734,46 @@
     }
     function fetchCurrentWeather() {
         const statusEl = document.getElementById('loc-status');
-        statusEl.innerText = currentLang === 'TR' ? "(Otomatik Hava Alınıyor...)" : "(Fetching Auto Weather...)";
-        
-        fetch('https://ipapi.co/json/')
-            .then(res => res.json())
-            .then(locData => {
-                if(locData && locData.latitude && locData.longitude) {
-                    getWeatherByCoords(locData.latitude, locData.longitude, "(Otomatik Senkronize Edildi ✓)");
-                } else {
-                    tryBrowserGeolocation();
-                }
-            })
-            .catch(() => {
-                tryBrowserGeolocation();
-            });
-    }
-
-    function tryBrowserGeolocation() {
-        const statusEl = document.getElementById('loc-status');
         if (!navigator.geolocation) {
             statusEl.innerText = currentLang === 'TR' ? "(Konum Desteklenmiyor)" : "(Location Not Supported)";
             return;
         }
+        statusEl.innerText = currentLang === 'TR' ? "(Konum Alınıyor...)" : "(Fetching Location...)";
+        
         navigator.geolocation.getCurrentPosition(position => {
-            getWeatherByCoords(position.coords.latitude, position.coords.longitude, "(Konumdan Güncellendi ✓)");
-        }, () => {
-            statusEl.innerText = currentLang === 'TR' ? "(Varsayılan Değer Kullanılıyor)" : "(Using Default Value)";
-        }, { timeout: 10000 });
-    }
-
-    function getWeatherByCoords(lat, lon, successMsg) {
-        const statusEl = document.getElementById('loc-status');
-        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=weathercode`)
-            .then(res => res.json())
-            .then(data => {
-                if (data && data.current) {
-                    const code = data.current.weathercode;
-                    const weatherSelect = document.getElementById('weather');
-                    
-                    let mappedWeather = "Güneşli / Sunny";
-                    if (code >= 1 && code <= 3) {
-                        mappedWeather = "Bulutlu / Cloudy";
-                    } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
-                        mappedWeather = "Yağmurlu / Rainy";
-                    } else if (code === 45 || code === 48) {
-                        mappedWeather = "Sisli / Foggy";
-                    } else if (code >= 71 && code <= 77) {
-                        mappedWeather = "Karlı / Snowy";
-                    } else if (code >= 95) {
-                        mappedWeather = "Don Tehlikesi / Frost Risk";
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            
+            fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=weathercode`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.current) {
+                        const code = data.current.weathercode;
+                        const weatherSelect = document.getElementById('weather');
+                        
+                        let mappedWeather = "Güneşli / Sunny";
+                        if (code >= 1 && code <= 3) {
+                            mappedWeather = "Bulutlu / Cloudy";
+                        } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
+                            mappedWeather = "Yağmurlu / Rainy";
+                        } else if (code === 45 || code === 48) {
+                            mappedWeather = "Sisli / Foggy";
+                        } else if (code >= 71 && code <= 77) {
+                            mappedWeather = "Karlı / Snowy";
+                        } else if (code >= 95) {
+                            mappedWeather = "Don Tehlikesi / Frost Risk";
+                        }
+                        
+                        weatherSelect.value = mappedWeather;
+                        statusEl.innerText = currentLang === 'TR' ? "(Konumdan Güncellendi ✓)" : "(Updated from Location ✓)";
                     }
-                    
-                    weatherSelect.value = mappedWeather;
-                    statusEl.innerText = currentLang === 'TR' ? successMsg : "(Auto Synchronized ✓)";
-                }
-            })
-            .catch(() => {
-                statusEl.innerText = currentLang === 'TR' ? "(Hava Alınamadı)" : "(Weather Unavailable)";
-            });
+                })
+                .catch(() => {
+                    statusEl.innerText = currentLang === 'TR' ? "(Hava Alınamadı)" : "(Weather Unavailable)";
+                });
+        }, () => {
+            statusEl.innerText = currentLang === 'TR' ? "(Konum İzni Reddedildi)" : "(Location Permission Denied)";
+        }, { timeout: 10000 });
     }
     function updatePHRangeInfo() {
         const regionKey = document.getElementById('region').value;
