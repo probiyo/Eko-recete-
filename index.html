@@ -830,45 +830,53 @@
         const tabFieldBtn = document.getElementById('tab-field-btn');
         const tabCitizenBtn = document.getElementById('tab-citizen-btn');
         
-        analysisSec.style.display = 'none';
-        biolabSec.style.display = 'none';
-        methodsSec.style.display = 'none';
-        fieldSec.style.display = 'none';
-        citizenSec.style.display = 'none';
+        if (analysisSec) analysisSec.style.display = 'none';
+        if (biolabSec) biolabSec.style.display = 'none';
+        if (methodsSec) methodsSec.style.display = 'none';
+        if (fieldSec) fieldSec.style.display = 'none';
+        if (citizenSec) citizenSec.style.display = 'none';
         
-        tabAnalysisBtn.classList.remove('active');
-        tabBiolabBtn.classList.remove('active');
-        tabMethodsBtn.classList.remove('active');
-        tabFieldBtn.classList.remove('active');
-        tabCitizenBtn.classList.remove('active');
+        if (tabAnalysisBtn) tabAnalysisBtn.classList.remove('active');
+        if (tabBiolabBtn) tabBiolabBtn.classList.remove('active');
+        if (tabMethodsBtn) tabMethodsBtn.classList.remove('active');
+        if (tabFieldBtn) tabFieldBtn.classList.remove('active');
+        if (tabCitizenBtn) tabCitizenBtn.classList.remove('active');
         
         if(tabName === 'analysis') {
-            analysisSec.style.display = 'block';
-            tabAnalysisBtn.classList.add('active');
+            if (analysisSec) analysisSec.style.display = 'block';
+            if (tabAnalysisBtn) tabAnalysisBtn.classList.add('active');
         } else if(tabName === 'biolab') {
-            biolabSec.style.display = 'block';
-            tabBiolabBtn.classList.add('active');
+            if (biolabSec) biolabSec.style.display = 'block';
+            if (tabBiolabBtn) tabBiolabBtn.classList.add('active');
             if(track) { track.stop(); }
-            document.getElementById('cam-box').style.display = 'none';
-            document.getElementById('form-area').style.display = 'block';
+            const camBox = document.getElementById('cam-box');
+            const formArea = document.getElementById('form-area');
+            if (camBox) camBox.style.display = 'none';
+            if (formArea) formArea.style.display = 'block';
         } else if(tabName === 'methods') {
-            methodsSec.style.display = 'block';
-            tabMethodsBtn.classList.add('active');
+            if (methodsSec) methodsSec.style.display = 'block';
+            if (tabMethodsBtn) tabMethodsBtn.classList.add('active');
             if(track) { track.stop(); }
-            document.getElementById('cam-box').style.display = 'none';
-            document.getElementById('form-area').style.display = 'block';
+            const camBox = document.getElementById('cam-box');
+            const formArea = document.getElementById('form-area');
+            if (camBox) camBox.style.display = 'none';
+            if (formArea) formArea.style.display = 'block';
         } else if(tabName === 'field') {
-            fieldSec.style.display = 'block';
-            tabFieldBtn.classList.add('active');
+            if (fieldSec) fieldSec.style.display = 'block';
+            if (tabFieldBtn) tabFieldBtn.classList.add('active');
             if(track) { track.stop(); }
-            document.getElementById('cam-box').style.display = 'none';
-            document.getElementById('form-area').style.display = 'block';
+            const camBox = document.getElementById('cam-box');
+            const formArea = document.getElementById('form-area');
+            if (camBox) camBox.style.display = 'none';
+            if (formArea) formArea.style.display = 'block';
         } else if(tabName === 'citizen') {
-            citizenSec.style.display = 'block';
-            tabCitizenBtn.classList.add('active');
+            if (citizenSec) citizenSec.style.display = 'block';
+            if (tabCitizenBtn) tabCitizenBtn.classList.add('active');
             if(track) { track.stop(); }
-            document.getElementById('cam-box').style.display = 'none';
-            document.getElementById('form-area').style.display = 'block';
+            const camBox = document.getElementById('cam-box');
+            const formArea = document.getElementById('form-area');
+            if (camBox) camBox.style.display = 'none';
+            if (formArea) formArea.style.display = 'block';
             setTimeout(() => { fetchSheetTotalRows(); }, 200);
         }
     }
