@@ -104,7 +104,7 @@
     <div id="lang-toggle" onclick="toggleLang()">Dil: Türkçe</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;" data-i18n="schoolSub">Rize Fatih Anatolian High School</span></div>
     <h1>GLOBAL AGRO DOCTOR</h1>
-    <div class="author">Hazreti Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biyoloji Uzmanı & Proje Lideri</small></div>
+    <div class="author">Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biyoloji Uzmanı & Proje Lideri</small></div>
     
     <!-- Navigasyon Sekmeleri -->
     <div class="nav-tabs">
@@ -372,7 +372,7 @@
         </div>
     </div>
     
-    <div class="footer">© 2026 Hazreti Yusuf İhsan HAMAMCI - Rize Fatih Anatolian High School</div>
+    <div class="footer">© 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anatolian High School</div>
 </div>
 <div id="lightbox-modal" onclick="closeLightbox()">
     <button id="lightbox-close" onclick="closeLightbox()">&times;</button>
@@ -647,7 +647,6 @@
                 drawGeoDistributionChart([5, 2, 3, 2, 1]);
             });
     }
-
     function populateDropdowns() {
         const regionSelect = document.getElementById('region');
         const bioPlantSelect = document.getElementById('bio-plant');
@@ -666,7 +665,6 @@
             bioPlantSelect.appendChild(opt2);
         }
     }
-
     function updatePHRangeInfo() {
         const reg = document.getElementById('region').value;
         const range = cropRanges[reg] || { min: 6.0, max: 7.0 };
@@ -676,7 +674,6 @@
         }
         validatePH(phInput);
     }
-
     function validatePH(input) {
         const reg = document.getElementById('region').value;
         const range = cropRanges[reg] || { min: 6.0, max: 7.0 };
@@ -688,18 +685,15 @@
             warn.style.display = 'none';
         }
     }
-
     function toggleLang() {
         currentLang = currentLang === 'TR' ? 'EN' : 'TR';
         document.getElementById('lang-toggle').innerText = currentLang === 'TR' ? 'Dil: Türkçe' : 'Lang: English';
         populateDropdowns();
         updateUIFAST();
     }
-
     function updateLangButtonLabel() {
         document.getElementById('lang-toggle').innerText = currentLang === 'TR' ? 'Dil: Türkçe' : 'Lang: English';
     }
-
     function updateUIFAST() {
         const t = translations[currentLang];
         document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -710,7 +704,6 @@
         });
         updatePHRangeInfo();
     }
-
     function switchTab(tabName) {
         document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
         document.getElementById('analysis-section').style.display = 'none';
@@ -738,7 +731,6 @@
             fetchSheetTotalRows();
         }
     }
-
     function fetchCurrentWeather() {
         const weatherSelect = document.getElementById('weather');
         const locStatus = document.getElementById('loc-status');
@@ -757,7 +749,6 @@
             });
         }
     }
-
     function startSystem() {
         document.getElementById('form-area').style.display = 'none';
         document.getElementById('cam-box').style.display = 'block';
@@ -775,7 +766,6 @@
                 document.getElementById('cam-box').style.display = 'none';
             });
     }
-
     function processAI() {
         c.width = v.videoWidth || 640;
         c.height = v.videoHeight || 480;
@@ -811,7 +801,6 @@
         
         generateReport(greenRatio);
     }
-
     function generateReport(greenRatio) {
         const regionKey = document.getElementById('region').value;
         const range = cropRanges[regionKey] || { min: 6.0, max: 7.0, TR: "Genel" };
@@ -823,8 +812,9 @@
         const isIdeal = phVal >= range.min && phVal <= range.max;
         const stressScore = isIdeal ? (1.2 + Math.random() * 0.5).toFixed(1) : (4.8 + Math.random() * 2.1).toFixed(1);
         
-        document.getElementById('preview-img.style.display').display = 'block';
-        document.getElementById('preview-img').src = lastCapturedImage;
+        const previewImg = document.getElementById('preview-img');
+        previewImg.style.display = 'block';
+        previewImg.src = lastCapturedImage;
         
         document.getElementById('hybrid-output').innerHTML = currentLang === 'TR' ?
             `🧬 <strong>Hibrit Entegrasyon Sonucu:</strong> ${cropTitle} | pH: ${phVal} | Klorofil a (663 nm): <strong>${integratedChl} mg/L</strong>` :
@@ -847,8 +837,8 @@
             `💊 <strong>Agronomic Prescription & Intervention Plan:</strong> ${isIdeal ? "Plant physiological status is optimum. Standard micro-element supplementation is sufficient." : "Soil pH deviation detected! Humic acid and chelated iron application recommended to balance root ion uptake."}`;
             
         const reportText = currentLang === 'TR' ?
-            `=== GLOBAL AGRO DOCTOR ANALİZ RAPORU ===\nBölge/Ürün: ${cropTitle}\nÖlçülen Toprak pH: ${phVal} (İdeal: ${range.min}-${range.max})\nKlorofil a (663nm): ${integratedChl} mg/L\nHava Durumu: ${weather}\nFizyolojik Stres Skoru: ${stressStatus(stressScore)}\nDurum: ${isIdeal ? 'Optimum Gelişim' : 'Stres Uyarısı / Müdahale Gerekli'}\nLider: Hazreti Yusuf İhsan HAMAMCI\nKurum: Rize Fatih Anadolu Lisesi` :
-            `=== GLOBAL AGRO DOCTOR ANALYSIS REPORT ===\nRegion/Crop: ${cropTitle}\nMeasured Soil pH: ${phVal} (Ideal: ${range.min}-${range.max})\nChlorophyll a (663nm): ${integratedChl} mg/L\nWeather Condition: ${weather}\nPhysiological Stress Score: ${stressStatus(stressScore)}\nStatus: ${isIdeal ? 'Optimum Growth' : 'Stress Alert / Intervention Required'}\nLeader: Hazreti Yusuf İhsan HAMAMCI\nInstitution: Rize Fatih Anatolian High School`;
+            `=== GLOBAL AGRO DOCTOR ANALİZ RAPORU ===\nBölge/Ürün: ${cropTitle}\nÖlçülen Toprak pH: ${phVal} (İdeal: ${range.min}-${range.max})\nKlorofil a (663nm): ${integratedChl} mg/L\nHava Durumu: ${weather}\nFizyolojik Stres Skoru: ${stressStatus(stressScore)}\nDurum: ${isIdeal ? 'Optimum Gelişim' : 'Stres Uyarısı / Müdahale Gerekli'}\nLider: Yusuf İhsan HAMAMCI\nKurum: Rize Fatih Anadolu Lisesi` :
+            `=== GLOBAL AGRO DOCTOR ANALYSIS REPORT ===\nRegion/Crop: ${cropTitle}\nMeasured Soil pH: ${phVal} (Ideal: ${range.min}-${range.max})\nChlorophyll a (663nm): ${integratedChl} mg/L\nWeather Condition: ${weather}\nPhysiological Stress Score: ${stressStatus(stressScore)}\nStatus: ${isIdeal ? 'Optimum Growth' : 'Stress Alert / Intervention Required'}\nLeader: Yusuf İhsan HAMAMCI\nInstitution: Rize Fatih Anatolian High School`;
             
         document.getElementById('res-output').innerText = reportText;
         document.getElementById('res-area').style.display = 'block';
@@ -865,11 +855,9 @@
             status: isIdeal ? 'Optimum' : 'Stres'
         });
     }
-
     function stressStatus(score) {
         return score < 3.0 ? score + " (Düşük / Low)" : score + " (Yüksek Stres / High Stress)";
     }
-
     function drawStressChart(currentScore) {
         const ctx = document.getElementById('stressChart').getContext('2d');
         if (myChart) myChart.destroy();
@@ -910,7 +898,6 @@
             }
         });
     }
-
     function drawGeoDistributionChart(counts) {
         const ctx = document.getElementById('geoDistributionChart').getContext('2d');
         if (geoChart) geoChart.destroy();
@@ -935,7 +922,6 @@
             }
         });
     }
-
     function sendDataToExcel(data) {
         const payload = {
             region: data.region,
@@ -958,7 +944,6 @@
             console.log("Excel sync error:", err);
         });
     }
-
     function calculateBiolab(syncToMain = false) {
         const plant = document.getElementById('bio-plant').value;
         const abs = parseFloat(document.getElementById('bio-absorbance').value) || 6.5;
@@ -987,7 +972,6 @@
             });
         }
     }
-
     function processBioCamera(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -1000,14 +984,12 @@
         };
         reader.readAsDataURL(file);
     }
-
     function resetSystem() {
         document.getElementById('form-area').style.display = 'block';
         document.getElementById('res-area').style.display = 'none';
         document.getElementById('sync-status').style.display = 'none';
         document.getElementById('preview-img').style.display = 'none';
     }
-
     function handleFileUpload(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -1020,7 +1002,6 @@
         };
         reader.readAsDataURL(file);
     }
-
     function loadGallery() {
         const container = document.getElementById('gallery-container');
         let gallery = JSON.parse(localStorage.getItem('agro_gallery') || '[]');
@@ -1045,7 +1026,6 @@
             container.appendChild(div);
         });
     }
-
     function updatePhotoDesc(index, newDesc) {
         let gallery = JSON.parse(localStorage.getItem('agro_gallery') || '[]');
         if (gallery[index]) {
@@ -1053,20 +1033,17 @@
             localStorage.setItem('agro_gallery', JSON.stringify(gallery));
         }
     }
-
     function deletePhoto(index) {
         let gallery = JSON.parse(localStorage.getItem('agro_gallery') || '[]');
         gallery.splice(index, 1);
         localStorage.setItem('agro_gallery', JSON.stringify(gallery));
         loadGallery();
     }
-
     function openLightbox(imgSrc, caption) {
         document.getElementById('lightbox-modal').style.display = 'flex';
         document.getElementById('lightbox-img').src = imgSrc;
         document.getElementById('lightbox-caption').innerText = caption;
     }
-
     function closeLightbox() {
         document.getElementById('lightbox-modal').style.display = 'none';
     }
