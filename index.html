@@ -106,7 +106,6 @@
         <button id="tab-field-btn" class="nav-tab" onclick="switchTab('field')" data-i18n="tabField">📸 SAHA</button>
         <button id="tab-citizen-btn" class="nav-tab" onclick="switchTab('citizen')" data-i18n="tabCitizen">🌍 CITIZEN</button>
     </div>
-
     <!-- AGRO ANALİZ SEKMESİ -->
     <div id="analysis-section">
         <div id="form-area">
@@ -365,13 +364,11 @@
     
     <div class="footer">© 2026 Hazreti Yusuf İhsan HAMAMCI - Rize Fatih Anatolian High School</div>
 </div>
-
 <div id="lightbox-modal" onclick="closeLightbox()">
     <button id="lightbox-close" onclick="closeLightbox()">&times;</button>
     <img id="lightbox-img" src="" alt="Zoomed Photo">
     <div id="lightbox-caption"></div>
 </div>
-
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSfNJ-wahBs-bJn5AIJjHTvGNM19WpMKvEDij-6j8pM6ej2-VDdZCcFIak4DcXYxpv/exec';
     let currentLang = 'TR';
@@ -425,7 +422,6 @@
             EN: "Global - Other [Ideal pH: 6.0 - 7.0]"
         }
     };
-
     const translations = {
         TR: {
             schoolSub: "Rize Fatih Anatolian High School",
@@ -586,7 +582,6 @@
             btnUpdateNetwork: "🔄 UPDATE NETWORK"
         }
     };
-
     function initApp() {
         populateDropdowns();
         loadGallery();
@@ -595,18 +590,14 @@
         updateLangButtonLabel();
         drawGeoDistributionChart([5, 2, 3, 2, 1]);
     }
-
     function populateDropdowns() {
         const regionSelect = document.getElementById('region');
         const bioPlantSelect = document.getElementById('bio-plant');
         if (!regionSelect || !bioPlantSelect) return;
-
         const selectedRegion = regionSelect.value;
         const selectedBio = bioPlantSelect.value;
-
         regionSelect.innerHTML = '';
         bioPlantSelect.innerHTML = '';
-
         for (const [key, val] of Object.entries(cropRanges)) {
             const textContent = currentLang === 'TR' ? val.TR : val.EN;
             
@@ -614,17 +605,14 @@
             opt1.value = key;
             opt1.innerText = textContent;
             regionSelect.appendChild(opt1);
-
             const opt2 = document.createElement('option');
             opt2.value = key;
             opt2.innerText = textContent;
             bioPlantSelect.appendChild(opt2);
         }
-
         if (selectedRegion) regionSelect.value = selectedRegion;
         if (selectedBio) bioPlantSelect.value = selectedBio;
     }
-
     function updatePHRangeInfo() {
         const regEl = document.getElementById('region');
         if (!regEl) return;
@@ -638,7 +626,6 @@
         }
         validatePH(phInput);
     }
-
     function validatePH(input) {
         input.dataset.modified = "true";
         const regEl = document.getElementById('region');
@@ -655,19 +642,16 @@
             warn.style.display = 'none';
         }
     }
-
     function toggleLang() {
         currentLang = currentLang === 'TR' ? 'EN' : 'TR';
         updateLangButtonLabel();
         populateDropdowns();
         updateUIFAST();
     }
-
     function updateLangButtonLabel() {
         const toggleBtn = document.getElementById('lang-toggle');
         if (toggleBtn) toggleBtn.innerText = currentLang === 'TR' ? 'Dil: Türkçe' : 'Lang: English';
     }
-
     function updateUIFAST() {
         const t = translations[currentLang];
         document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -676,7 +660,6 @@
         });
         updatePHRangeInfo();
     }
-
     function switchTab(tabName) {
         document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
         
@@ -685,17 +668,14 @@
             const el = document.getElementById(`${sec}-section`);
             if (el) el.style.display = 'none';
         });
-
         const activeBtn = document.getElementById(`tab-${tabName}-btn`);
         const activeSec = document.getElementById(`${tabName}-section`);
         
         if (activeBtn) activeBtn.classList.add('active');
         if (activeSec) activeSec.style.display = 'block';
-
         if (tabName === 'field') loadGallery();
         if (tabName === 'citizen') fetchSheetTotalRows();
     }
-
     function fetchCurrentWeather() {
         const weatherSelect = document.getElementById('weather');
         const locStatus = document.getElementById('loc-status');
@@ -712,7 +692,6 @@
             });
         }
     }
-
     function startSystem() {
         const formArea = document.getElementById('form-area');
         const camBox = document.getElementById('cam-box');
@@ -735,7 +714,6 @@
                 if (camBox) camBox.style.display = 'none';
             });
     }
-
     function processAI() {
         if (!v || !c) return;
         c.width = v.videoWidth || 640;
@@ -777,7 +755,6 @@
         
         generateReport(greenRatio);
     }
-
     function generateReport(greenRatio) {
         const regionEl = document.getElementById('region');
         const phEl = document.getElementById('ph');
@@ -856,11 +833,9 @@
             status: isIdeal ? 'Optimum' : 'Stres'
         });
     }
-
     function stressStatus(score) {
         return score < 3.0 ? score + " (Düşük / Low)" : score + " (Yüksek Stres / High Stress)";
     }
-
     function drawStressChart(currentScore) {
         const canvasEl = document.getElementById('stressChart');
         if (!canvasEl) return;
@@ -901,7 +876,6 @@
             }
         });
     }
-
     function drawGeoDistributionChart(counts) {
         const canvasEl = document.getElementById('geoDistributionChart');
         if (!canvasEl) return;
@@ -926,7 +900,6 @@
             }
         });
     }
-
     function sendDataToExcel(data) {
         const payload = {
             region: data.region,
@@ -950,7 +923,6 @@
             console.error("Excel senkronizasyon hatası:", err);
         });
     }
-
     function fetchSheetTotalRows() {
         const sheetCsvUrl = 'https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/export?format=csv';
         
@@ -992,7 +964,6 @@
                 drawGeoDistributionChart([5, 2, 3, 2, 1]);
             });
     }
-
     function calculateBiolab(syncToMain = false) {
         const plantEl = document.getElementById('bio-plant');
         const absEl = document.getElementById('bio-absorbance');
@@ -1027,7 +998,6 @@
             });
         }
     }
-
     function processBioCamera(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -1040,7 +1010,6 @@
         };
         reader.readAsDataURL(file);
     }
-
     function resetSystem() {
         const formArea = document.getElementById('form-area');
         const resArea = document.getElementById('res-area');
@@ -1056,7 +1025,6 @@
         if (phInput) delete phInput.dataset.modified;
         updatePHRangeInfo();
     }
-
     function handleFileUpload(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -1069,7 +1037,6 @@
         };
         reader.readAsDataURL(file);
     }
-
     function loadGallery() {
         const container = document.getElementById('gallery-container');
         if (!container) return;
@@ -1095,7 +1062,6 @@
             container.appendChild(div);
         });
     }
-
     function updatePhotoDesc(index, newDesc) {
         let gallery = JSON.parse(localStorage.getItem('agro_gallery') || '[]');
         if (gallery[index]) {
@@ -1103,14 +1069,12 @@
             localStorage.setItem('agro_gallery', JSON.stringify(gallery));
         }
     }
-
     function deletePhoto(index) {
         let gallery = JSON.parse(localStorage.getItem('agro_gallery') || '[]');
         gallery.splice(index, 1);
         localStorage.setItem('agro_gallery', JSON.stringify(gallery));
         loadGallery();
     }
-
     function openLightbox(imgSrc, caption) {
         const modal = document.getElementById('lightbox-modal');
         const img = document.getElementById('lightbox-img');
@@ -1119,7 +1083,6 @@
         if (img) img.src = imgSrc;
         if (cap) cap.innerText = caption;
     }
-
     function closeLightbox() {
         const modal = document.getElementById('lightbox-modal');
         if (modal) modal.style.display = 'none';
