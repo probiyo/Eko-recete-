@@ -256,7 +256,7 @@
             
             <button class="btn-main" style="margin-top: 12px; font-size: 13px; padding: 12px;" onclick="calculateBiolab(true)" data-i18n="btnBioCalc">KLOROFİL a VERİSİNİ KAYDET & ANALİZE AKTAR</button>
             
-            <div id="bio-sync-status" class="sync-status" style="margin-top: 10px;" data-i18n="bioSyncSuccess">✨ MEB Lab Verisi Canlı Veri Tablosuna ve Analiz Modülüne Aktarıldı!</div>
+            <div id="bio-sync-status" class="sync-status" style="margin-top: 10px;" data-i18n="bioSyncSuccess">✨ MEBİ Lab Verisi Canlı Veri Tablosuna ve Analiz Modülüne Aktarıldı!</div>
             
             <div id="bio-result-box" style="display:none; margin-top:12px; background:#f0fdf4; border:1px solid #bbf7d0; padding:12px; border-radius:10px; font-size:11px; color:#166534; line-height:1.4;">
             </div>
@@ -521,7 +521,7 @@
             lblRegion: "Region & Crop",
             lblManualSelect: "+ Global - Other (Manual Selection)",
             lblSoilPH: "SOIL pH VALUE (3.0 - 9.0)",
-            phWarnText: "⚠️ Entered pH value is outside the ideal scientific range for this crop!",
+            phWarnText: "⚠️ Entered pH value is out of the ideal scientific range for this crop!",
             lblIntegratedLab: "🧬 Laboratory Chlorophyll a (663 nm) Integration",
             lblIntegratedLabDesc: "Enter concentration value obtained from MEB Lab module (Optional):",
             lblWeather: "Weather Condition",
@@ -978,8 +978,7 @@
         }
         reader.readAsDataURL(file);
     }
-    
-    async function calculateBiolab(sendToSheet = false) {
+    function calculateBiolab(sendToSheet = false) {
         const plantKey = document.getElementById('bio-plant').value;
         const range = cropRanges[plantKey] || { min: 6.0, max: 7.0 };
         const plant = range[currentLang];
@@ -1018,20 +1017,16 @@
                 weather: "Lab Ortamı / Environment",
                 stress: `Klorofil a Konsantrasyonu: ${conc} mg/L (663 nm)`,
                 notes: resBox.innerText.replace(/\n/g, " "),
-                photograph: lastCapturedImage || "", // Ham Base64 verisi doğrudan Drive kaydı için iletiliyor
+                photograph: "",
                 date: new Date().toLocaleString()
             };
             
-            try {
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
-            } catch(e) {
-                console.error("Senkronizasyon hatası:", e);
-            }
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
         }
     }
     function handleFileUpload(event) {
@@ -1128,8 +1123,7 @@
             resetSystem();
         });
     }
-    
-    async function processAI() {
+    function processAI() {
         c.width = v.videoWidth || 640;
         c.height = v.videoHeight || 480;
         const ctxCanvas = c.getContext('2d');
@@ -1167,7 +1161,7 @@
         
         updateDynamicReportTexts();
         
-        // Google Sheets / Drive Otomatik Kayıt & Senkronizasyon İsteği
+        // Google Sheets Otomatik Kayıt / Senkronizasyon İsteği
         const regionKey = document.getElementById('region').value;
         const cropName = cropRanges[regionKey] ? cropRanges[regionKey][currentLang] : regionKey;
         const phVal = document.getElementById('ph').value;
@@ -1180,23 +1174,20 @@
             weather: weatherVal,
             stress: `Klorofil a: ${labChlorophyllVal || 'N/A'} mg/L, pH: ${phVal}`,
             notes: `Otomatik Saha Analizi - Rize Fatih Anadolu Lisesi`,
-            photograph: lastCapturedImage, // Ham Base64 verisinin tamamı Google Drive yüklemesi için gönderiliyor
+            photograph: lastCapturedImage.substring(0, 100) + '...', // Kısaltılmış veri
             date: new Date().toLocaleString()
         };
-        
-        try {
-            await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            });
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+        }).then(() => {
             document.getElementById('sync-status').style.display = 'block';
-        } catch(e) {
-            console.error("Senkronizasyon hatası:", e);
-        }
+        }).catch(() => {
+            // Hata olsa bile kullanıcı akışını bozma
+        });
     }
-    
     function updateAnalysis(pH, chlorophyll, weather) {
         let recipeTextTR = "";
         let recipeTextEN = "";
