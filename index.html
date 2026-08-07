@@ -256,7 +256,7 @@
             
             <button class="btn-main" style="margin-top: 12px; font-size: 13px; padding: 12px;" onclick="calculateBiolab(true)" data-i18n="btnBioCalc">KLOROFİL a VERİSİNİ KAYDET & ANALİZE AKTAR</button>
             
-            <div id="bio-sync-status" class="sync-status" style="margin-top: 10px;" data-i18n="bioSyncSuccess">✨ MEBİ Lab Verisi Canlı Veri Tablosuna ve Analiz Modülüne Aktarıldı!</div>
+            <div id="bio-sync-status" class="sync-status" style="margin-top: 10px;" data-i18n="bioSyncSuccess">✨ MEB Lab Verisi Canlı Veri Tablosuna ve Analiz Modülüne Aktarıldı!</div>
             
             <div id="bio-result-box" style="display:none; margin-top:12px; background:#f0fdf4; border:1px solid #bbf7d0; padding:12px; border-radius:10px; font-size:11px; color:#166534; line-height:1.4;">
             </div>
@@ -1126,71 +1126,39 @@
     
     // GÜNCELLENMİŞ processAI FONKSİYONU
     function processAI() {
-        c.width = v.videoWidth || 640;
-        c.height = v.videoHeight || 480;
-        const ctxCanvas = c.getContext('2d');
-        ctxCanvas.drawImage(v, 0, 0, c.width, c.height);
-        
-        const imgData = ctxCanvas.getImageData(0, 0, c.width, c.height);
-        const pixels = imgData.data;
-        let greenCount = 0;
-        let totalPixels = pixels.length / 4;
-        for (let i = 0; i < pixels.length; i += 16) { 
-            let r = pixels[i];
-            let g = pixels[i+1];
-            let b = pixels[i+2];
-            if (g > r + 15 && g > b + 15 && g > 40) {
-                greenCount++;
-            }
-        }
-        
-        let greenRatio = greenCount / (totalPixels / 4);
-        if (greenRatio < 0.08) {
-            if(track) { track.stop(); }
-            document.getElementById('cam-box').style.display = 'none';
-            document.getElementById('error-box').style.display = 'block';
-            document.getElementById('reset-btn').style.display = 'block';
-            return;
-        }
+        c.width = v.videoWidth || 640; c.height = v.videoHeight || 480;
+        c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
         lastCapturedImage = c.toDataURL('image/jpeg', 0.7);
-        const previewEl = document.getElementById('preview-img');
-        previewEl.src = lastCapturedImage;
-        previewEl.style.display = 'block';
-        if(track) { track.stop(); }
+        document.getElementById('preview-img').src = lastCapturedImage;
+        document.getElementById('preview-img').style.display = 'block';
+        if(track) track.stop();
         document.getElementById('cam-box').style.display = 'none';
-        document.getElementById('error-box').style.display = 'none';
         document.getElementById('res-area').style.display = 'block';
         
-        updateDynamicReportTexts();
-        
-        // Google Sheets Otomatik Kayıt / Senkronizasyon İsteği
-        const regionKey = document.getElementById('region').value;
-        const cropName = cropRanges[regionKey] ? cropRanges[regionKey][currentLang] : regionKey;
-        const phVal = document.getElementById('ph').value;
-        const weatherVal = document.getElementById('weather').value;
-        const labChlorophyllVal = document.getElementById('integrated-chlorophyll').value;
-        
-        const formData = {
-            region: cropName,
-            ph: phVal,
-            weather: weatherVal,
-            stress: `Klorofil a: ${labChlorophyllVal || 'N/A'} mg/L, pH: ${phVal}`,
-            notes: `Otomatik Saha Analizi - Rize Fatih Anadolu Lisesi`,
-            photograph: lastCapturedImage.substring(0, 100) + '...', 
+        const payload = {
+            region: document.getElementById('region').value,
+            ph: document.getElementById('ph').value,
+            weather: document.getElementById('weather').value,
+            stress: `pH: ${document.getElementById('ph').value}, Klorofil: ${document.getElementById('integrated-chlorophyll').value}`,
+            notes: 'Otomatik Saha Analizi',
+            photograph: lastCapturedImage.substring(0, 50),
             date: new Date().toLocaleString()
         };
+
+        // Verinin Excel'e sorunsuz düşmesi için form üzerinden gönderim simülasyonu
         fetch(SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData)
-        }).then(() => {
-            document.getElementById('sync-status').style.display = 'block';
-        }).catch(() => {
-            // Hata olsa bile kullanıcı akışını bozma
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+        }).then(() => { 
+            document.getElementById('sync-status').style.display = 'block'; 
+        }).catch(err => {
+            console.error("Kayıt hatası:", err);
         });
-    }
 
+        renderStressChart();
+    }
     function updateAnalysis(pH, chlorophyll, weather) {
         let recipeTextTR = "";
         let recipeTextEN = "";
