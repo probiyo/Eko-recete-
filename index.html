@@ -251,7 +251,7 @@
                 </div>
             </div>
             
-            <label style="margin-top:12px;" data-i18n="lblAbsorbance">Ölçülen / Hesaplanan Klorofil a Konsantrasyonu (mg/L)</label>
+            <label style="margin-top:12px;" data-i18n="lblAbsorbance">Ölçüden / Hesaplanan Klorofil a Konsantrasyonu (mg/L)</label>
             <input type="number" id="bio-absorbance" step="0.1" placeholder="Örn: 6.5" value="6.5">
             
             <button class="btn-main" style="margin-top: 12px; font-size: 13px; padding: 12px;" onclick="calculateBiolab(true)" data-i18n="btnBioCalc">KLOROFİL a VERİSİNİ KAYDET & ANALİZE AKTAR</button>
@@ -1125,7 +1125,7 @@
     }
     
     // GÜNCELLENMİŞ processAI FONKSİYONU
-    function processAI() {
+    async function processAI() {
         c.width = v.videoWidth || 640; 
         c.height = v.videoHeight || 480;
         c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
@@ -1139,28 +1139,33 @@
         document.getElementById('res-area').style.display = 'block';
         
         const regionSelect = document.getElementById('region');
-        const regionText = regionSelect.options[regionSelect.selectedIndex] ? regionSelect.options[regionSelect.selectedIndex].text : regionSelect.value;
-        
-        const payload = {
-            date: new Date().toLocaleString('tr-TR'),
-            region: regionText,
-            ph: document.getElementById('ph').value,
-            weather: document.getElementById('weather').value,
-            stress: `Klorofil: ${document.getElementById('integrated-chlorophyll').value} mg/L (663 nm)`,
-            notes: 'Saha Analiz Raporu',
-            photograph: lastCapturedImage.substring(0, 100) // Veri boyutunu optimize etmek için base64 özeti
+        const cropName = regionSelect.options[regionSelect.selectedIndex] ? regionSelect.options[regionSelect.selectedIndex].text : regionSelect.value;
+        const phVal = document.getElementById('ph').value;
+        const weatherVal = document.getElementById('weather').value;
+        const ishChlorophylVal = document.getElementById('integrated-chlorophyll').value;
+
+        const formData = {
+            region: cropName,
+            ph: phVal,
+            weather: weatherVal,
+            stress: 'Klorofil: ' + (ishChlorophylVal || 'N/A') + ' mg/L (663 nm), pH: ' + (phVal),
+            notes: 'Saha Analiz Raporu - Rize Fatih Anadolu Lisesi',
+            photo: lastCapturedImage, // Base64 formatındaki fotoğraf
+            photoType: 'image/jpeg',
+            date: new Date().toLocaleString()
         };
 
-        fetch(SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify(payload)
-        }).then(() => { 
-            document.getElementById('sync-status').style.display = 'block'; 
-        }).catch(err => {
-            console.error("Kayıt hatası:", err);
-        });
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(formData)
+            });
+            const result = await response.json();
+            console.log("Veri ve Fotoğraf Başarıyla Gönderildi:", result);
+            document.getElementById('sync-status').style.display = 'block';
+        } catch (error) {
+            console.error("Gönderim Hatası:", error);
+        }
 
         updateDynamicReportTexts();
     }
