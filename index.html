@@ -690,8 +690,8 @@
         });
     }
     
-    // 5 Günlük Karşılaştırmalı Stres Trendi Grafiği Çizdirme Fonksiyonu
-    function renderStressChart(chlorophyllVal) {
+    // GÜNCELLENMİŞ VE TAMAMEN DİNAMİK HALE GETİRİLMİŞ STRES GRAFİĞİ
+    function renderStressChart(chlorophyllVal, phVal, regionKey) {
         const ctx = document.getElementById('stressChart').getContext('2d');
         
         if (stressChartInstance instanceof Chart) {
@@ -699,9 +699,40 @@
         }
         const labelsArr = currentLang === 'TR' ? ['1. Gün', '2. Gün', '3. Gün', '4. Gün (Müdahale)', '5. Gün (Hasat)'] : ['Day 1', 'Day 2', 'Day 3', 'Day 4 (Intervention)', 'Day 5 (Harvest)'];
         
-        // Müdahalesiz senaryo (stres artar) ve Müdahaleli senaryo (reçete ile stres düşer)
-        let baselineStress = [40, 55, 70, 85, 95];
-        let interventionStress = [40, 48, 35, 22, 12];
+        // --- DİNAMİK HESAPLAMALAR ---
+        // 1. İdeal pH değerinden sapmayı hesapla
+        const range = cropRanges[regionKey] || { min: 6.0, max: 7.0 };
+        const optimalPh = (range.min + range.max) / 2;
+        const phDeviation = Math.abs(phVal - optimalPh);
+        
+        // 2. Klorofil düşüklüğünden kaynaklı stresi hesapla (Referans klorofil seviyesi tahmini 10.0 mg/L)
+        let chloStress = 0;
+        if (chlorophyllVal < 10) {
+            chloStress = (10 - chlorophyllVal) * 5;
+        }
+        
+        // 3. Başlangıç Stres Skorunu oluştur (Ağırlıklı hesaplama: pH sapması daha etkili)
+        let initialStress = 15 + (phDeviation * 20) + chloStress;
+        initialStress = Math.min(90, Math.max(10, initialStress)); // %10 ile %90 arasında sınırlandır
+        
+        // Müdahalesiz senaryo (stres artmaya devam eder)
+        let baselineStress = [
+            initialStress,
+            Math.min(100, initialStress + 12),
+            Math.min(100, initialStress + 25),
+            Math.min(100, initialStress + 40),
+            Math.min(100, initialStress + 50)
+        ];
+        
+        // Müdahaleli senaryo (reçete ile stres hızla kontrol altına alınır)
+        let interventionStress = [
+            initialStress,
+            Math.min(100, initialStress + 5),
+            Math.max(5, initialStress - 15),
+            Math.max(5, initialStress - 30),
+            Math.max(5, initialStress - 45)
+        ];
+
         stressChartInstance = new Chart(ctx, {
             type: 'line',
             data: {
@@ -753,6 +784,7 @@
             }
         });
     }
+
     function populateDropdowns() {
         const selectRegion = document.getElementById('region');
         const selectBioPlant = document.getElementById('bio-plant');
@@ -1124,7 +1156,6 @@
         });
     }
     
-    // GÜNCELLENMİŞ processAI FONKSİYONU
     async function processAI() {
         c.width = v.videoWidth || 640; 
         c.height = v.videoHeight || 480;
@@ -1189,6 +1220,8 @@
             recipeBox.innerHTML = `🔥 <strong>${currentLang === 'TR' ? 'Entegre Ekolojik Reçete' : 'Integrated Ecological Prescription'} / Integrated Ecological Prescription:</strong><br>${currentLang === 'TR' ? recipeTextTR : recipeTextEN}`;
         }
     }
+    
+    // GÜNCELLENMİŞ updateDynamicReportTexts FONKSİYONU
     function updateDynamicReportTexts() {
         const regionKey = document.getElementById('region').value;
         const ph = document.getElementById('ph').value;
@@ -1248,9 +1281,9 @@
         
         document.getElementById('res-output').innerText = `Integrated Analysis / Entegre Analiz Raporu\nRegion & Crop: ${cropDisplayName}\npH: ${ph}\nWeather: ${weather}\nLab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L`;
         
-        // Grafik çizimini çağır
+        // Parametreleri ekleyerek grafik çizimini çağır
         setTimeout(() => {
-            renderStressChart(chlorophyllVal);
+            renderStressChart(chlorophyllVal, phVal, regionKey);
         }, 100);
     }
     
