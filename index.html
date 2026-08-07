@@ -697,13 +697,11 @@
         if (stressChartInstance instanceof Chart) {
             stressChartInstance.destroy();
         }
-
         const labelsArr = currentLang === 'TR' ? ['1. Gün', '2. Gün', '3. Gün', '4. Gün (Müdahale)', '5. Gün (Hasat)'] : ['Day 1', 'Day 2', 'Day 3', 'Day 4 (Intervention)', 'Day 5 (Harvest)'];
         
         // Müdahalesiz senaryo (stres artar) ve Müdahaleli senaryo (reçete ile stres düşer)
         let baselineStress = [40, 55, 70, 85, 95];
         let interventionStress = [40, 48, 35, 22, 12];
-
         stressChartInstance = new Chart(ctx, {
             type: 'line',
             data: {
@@ -755,7 +753,6 @@
             }
         });
     }
-
     function populateDropdowns() {
         const selectRegion = document.getElementById('region');
         const selectBioPlant = document.getElementById('bio-plant');
@@ -1177,10 +1174,9 @@
             weather: weatherVal,
             stress: `Klorofil a: ${labChlorophyllVal || 'N/A'} mg/L, pH: ${phVal}`,
             notes: `Otomatik Saha Analizi - Rize Fatih Anadolu Lisesi`,
-            photograph: lastCapturedImage.substring(0, 100) + '...', // Kısaltılmış veri
+            photograph: lastCapturedImage.substring(0, 100) + '...',
             date: new Date().toLocaleString()
         };
-
         fetch(SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
@@ -1188,9 +1184,7 @@
             body: JSON.stringify(formData)
         }).then(() => {
             document.getElementById('sync-status').style.display = 'block';
-        }).catch(() => {
-            // Hata olsa bile kullanıcı akışını bozma
-        });
+        }).catch(() => {});
     }
     function updateAnalysis(pH, chlorophyll, weather) {
         let recipeTextTR = "";
@@ -1274,7 +1268,6 @@
         
         document.getElementById('res-output').innerText = `Integrated Analysis / Entegre Analiz Raporu\nRegion & Crop: ${cropDisplayName}\npH: ${ph}\nWeather: ${weather}\nLab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L`;
         
-        // Grafik çizimini çağır
         setTimeout(() => {
             renderStressChart(chlorophyllVal);
         }, 100);
