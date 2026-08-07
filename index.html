@@ -1143,7 +1143,6 @@
         const phVal = document.getElementById('ph').value;
         const weatherVal = document.getElementById('weather').value;
         const ishChlorophylVal = document.getElementById('integrated-chlorophyll').value;
-
         const formData = {
             region: cropName,
             ph: phVal,
@@ -1154,7 +1153,6 @@
             photoType: 'image/jpeg',
             date: new Date().toLocaleString()
         };
-
         try {
             const response = await fetch(SCRIPT_URL, {
                 method: 'POST',
@@ -1166,7 +1164,6 @@
         } catch (error) {
             console.error("Gönderim Hatası:", error);
         }
-
         updateDynamicReportTexts();
     }
     function updateAnalysis(pH, chlorophyll, weather) {
