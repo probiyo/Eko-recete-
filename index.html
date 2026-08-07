@@ -371,7 +371,7 @@
     <div id="lightbox-caption"></div>
 </div>
 <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxotD-WZ6OHiHNlbJb8zSe1eWBq_9_DPz9lBCa8AGqXZP5zwAhSLIZl4d_RGKXrRrv9/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSfNJ-wahBs-bJn5AIJjHTvGNM19WpMKvEDij-6j8pM6ej2-VDdZCcFIak4DcXYxpv/exec';
     let currentLang = 'TR';
     let track;
     let stressChartInstance = null;
@@ -1123,6 +1123,8 @@
             resetSystem();
         });
     }
+    
+    // GÜNCELLENMİŞ processAI FONKSİYONU
     function processAI() {
         c.width = v.videoWidth || 640;
         c.height = v.videoHeight || 480;
@@ -1174,7 +1176,7 @@
             weather: weatherVal,
             stress: `Klorofil a: ${labChlorophyllVal || 'N/A'} mg/L, pH: ${phVal}`,
             notes: `Otomatik Saha Analizi - Rize Fatih Anadolu Lisesi`,
-            photograph: lastCapturedImage.substring(0, 100) + '...', // Kısaltılmış veri
+            photograph: lastCapturedImage.substring(0, 100) + '...', 
             date: new Date().toLocaleString()
         };
         fetch(SCRIPT_URL, {
@@ -1188,6 +1190,7 @@
             // Hata olsa bile kullanıcı akışını bozma
         });
     }
+
     function updateAnalysis(pH, chlorophyll, weather) {
         let recipeTextTR = "";
         let recipeTextEN = "";
