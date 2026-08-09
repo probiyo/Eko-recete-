@@ -4,43 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GLOBAL AGRO DOCTOR | Brussels EU Terminal</title>
+    <!-- PWA: Çevrimdışı çalışma desteği (saha/köy şartlarında internet kesintileri için) -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1b5e20">
     <!-- Chart.js Kütüphanesi -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --primary: #1b5e20; --accent: #ffd700; --danger: #d32f2f; --bg: #f4f7f5; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 10px; color: #333; }
         .container { max-width: 480px; margin: auto; background: white; padding: 20px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; position: relative; }
-        
         #lang-toggle { position: absolute; top: 20px; right: 20px; background: #eee; border: 1px solid #ccc; padding: 5px 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; }
         .school-tag { font-size: 10px; color: #777; text-align: center; text-transform: uppercase; letter-spacing: 1.5px; line-height: 1.4; }
         h1 { text-align: center; color: var(--primary); font-size: 20px; margin: 5px 0; }
         .author { text-align: center; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 15px; }
-        
         /* Navigasyon / Sekme Menüsü */
         .nav-tabs { display: flex; gap: 4px; margin-bottom: 15px; background: #e8f0e9; padding: 4px; border-radius: 14px; flex-wrap: wrap; }
         .nav-tab { flex: 1; padding: 8px 4px; text-align: center; font-size: 9px; font-weight: 800; color: var(--primary); background: transparent; border: none; border-radius: 10px; cursor: pointer; transition: 0.2s; min-width: 70px; }
         .nav-tab.active { background: var(--primary); color: white; }
-        
         .card { background: #f9fdfa; padding: 15px; border-radius: 20px; margin-bottom: 12px; border: 1px solid #e8f0e9; }
         label { display: block; font-size: 11px; font-weight: 800; color: var(--primary); margin-bottom: 8px; text-transform: uppercase; }
         select, input { width: 100%; padding: 12px; border: 2px solid #d1d9d2; border-radius: 12px; font-size: 15px; outline: none; box-sizing: border-box; }
         .other-opt { background: #e8f5e9; color: var(--primary); font-weight: bold; text-align: center; padding: 10px; border-radius: 10px; cursor: pointer; margin-top: 5px; border: 1px dashed var(--primary); font-size: 13px; }
-        
         #cam-box { display: none; margin-top: 15px; border-radius: 20px; overflow: hidden; border: 4px solid #333; position: relative; }
         video, canvas { width: 100%; height: 320px; object-fit: cover; }
         #canvas { display: none; }
-        
         .scan-ui { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .target { width: 200px; height: 200px; border: 2px solid var(--accent); border-radius: 20px; box-shadow: 0 0 0 1000px rgba(0,0,0,0.5); }
         .hint { background: rgba(0,0,0,0.85); color: white; padding: 8px 12px; border-radius: 10px; font-size: 10px; margin-top: 10px; text-align: center; width: 85%; line-height: 1.3; }
-        
         button { width: 100%; padding: 16px; border: none; border-radius: 15px; font-size: 16px; font-weight: 800; cursor: pointer; margin-top: 10px; }
         .btn-main { background: var(--primary); color: white; }
         .btn-snap { background: #222; color: white; }
         .btn-reset { background: #555; color: white; display: none; }
         .btn-excel { background: #107c41; color: white; text-decoration: none; display: block; text-align: center; padding: 14px; border-radius: 15px; font-size: 15px; font-weight: 800; margin-top: 10px; }
         .btn-save { background: #0277bd; color: white; text-decoration: none; display: block; text-align: center; padding: 12px; border-radius: 15px; font-size: 14px; font-weight: 800; margin-top: 10px; cursor: pointer; }
-        
         /* Saha Çalışmaları Galeri Alanı Stilleri */
         .field-section { display: none; }
         .upload-zone { border: 2px dashed var(--primary); padding: 20px; border-radius: 15px; text-align: center; background: #f9fdfa; cursor: pointer; margin-bottom: 12px; }
@@ -51,7 +47,6 @@
         .gallery-item:hover img { transform: scale(1.03); }
         .gallery-item .del-photo { position: absolute; top: 5px; right: 5px; background: rgba(211,47,47,0.8); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 2; }
         .gallery-item-input { width: 100%; border: none; border-top: 1px solid #ddd; padding: 6px 8px; font-size: 10px; background: #fff; box-sizing: border-box; outline: none; }
-        
         /* Vatandaş Bilimi / Uluslararası Ağ Sekmesi Stilleri */
         .citizen-section { display: none; }
         .citizen-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
@@ -60,16 +55,13 @@
         .stat-label { font-size: 9px; color: #555; margin-top: 2px; font-weight: bold; }
         .network-list { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
         .network-item { background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 10px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
-        
         /* MEBİ & Biyoloji Laboratuvarı Sekmesi Stilleri */
         .biolab-section { display: none; }
         .mebi-badge { background: #e0f2fe; border-left: 5px solid #0284c7; padding: 10px; font-size: 11px; margin-bottom: 12px; color: #0369a1; font-weight: bold; border-radius: 0 10px 10px 0; line-height: 1.4; }
-        
         /* Metodoloji / Whitepaper Sekmesi Stilleri */
         .methods-section { display: none; }
         .methods-content { font-size: 11px; line-height: 1.5; color: #333; }
         .methods-content h3 { color: var(--primary); font-size: 13px; margin-top: 12px; margin-bottom: 4px; border-bottom: 1px solid #e8f0e9; padding-bottom: 3px; }
-        
         /* Canlı Regülasyon Entegrasyon Kutusu (Somut ve Sayısal) */
         .regulation-metrics { background: #f0fdf4; border: 1px solid #22c55e; padding: 12px; border-radius: 12px; margin-top: 12px; font-size: 11px; color: #166534; line-height: 1.5; }
         .formula-box { background: #f8fafc; border-left: 4px solid #3b82f6; padding: 8px 10px; margin-top: 6px; font-family: monospace; font-size: 10px; color: #1e293b; border-radius: 0 8px 8px 0; }
@@ -78,10 +70,8 @@
         #lightbox-img { max-width: 90%; max-height: 80vh; border-radius: 12px; border: 2px solid #fff; box-shadow: 0 0 20px rgba(0,0,0,0.5); object-fit: contain; }
         #lightbox-caption { color: white; margin-top: 15px; font-size: 14px; font-weight: bold; text-align: center; }
         #lightbox-close { position: absolute; top: 20px; right: 25px; background: #d32f2f; color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        
         #res-area { display: none; margin-top: 20px; padding: 20px; border: 2px solid #1b5e20; border-radius: 20px; background: #fff; }
         .res-body { font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4; color: #1b5e20; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px; white-space: pre-wrap; }
-        
         .captured-preview { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-bottom: 12px; border: 2px solid #ddd; display: none; }
         .hybrid-note { background: #e3f2fd; border-left: 5px solid #2196f3; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #0d47a1; font-weight: bold; line-height: 1.4; }
         .green-deal-box { background: #e8f5e9; border-left: 5px solid #2e7d32; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #1b5e20; font-weight: bold; border-radius: 0 10px 10px 0; line-height: 1.4; }
@@ -89,7 +79,6 @@
         .prescription-box { background: #fffde7; border-left: 5px solid #fbc02d; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #f57f17; font-weight: bold; border-radius: 0 10px 10px 0; line-height: 1.4; }
         .calibration-box { background: #f3e5f5; border-left: 5px solid #ab47bc; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #4a148c; font-weight: bold; border-radius: 0 10px 10px 0; line-height: 1.4; }
         .sync-status { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; padding: 8px; border-radius: 10px; font-size: 11px; font-weight: bold; text-align: center; margin-bottom: 10px; display: none; line-height: 1.4; }
-        
         .chart-box { background: #fafafa; padding: 12px; border-radius: 15px; margin-bottom: 12px; border: 1px solid #ddd; }
         .chart-container { position: relative; width: 100%; min-height: 200px; height: 200px; }
         .expert-msg { background: #fff3e0; border-left: 5px solid #ff9800; padding: 10px; font-size: 11px; font-weight: bold; color: #e65100; margin-bottom: 15px; line-height: 1.4; }
@@ -103,8 +92,14 @@
     <div id="lang-toggle" onclick="toggleLang()">Dil: Türkçe</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;" data-i18n="schoolSub">Rize Fatih Anatolian High School</span></div>
     <h1>GLOBAL AGRO DOCTOR</h1>
-    <div class="author">Hazreti Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biyoloji Uzmanı & Proje Lideri</small></div>
-    
+    <div class="author"> Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biyoloji Uzmanı & Proje Lideri</small></div>
+    <div style="background:#fff8e1; border:1px solid #ffca28; border-radius:10px; padding:8px 10px; margin: 8px auto 12px; max-width: 440px; font-size:9.5px; color:#5d4a0a; line-height:1.4; text-align:center;" data-i18n="privacyBanner">
+        🔒 <strong>Veri Gizliliği:</strong> Bu projede toplanan fotoğraflar yalnızca bitki/yaprak görüntüleridir; kişi/yüz fotoğrafı çekilmemelidir. Veriler Rize Fatih Anadolu Lisesi Scientix projesi kapsamında eğitim amaçlı toplanmakta olup okul idaresinin bilgisi dahilindedir.
+    </div>
+    <div id="offline-banner" style="display:none; background:#fce4ec; border:1px solid #e57373; border-radius:10px; padding:8px 10px; margin: 0 auto 8px; max-width: 440px; font-size:10px; color:#b71c1c; text-align:center; font-weight:bold;" data-i18n="offlineBanner">
+        📡 Çevrimdışısınız — veriler cihazda güvenle bekletilecek, bağlantı gelince otomatik gönderilecek.
+    </div>
+    <div id="pending-sync-badge" style="display:none; background:#fff3e0; border:1px solid #ffb74d; border-radius:10px; padding:6px 10px; margin: 0 auto 8px; max-width: 440px; font-size:9.5px; color:#e65100; text-align:center;"></div>
     <!-- Navigasyon Sekmeleri -->
     <div class="nav-tabs">
         <button id="tab-analysis-btn" class="nav-tab active" onclick="switchTab('analysis')" data-i18n="tabAnalysis">🌱 ANALİZ</button>
@@ -125,7 +120,6 @@
                     + Global - Diğer / Other (Manual Selection)
                 </div>
             </div>
-            
             <div class="card">
                <label id="ph-label" data-i18n="lblSoilPH">TOPRAK pH DEĞERİ / SOIL pH (3.0 - 9.0)</label>
                 <input type="number" id="ph" step="0.1" min="3.0" max="9.0" placeholder="Ex: 6.5" value="4.8" oninput="validatePH(this)">
@@ -151,7 +145,6 @@
                     📍 Konumdan Otomatik Hava Durumunu Güncelle / Fetch Weather
                 </div>
             </div>
-            
             <button id="start-btn" class="btn-main" onclick="startSystem()" data-i18n="btnStartAnalyze">ANALİZİ BAŞLAT / START ANALYZE</button>
         </div>
         <div id="cam-box">
@@ -172,9 +165,7 @@
         </div>
         <div id="res-area">
             <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;"><span data-i18n="reportHeaderTitle">BRÜSSEL PROJE RAPORU #EU-AGRO</span><br><span style="font-size:9px; font-weight:normal;" data-i18n="reportHeaderSub">BRUSSELS PROJECT REPORT #EU-AGRO</span></div>
-            
             <div id="sync-status" class="sync-status" data-i18n="syncSuccess">✨ Saha + Lab Entegre Analiz Tamamlandı & Excel'e Aktarıldı!<br><span style="font-size:9px; font-weight:normal;">Integrated Field + Lab Analysis Completed & Synced to Excel!</span></div>
-            
             <!-- Analiz Edilen Yaprak Fotoğrafı Önizlemesi -->
             <img id="preview-img" class="captured-preview" src="" alt="Captured Leaf">
             <div id="hybrid-output" class="hybrid-note"></div>
@@ -182,7 +173,6 @@
             <div id="green-deal-output" class="green-deal-box"></div>
             <div id="certificate-output" class="certificate-box"></div>
             <div id="prescription-output" class="prescription-box"></div>
-            
             <!-- Çift Senaryolu Prediktif Stres Simülasyon Grafiği -->
             <div class="chart-box">
                 <label style="text-align:center; margin-bottom:8px; font-size: 11px;" data-i18n="chartTitle">📈 Karşılaştırmalı 5 Günlük Stres Trendi (Müdahaleli vs Müdahalesiz)<br>Comparative 5-Day Stress Trend (Intervention vs No Intervention)</label>
@@ -195,7 +185,6 @@
                 ⚠️ UZMAN GÖRÜŞÜ: Çözülemeyen sorunlarda acil uzman desteği alınmalıdır.<br>
                 ⚠️ EXPERT ADVICE: Seek immediate expert support for unresolved issues.
             </div>
-            
             <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/edit?usp=sharing" target="_blank" class="btn-excel" data-i18n="btnLiveSheet">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
             <div class="btn-save" onclick="window.print()" data-i18n="btnPrintReport">📥 RAPORU YAZDIR / PDF KAYDET</div>
             <button id="reset-btn" class="btn-reset" onclick="resetSystem()" style="display:block;" data-i18n="btnNewAnalyze">YENİ ANALİZ / NEW ANALYZE</button>
@@ -208,7 +197,6 @@
             <div class="mebi-badge" data-i18n="bioBadge">
                 📚 <strong>MEB Güncel Kazanım Uyumlu:</strong> Fotosentez hızını etkileyen faktörler ve düşük maliyetli akıllı telefon kalorimetresi protokolü. (Brüksel STEM & Citizen Science Uyumlu)
             </div>
-            
             <!-- Alternatif Toprak pH Ölçüm Protokolü Eklendi -->
             <div style="background: #fdf2f8; border: 1px dashed #ec4899; padding: 12px; border-radius: 10px; margin-bottom: 12px; font-size: 10px; color: #831843; line-height: 1.5;" data-i18n="bioAlternativePhBox">
                 🧪 <strong>Alternatif Toprak pH Ölçüm Protokolü (Saha & Okul Lab):</strong><br>
@@ -236,28 +224,67 @@
             <select id="bio-wavelength" disabled>
                 <option value="663" data-i18n="optWavelength">663 nm (Klorofil a - Maksimum Absorpsiyon)</option>
             </select>
-            
+            <!-- BEYAZ / GRİ REFERANS KARTI: IŞIK NORMALİZASYONU -->
+            <div style="margin-top: 12px; border: 1px solid #90a4ae; padding: 10px; border-radius: 10px; background: #fafafa;">
+                <label style="font-size:11px; color:#37474f;" data-i18n="whiteRefHeader">⚪ Beyaz/Gri Referans Kartı (Işık Normalizasyonu)</label>
+                <div style="font-size: 9px; color: #666; margin-bottom: 6px;" data-i18n="whiteRefDesc">Ölçüme başlamadan önce, aynı ışık altında düz beyaz/gri bir kağıdın fotoğrafını çekip referans olarak kaydedin. Bu, farklı gün/ışık koşullarında çekilen fotoğrafların karşılaştırılabilir olmasını sağlar.</div>
+                <input type="file" id="white-ref-cam-input" accept="image/*" capture="environment" style="display:none" onchange="setWhiteReference(event)">
+                <input type="file" id="white-ref-file-input" accept="image/*" style="display:none" onchange="setWhiteReference(event)">
+                <div style="display:flex; gap:6px;">
+                    <button type="button" class="btn-main" style="padding:8px; font-size:10px; margin-top:0; flex:1; background:#455a64;" onclick="document.getElementById('white-ref-cam-input').click()" data-i18n="btnWhiteRefCam">📸 Referans Çek</button>
+                    <button type="button" style="padding:8px; font-size:10px; margin-top:0; flex:1; background:#eee; color:#555; border:none; border-radius:10px; cursor:pointer;" onclick="clearWhiteReference()" data-i18n="btnWhiteRefClear">🗑️ Sıfırla</button>
+                </div>
+                <div id="white-ref-status" style="margin-top:6px; font-size:9px; font-weight:bold;"></div>
+            </div>
+            <!-- GERÇEK SPEKTROFOTOMETRE / ARNON (1949) FORMÜLÜ MODÜLÜ -->
+            <div style="margin-top: 12px; border: 2px solid #3b82f6; padding: 12px; border-radius: 12px; background: #eff6ff;">
+                <label style="color:#1e40af; font-size:11px;" data-i18n="arnonHeader">🔬 Gerçek Spektrofotometre Verisi (Arnon 1949 Formülü)</label>
+                <div style="font-size:9px; color:#555; margin-bottom:8px;" data-i18n="arnonDesc">Okulda/laboratuvarda gerçek bir spektrofotometre ile A663 ve A645 absorbans değerlerini ölçtüyseniz buraya girin. Kamera tahmini yerine literatürde kabul görmüş gerçek kimyasal formülle hesaplanır. Kaynak: Arnon, D.I. (1949), Plant Physiology 24(1):1-15.</div>
+                <div style="display:flex; gap:8px;">
+                    <div style="flex:1;">
+                        <label style="font-size:9px;" data-i18n="lblA663">Absorbans A663</label>
+                        <input type="number" id="arnon-a663" step="0.001" placeholder="Örn: 0.842">
+                    </div>
+                    <div style="flex:1;">
+                        <label style="font-size:9px;" data-i18n="lblA645">Absorbans A645</label>
+                        <input type="number" id="arnon-a645" step="0.001" placeholder="Örn: 0.213">
+                    </div>
+                </div>
+                <button type="button" class="btn-main" style="padding:10px; font-size:11px; margin-top:8px; background:#1e40af;" onclick="calculateArnon()" data-i18n="btnArnonCalc">🧮 Arnon Formülüyle Hesapla</button>
+                <div id="arnon-result" style="display:none; margin-top:8px; font-size:10px; color:#1e3a8a; background:#dbeafe; padding:8px; border-radius:8px;"></div>
+            </div>
             <!-- Kamera / Dosya Seçimli Akıllı Renk (RGB) Analizi Alanı -->
             <div style="margin-top: 12px; border: 2px dashed var(--primary); padding: 12px; border-radius: 12px; background: #f4fbf5; text-align: center;">
                 <label style="margin-bottom: 5px;" data-i18n="bioCamHeader">📸 Yaprak Ekstraktı Kamera / Fotoğraf Analizi</label>
                 <div style="font-size: 10px; color: #555; margin-bottom: 8px;" data-i18n="bioCamDesc">Kameradan canlı çekim yapın veya cihazınızdan fotoğraf/dosya yükleyin:</div>
-                
                 <input type="file" id="bio-cam-input" accept="image/*" capture="environment" style="display:none" onchange="processBioCamera(event)">
                 <input type="file" id="bio-file-input" accept="image/*" style="display:none" onchange="processBioCamera(event)">
-                
                 <div style="display: flex; gap: 8px; margin-top: 5px;">
                     <button type="button" class="btn-main" style="padding: 10px; font-size: 11px; margin-top: 0; flex: 1;" onclick="document.getElementById('bio-cam-input').click()" data-i18n="btnBioCamDirect">📸 Kamera ile Çek</button>
                     <button type="button" class="btn-main" style="padding: 10px; font-size: 11px; margin-top: 0; flex: 1; background: #0277bd;" onclick="document.getElementById('bio-file-input').click()" data-i18n="btnBioFileSelect">📁 Dosya / Galeri Seç</button>
                 </div>
             </div>
-            
+            <!-- KAMERA KALİBRASYON EĞRİSİ MODÜLÜ -->
+            <div style="margin-top: 12px; border: 2px dashed #ab47bc; padding: 12px; border-radius: 12px; background: #faf5fb;">
+                <label style="color:#6a1b9a; font-size:11px;" data-i18n="calibHeader">📐 Kamera Kalibrasyon Eğrisi (Gerçek Standartlarla)</label>
+                <div style="font-size:9px; color:#555; margin-bottom:8px;" data-i18n="calibDesc">Spektrofotometreniz yoksa sorun değil: tartım bazlı bir seyreltme serisi hazırlayın (ör. 1 g yaprak : 10 mL aseton stok = 1.0 birim; bu stoktan 1/2, 1/4, 1/8 seyreltmeler yapın) ve her birinin fotoğrafını buraya bilinen göreli değeriyle (1.0, 0.5, 0.25...) ekleyin. En az 3 (önerilen 4-5) nokta ile doğrusal bir kalibrasyon eğrisi hesaplanır; kamera tahminleri artık bu gerçek eğriye dayanır.</div>
+                <label style="font-size:9px;" data-i18n="lblKnownConc">Bilinen Konsantrasyon (mg/L veya göreli birim, ör. 1.0 / 0.5 / 0.25)</label>
+                <input type="number" id="calib-known-conc" step="0.1" placeholder="Örn: 4.0">
+                <input type="file" id="calib-cam-input" accept="image/*" capture="environment" style="display:none" onchange="addCalibrationPoint(event)">
+                <input type="file" id="calib-file-input" accept="image/*" style="display:none" onchange="addCalibrationPoint(event)">
+                <div style="display:flex; gap:6px; margin-top:6px;">
+                    <button type="button" class="btn-main" style="padding:8px; font-size:10px; margin-top:0; flex:1; background:#6a1b9a;" onclick="document.getElementById('calib-cam-input').click()" data-i18n="btnCalibCam">📸 Kamera</button>
+                    <button type="button" class="btn-main" style="padding:8px; font-size:10px; margin-top:0; flex:1; background:#8e24aa;" onclick="document.getElementById('calib-file-input').click()" data-i18n="btnCalibFile">📁 Dosya</button>
+                </div>
+                <div id="calib-points-list" style="margin-top:8px; font-size:10px; color:#4a148c;"></div>
+                <button type="button" class="btn-main" style="margin-top:8px; font-size:11px; padding:10px; background:#ab47bc;" onclick="computeCalibrationModel()" data-i18n="btnCalibCompute">📈 Kalibrasyon Eğrisini Hesapla</button>
+                <button type="button" style="margin-top:6px; font-size:9px; padding:6px; background:#eee; color:#555; border:none; border-radius:8px; width:100%; cursor:pointer;" onclick="clearCalibration()" data-i18n="btnCalibClear">🗑️ Kalibrasyonu Sıfırla</button>
+                <div id="calib-status" style="margin-top:8px; font-size:10px; font-weight:bold;"></div>
+            </div>
             <label style="margin-top:12px;" data-i18n="lblAbsorbance">Ölçüden / Hesaplanan Klorofil a Konsantrasyonu (mg/L)</label>
-            <input type="number" id="bio-absorbance" step="0.1" placeholder="Örn: 6.5" value="6.5">
-            
+            <input type="number" id="bio-absorbance" step="0.1" placeholder="Örn: 6.5" value="6.5" oninput="markManualEntry()">
             <button class="btn-main" style="margin-top: 12px; font-size: 13px; padding: 12px;" onclick="calculateBiolab(true)" data-i18n="btnBioCalc">KLOROFİL a VERİSİNİ KAYDET & ANALİZE AKTAR</button>
-            
             <div id="bio-sync-status" class="sync-status" style="margin-top: 10px;" data-i18n="bioSyncSuccess">✨ MEB Lab Verisi Canlı Veri Tablosuna ve Analiz Modülüne Aktarıldı!</div>
-            
             <div id="bio-result-box" style="display:none; margin-top:12px; background:#f0fdf4; border:1px solid #bbf7d0; padding:12px; border-radius:10px; font-size:11px; color:#166534; line-height:1.4;">
             </div>
         </div>
@@ -266,7 +293,6 @@
     <div id="methods-section" class="methods-section">
         <div class="card">
             <label data-i18n="methodsMainTitle">📖 Bilimsel Metodoloji & Whitepaper (Scientific Rigor)<br><span style="font-size:9px; font-weight:normal;">Campbell Biology, Guyton & EU Green Deal Standartları</span></label>
-            
             <div class="mebi-badge" data-i18n="methodsBadge">
                 🇪🇺 <strong>Brüksel Gözüyle Hakemli Standart:</strong> Avrupa Yeşil Mutabakatı jüri denetimlerinde, ham veriden stres skoruna geçiş algoritmalarının şeffaflığı ve akademik dayanağı esastır.
             </div>
@@ -279,24 +305,41 @@
                 <p data-i18n="mCollectionDesc">Spektrofotometre dalga boyu seçimi klorofil a için optimize edilerek 663 nm absorpsiyon değerleri kaydedilir. pH ölçümleri hassas elektrotlu pH metrelerle veya alternatif ekstraksiyon protokolleriyle yapılır.</p>
                 <h3 data-i18n="mAnalysisTitle">4. Veri Analizi ve AB Yeşil Mutabakatı Canlı Mekanizması</h3>
                 <p data-i18n="mAnalysisDesc">Elde edilen optik yoğunluk ve pH sapma verileri, tarladan sofraya stratejisi çerçevesinde kimyasal girdi optimizasyonuna dönüştürülmektedir.</p>
-                
                 <!-- Somut, Sayısal ve Yaşayan Regülasyon Mekanizması ve Algoritma Formülleri -->
                 <div class="regulation-metrics" data-i18n="regMetricsBox">
                     🇪🇺 <strong>EU Green Deal & Farm to Fork (Tarladan Sofraya) Canlı Optimizasyon Mekanizması:</strong><br><br>
-                    
                     <strong>• Stres Skoru Hesaplama Formülü:</strong>
                     <div class="formula-box">Stress_Score = w₁ · |pH_optimum - pH_measured| + w₂ · (A_reference - A_sample)</div>
                     <div style="font-size:10px; margin-top:2px; color:#555;" data-i18n="regFormulaDesc1">(pH sapmasını ve klorofil absorpsiyon düşüşünü ağırlıklı katsayılarla birleştirerek bitkinin fizyolojik stres seviyesini sayısal bir değere dönüştürüyoruz.)</div><br>
-                    <strong>• Kimyasal Girdi Optimizasyonu ve Gübre Tasarrufu (%22.4):</strong>
+                    <strong>• Kimyasal Girdi Optimizasyonu ve Gübre Tasarrufu:</strong>
                     <div class="formula-box">Saving_%_fertilizers = (1 - (Input_optimize / Input_traditional)) · 100</div>
                     <div style="font-size:10px; margin-top:2px; color:#555;" data-i18n="regFormulaDesc2">(Campbell Biology ve Guyton & Hall ilkelerine göre iyon/pH dinamiklerinin klorofil sentezi üzerindeki etkisini baz alarak aşırı gübrelemeyi önleyen oran.)</div><br>
-                    <strong>• Karbon Ayak İzi Düşüşü (142 kg CO₂ eşdeğeri):</strong>
+                    <strong>• Karbon Ayak İzi Düşüşü:</strong>
                     <div class="formula-box">CO₂_Reduction = Σ (Input_reduced · EF_chemical)</div>
                     <div style="font-size:10px; margin-top:2px; color:#555;" data-i18n="regFormulaDesc3">(Hassas tarım rejimiyle azaltılan kimyasal miktarının emisyon faktörü ile çarpımı sonucu dönüm başına sağlanan yıllık tasarruf.)</div><br>
-                    <strong>• Pestisit Optimizasyonu (%30):</strong>
+                    <strong>• Pestisit Optimizasyonu:</strong>
                     <div class="formula-box">Pest_Opt = (Threshold_standard / Alert_early_stage) · 30%</div>
-                    <div style="font-size:10px; margin-top:2px; color:#555;" data-i18n="regFormulaDesc4">(Erken uyarı algoritmaları sayesinde gereksiz kimyasal ilaçlamanın önlendiği sınır değer matrisi.)</div>
+                    <div style="font-size:10px; margin-top:2px; color:#555;" data-i18n="regFormulaDesc4">(Erken uyarı algoritmaları sayesinde gereksiz kimyasal ilaçlamanın önlendiği sınır değer matrisi. NOT: Analiz raporundaki yüzdeler artık girilen pH/klorofil verisine göre bu modelden anlık hesaplanır; sabit değerler değildir.)</div>
                 </div>
+                <h3 data-i18n="mCalibTitle">5. Kamera Kalibrasyonu, Arnon Formülü ve Ölçüm Belirsizliği</h3>
+                <p data-i18n="mCalibDesc">Akıllı telefon kamerasıyla renk (RGB) analizi düşük maliyetli bir "kalorimetre" olarak kullanılabilir, ancak kalibre edilmemiş bir kamera ölçümü tek başına bilimsel olarak savunulabilir değildir. Bu nedenle sistemde üç ayrı güvenilirlik seviyesi sunulmaktadır: (1) Gerçek bir spektrofotometre ile ölçülen A663/A645 absorbans değerleri, klasik Arnon (1949) denklemleriyle klorofil a/b konsantrasyonuna çevrilir — bu en güvenilir yöntemdir. (2) Bilinen konsantrasyonlu numunelerle (seyreltme serisi) oluşturulan kullanıcı kalibrasyon eğrisi (doğrusal regresyon, R² ile raporlanır), kamera ölçümünü gerçek referans noktalarına bağlar. (3) Kalibrasyon yapılmadıysa sistem, açıkça "kalibre edilmemiş kaba tahmin" olarak etiketlenen genel bir formül kullanır. Ayrıca, ölçümler arasında ortam ışığı farklarını azaltmak için beyaz/gri referans kartı ile normalizasyon uygulanabilir. Kaynak: Arnon, D.I. (1949). Copper enzymes in isolated chloroplasts. Plant Physiology, 24(1), 1–15.</p>
+                <p data-i18n="mNoSpecNote">📌 <strong>Uygulama Notu:</strong> Okulumuzda bir spektrofotometre bulunmadığından, projede esas olarak (2) numaralı yöntem (kullanıcı kalibrasyon eğrisi) kullanılmaktadır. Bunun için tartım bazlı bir seyreltme serisi önerilir: sabit bir oranla (ör. 1 g yaprak : 10 mL aseton) hazırlanan stok ekstrakt "1x" kabul edilir; bu stoktan yapılan 1/2x, 1/4x, 1/8x gibi seri seyreltmeler, kütle/hacim oranına dayalı bilinen ve tekrarlanabilir göreli konsantrasyon değerleri sağlar (mg/L yerine "g yaprak eşdeğeri/mL" birimiyle). Bu, bir spektrofotometre olmadan da savunulabilir, tekrarlanabilir bir kalibrasyon imkânı sunar.</p>
+                <h3 data-i18n="mLimitTitle">6. Sınırlılıklar (Limitations)</h3>
+                <ul style="font-size: 11px; color: #333; line-height:1.6; padding-left:18px; margin:0;" data-i18n="mLimitList">
+                    <li>Akıllı telefon kamerasıyla yapılan renk analizi, laboratuvar tipi bir spektrofotometrenin yerini tutmaz; kalibre edilmiş haliyle bile göreli/yaklaşık bir tahmindir.</li>
+                    <li>Kamera modeli, otomatik pozlama/beyaz dengesi ve ortam ışığı sonuçları etkileyebilir; beyaz referans normalizasyonu bu etkiyi azaltır ama tamamen ortadan kaldırmaz.</li>
+                    <li>Kalibrasyon eğrisi yalnızca eklenen kalibrasyon noktalarının kapsadığı aralık için güvenilirdir; bu aralığın dışındaki değerler için ekstrapolasyon (dışa taşan tahmin) hatalı olabilir.</li>
+                    <li>Green Deal / sertifika bölümündeki karbon ayak izi, gübre tasarrufu ve pestisit optimizasyonu yüzdeleri, sayfadaki basit stres modeline dayalı bir simülasyondur; resmi bir çevresel etki değerlendirmesi veya ticari/hukuki geçerliliği yoktur.</li>
+                    <li>Numune sayısı (n) sınırlıdır; istatistiksel olarak genellenebilir sonuçlar için daha uzun süreli ve daha çok tekrarlı veri toplanması gerekir.</li>
+                </ul>
+                <h3 data-i18n="mRefTitle">7. Kaynakça (References)</h3>
+                <ul style="font-size: 10.5px; color: #333; line-height:1.6; padding-left:18px; margin:0;" data-i18n="mRefList">
+                    <li>Arnon, D.I. (1949). Copper enzymes in isolated chloroplasts. Polyphenoloxidase in <em>Beta vulgaris</em>. <em>Plant Physiology</em>, 24(1), 1–15.</li>
+                    <li>Avrupa Komisyonu — Avrupa Yeşil Mutabakatı (European Green Deal): <span style="word-break:break-all;">https://commission.europa.eu/strategy-and-policy/priorities-2019-2024/european-green-deal_en</span></li>
+                    <li>Avrupa Komisyonu — Tarladan Sofraya Stratejisi (Farm to Fork Strategy): <span style="word-break:break-all;">https://food.ec.europa.eu/horizontal-topics/farm-fork-strategy_en</span></li>
+                    <li>Scientix — The community for science education in Europe: <span style="word-break:break-all;">https://www.scientix.eu</span></li>
+                    <li>MEB Ortaöğretim Biyoloji Dersi Öğretim Programı (Fotosentez hızını etkileyen faktörler konusu).</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -304,13 +347,14 @@
     <div id="field-section" class="field-section">
         <div class="card">
             <label id="field-lbl-title" data-i18n="fieldTitle">📸 Saha ve Öğrenci Araştırma Fotoğrafları<br><span style="font-size:9px; font-weight:normal;">Field & Student Research Photos Gallery</span></label>
-            
             <div class="upload-zone" onclick="document.getElementById('file-input').click()">
                 <div style="font-size: 24px; margin-bottom: 5px;">📁</div>
                 <div id="upload-txt-main" style="font-size: 12px; font-weight: bold; color: var(--primary);" data-i18n="uploadMain">Fotoğraf Seç veya Yükle / Choose Photo</div>
-                <div id="upload-txt-sub" style="font-size: 9px; color: #666; margin-top: 3px;" data-i18n="uploadSub">Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları</div>
+                <div id="upload-txt-sub" style="font-size: 9px; color: #666; margin-top: 3px;" data-i18n="uploadSub">Laboratuvar ve arazi çalışması görüntüleri (yalnızca bitki/örnek — kişi fotoğrafı yüklemeyiniz)</div>
             </div>
             <input type="file" id="file-input" accept="image/*" style="display:none" onchange="handleFileUpload(event)">
+            <div style="font-size: 9px; color: #999; text-align: center; margin-bottom: 4px;" data-i18n="fieldStorageNote">ℹ️ Fotoğraflar hem bu cihazda hem de okulun Google Drive/E-Tablo arşivinde saklanır.</div>
+            <div id="field-sync-status" class="sync-status" style="margin-bottom: 8px; display:none;" data-i18n="fieldSyncStatus">✨ Fotoğraf okul arşivine (Drive) gönderildi.</div>
             <div id="gallery-container" class="gallery-grid"></div>
         </div>
     </div>
@@ -318,7 +362,6 @@
     <div id="citizen-section" class="citizen-section">
         <div class="card">
             <label id="citizen-hub-title" data-i18n="citizenTitle">🌍 Açık Kaynaklı Tarım Veritabanı<br><span style="font-size:9px; font-weight:normal;">Citizen Science & International Network Hub</span></label>
-            
             <div class="citizen-stats">
                 <div class="stat-card">
                     <div id="stat-total-nodes" class="stat-number">5</div>
@@ -329,6 +372,18 @@
                     <div id="stat-samples-lbl" class="stat-label" data-i18n="statSamples">Toplam Veri / Total Samples</div>
                 </div>
             </div>
+            <!-- GERÇEK SAHA VERİLERİ ÖZETİ: E-Tablodaki gerçek kayıtlardan canlı hesaplanır -->
+            <div class="citizen-stats" style="margin-top:10px;">
+                <div class="stat-card">
+                    <div id="stat-avg-ph" class="stat-number">...</div>
+                    <div class="stat-label" data-i18n="statAvgPh">Ortalama pH (Gerçek Ölçüm)</div>
+                </div>
+                <div class="stat-card">
+                    <div id="stat-avg-chloro" class="stat-number">...</div>
+                    <div class="stat-label" data-i18n="statAvgChloro">Ort. Klorofil mg/L (Gerçek Ölçüm)</div>
+                </div>
+            </div>
+            <div id="stat-last-update" style="text-align:center; font-size:9px; color:#888; margin-top:6px;"></div>
             <!-- Coğrafi Dağılım / Harita Modülü Mini Görselleştirmesi -->
             <div class="chart-box" style="margin-bottom: 15px;">
                 <label style="text-align:center; margin-bottom:8px; font-size: 10px;" data-i18n="geoChartTitle">📊 Bölgesel Veri Dağılımı / Regional Data Distribution</label>
@@ -362,8 +417,7 @@
             <button id="sync-net-btn" class="btn-main" style="margin-top: 15px; font-size: 13px; padding: 12px;" onclick="fetchSheetTotalRows()" data-i18n="btnUpdateNetwork">🔄 AĞI GÜNCELLE / UPDATE NETWORK</button>
         </div>
     </div>
-    
-    <div class="footer">© 2026 Hazreti Yusuf İhsan HAMAMCI - Rize Fatih Anatolian High School</div>
+    <div class="footer">© 2026  Yusuf İhsan HAMAMCI - Rize Fatih Anatolian High School</div>
 </div>
 <div id="lightbox-modal" onclick="closeLightbox()">
     <button id="lightbox-close" onclick="closeLightbox()">&times;</button>
@@ -375,11 +429,116 @@
     let currentLang = 'TR';
     let track;
     let stressChartInstance = null;
+    // ============================================================
+    // MERKEZİ, ÇEVRİMDIŞI-DAYANIKLI VERİ GÖNDERİM SİSTEMİ
+    // Saha koşullarında (tarım arazisi, köy) internet kesintisi
+    // olağandır. Bu fonksiyon: (1) gönderimi dener, (2) başarısız
+    // olursa kullanıcıya AÇIKÇA bildirir ve veriyi kaybetmeden yerel
+    // bir kuyruğa ekler, (3) bağlantı geri geldiğinde otomatik olarak
+    // tekrar dener. Artık hiçbir gönderim "sessizce" kaybolmaz.
+    // ============================================================
+    function getPendingQueue() {
+        try { return JSON.parse(localStorage.getItem('agro_pending_sync') || '[]'); } catch(e) { return []; }
+    }
+    function savePendingQueue(queue) {
+        try { localStorage.setItem('agro_pending_sync', JSON.stringify(queue)); } catch(e) { console.error('Kuyruk kaydedilemedi:', e); }
+    }
+    function updatePendingBadge() {
+        const badge = document.getElementById('pending-sync-badge');
+        if(!badge) return;
+        const n = getPendingQueue().length;
+        if(n > 0) {
+            badge.style.display = 'block';
+            badge.innerHTML = (currentLang === 'TR' ?
+                `⏳ ${n} kayıt gönderilmeyi bekliyor (bağlantı gelince otomatik gönderilecek)` :
+                `⏳ ${n} record(s) waiting to sync (will send automatically when back online)`);
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+    // formData: Apps Script'e gönderilecek obje. statusElId: başarı mesajının gösterileceği eleman id'si (opsiyonel).
+    async function sendToServer(formData, statusElId) {
+        if (!navigator.onLine) {
+            queueForLater(formData, statusElId);
+            return;
+        }
+        try {
+            await fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(formData)
+            });
+            if (statusElId) {
+                const el = document.getElementById(statusElId);
+                if (el) {
+                    const i18nKey = el.getAttribute('data-i18n');
+                    if (i18nKey && translations[currentLang][i18nKey]) {
+                        el.innerHTML = translations[currentLang][i18nKey];
+                    }
+                    el.style.display = 'block';
+                    el.style.background = '';
+                    el.style.color = '';
+                    setTimeout(() => { el.style.display = 'none'; }, 4000);
+                }
+            }
+        } catch (err) {
+            console.error('Gönderim başarısız, kuyruğa alınıyor:', err);
+            queueForLater(formData, statusElId);
+        }
+    }
+    function queueForLater(formData, statusElId) {
+        let queue = getPendingQueue();
+        queue.push({ formData, addedAt: new Date().toISOString() });
+        savePendingQueue(queue);
+        updatePendingBadge();
+        if (statusElId) {
+            const el = document.getElementById(statusElId);
+            if (el) {
+                el.style.display = 'block';
+                el.style.background = '#fff3e0';
+                el.style.color = '#e65100';
+                el.innerHTML = currentLang === 'TR' ?
+                    '📡 Bağlantı yok — veri cihazda güvenle bekletiliyor, internet gelince otomatik gönderilecek.' :
+                    '📡 No connection — data is safely queued on this device and will send automatically once online.';
+            }
+        }
+    }
+    async function retryPendingSync() {
+        let queue = getPendingQueue();
+        if (queue.length === 0 || !navigator.onLine) return;
+        const remaining = [];
+        for (const item of queue) {
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(item.formData)
+                });
+            } catch (err) {
+                remaining.push(item);
+            }
+        }
+        savePendingQueue(remaining);
+        updatePendingBadge();
+    }
+    function updateOnlineStatusBanner() {
+        const banner = document.getElementById('offline-banner');
+        if(!banner) return;
+        if(!navigator.onLine) {
+            banner.style.display = 'block';
+        } else {
+            banner.style.display = 'none';
+            retryPendingSync();
+        }
+    }
+    window.addEventListener('online', updateOnlineStatusBanner);
+    window.addEventListener('offline', updateOnlineStatusBanner);
     let geoChart = null;
     let lastCapturedImage = "";
     const v = document.getElementById('v');
     const c = document.getElementById('canvas');
-    
     const cropRanges = {
         "tr-tea": { 
             min: 4.5, max: 6.0, 
@@ -433,6 +592,8 @@
     const translations = {
         TR: {
             schoolSub: "Rize Fatih Anatolian High School",
+            privacyBanner: "🔒 <strong>Veri Gizliliği:</strong> Bu projede toplanan fotoğraflar yalnızca bitki/yaprak görüntüleridir; kişi/yüz fotoğrafı çekilmemelidir. Veriler Rize Fatih Anadolu Lisesi Scientix projesi kapsamında eğitim amaçlı toplanmakta olup okul idaresinin bilgisi dahilindedir.",
+            offlineBanner: "📡 Çevrimdışısınız — veriler cihazda güvenle bekletilecek, bağlantı gelince otomatik gönderilecek.",
             authorSub: "Biyoloji Uzmanı & Proje Lideri",
             tabAnalysis: "🌱 ANALİZ",
             tabBiolab: "🧬 MEBİ LAB",
@@ -475,6 +636,22 @@
             lblSamplePlant: "Numune Bitki Türü / Sample Plant",
             lblWavelength: "Spektrofotometre / Kalorimetre Dalga Boyu",
             optWavelength: "663 nm (Klorofil a - Maksimum Absorpsiyon)",
+            whiteRefHeader: "⚪ Beyaz/Gri Referans Kartı (Işık Normalizasyonu)",
+            whiteRefDesc: "Ölçüme başlamadan önce, aynı ışık altında düz beyaz/gri bir kağıdın fotoğrafını çekip referans olarak kaydedin. Bu, farklı gün/ışık koşullarında çekilen fotoğrafların karşılaştırılabilir olmasını sağlar.",
+            btnWhiteRefCam: "📸 Referans Çek",
+            btnWhiteRefClear: "🗑️ Sıfırla",
+            arnonHeader: "🔬 Gerçek Spektrofotometre Verisi (Arnon 1949 Formülü)",
+            arnonDesc: "Okulda/laboratuvarda gerçek bir spektrofotometre ile A663 ve A645 absorbans değerlerini ölçtüyseniz buraya girin. Kamera tahmini yerine literatürde kabul görmüş gerçek kimyasal formülle hesaplanır. Kaynak: Arnon, D.I. (1949), Plant Physiology 24(1):1-15.",
+            lblA663: "Absorbans A663",
+            lblA645: "Absorbans A645",
+            btnArnonCalc: "🧮 Arnon Formülüyle Hesapla",
+            calibHeader: "📐 Kamera Kalibrasyon Eğrisi (Gerçek Standartlarla)",
+            calibDesc: "Spektrofotometreniz yoksa sorun değil: tartım bazlı bir seyreltme serisi hazırlayın (ör. 1 g yaprak : 10 mL aseton stok = 1.0 birim; bu stoktan 1/2, 1/4, 1/8 seyreltmeler yapın) ve her birinin fotoğrafını buraya bilinen göreli değeriyle (1.0, 0.5, 0.25...) ekleyin. En az 3 (önerilen 4-5) nokta ile doğrusal bir kalibrasyon eğrisi hesaplanır; kamera tahminleri artık bu gerçek eğriye dayanır.",
+            lblKnownConc: "Bilinen Konsantrasyon (mg/L veya göreli birim, ör. 1.0 / 0.5 / 0.25)",
+            btnCalibCam: "📸 Kamera",
+            btnCalibFile: "📁 Dosya",
+            btnCalibCompute: "📈 Kalibrasyon Eğrisini Hesapla",
+            btnCalibClear: "🗑️ Kalibrasyonu Sıfırla",
             bioCamHeader: "📸 Yaprak Ekstraktı Kamera / Fotoğraf Analizi",
             bioCamDesc: "Kameradan canlı çekim yapın veya cihazınızdan fotoğraf/dosya yükleyin:",
             btnBioCamDirect: "📸 Kamera ile Çek",
@@ -492,13 +669,24 @@
             mCollectionDesc: "Spektrofotometre dalga boyu seçimi klorofil a için optimize edilerek 663 nm absorpsiyon değerleri kaydedilir. pH ölçümleri hassas elektrotlu pH metrelerle veya alternatif ekstraksiyon protokolleriyle yapılır.",
             mAnalysisTitle: "4. Veri Analizi ve AB Yeşil Mutabakatı Canlı Mekanizması",
             mAnalysisDesc: "Elde edilen optik yoğunluk ve pH sapma verileri, tarladan sofraya stratejisi çerçevesinde kimyasal girdi optimizasyonuna dönüştürülmektedir.",
-            regMetricsBox: "🇪🇺 <strong>EU Green Deal & Farm to Fork (Tarladan Sofraya) Canlı Optimizasyon Mekanizması:</strong><br><br><strong>• Stres Skoru Hesaplama Formülü:</strong><div class='formula-box'>Stress_Score = w₁ · |pH_optimum - pH_measured| + w₂ · (A_reference - A_sample)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(pH sapmasını ve klorofil absorpsiyon düşüşünü ağırlıklı katsayılarla birleştirerek bitkinin fizyolojik stres seviyesini sayısal bir değere dönüştürüyoruz.)</div><br><strong>• Kimyasal Girdi Optimizasyonu ve Gübre Tasarrufu (%22.4):</strong><div class='formula-box'>Saving_%_fertilizers = (1 - (Input_optimize / Input_traditional)) · 100</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Campbell Biology ve Guyton & Hall ilkelerine göre iyon/pH dinamiklerinin klorofil sentezi üzerindeki etkisini baz alarak aşırı gübrelemeyi önleyen oran.)</div><br><strong>• Karbon Ayak İzi Düşüşü (142 kg CO₂ eşdeğeri):</strong><div class='formula-box'>CO₂_Reduction = Σ (Input_reduced · EF_chemical)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Hassas tarım rejimiyle azaltılan kimyasal miktarının emisyon faktörü ile çarpımı sonucu dönüm başına sağlanan yıllık tasarruf.)</div><br><strong>• Pestisit Optimizasyonu (%30):</strong><div class='formula-box'>Pest_Opt = (Threshold_standard / Alert_early_stage) · 30%</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Erken uyarı algoritmaları sayesinde gereksiz kimyasal ilaçlamanın önlendiği sınır değer matrisi.)</div>",
+            regMetricsBox: "🇪🇺 <strong>EU Green Deal & Farm to Fork (Tarladan Sofraya) Canlı Optimizasyon Mekanizması:</strong><br><br><strong>• Stres Skoru Hesaplama Formülü:</strong><div class='formula-box'>Stress_Score = w₁ · |pH_optimum - pH_measured| + w₂ · (A_reference - A_sample)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(pH sapmasını ve klorofil absorpsiyon düşüşünü ağırlıklı katsayılarla birleştirerek bitkinin fizyolojik stres seviyesini sayısal bir değere dönüştürüyoruz.)</div><br><strong>• Kimyasal Girdi Optimizasyonu ve Gübre Tasarrufu:</strong><div class='formula-box'>Saving_%_fertilizers = (1 - (Input_optimize / Input_traditional)) · 100</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Campbell Biology ve Guyton & Hall ilkelerine göre iyon/pH dinamiklerinin klorofil sentezi üzerindeki etkisini baz alarak aşırı gübrelemeyi önleyen oran.)</div><br><strong>• Karbon Ayak İzi Düşüşü:</strong><div class='formula-box'>CO₂_Reduction = Σ (Input_reduced · EF_chemical)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Hassas tarım rejimiyle azaltılan kimyasal miktarının emisyon faktörü ile çarpımı sonucu dönüm başına sağlanan yıllık tasarruf.)</div><br><strong>• Pestisit Optimizasyonu:</strong><div class='formula-box'>Pest_Opt = (Threshold_standard / Alert_early_stage) · 30%</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Erken uyarı algoritmaları sayesinde gereksiz kimyasal ilaçlamanın önlendiği sınır değer matrisi. NOT: Analiz raporundaki yüzdeler artık girilen pH/klorofil verisine göre bu modelden anlık hesaplanır; sabit değerler değildir.)</div>",
+            mCalibTitle: "5. Kamera Kalibrasyonu, Arnon Formülü ve Ölçüm Belirsizliği",
+            mCalibDesc: "Akıllı telefon kamerasıyla renk (RGB) analizi düşük maliyetli bir \"kalorimetre\" olarak kullanılabilir, ancak kalibre edilmemiş bir kamera ölçümü tek başına bilimsel olarak savunulabilir değildir. Bu nedenle sistemde üç ayrı güvenilirlik seviyesi sunulmaktadır: (1) Gerçek bir spektrofotometre ile ölçülen A663/A645 absorbans değerleri, klasik Arnon (1949) denklemleriyle klorofil a/b konsantrasyonuna çevrilir — bu en güvenilir yöntemdir. (2) Bilinen konsantrasyonlu numunelerle (seyreltme serisi) oluşturulan kullanıcı kalibrasyon eğrisi (doğrusal regresyon, R² ile raporlanır), kamera ölçümünü gerçek referans noktalarına bağlar. (3) Kalibrasyon yapılmadıysa sistem, açıkça \"kalibre edilmemiş kaba tahmin\" olarak etiketlenen genel bir formül kullanır. Ayrıca, ölçümler arasında ortam ışığı farklarını azaltmak için beyaz/gri referans kartı ile normalizasyon uygulanabilir. Kaynak: Arnon, D.I. (1949). Copper enzymes in isolated chloroplasts. Plant Physiology, 24(1), 1–15.",
+            mNoSpecNote: "📌 <strong>Uygulama Notu:</strong> Okulumuzda bir spektrofotometre bulunmadığından, projede esas olarak (2) numaralı yöntem (kullanıcı kalibrasyon eğrisi) kullanılmaktadır. Bunun için tartım bazlı bir seyreltme serisi önerilir: sabit bir oranla (ör. 1 g yaprak : 10 mL aseton) hazırlanan stok ekstrakt \"1x\" kabul edilir; bu stoktan yapılan 1/2x, 1/4x, 1/8x gibi seri seyreltmeler, kütle/hacim oranına dayalı bilinen ve tekrarlanabilir göreli konsantrasyon değerleri sağlar (mg/L yerine \"g yaprak eşdeğeri/mL\" birimiyle). Bu, bir spektrofotometre olmadan da savunulabilir, tekrarlanabilir bir kalibrasyon imkânı sunar.",
+            mLimitTitle: "6. Sınırlılıklar (Limitations)",
+            mLimitList: "<li>Akıllı telefon kamerasıyla yapılan renk analizi, laboratuvar tipi bir spektrofotometrenin yerini tutmaz; kalibre edilmiş haliyle bile göreli/yaklaşık bir tahmindir.</li><li>Kamera modeli, otomatik pozlama/beyaz dengesi ve ortam ışığı sonuçları etkileyebilir; beyaz referans normalizasyonu bu etkiyi azaltır ama tamamen ortadan kaldırmaz.</li><li>Kalibrasyon eğrisi yalnızca eklenen kalibrasyon noktalarının kapsadığı aralık için güvenilirdir; bu aralığın dışındaki değerler için ekstrapolasyon (dışa taşan tahmin) hatalı olabilir.</li><li>Green Deal / sertifika bölümündeki karbon ayak izi, gübre tasarrufu ve pestisit optimizasyonu yüzdeleri, sayfadaki basit stres modeline dayalı bir simülasyondur; resmi bir çevresel etki değerlendirmesi veya ticari/hukuki geçerliliği yoktur.</li><li>Numune sayısı (n) sınırlıdır; istatistiksel olarak genellenebilir sonuçlar için daha uzun süreli ve daha çok tekrarlı veri toplanması gerekir.</li>",
+            mRefTitle: "7. Kaynakça (References)",
+            mRefList: "<li>Arnon, D.I. (1949). Copper enzymes in isolated chloroplasts. Polyphenoloxidase in <em>Beta vulgaris</em>. <em>Plant Physiology</em>, 24(1), 1–15.</li><li>Avrupa Komisyonu — Avrupa Yeşil Mutabakatı (European Green Deal): <span style='word-break:break-all;'>https://commission.europa.eu/strategy-and-policy/priorities-2019-2024/european-green-deal_en</span></li><li>Avrupa Komisyonu — Tarladan Sofraya Stratejisi (Farm to Fork Strategy): <span style='word-break:break-all;'>https://food.ec.europa.eu/horizontal-topics/farm-fork-strategy_en</span></li><li>Scientix — The community for science education in Europe: <span style='word-break:break-all;'>https://www.scientix.eu</span></li><li>MEB Ortaöğretim Biyoloji Dersi Öğretim Programı (Fotosentez hızını etkileyen faktörler konusu).</li>",
             fieldTitle: "📸 Saha ve Öğrenci Araştırma Fotoğrafları<br><span style='font-size:9px; font-weight:normal;'>Field & Student Research Photos Gallery</span>",
             uploadMain: "Fotoğraf Seç veya Yükle / Choose Photo",
-            uploadSub: "Öğrencilerle toplu kareler, laboratuvar ve arazi çalışmaları",
+            uploadSub: "Laboratuvar ve arazi çalışması görüntüleri (yalnızca bitki/örnek — kişi fotoğrafı yüklemeyiniz)",
+            fieldStorageNote: "ℹ️ Fotoğraflar hem bu cihazda hem de okulun Google Drive/E-Tablo arşivinde saklanır.",
+            fieldSyncStatus: "✨ Fotoğraf okul arşivine (Drive) gönderildi.",
             citizenTitle: "🌍 Açık Kaynaklı Tarım Veritabanı<br><span style='font-size:9px; font-weight:normal;'>Citizen Science & International Network Hub</span>",
             statNodes: "Aktif Bölgesel Ağ / Active Nodes",
             statSamples: "Toplam Veri / Total Samples",
+            statAvgPh: "Ortalama pH (Gerçek Ölçüm)",
+            statAvgChloro: "Ort. Klorofil mg/L (Gerçek Ölçüm)",
             partnerRegions: "Katılımcı Pilot Bölgeler / Partner Regions:",
             netRize: "🌱 Rize Fatih Anadolu Lisesi - Çay (*Camellia sinensis*) [pH: 4.5-6.0]",
             netAntakya: "🍊 Antakya - Narenciye (*Citrus sinensis*) [pH: 6.0-7.5]",
@@ -512,6 +700,8 @@
         },
         EN: {
             schoolSub: "Rize Fatih Anatolian High School",
+            privacyBanner: "🔒 <strong>Data Privacy:</strong> Photos collected in this project are of plants/leaves only; no photos of people/faces should be taken. Data is collected for educational purposes as part of the Rize Fatih Anadolu Lisesi Scientix project, with the knowledge of the school administration.",
+            offlineBanner: "📡 You are offline — data will be safely queued on this device and sent automatically once you reconnect.",
             authorSub: "Biology Expert & Project Lead",
             tabAnalysis: "🌱 ANALYSIS",
             tabBiolab: "🧬 MEB LAB",
@@ -554,6 +744,22 @@
             lblSamplePlant: "Sample Plant Type",
             lblWavelength: "Spectrophotometer / Colorimeter Wavelength",
             optWavelength: "663 nm (Chlorophyll a - Maximum Absorption)",
+            whiteRefHeader: "⚪ White/Gray Reference Card (Light Normalization)",
+            whiteRefDesc: "Before measuring, photograph a plain white/gray card under the same light and save it as a reference. This makes photos taken on different days/light conditions comparable.",
+            btnWhiteRefCam: "📸 Capture Reference",
+            btnWhiteRefClear: "🗑️ Reset",
+            arnonHeader: "🔬 Real Spectrophotometer Data (Arnon 1949 Formula)",
+            arnonDesc: "If you measured real A663 and A645 absorbance values with a spectrophotometer at school/lab, enter them here. This is calculated with a real, peer-reviewed chemical formula instead of the camera estimate. Source: Arnon, D.I. (1949), Plant Physiology 24(1):1-15.",
+            lblA663: "Absorbance A663",
+            lblA645: "Absorbance A645",
+            btnArnonCalc: "🧮 Calculate with Arnon Formula",
+            calibHeader: "📐 Camera Calibration Curve (With Real Standards)",
+            calibDesc: "No spectrophotometer? No problem: prepare a weight-based dilution series (e.g. 1 g leaf : 10 mL acetone stock = 1.0 unit; make 1/2, 1/4, 1/8 dilutions from it) and add a photo of each with its known relative value (1.0, 0.5, 0.25...) here. With at least 3 (recommended 4-5) points a linear calibration curve is computed; camera estimates will now be based on this real curve.",
+            lblKnownConc: "Known Concentration (mg/L or relative unit, e.g. 1.0 / 0.5 / 0.25)",
+            btnCalibCam: "📸 Camera",
+            btnCalibFile: "📁 File",
+            btnCalibCompute: "📈 Compute Calibration Curve",
+            btnCalibClear: "🗑️ Reset Calibration",
             bioCamHeader: "📸 Leaf Extract Camera / Photo Analysis",
             bioCamDesc: "Take a live photo with camera or upload a photo/file from your device:",
             btnBioCamDirect: "📸 Capture via Camera",
@@ -571,13 +777,24 @@
             mCollectionDesc: "Spectrophotometer wavelength optimized at 663 nm for chlorophyll a absorption. pH measurements performed with precise electrode pH meters or alternative extraction protocols.",
             mAnalysisTitle: "4. Data Analysis & EU Green Deal Live Mechanism",
             mAnalysisDesc: "Obtained optical density and pH deviation data are converted into chemical input optimization within the framework of the Farm to Fork strategy.",
-            regMetricsBox: "🇪🇺 <strong>EU Green Deal & Farm to Fork Live Optimization Mechanism:</strong><br><br><strong>• Stress Score Calculation Formula:</strong><div class='formula-box'>Stress_Score = w₁ · |pH_optimum - pH_measured| + w₂ · (A_reference - A_sample)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Converting plant physiological stress level into a numerical value by combining pH deviation and chlorophyll absorption drop with weighted coefficients.)</div><br><strong>• Chemical Input Optimization & Fertilizer Saving (22.4%):</strong><div class='formula-box'>Saving_%_fertilizers = (1 - (Input_optimize / Input_traditional)) · 100</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Ratio preventing over-fertilization based on ion/pH dynamics effects on chlorophyll synthesis according to Campbell Biology and Guyton & Hall principles.)</div><br><strong>• Carbon Footprint Reduction (142 kg CO₂ equivalent):</strong><div class='formula-box'>CO₂_Reduction = Σ (Input_reduced · EF_chemical)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Annual savings per decare resulting from multiplying the chemical amount reduced through precision agriculture regime by emission factor.)</div><br><strong>• Pesticide Optimization (30%):</strong><div class='formula-box'>Pest_Opt = (Threshold_standard / Alert_early_stage) · 30%</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Threshold limit matrix preventing unnecessary chemical spraying thanks to early warning algorithms.)</div>",
+            regMetricsBox: "🇪🇺 <strong>EU Green Deal & Farm to Fork Live Optimization Mechanism:</strong><br><br><strong>• Stress Score Calculation Formula:</strong><div class='formula-box'>Stress_Score = w₁ · |pH_optimum - pH_measured| + w₂ · (A_reference - A_sample)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Converting plant physiological stress level into a numerical value by combining pH deviation and chlorophyll absorption drop with weighted coefficients.)</div><br><strong>• Chemical Input Optimization & Fertilizer Saving:</strong><div class='formula-box'>Saving_%_fertilizers = (1 - (Input_optimize / Input_traditional)) · 100</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Ratio preventing over-fertilization based on ion/pH dynamics effects on chlorophyll synthesis according to Campbell Biology and Guyton & Hall principles.)</div><br><strong>• Carbon Footprint Reduction:</strong><div class='formula-box'>CO₂_Reduction = Σ (Input_reduced · EF_chemical)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Annual savings per decare resulting from multiplying the chemical amount reduced through precision agriculture regime by emission factor.)</div><br><strong>• Pesticide Optimization:</strong><div class='formula-box'>Pest_Opt = (Threshold_standard / Alert_early_stage) · 30%</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Threshold limit matrix preventing unnecessary chemical spraying thanks to early warning algorithms. NOTE: Percentages in the analysis report are now computed live from this model based on the entered pH/chlorophyll data; they are not fixed values.)</div>",
+            mCalibTitle: "5. Camera Calibration, the Arnon Formula, and Measurement Uncertainty",
+            mCalibDesc: "Color (RGB) analysis via a smartphone camera can serve as a low-cost \"colorimeter\", but an uncalibrated camera reading alone is not scientifically defensible. The system therefore offers three levels of reliability: (1) Real A663/A645 absorbance values measured with a spectrophotometer are converted to chlorophyll a/b concentration using the classic Arnon (1949) equations — the most reliable method. (2) A user calibration curve built from samples of known concentration (a dilution series), computed as a linear regression and reported with R², ties the camera reading to real reference points. (3) If no calibration exists, the system uses a generic formula explicitly labeled as an \"uncalibrated rough estimate\". Additionally, normalization against a white/gray reference card can reduce ambient-light differences between measurements. Source: Arnon, D.I. (1949). Copper enzymes in isolated chloroplasts. Plant Physiology, 24(1), 1–15.",
+            mNoSpecNote: "📌 <strong>Implementation Note:</strong> Since our school does not have a spectrophotometer, the project primarily relies on method (2) (the user calibration curve). For this, a weight-based dilution series is recommended: a stock extract prepared with a fixed ratio (e.g. 1 g leaf : 10 mL acetone) is treated as \"1x\"; serial dilutions from this stock (1/2x, 1/4x, 1/8x, etc.) provide known, repeatable relative concentration values based on mass/volume ratio (in units of \"g leaf equivalent/mL\" instead of mg/L). This offers a defensible, repeatable calibration method even without a spectrophotometer.",
+            mLimitTitle: "6. Limitations",
+            mLimitList: "<li>Color analysis via a smartphone camera does not replace a laboratory-grade spectrophotometer; even when calibrated it remains a relative/approximate estimate.</li><li>Camera model, automatic exposure/white balance, and ambient light can affect results; white-reference normalization reduces but does not fully eliminate this effect.</li><li>The calibration curve is only reliable within the range covered by the added calibration points; values outside this range may be inaccurate due to extrapolation.</li><li>The carbon footprint, fertilizer saving, and pesticide optimization percentages in the Green Deal/certificate section are a simulation based on the simple stress model on this page; they have no official environmental assessment or commercial/legal validity.</li><li>The sample size (n) is limited; statistically generalizable results require longer-term and more replicated data collection.</li>",
+            mRefTitle: "7. References",
+            mRefList: "<li>Arnon, D.I. (1949). Copper enzymes in isolated chloroplasts. Polyphenoloxidase in <em>Beta vulgaris</em>. <em>Plant Physiology</em>, 24(1), 1–15.</li><li>European Commission — The European Green Deal: <span style='word-break:break-all;'>https://commission.europa.eu/strategy-and-policy/priorities-2019-2024/european-green-deal_en</span></li><li>European Commission — Farm to Fork Strategy: <span style='word-break:break-all;'>https://food.ec.europa.eu/horizontal-topics/farm-fork-strategy_en</span></li><li>Scientix — The community for science education in Europe: <span style='word-break:break-all;'>https://www.scientix.eu</span></li><li>Turkish Ministry of National Education (MEB) Secondary School Biology Curriculum (Factors affecting the rate of photosynthesis).</li>",
             fieldTitle: "📸 Field & Student Research Photos<br><span style='font-size:9px; font-weight:normal;'>Field & Student Research Photos Gallery</span>",
             uploadMain: "Choose or Upload Photo",
-            uploadSub: "Group photos with students, laboratory and field studies",
+            uploadSub: "Laboratory and field study images (plants/samples only — do not upload photos of people)",
+            fieldStorageNote: "ℹ️ Photos are stored both on this device and in the school's Google Drive/Sheet archive.",
+            fieldSyncStatus: "✨ Photo sent to the school archive (Drive).",
             citizenTitle: "🌍 Open Source Agriculture Database<br><span style='font-size:9px; font-weight:normal;'>Citizen Science & International Network Hub</span>",
             statNodes: "Active Regional Nodes",
             statSamples: "Total Samples",
+            statAvgPh: "Average pH (Real Measurements)",
+            statAvgChloro: "Avg. Chlorophyll mg/L (Real Measurements)",
             partnerRegions: "Partner Pilot Regions:",
             netRize: "🌱 Turkey, Rize - Tea (*Camellia sinensis*) [Ideal pH: 4.5 - 6.0]",
             netAntakya: "🍊 Antakya - Citrus (*Citrus sinensis*) [Ideal pH: 6.0 - 7.5]",
@@ -597,21 +814,30 @@
         fetchCurrentWeather();
         fetchSheetTotalRows();
         updateLangButtonLabel();
+        updateWhiteRefStatus();
+        updateCalibStatus();
+        renderCalibrationPoints();
+        updateOnlineStatusBanner();
+        updatePendingBadge();
+        retryPendingSync();
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(err => console.error('Service Worker kaydı başarısız:', err));
+        }
     }
-    
     // Google Sheets'ten gerçek verileri dinamik çekip grafiği güncelleyen fonksiyon
     function fetchSheetTotalRows() {
         const sheetCsvUrl = 'https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/export?format=csv';
-        
         fetch(sheetCsvUrl)
             .then(response => response.text())
             .then(data => {
                 const rows = data.split('\n').filter(row => row.trim().length > 0);
-                const totalCount = rows.length > 1 ? rows.length - 1 : 142;
+                const totalCount = rows.length > 1 ? rows.length - 1 : 0;
                 document.getElementById('stat-total-samples').innerText = totalCount;
-                
                 let regionCounts = { "Rize": 0, "Antakya": 0, "Ege": 0, "Brussels": 0, "Diğer": 0 };
-                
+                // --- Gerçek pH / Klorofil istatistikleri için toplayıcılar ---
+                let phValues = [];
+                let chloroValues = [];
+                let lastDateStr = '';
                 for(let i = 1; i < rows.length; i++) {
                     const cols = rows[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                     if(cols.length > 1) {
@@ -627,9 +853,37 @@
                         } else {
                             regionCounts["Diğer"]++;
                         }
+                        // pH sütunu (C / index 2): sadece sayısal olanları al
+                        if(cols.length > 2) {
+                            const phNum = parseFloat(cols[2]);
+                            if(!isNaN(phNum)) phValues.push(phNum);
+                        }
+                        // Klorofil değeri "Stres/Lab" sütununda (E / index 4) metin içinde geçiyor
+                        if(cols.length > 4) {
+                            const chloroMatch = cols[4].match(/([\d.]+)\s*mg\/L/i);
+                            if(chloroMatch) {
+                                const chNum = parseFloat(chloroMatch[1]);
+                                if(!isNaN(chNum)) chloroValues.push(chNum);
+                            }
+                        }
+                        // Tarih sütunu (A / index 0)
+                        if(cols[0] && cols[0].trim()) lastDateStr = cols[0].trim();
                     }
                 }
-                
+                const avgPhEl = document.getElementById('stat-avg-ph');
+                const avgChloroEl = document.getElementById('stat-avg-chloro');
+                const lastUpdateEl = document.getElementById('stat-last-update');
+                if(avgPhEl) {
+                    avgPhEl.innerText = phValues.length > 0 ? (phValues.reduce((a,b)=>a+b,0)/phValues.length).toFixed(2) : '—';
+                }
+                if(avgChloroEl) {
+                    avgChloroEl.innerText = chloroValues.length > 0 ? (chloroValues.reduce((a,b)=>a+b,0)/chloroValues.length).toFixed(2) : '—';
+                }
+                if(lastUpdateEl) {
+                    lastUpdateEl.innerText = lastDateStr ?
+                        (currentLang === 'TR' ? `Son kayıt: ${lastDateStr}` : `Last record: ${lastDateStr}`) :
+                        (currentLang === 'TR' ? 'Henüz kayıt yok.' : 'No records yet.');
+                }
                 const totalFiltered = Object.values(regionCounts).reduce((a, b) => a + b, 0);
                 let chartData = totalFiltered > 0 ? [
                     regionCounts["Rize"],
@@ -637,18 +891,21 @@
                     regionCounts["Ege"],
                     regionCounts["Brussels"],
                     regionCounts["Diğer"]
-                ] : [5, 0, 0, 0, 0];
+                ] : [0, 0, 0, 0, 0];
                 drawGeoDistributionChart(chartData);
             })
             .catch(() => {
-                document.getElementById('stat-total-samples').innerText = "5";
-                drawGeoDistributionChart([5, 0, 0, 0, 0]);
+                document.getElementById('stat-total-samples').innerText = '—';
+                const avgPhEl = document.getElementById('stat-avg-ph');
+                const avgChloroEl = document.getElementById('stat-avg-chloro');
+                if(avgPhEl) avgPhEl.innerText = '—';
+                if(avgChloroEl) avgChloroEl.innerText = '—';
+                drawGeoDistributionChart([0, 0, 0, 0, 0]);
             });
     }
     function drawGeoDistributionChart(dynamicData = [5, 0, 0, 0, 0]) {
         const ctx = document.getElementById('geoDistributionChart').getContext('2d');
         if(geoChart) { geoChart.destroy(); }
-        
         const labelsArr = currentLang === 'TR' ? 
             [cropRanges["tr-tea"].chartLabelTR, cropRanges["tr-antakya-citrus"].chartLabelTR, cropRanges["tr-ege-olive"].chartLabelTR, cropRanges["tr-ege-fig"].chartLabelTR, cropRanges["be-sugar"].chartLabelTR] : 
             [cropRanges["tr-tea"].chartLabelEN, cropRanges["tr-antakya-citrus"].chartLabelEN, cropRanges["tr-ege-olive"].chartLabelEN, cropRanges["tr-ege-fig"].chartLabelEN, cropRanges["be-sugar"].chartLabelEN];
@@ -689,49 +946,50 @@
             }
         });
     }
-    
-    // GÜNCELLENMİŞ VE TAMAMEN DİNAMİK HALE GETİRİLMİŞ STRES GRAFİĞİ
-    function renderStressChart(chlorophyllVal, phVal, regionKey) {
-        const ctx = document.getElementById('stressChart').getContext('2d');
-        
-        if (stressChartInstance instanceof Chart) {
-            stressChartInstance.destroy();
-        }
-        const labelsArr = currentLang === 'TR' ? ['1. Gün', '2. Gün', '3. Gün', '4. Gün (Müdahale)', '5. Gün (Hasat)'] : ['Day 1', 'Day 2', 'Day 3', 'Day 4 (Intervention)', 'Day 5 (Harvest)'];
-        
-        // --- DİNAMİK HESAPLAMALAR ---
-        // 1. İdeal pH değerinden sapmayı hesapla
+    // ORTAK HESAPLAMA FONKSİYONU: Hem grafik hem de Green Deal/sertifika
+    // metrikleri AYNI stres modelinden beslenir. Böylece sertifikadaki
+    // yüzdeler artık girilen pH/klorofil değerine göre DEĞİŞİR; sabit
+    // (hard-coded) sayılar değildir.
+    function computeStressModel(chlorophyllVal, phVal, regionKey) {
         const range = cropRanges[regionKey] || { min: 6.0, max: 7.0 };
         const optimalPh = (range.min + range.max) / 2;
         const phDeviation = Math.abs(phVal - optimalPh);
-        
-        // 2. Klorofil düşüklüğünden kaynaklı stresi hesapla (Referans klorofil seviyesi tahmini 10.0 mg/L)
         let chloStress = 0;
         if (chlorophyllVal < 10) {
             chloStress = (10 - chlorophyllVal) * 5;
         }
-        
-        // 3. Başlangıç Stres Skorunu oluştur (Ağırlıklı hesaplama: pH sapması daha etkili)
         let initialStress = 15 + (phDeviation * 20) + chloStress;
-        initialStress = Math.min(90, Math.max(10, initialStress)); // %10 ile %90 arasında sınırlandır
-        
-        // Müdahalesiz senaryo (stres artmaya devam eder)
-        let baselineStress = [
+        initialStress = Math.min(90, Math.max(10, initialStress));
+        const baselineStress = [
             initialStress,
             Math.min(100, initialStress + 12),
             Math.min(100, initialStress + 25),
             Math.min(100, initialStress + 40),
             Math.min(100, initialStress + 50)
         ];
-        
-        // Müdahaleli senaryo (reçete ile stres hızla kontrol altına alınır)
-        let interventionStress = [
+        const interventionStress = [
             initialStress,
             Math.min(100, initialStress + 5),
             Math.max(5, initialStress - 15),
             Math.max(5, initialStress - 30),
             Math.max(5, initialStress - 45)
         ];
+        // Müdahaleli/müdahalesiz senaryolar arasındaki 5. gün farkı, "reçetenin"
+        // ne kadar etkili olduğunun tek bir göstergesi (0-1 arası) olarak kullanılır.
+        const day5Baseline = baselineStress[4];
+        const day5Intervention = interventionStress[4];
+        const effectivenessRatio = Math.max(0, Math.min(1, (day5Baseline - day5Intervention) / day5Baseline));
+        return { initialStress, baselineStress, interventionStress, phDeviation, effectivenessRatio };
+    }
+    function renderStressChart(chlorophyllVal, phVal, regionKey) {
+        const ctx = document.getElementById('stressChart').getContext('2d');
+        if (stressChartInstance instanceof Chart) {
+            stressChartInstance.destroy();
+        }
+        const labelsArr = currentLang === 'TR' ? ['1. Gün', '2. Gün', '3. Gün', '4. Gün (Müdahale)', '5. Gün (Hasat)'] : ['Day 1', 'Day 2', 'Day 3', 'Day 4 (Intervention)', 'Day 5 (Harvest)'];
+        const model = computeStressModel(chlorophyllVal, phVal, regionKey);
+        const baselineStress = model.baselineStress;
+        const interventionStress = model.interventionStress;
         stressChartInstance = new Chart(ctx, {
             type: 'line',
             data: {
@@ -786,19 +1044,15 @@
     function populateDropdowns() {
         const selectRegion = document.getElementById('region');
         const selectBioPlant = document.getElementById('bio-plant');
-        
         const currentRegionSelection = selectRegion.value || 'tr-tea';
         const currentBioSelection = selectBioPlant.value || 'tr-tea';
-        
         selectRegion.innerHTML = '';
         selectBioPlant.innerHTML = '';
-        
         for (let key in cropRanges) {
             const opt1 = document.createElement('option');
             opt1.value = key;
             opt1.textContent = cropRanges[key][currentLang];
             selectRegion.appendChild(opt1);
-            
             const opt2 = document.createElement('option');
             opt2.value = key;
             opt2.textContent = cropRanges[key][currentLang];
@@ -818,7 +1072,6 @@
     function toggleLang() {
         currentLang = currentLang === 'TR' ? 'EN' : 'TR';
         updateLangButtonLabel();
-        
         populateDropdowns();
         const elements = document.querySelectorAll('[data-i18n]');
         elements.forEach(el => {
@@ -830,7 +1083,10 @@
         updatePHRangeInfo();
         loadGallery();
         fetchSheetTotalRows();
-        
+        updateWhiteRefStatus();
+        updateCalibStatus();
+        renderCalibrationPoints();
+        updatePendingBadge();
         if(document.getElementById('res-area').style.display === 'block') {
             updateDynamicReportTexts();
         }
@@ -842,18 +1098,15 @@
             return;
         }
         statusEl.innerText = currentLang === 'TR' ? "(Konum Alınıyor...)" : "(Fetching Location...)";
-        
         navigator.geolocation.getCurrentPosition(position => {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
-            
             fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=weathercode`)
                 .then(res => res.json())
                 .then(data => {
                     if (data && data.current) {
                         const code = data.current.weathercode;
                         const weatherSelect = document.getElementById('weather');
-                        
                         let mappedWeather = "Güneşli / Sunny";
                         if (code >= 1 && code <= 3) {
                             mappedWeather = "Bulutlu / Cloudy";
@@ -866,7 +1119,6 @@
                         } else if (code >= 95) {
                             mappedWeather = "Don Tehlikesi / Frost Risk";
                         }
-                        
                         weatherSelect.value = mappedWeather;
                         statusEl.innerText = currentLang === 'TR' ? "(Konumdan Güncellendi ✓)" : "(Updated from Location ✓)";
                     }
@@ -882,13 +1134,11 @@
         const regionKey = document.getElementById('region').value;
         const range = cropRanges[regionKey] || { min: 6.0, max: 7.0 };
         const phLabel = document.getElementById('ph-label');
-        
         if(currentLang === 'TR') {
             phLabel.innerHTML = `TOPRAK pH DEĞERİ / SOIL pH (İdeal Aralık / Ideal Range: ${range.min} - ${range.max}) [3.0 - 9.0]`;
         } else {
             phLabel.innerHTML = `SOIL pH VALUE (Ideal Range: ${range.min} - ${range.max}) [3.0 - 9.0]`;
         }
-        
         const phInput = document.getElementById('ph');
         if(phInput.value) {
             validatePH(phInput);
@@ -917,25 +1167,21 @@
         const methodsSec = document.getElementById('methods-section');
         const fieldSec = document.getElementById('field-section');
         const citizenSec = document.getElementById('citizen-section');
-        
         const tabAnalysisBtn = document.getElementById('tab-analysis-btn');
         const tabBiolabBtn = document.getElementById('tab-biolab-btn');
         const tabMethodsBtn = document.getElementById('tab-methods-btn');
         const tabFieldBtn = document.getElementById('tab-field-btn');
         const tabCitizenBtn = document.getElementById('tab-citizen-btn');
-        
         analysisSec.style.display = 'none';
         biolabSec.style.display = 'none';
         methodsSec.style.display = 'none';
         fieldSec.style.display = 'none';
         citizenSec.style.display = 'none';
-        
         tabAnalysisBtn.classList.remove('active');
         tabBiolabBtn.classList.remove('active');
         tabMethodsBtn.classList.remove('active');
         tabFieldBtn.classList.remove('active');
         tabCitizenBtn.classList.remove('active');
-        
         if(tabName === 'analysis') {
             analysisSec.style.display = 'block';
             tabAnalysisBtn.classList.add('active');
@@ -966,97 +1212,298 @@
             setTimeout(() => { fetchSheetTotalRows(); }, 200);
         }
     }
-    function processBioCamera(event) {
-        const file = event.target.files[0];
-        if(!file) return;
+    // ============================================================
+    // BİLİMSEL ALTYAPI: PİKSEL ANALİZİ, IŞIK NORMALİZASYONU VE
+    // GERÇEK VERİYLE KALİBRE EDİLEBİLEN DOĞRUSAL REGRESYON MODELİ
+    // ============================================================
+    function getPixelStats(canvasEl) {
+        const ctx = canvasEl.getContext('2d');
+        const w = canvasEl.width, h = canvasEl.height;
+        const imgData = ctx.getImageData(0, 0, w, h);
+        const pixels = imgData.data;
+        let totalR = 0, totalG = 0, totalB = 0, greenPixelCount = 0, count = 0;
+        for (let i = 0; i < pixels.length; i += 16) {
+            const r = pixels[i], g = pixels[i+1], b = pixels[i+2];
+            totalR += r; totalG += g; totalB += b;
+            if (g > r * 1.05 && g > b * 1.05 && g > 40) greenPixelCount++;
+            count++;
+        }
+        return { avgR: totalR / count, avgG: totalG / count, avgB: totalB / count, greenRatio: greenPixelCount / count };
+    }
+    function loadImageToCanvas(file, callback) {
         const reader = new FileReader();
         reader.onload = function(e) {
             const img = new Image();
             img.onload = function() {
                 const canvas = document.createElement('canvas');
-                canvas.width = 300;
-                canvas.height = 300;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const pixels = imgData.data;
-                
-                let totalR = 0, totalG = 0, totalB = 0, count = 0;
-                for (let i = 0; i < pixels.length; i += 16) {
-                    totalR += pixels[i];
-                    totalG += pixels[i+1];
-                    totalB += pixels[i+2];
-                    count++;
-                }
-                let avgR = totalR / count;
-                let avgG = totalG / count;
-                let avgB = totalB / count;
-                
-                let estimatedConc = (avgG / (avgR + avgB + 1)) * 12.5;
-                if(estimatedConc > 25.0) estimatedConc = 25.0;
-                if(estimatedConc < 1.0) estimatedConc = 1.0;
-                
-                document.getElementById('bio-absorbance').value = estimatedConc.toFixed(1);
-                document.getElementById('bio-cam-input').value = '';
-                document.getElementById('bio-file-input').value = '';
-                
-                alert(currentLang === 'TR' ? 
-                    `📱 Kalorimetre Analizi Başarılı!\nYeşil Piksel Yoğunluğundan Klorofil a Konsantrasyonu: ${estimatedConc.toFixed(1)} mg/L olarak hesaplandı.` : 
-                    `📱 Colorimeter Analysis Successful!\nChlorophyll a Concentration: ${estimatedConc.toFixed(1)} mg/L.`);
-            }
+                canvas.width = 300; canvas.height = 300;
+                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                callback(canvas);
+            };
             img.src = e.target.result;
-        }
+        };
         reader.readAsDataURL(file);
+    }
+    // --- Beyaz/gri referans ile ışık normalizasyonu ---
+    function setWhiteReference(event) {
+        const file = event.target.files[0];
+        if(!file) return;
+        loadImageToCanvas(file, (canvas) => {
+            const stats = getPixelStats(canvas);
+            localStorage.setItem('agro_white_ref', JSON.stringify({ r: stats.avgR, g: stats.avgG, b: stats.avgB, setAt: new Date().toISOString() }));
+            updateWhiteRefStatus();
+            alert(currentLang === 'TR' ? '⚪ Beyaz referans kaydedildi. Ölçümler artık bu referansa göre normalize edilecek.' : '⚪ White reference saved. Measurements will now be normalized against this reference.');
+            event.target.value = '';
+        });
+    }
+    function clearWhiteReference() {
+        localStorage.removeItem('agro_white_ref');
+        updateWhiteRefStatus();
+    }
+    function getWhiteReference() {
+        try { return JSON.parse(localStorage.getItem('agro_white_ref')); } catch(e) { return null; }
+    }
+    function normalizeStats(stats) {
+        const ref = getWhiteReference();
+        if(!ref) return stats;
+        const target = 128; // orta gri hedef
+        const scaleR = ref.r > 0 ? target / ref.r : 1;
+        const scaleG = ref.g > 0 ? target / ref.g : 1;
+        const scaleB = ref.b > 0 ? target / ref.b : 1;
+        return { avgR: stats.avgR * scaleR, avgG: stats.avgG * scaleG, avgB: stats.avgB * scaleB, greenRatio: stats.greenRatio };
+    }
+    function updateWhiteRefStatus() {
+        const el = document.getElementById('white-ref-status');
+        if(!el) return;
+        const ref = getWhiteReference();
+        if(ref) {
+            const d = new Date(ref.setAt);
+            el.innerHTML = (currentLang === 'TR' ? '✅ Beyaz referans ayarlı (' : '✅ White reference set (') + d.toLocaleDateString() + ')';
+            el.style.color = '#2e7d32';
+        } else {
+            el.innerHTML = currentLang === 'TR' ? '⚠️ Beyaz referans ayarlanmadı — ölçümler ham (normalize edilmemiş) veriyle yapılıyor.' : '⚠️ White reference not set — measurements use raw (non-normalized) data.';
+            el.style.color = '#e65100';
+        }
+    }
+    // --- Sinyal metriği ve kalibrasyon modeli ---
+    function computeColorSignal(stats) {
+        return stats.avgG / (stats.avgR + stats.avgB + 1);
+    }
+    function getCalibrationPoints() {
+        try { return JSON.parse(localStorage.getItem('agro_calibration_points') || '[]'); } catch(e) { return []; }
+    }
+    function getCalibrationModel() {
+        try { return JSON.parse(localStorage.getItem('agro_calibration_model') || 'null'); } catch(e) { return null; }
+    }
+    // Kalibrasyon varsa gerçek regresyon modelini, yoksa eski kaba (doğrulanmamış) formülü kullanır.
+    function estimateConcentrationFromSignal(signal) {
+        const model = getCalibrationModel();
+        if (model && typeof model.slope === 'number') {
+            let conc = model.slope * signal + model.intercept;
+            if (conc < 0) conc = 0;
+            if (conc > 100) conc = 100;
+            return { value: conc, calibrated: true, model };
+        }
+        let estimatedConc = signal * 12.5; // kaba varsayılan; bilimsel olarak doğrulanmamıştır
+        if (estimatedConc > 25.0) estimatedConc = 25.0;
+        if (estimatedConc < 1.0) estimatedConc = 1.0;
+        return { value: estimatedConc, calibrated: false, model: null };
+    }
+    function renderCalibrationPoints() {
+        const list = document.getElementById('calib-points-list');
+        if(!list) return;
+        const points = getCalibrationPoints();
+        if(points.length === 0) {
+            list.innerHTML = currentLang === 'TR' ? 'Henüz nokta eklenmedi.' : 'No points added yet.';
+            return;
+        }
+        list.innerHTML = points.map((p, i) => `<div style="display:flex; justify-content:space-between; padding:3px 0; border-bottom:1px solid #eee;">
+            <span>#${i+1}: ${p.conc.toFixed(1)} mg/L → ${currentLang==='TR' ? 'sinyal' : 'signal'} ${p.signal.toFixed(3)}</span>
+            <button onclick="removeCalibrationPoint(${i})" style="background:none; border:none; color:#d32f2f; cursor:pointer; font-size:11px;">✕</button>
+        </div>`).join('');
+    }
+    function removeCalibrationPoint(index) {
+        let points = getCalibrationPoints();
+        points.splice(index, 1);
+        localStorage.setItem('agro_calibration_points', JSON.stringify(points));
+        renderCalibrationPoints();
+    }
+    function addCalibrationPoint(event) {
+        const file = event.target.files[0];
+        if(!file) return;
+        const concInput = document.getElementById('calib-known-conc');
+        const conc = parseFloat(concInput.value);
+        if(isNaN(conc)) {
+            alert(currentLang === 'TR' ? 'Önce bilinen konsantrasyon değerini giriniz!' : 'Please enter the known concentration first!');
+            event.target.value = '';
+            return;
+        }
+        loadImageToCanvas(file, (canvas) => {
+            const rawStats = getPixelStats(canvas);
+            const stats = normalizeStats(rawStats);
+            const signal = computeColorSignal(stats);
+            let points = getCalibrationPoints();
+            points.push({ conc, signal, addedAt: new Date().toISOString() });
+            try {
+                localStorage.setItem('agro_calibration_points', JSON.stringify(points));
+            } catch(err) {
+                alert(currentLang === 'TR' ? '⚠️ Nokta kaydedilemedi: depolama alanı dolu olabilir.' : '⚠️ Point could not be saved: storage may be full.');
+                return;
+            }
+            renderCalibrationPoints();
+            event.target.value = '';
+            concInput.value = '';
+            alert(currentLang === 'TR' ? `✅ Nokta eklendi: ${conc} mg/L → sinyal ${signal.toFixed(3)}. Toplam nokta: ${points.length}` : `✅ Point added: ${conc} mg/L → signal ${signal.toFixed(3)}. Total points: ${points.length}`);
+        });
+    }
+    function clearCalibration() {
+        if(!confirm(currentLang === 'TR' ? 'Tüm kalibrasyon noktaları ve model silinsin mi?' : 'Delete all calibration points and the model?')) return;
+        localStorage.removeItem('agro_calibration_points');
+        localStorage.removeItem('agro_calibration_model');
+        renderCalibrationPoints();
+        updateCalibStatus();
+    }
+    // En küçük kareler (least squares) doğrusal regresyon: conc = slope*signal + intercept, R² ile
+    function computeCalibrationModel() {
+        const points = getCalibrationPoints();
+        if(points.length < 3) {
+            alert(currentLang === 'TR' ? '⚠️ Güvenilir bir kalibrasyon eğrisi için en az 3 farklı bilinen konsantrasyon noktası eklemelisiniz (önerilen: 4-5 nokta, geniş bir aralığa yayılmış).' : '⚠️ You need at least 3 different known-concentration points for a reliable calibration curve (recommended: 4-5 points spread across a wide range).');
+            return;
+        }
+        const n = points.length;
+        const xs = points.map(p => p.signal);
+        const ys = points.map(p => p.conc);
+        const meanX = xs.reduce((a,b)=>a+b,0) / n;
+        const meanY = ys.reduce((a,b)=>a+b,0) / n;
+        let num = 0, den = 0;
+        for(let i=0;i<n;i++){
+            num += (xs[i]-meanX)*(ys[i]-meanY);
+            den += (xs[i]-meanX)*(xs[i]-meanX);
+        }
+        const slope = den !== 0 ? num/den : 0;
+        const intercept = meanY - slope*meanX;
+        let ssTot = 0, ssRes = 0;
+        for(let i=0;i<n;i++){
+            const predicted = slope*xs[i] + intercept;
+            ssRes += (ys[i]-predicted)*(ys[i]-predicted);
+            ssTot += (ys[i]-meanY)*(ys[i]-meanY);
+        }
+        const r2 = ssTot !== 0 ? 1 - (ssRes/ssTot) : 1;
+        const model = { slope, intercept, r2, n, updatedAt: new Date().toISOString() };
+        localStorage.setItem('agro_calibration_model', JSON.stringify(model));
+        updateCalibStatus();
+        let msg = (currentLang === 'TR' ? `📈 Kalibrasyon Modeli Hesaplandı:\nKonsantrasyon = ${slope.toFixed(3)} × sinyal + ${intercept.toFixed(3)}\nR² = ${r2.toFixed(3)} (n=${n})\n\n` : `📈 Calibration Model Computed:\nConcentration = ${slope.toFixed(3)} × signal + ${intercept.toFixed(3)}\nR² = ${r2.toFixed(3)} (n=${n})\n\n`);
+        msg += r2 < 0.7 ?
+            (currentLang === 'TR' ? '⚠️ R² düşük — noktalarınız arasında güçlü bir doğrusal ilişki yok. Ölçüm koşullarını (ışık, açı, mesafe) sabit tutup daha fazla nokta eklemeyi deneyin.' : '⚠️ R² is low — there is no strong linear relationship between your points. Try keeping measurement conditions (light, angle, distance) consistent and add more points.') :
+            (currentLang === 'TR' ? '✅ Model kaydedildi ve artık tüm klorofil tahminlerinde otomatik kullanılacak.' : '✅ Model saved and will now be used automatically for all chlorophyll estimates.');
+        alert(msg);
+    }
+    function updateCalibStatus() {
+        const el = document.getElementById('calib-status');
+        if(!el) return;
+        const model = getCalibrationModel();
+        if(model) {
+            el.innerHTML = (currentLang === 'TR' ? `✅ Kalibre Edilmiş Model Aktif: Konsantrasyon = ${model.slope.toFixed(3)}×sinyal + ${model.intercept.toFixed(3)} (R²=${model.r2.toFixed(3)}, n=${model.n})` : `✅ Calibrated Model Active: Concentration = ${model.slope.toFixed(3)}×signal + ${model.intercept.toFixed(3)} (R²=${model.r2.toFixed(3)}, n=${model.n})`);
+            el.style.color = '#2e7d32';
+        } else {
+            el.innerHTML = currentLang === 'TR' ? '⚠️ Kalibrasyon yapılmadı — genel/kaba bir formül kullanılıyor (bilimsel olarak doğrulanmamıştır).' : '⚠️ Not calibrated — a generic/rough formula is being used (not scientifically validated).';
+            el.style.color = '#e65100';
+        }
+    }
+    // --- Arnon (1949) formülü: gerçek spektrofotometre absorbans verisinden klorofil hesabı ---
+    function calculateArnon() {
+        const a663 = parseFloat(document.getElementById('arnon-a663').value);
+        const a645 = parseFloat(document.getElementById('arnon-a645').value);
+        const resultBox = document.getElementById('arnon-result');
+        if(isNaN(a663) || isNaN(a645)) {
+            alert(currentLang === 'TR' ? 'Lütfen hem A663 hem de A645 absorbans değerlerini giriniz!' : 'Please enter both A663 and A645 absorbance values!');
+            return;
+        }
+        const chlA = 12.7*a663 - 2.69*a645;
+        const chlB = 22.9*a645 - 4.68*a663;
+        const chlTotal = 20.2*a645 + 8.02*a663;
+        resultBox.style.display = 'block';
+        resultBox.innerHTML = currentLang === 'TR' ?
+            `🧪 <strong>Arnon (1949) Formülü Sonucu:</strong><br>Klorofil a: <strong>${chlA.toFixed(2)} mg/L</strong><br>Klorofil b: ${chlB.toFixed(2)} mg/L<br>Toplam Klorofil: ${chlTotal.toFixed(2)} mg/L<br><span style="font-size:9px; color:#555;">Kaynak: Arnon, D.I. (1949). Plant Physiology 24(1):1-15.</span>` :
+            `🧪 <strong>Arnon (1949) Formula Result:</strong><br>Chlorophyll a: <strong>${chlA.toFixed(2)} mg/L</strong><br>Chlorophyll b: ${chlB.toFixed(2)} mg/L<br>Total Chlorophyll: ${chlTotal.toFixed(2)} mg/L<br><span style="font-size:9px; color:#555;">Source: Arnon, D.I. (1949). Plant Physiology 24(1):1-15.</span>`;
+        document.getElementById('bio-absorbance').value = chlA.toFixed(2);
+        window._lastConcSource = 'arnon';
+    }
+    function markManualEntry() {
+        window._lastConcSource = 'manual';
+    }
+    function processBioCamera(event) {
+        const file = event.target.files[0];
+        if(!file) return;
+        loadImageToCanvas(file, (canvas) => {
+            const rawStats = getPixelStats(canvas);
+            const stats = normalizeStats(rawStats);
+            const signal = computeColorSignal(stats);
+            const result = estimateConcentrationFromSignal(signal);
+            document.getElementById('bio-absorbance').value = result.value.toFixed(1);
+            document.getElementById('bio-cam-input').value = '';
+            document.getElementById('bio-file-input').value = '';
+            window._lastConcSource = result.calibrated ? 'camera-calibrated' : 'camera-rough';
+            const sourceNote = result.calibrated ?
+                (currentLang === 'TR' ? `\n(Kalibre edilmiş model kullanıldı: R²=${result.model.r2.toFixed(2)})` : `\n(Calibrated model used: R²=${result.model.r2.toFixed(2)})`) :
+                (currentLang === 'TR' ? '\n⚠️ Kalibrasyon yapılmadı, kaba tahmindir — kesin sonuç için Kalibrasyon modülünü kullanın.' : '\n⚠️ Not calibrated, this is a rough estimate — use the Calibration module for a defensible result.');
+            alert((currentLang === 'TR' ? 
+                `📱 Kalorimetre Analizi Tamamlandı!\nTahmini Klorofil a Konsantrasyonu: ${result.value.toFixed(1)} mg/L.` : 
+                `📱 Colorimeter Analysis Complete!\nEstimated Chlorophyll a Concentration: ${result.value.toFixed(1)} mg/L.`) + sourceNote);
+        });
+    }
+    function describeConcSource() {
+        const source = window._lastConcSource || 'manual';
+        const model = getCalibrationModel();
+        if (source === 'arnon') {
+            return currentLang === 'TR' ? 'Gerçek spektrofotometre verisi (Arnon 1949 formülü)' : 'Real spectrophotometer data (Arnon 1949 formula)';
+        } else if (source === 'camera-calibrated' && model) {
+            return currentLang === 'TR' ? `Kamera + kullanıcı kalibrasyon eğrisi (R²=${model.r2.toFixed(2)}, n=${model.n})` : `Camera + user calibration curve (R²=${model.r2.toFixed(2)}, n=${model.n})`;
+        } else if (source === 'camera-rough') {
+            return currentLang === 'TR' ? '⚠️ Kamera - kalibre edilmemiş kaba tahmin' : '⚠️ Camera - uncalibrated rough estimate';
+        }
+        return currentLang === 'TR' ? 'Manuel giriş' : 'Manual entry';
     }
     function calculateBiolab(sendToSheet = false) {
         const plantKey = document.getElementById('bio-plant').value;
         const range = cropRanges[plantKey] || { min: 6.0, max: 7.0 };
         const plant = range[currentLang];
-        
         const concInput = document.getElementById('bio-absorbance');
         const conc = parseFloat(concInput.value);
         const resBox = document.getElementById('bio-result-box');
-        
         if(isNaN(conc)) {
             alert(currentLang === 'TR' ? 'Lütfen geçerli bir klorofil konsantrasyonu giriniz!' : 'Please enter a valid chlorophyll concentration!');
             return;
         }
-        
         document.getElementById('integrated-chlorophyll').value = conc;
-        
         resBox.style.display = 'block';
+        const sourceLabel = describeConcSource();
         if(currentLang === 'TR') {
             resBox.innerHTML = `✅ <strong>MEBİ Lab & Kalorimetre Sonucu:</strong><br>
             • Bitki: ${plant}<br>
             • Spektrofotometre Dalga Boyu: 663 nm (Klorofil a)<br>
             • Hesaplanan Konsantrasyon: <strong>${conc} mg/L</strong><br>
+            • Veri Kaynağı: ${sourceLabel}<br>
             <em>Durum: Veri Ana Analiz Modülüne ve Canlı Veri Tablosuna aktarılmak üzere hazırlandı.</em>`;
         } else {
             resBox.innerHTML = `✅ <strong>MEB Lab & Colorimeter Result:</strong><br>
             • Plant: ${plant}<br>
             • Wavelength: 663 nm (Chlorophyll a)<br>
             • Calculated Concentration: <strong>${conc} mg/L</strong><br>
+            • Data Source: ${sourceLabel}<br>
             <em>Status: Data prepared for Main Analysis Module and Live Data Sheet.</em>`;
         }
-        
         if(sendToSheet) {
-            document.getElementById('bio-sync-status').style.display = 'block';
             const formData = {
                 date: new Date().toLocaleString('tr-TR'),
                 region: `MEBİ Lab - ${plant}`,
                 ph: "N/A (Lab Test)",
                 weather: "Lab Ortamı / Environment",
-                stress: `Klorofil a: ${conc} mg/L`,
+                stress: `Klorofil a: ${conc} mg/L (${sourceLabel})`,
                 notes: resBox.innerText.replace(/\n/g, " "),
                 photograph: ""
             };
-            
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(formData)
-            });
+            sendToServer(formData, 'bio-sync-status');
         }
     }
     function handleFileUpload(event) {
@@ -1080,28 +1527,51 @@
                 ctx.drawImage(img, 0, 0, width, height);
                 const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
                 let caption = currentLang === 'TR' ? 'Saha Çalışması / Field Study' : 'Field Study';
-                
-                let gallery = JSON.parse(localStorage.getItem('agro_field_gallery') || '[]');
-                gallery.unshift({ file: compressedDataUrl, caption: caption });
-                localStorage.setItem('agro_field_gallery', JSON.stringify(gallery));
+                try {
+                    let gallery = JSON.parse(localStorage.getItem('agro_field_gallery') || '[]');
+                    gallery.unshift({ file: compressedDataUrl, caption: caption });
+                    localStorage.setItem('agro_field_gallery', JSON.stringify(gallery));
+                    loadGallery();
+                } catch (err) {
+                    // Tarayıcı depolama alanı (localStorage) dolduğunda veya
+                    // erişilemediğinde kullanıcıyı bilgilendir; sessizce başarısız olma.
+                    alert(currentLang === 'TR' ?
+                        '⚠️ Fotoğraf kaydedilemedi: Tarayıcı depolama alanı dolu olabilir. Lütfen birkaç eski fotoğrafı silip tekrar deneyin.' :
+                        '⚠️ Photo could not be saved: browser storage may be full. Please delete a few older photos and try again.');
+                }
+                // Fotoğrafı okul arşivine (Google Drive/E-Tablo) de gönder — böylece
+                // sadece bu cihazda değil, tüm ekip/jüri için kalıcı olarak saklanır.
+                // Bağlantı yoksa (saha/köy şartları) veri sessizce kaybolmaz, kuyruğa alınır.
+                const formData = {
+                    date: new Date().toLocaleString('tr-TR'),
+                    region: currentLang === 'TR' ? 'Saha Fotoğrafları Galerisi' : 'Field Photo Gallery',
+                    ph: "N/A",
+                    weather: "N/A",
+                    stress: caption,
+                    notes: caption,
+                    photograph: compressedDataUrl
+                };
+                sendToServer(formData, 'field-sync-status');
                 document.getElementById('file-input').value = '';
-                loadGallery();
             }
             img.src = e.target.result;
         }
         reader.readAsDataURL(file);
     }
     function updateCaption(index, newCaption) {
-        let gallery = JSON.parse(localStorage.getItem('agro_field_gallery') || '[]');
-        if(gallery[index]) {
-            gallery[index].caption = newCaption;
-            localStorage.setItem('agro_field_gallery', JSON.stringify(gallery));
+        try {
+            let gallery = JSON.parse(localStorage.getItem('agro_field_gallery') || '[]');
+            if(gallery[index]) {
+                gallery[index].caption = newCaption;
+                localStorage.setItem('agro_field_gallery', JSON.stringify(gallery));
+            }
+        } catch (err) {
+            console.error('Açıklama kaydedilemedi:', err);
         }
     }
     function loadGallery() {
         const container = document.getElementById('gallery-container');
         let gallery = JSON.parse(localStorage.getItem('agro_field_gallery') || '[]');
-        
         if(gallery.length === 0) {
             container.innerHTML = `<div style="grid-column: span 2; text-align: center; font-size: 11px; color: #888; padding: 20px;">${currentLang === 'TR' ? 'Henüz saha fotoğrafı eklenmedi.' : 'No field photos added yet.'}</div>`;
             return;
@@ -1153,25 +1623,52 @@
             resetSystem();
         });
     }
-    
+    // Yakalanan kare üzerinde basit RGB analizi yaparak (a) yeterli yeşil doku
+    // var mı (yaprak algılandı mı) ve (b) kaba bir klorofil tahmini hesaplar.
+    // NOT: Bu, gerçek bir spektrofotometre ölçümünün YERİNE GEÇMEZ; düşük
+    // maliyetli bir "akıllı telefon kalorimetresi" yaklaşımıdır (MEBİ LAB
+    // sekmesindeki yöntemle aynı mantık, tutarlılık için).
+    // Artık getPixelStats/normalizeStats/computeColorSignal/estimateConcentrationFromSignal
+    // paylaşılan fonksiyonlarını kullanır (MEBİ LAB sekmesiyle aynı bilimsel altyapı ve,
+    // varsa, kullanıcının oluşturduğu gerçek kalibrasyon modelini).
+    function analyzeLeafImage(canvasEl) {
+        const rawStats = getPixelStats(canvasEl);
+        const stats = normalizeStats(rawStats);
+        const signal = computeColorSignal(stats);
+        const result = estimateConcentrationFromSignal(signal);
+        return { greenRatio: rawStats.greenRatio, estimatedConc: result.value, calibrated: result.calibrated };
+    }
     async function processAI() {
         c.width = v.videoWidth || 640; 
         c.height = v.videoHeight || 480;
         c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
-        
         lastCapturedImage = c.toDataURL('image/jpeg', 0.7);
+        // Görüntüyü analiz et: yeterli bitki/klorofil dokusu var mı?
+        const leafAnalysis = analyzeLeafImage(c);
+        document.getElementById('error-box').style.display = 'none';
+        if (leafAnalysis.greenRatio < 0.06) {
+            // Karede yeterli yeşil doku tespit edilemedi -> uyarıyı göster, devam etme
+            document.getElementById('error-box').style.display = 'block';
+            document.getElementById('cam-box').style.display = 'block';
+            document.getElementById('res-area').style.display = 'none';
+            return;
+        }
         document.getElementById('preview-img').src = lastCapturedImage;
         document.getElementById('preview-img').style.display = 'block';
-        
         if(track) track.stop();
         document.getElementById('cam-box').style.display = 'none';
         document.getElementById('res-area').style.display = 'block';
-        
         const regionSelect = document.getElementById('region');
         const cropName = regionSelect.options[regionSelect.selectedIndex] ? regionSelect.options[regionSelect.selectedIndex].text : regionSelect.value;
         const phVal = document.getElementById('ph').value;
         const weatherVal = document.getElementById('weather').value;
-        const ishChlorophylVal = document.getElementById('integrated-chlorophyll').value;
+        const integratedInput = document.getElementById('integrated-chlorophyll');
+        // Kullanıcı MEBİ LAB'dan veya elle bir değer girmediyse, fotoğraftan
+        // hesaplanan tahmini kullan; girdiyse kullanıcının değerine dokunma.
+        if (!integratedInput.value) {
+            integratedInput.value = leafAnalysis.estimatedConc.toFixed(1);
+        }
+        const ishChlorophylVal = integratedInput.value;
         const formData = {
             region: cropName,
             ph: phVal,
@@ -1182,23 +1679,14 @@
             photoType: 'image/jpeg',
             date: new Date().toLocaleString()
         };
-        try {
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: JSON.stringify(formData)
-            });
-            const result = await response.json();
-            console.log("Veri ve Fotoğraf Başarıyla Gönderildi:", result);
-            document.getElementById('sync-status').style.display = 'block';
-        } catch (error) {
-            console.error("Gönderim Hatası:", error);
-        }
+        // Merkezi, çevrimdışı-dayanıklı gönderim: bağlantı yoksa veya istek
+        // başarısız olursa veri kaybolmaz, kuyruğa alınır ve otomatik tekrar denenir.
+        await sendToServer(formData, 'sync-status');
         updateDynamicReportTexts();
     }
     function updateAnalysis(pH, chlorophyll, weather) {
         let recipeTextTR = "";
         let recipeTextEN = "";
-        
         if (pH < 4.5) {
             recipeTextTR = "1. Toprak pH seviyesi ideal aralığın altında (aşırı asidik). pH dengelenmesi için uygun organik düzenleyici (Kompost, Humus, Leonardit veya Çiftlik Gübresi) uygulanmalı. 2. 663 nm bandındaki pigment optimizasyonu için Şelatlı Demir (Fe-EDDHA) ile birlikte Çinko (Zn), Manganez (Mn), Bor (B), Bakır (Cu) ve Molibden (Mo) mikro element takviyesi sağlanmalı.";
             recipeTextEN = "1. Soil pH level is below the ideal range (too acidic). Apply appropriate organic amendments (Compost, Humus, Leonardite, or Farmyard Manure) to balance pH. 2. Provide Chelated Iron (Fe-EDDHA) along with Zinc (Zn), Manganese (Mn), Boron (B), Copper (Cu), and Molybdenum (Mo) micronutrient supplementation for pigment optimization in the 663 nm band.";
@@ -1218,7 +1706,6 @@
             recipeBox.innerHTML = `🔥 <strong>${currentLang === 'TR' ? 'Entegre Ekolojik Reçete' : 'Integrated Ecological Prescription'} / Integrated Ecological Prescription:</strong><br>${currentLang === 'TR' ? recipeTextTR : recipeTextEN}`;
         }
     }
-    
     // GÜNCELLENMİŞ updateDynamicReportTexts FONKSİYONU
     function updateDynamicReportTexts() {
         const regionKey = document.getElementById('region').value;
@@ -1229,12 +1716,10 @@
         const cropDisplayName = range[currentLang];
         const phVal = parseFloat(ph);
         const chlorophyllVal = parseFloat(labChlorophyll) || 5.0;
-        
         let statusText = "";
         let calibrationText = "";
         let greenDealText = "";
         let certificateText = "";
-        
         let isPhOptimal = (phVal >= range.min && phVal <= range.max);
         let labTextInfo = labChlorophyll ? ` [Lab Chlorophyll a: ${labChlorophyll} mg/L]` : "";
         if(isPhOptimal) {
@@ -1252,39 +1737,47 @@
                 `⚠️ Entegre Teşhis: Toprak pH sapması ve iklimsel koşullar nedeniyle klorofil a sentezinde blokaj oluştu.` : 
                 `⚠️ Integrated Diagnosis: Chlorophyll a synthesis blocked due to pH shift and climate factors.`;
         }
-        
+        // --- ARTIK SABİT DEĞİL: Aşağıdaki üç yüzde, girilen pH/klorofil
+        // değerinden hesaplanan stres modeline (computeStressModel) göre
+        // değişir. Katsayılar (temel oran + etkinlik payı) illüstratif bir
+        // modeldir; gerçek saha/laboratuvar kalibrasyonu ile güncellenmelidir. ---
+        const stressModel = computeStressModel(chlorophyllVal, phVal, regionKey);
+        const eff = stressModel.effectivenessRatio; // 0-1 arası: reçetenin öngörülen etkisi
+        const carbonReductionPct = (12 + eff * 18).toFixed(1);      // ör: %12 - %30 arası
+        const fertilizerSavingPct = (10 + eff * 20).toFixed(1);     // ör: %10 - %30 arası
+        const pesticideOptPct = (10 + eff * 25).toFixed(1);         // ör: %10 - %35 arası
+        const carbonKgEstimate = Math.round(60 + eff * 140);        // ör: 60 - 200 kg CO₂ eşd. / dönüm
         greenDealText = currentLang === 'TR' ? 
-            `🇪🇺 AB Yeşil Mutabakatı: Öngörülen bu ekolojik ve hassas reçete uygulandığında, kimyasal sızıntı önlenir ve karbon ayak izi düşürülerek AB standartlarına uyulmuş olur.` : 
-            `🇪🇺 EU Green Deal: Applying this ecological prescription prevents chemical leakage, reduces carbon footprint, and ensures compliance with EU standards.`;
-        
+            `🇪🇺 AB Yeşil Mutabakatı: Öngörülen bu ekolojik ve hassas reçete uygulandığında, kimyasal sızıntı önlenir ve karbon ayak izi düşürülerek AB standartlarına uyulmuş olur. (Ölçülen pH/klorofil verisine göre hesaplanan tahmini etki: Karbon ayak izi -%${carbonReductionPct}, Gübre tasarrufu %${fertilizerSavingPct}, Pestisit optimizasyonu %${pesticideOptPct})` : 
+            `🇪🇺 EU Green Deal: Applying this ecological prescription prevents chemical leakage, reduces carbon footprint, and ensures compliance with EU standards. (Estimated impact based on measured pH/chlorophyll data: Carbon footprint -${carbonReductionPct}%, Fertilizer saving ${fertilizerSavingPct}%, Pesticide optimization ${pesticideOptPct}%)`;
         certificateText = currentLang === 'TR' ? 
             `📜 EU GREEN DEAL SUSTAINABILITY CERTIFICATE #EU-2026-RIZE<br>
             • Doğrulanan Ürün / Verified Crop: ${cropDisplayName}<br>
             • Lab Klorofil a (663 nm) / Lab Chlorophyll a: ${labChlorophyll || 'N/A'} mg/L<br>
-            • Karbon Ayak İzi Azaltımı / Carbon Footprint Reduction: %24.5 (Tahmini / Estimated)<br>
+            • Karbon Ayak İzi Azaltımı / Carbon Footprint Reduction: %${carbonReductionPct} (≈${carbonKgEstimate} kg CO₂ eşd./dönüm, ölçülen veriye göre hesaplandı)<br>
+            • Gübre Tasarrufu / Fertilizer Saving: %${fertilizerSavingPct}<br>
+            • Pestisit Optimizasyonu / Pesticide Optimization: %${pesticideOptPct}<br>
             • Uyumluluk Durumu / Compliance Status: BRÜSSEL TERMİNALİ İÇİN ONAYLANDI / APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)<br><br>
-            <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ UYARI / CAUTION: Bu belge ve karbon ayak izi azaltım verileri yalnızca "Rize Fatih Anadolu Lisesi AB Proje Simülasyonu" kapsamında üretilen öngörüsel verilere dayanmaktadır. Resmî ticari veya hukuki geçerliliği yoktur.<br>This document and carbon footprint reduction data are based solely on predictive data generated within the scope of "Rize Fatih Anadolu Lisesi EU Project Simulation". It has no official commercial or legal validity.</span>` : 
+            <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ UYARI / CAUTION: Bu belge ve yüzdeler, sayfadaki basit stres modeline (bkz. Metodoloji sekmesi) dayalı öngörüsel/simüle edilmiş verilerdir; gerçek saha kalibrasyonu yerine geçmez. "Rize Fatih Anadolu Lisesi AB Proje Simülasyonu" kapsamında üretilmiştir ve resmî ticari veya hukuki geçerliliği yoktur.<br>This document and its percentages are predictive/simulated data based on the simple stress model on this page (see Methodology tab); they do not replace real field calibration. Generated within the scope of "Rize Fatih Anadolu Lisesi EU Project Simulation" and have no official commercial or legal validity.</span>` : 
             `📜 EU GREEN DEAL SUSTAINABILITY CERTIFICATE #EU-2026-RIZE<br>
             • Verified Crop: ${cropDisplayName}<br>
             • Lab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L<br>
-            • Carbon Footprint Reduction: 24.5% (Estimated)<br>
+            • Carbon Footprint Reduction: ${carbonReductionPct}% (≈${carbonKgEstimate} kg CO₂ eq./decare, calculated from measured data)<br>
+            • Fertilizer Saving: ${fertilizerSavingPct}%<br>
+            • Pesticide Optimization: ${pesticideOptPct}%<br>
             • Compliance Status: APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)<br><br>
-            <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ CAUTION: This document and carbon footprint reduction data are based solely on predictive data generated within the scope of "Rize Fatih Anadolu Lisesi EU Project Simulation". It has no official commercial or legal validity.</span>`;
-        
+            <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ CAUTION: This document and its percentages are predictive/simulated data based on the simple stress model on this page (see Methodology tab); they do not replace real field calibration. Generated within the scope of "Rize Fatih Anadolu Lisesi EU Project Simulation" and have no official commercial or legal validity.</span>`;
         document.getElementById('hybrid-output').innerHTML = statusText;
         document.getElementById('calibration-output').innerHTML = calibrationText;
         document.getElementById('green-deal-output').innerHTML = greenDealText;
         document.getElementById('certificate-output').innerHTML = certificateText;
         updateAnalysis(phVal, chlorophyllVal, weather);
-        
         document.getElementById('res-output').innerText = `Integrated Analysis / Entegre Analiz Raporu\nRegion & Crop: ${cropDisplayName}\npH: ${ph}\nWeather: ${weather}\nLab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L`;
-        
         // Parametreleri ekleyerek grafik çizimini çağır
         setTimeout(() => {
             renderStressChart(chlorophyllVal, phVal, regionKey);
         }, 100);
     }
-    
     function resetSystem() {
         document.getElementById('res-area').style.display = 'none';
         document.getElementById('form-area').style.display = 'block';
