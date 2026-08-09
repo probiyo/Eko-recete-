@@ -84,6 +84,13 @@
         .chart-box { background: #fafafa; padding: 12px; border-radius: 15px; margin-bottom: 12px; border: 1px solid #ddd; }
         .chart-container { position: relative; width: 100%; min-height: 200px; height: 200px; }
         .expert-msg { background: #fff3e0; border-left: 5px solid #ff9800; padding: 10px; font-size: 11px; font-weight: bold; color: #e65100; margin-bottom: 15px; line-height: 1.4; }
+        .ai-opinion-box { background: #eef2ff; border-left: 5px solid #4f46e5; padding: 10px; font-size: 11px; margin-bottom: 10px; color: #312e81; border-radius: 0 10px 10px 0; line-height: 1.5; }
+        .ai-opinion-box .ai-title { font-weight: 800; display: block; margin-bottom: 6px; }
+        .ai-opinion-box .ai-disclaimer { display: block; margin-top: 8px; font-size: 9px; font-weight: normal; color: #4338ca; opacity: 0.85; }
+        .ai-opinion-box .ai-btn { display: inline-block; margin-top: 6px; background: #4f46e5; color: #fff; font-weight: bold; padding: 7px 12px; border-radius: 8px; cursor: pointer; font-size: 10px; border: none; }
+        .ai-opinion-box .ai-btn.secondary { background: transparent; color: #4f46e5; border: 1px solid #4f46e5; }
+        .ai-spinner { display: inline-block; width: 11px; height: 11px; border: 2px solid #c7d2fe; border-top-color: #4f46e5; border-radius: 50%; animation: ai-spin 0.7s linear infinite; margin-right: 6px; vertical-align: -1px; }
+        @keyframes ai-spin { to { transform: rotate(360deg); } }
         .error-msg { color: var(--danger); font-weight: bold; text-align: center; padding: 20px; border: 2px dashed var(--danger); border-radius: 15px; display: none; margin-top: 10px; font-size: 13px; }
         .ph-warning { color: var(--danger); font-size: 10px; font-weight: bold; margin-top: 5px; display: none; }
         .footer { font-size: 9px; color: #aaa; text-align: center; margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px; }
@@ -171,6 +178,7 @@
             <!-- Analiz Edilen Yaprak Fotoğrafı Önizlemesi -->
             <img id="preview-img" class="captured-preview" src="" alt="Captured Leaf">
             <div id="leaf-health-box" style="display:none; margin: 10px 0; background:#fafdf8; border:1px solid #c8e6c9; border-radius:12px; padding:12px; font-size:11px; color:#1b3d1e; line-height:1.5;"></div>
+            <div id="ai-opinion-box" class="ai-opinion-box" style="display:none;"></div>
             <div id="hybrid-output" class="hybrid-note"></div>
             <div id="calibration-output" class="calibration-box"></div>
             <div id="green-deal-output" class="green-deal-box"></div>
@@ -432,6 +440,9 @@
     let currentLang = 'TR';
     let track;
     let stressChartInstance = null;
+    let lastAIContext = null;
+    let aiOpinionState = null; // 'loading' | 'result' | 'error'
+    let lastAIResultText = null;
     // ============================================================
     // MERKEZİ, ÇEVRİMDIŞI-DAYANIKLI VERİ GÖNDERİM SİSTEMİ
     // Saha koşullarında (tarım arazisi, köy) internet kesintisi
@@ -628,6 +639,11 @@
             chartTitle: "📈 Karşılaştırmalı 5 Günlük Stres Trendi (Müdahaleli vs Müdahalesiz)<br>Comparative 5-Day Stress Trend (Intervention vs No Intervention)",
             geoChartTitle: "📊 Bölgesel Veri Yoğunluğu Dağılımı / Regional Data Density Distribution",
             expertNotice: "⚠️ UZMAN GÖRÜŞÜ: Çözülemeyen sorunlarda acil uzman desteği alınmalıdır.<br>⚠️ EXPERT ADVICE: Seek immediate expert support for unresolved issues.",
+            aiTitle: "🤖 AI Uzman Yorumu (Beta)",
+            aiLoading: "AI yorumu hazırlanıyor...",
+            aiError: "⚠️ AI yorumu alınamadı (bağlantı sorunu olabilir). Yukarıdaki bilimsel ölçümler bundan etkilenmez.",
+            aiRetryBtn: "🔄 Tekrar Dene",
+            aiDisclaimer: "⚠️ Bu metin, yukarıdaki gerçek ölçülen pH/klorofil/yaprak sağlık verilerini yorumlayan yapay zeka tarafından üretilmiştir; ek bir görüş niteliğindedir ve yukarıdaki bilimsel hesaplamaların (Arnon formülü, kalibrasyon eğrisi, stres modeli) yerine geçmez.",
             btnLiveSheet: "📊 CANLI VERİ TABLOSU / LIVE DATA SHEET",
             btnPrintReport: "📥 RAPORU YAZDIR / PDF KAYDET",
             btnNewAnalyze: "YENİ ANALİZ / NEW ANALYZE",
@@ -736,6 +752,11 @@
             chartTitle: "📈 Comparative 5-Day Stress Trend (Intervention vs No Intervention)",
             geoChartTitle: "📊 Regional Data Density Distribution",
             expertNotice: "⚠️ EXPERT ADVICE: Seek immediate expert support for unresolved issues.",
+            aiTitle: "🤖 AI Expert Commentary (Beta)",
+            aiLoading: "Preparing AI commentary...",
+            aiError: "⚠️ Could not get AI commentary (connection issue). The scientific measurements above are not affected.",
+            aiRetryBtn: "🔄 Retry",
+            aiDisclaimer: "⚠️ This text is AI-generated commentary interpreting the real measured pH/chlorophyll/leaf-health data above; it is a supplementary opinion and does not replace the scientific calculations above (Arnon formula, calibration curve, stress model).",
             btnLiveSheet: "📊 LIVE DATA SHEET",
             btnPrintReport: "📥 PRINT REPORT / SAVE PDF",
             btnNewAnalyze: "NEW ANALYSIS",
@@ -1093,6 +1114,9 @@
         if(document.getElementById('res-area').style.display === 'block') {
             updateDynamicReportTexts();
         }
+        if (aiOpinionState === 'error') renderAIError();
+        else if (aiOpinionState === 'loading') renderAILoading();
+        else if (aiOpinionState === 'result' && lastAIResultText) renderAIResult(lastAIResultText);
     }
     function fetchCurrentWeather() {
         const statusEl = document.getElementById('loc-status');
@@ -1849,6 +1873,80 @@
         const result = estimateConcentrationFromSignal(signal);
         return { greenRatio: rawStats.greenRatio, estimatedConc: result.value, calibrated: result.calibrated };
     }
+    // ============================================================
+    // AI UZMAN YORUMU (Beta) — Google Gemini API entegrasyonu
+    // Bu katman, sitenin gerçek bilimsel hesaplamalarının (Arnon
+    // formülü, kalibrasyon eğrisi, kural-tabanlı stres modeli)
+    // YERİNE GEÇMEZ; onları tamamlayan isteğe bağlı, ek bir metinsel
+    // yorumdur. Gemini API anahtarı TARAYICIDA HİÇ BULUNMAZ: istek,
+    // sitenin zaten kullandığı Apps Script uç noktasına (SCRIPT_URL,
+    // action: "ai_opinion") gönderilir; anahtar orada, sunucu
+    // tarafında (Script Properties) saklıdır. Bu istek başarısız
+    // olsa/yavaş olsa bile ana bilimsel akış (kayıt/senkronizasyon)
+    // hiçbir şekilde beklemez veya bozulmaz — sendToServer'dan
+    // bağımsız, paralel çalışır.
+    // ============================================================
+    function renderAILoading() {
+        const box = document.getElementById('ai-opinion-box');
+        if (!box) return;
+        box.style.display = 'block';
+        aiOpinionState = 'loading';
+        box.innerHTML = `<span class="ai-title">${translations[currentLang].aiTitle}</span><span class="ai-spinner"></span>${translations[currentLang].aiLoading}`;
+    }
+    function renderAIError() {
+        const box = document.getElementById('ai-opinion-box');
+        if (!box) return;
+        const t = translations[currentLang];
+        box.style.display = 'block';
+        aiOpinionState = 'error';
+        box.innerHTML = `<span class="ai-title">${t.aiTitle}</span>${t.aiError}<br>`
+            + `<button type="button" class="ai-btn" onclick="handleRetryAIClick()">${t.aiRetryBtn}</button>`;
+    }
+    function renderAIResult(text) {
+        const box = document.getElementById('ai-opinion-box');
+        if (!box) return;
+        const t = translations[currentLang];
+        box.style.display = 'block';
+        aiOpinionState = 'result';
+        lastAIResultText = text;
+        const safeText = text.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
+        box.innerHTML = `<span class="ai-title">${t.aiTitle}</span>${safeText}<span class="ai-disclaimer">${t.aiDisclaimer}</span>`;
+    }
+    function handleRetryAIClick() {
+        if (lastAIContext) requestAIOpinion(lastAIContext);
+    }
+    // ctx: { image (dataURL), crop, ph, chlorophyll, weather, healthScore, healthLabel }
+    // Gerçek prompt metni artık Apps Script tarafında (handleAIOpinion)
+    // oluşturuluyor; buradan yalnızca ölçülen/hesaplanan ham değerler
+    // ve fotoğraf gönderilir — anahtar veya prompt mantığı istemcide yok.
+    async function requestAIOpinion(ctx) {
+        renderAILoading();
+        try {
+            const resp = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({
+                    action: 'ai_opinion',
+                    photo: ctx.image,
+                    photoType: 'image/jpeg',
+                    crop: ctx.crop,
+                    ph: ctx.ph,
+                    chlorophyll: ctx.chlorophyll,
+                    weather: ctx.weather,
+                    healthScore: ctx.healthScore,
+                    healthLabel: ctx.healthLabel,
+                    lang: currentLang
+                })
+            });
+            if (!resp.ok) throw new Error('HTTP ' + resp.status);
+            const data = await resp.json();
+            if (data.status !== 'success' || !data.text) throw new Error(data.message || 'Empty AI response');
+            renderAIResult(data.text.trim());
+        } catch (err) {
+            console.error('AI yorumu alınamadı:', err);
+            renderAIError();
+        }
+    }
     async function processAI() {
         c.width = v.videoWidth || 640; 
         c.height = v.videoHeight || 480;
@@ -1884,6 +1982,18 @@
         }
         const ishChlorophylVal = integratedInput.value;
         const healthNote = healthRes.ok ? `, Yaprak Sağlık Skoru: ${healthRes.score}/100 (${healthRes.label})` : '';
+        // AI Uzman Yorumu: gerçek hesaplanan verileri kullanır, ana akışı
+        // (senkronizasyon) HİÇBİR ZAMAN beklemez — bağımsız/paralel çalışır.
+        lastAIContext = {
+            image: lastCapturedImage,
+            crop: cropName,
+            ph: phVal,
+            chlorophyll: ishChlorophylVal || 'N/A',
+            weather: weatherVal,
+            healthScore: healthRes.ok ? healthRes.score : null,
+            healthLabel: healthRes.ok ? healthRes.label : ''
+        };
+        requestAIOpinion(lastAIContext);
         const formData = {
             region: cropName,
             ph: phVal,
@@ -1999,6 +2109,10 @@
         document.getElementById('reset-btn').style.display = 'none';
         document.getElementById('error-box').style.display = 'none';
         document.getElementById('leaf-health-box').style.display = 'none';
+        document.getElementById('ai-opinion-box').style.display = 'none';
+        lastAIContext = null;
+        aiOpinionState = null;
+        lastAIResultText = null;
         if(track) { track.stop(); }
     }
 </script>
