@@ -54,7 +54,9 @@
         .stat-number { font-size: 18px; font-weight: 800; color: var(--primary); }
         .stat-label { font-size: 9px; color: #555; margin-top: 2px; font-weight: bold; }
         .network-list { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
-        .network-item { background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 10px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
+        .network-item { background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 10px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: nowrap; }
+        .network-item span { flex: 1 1 auto; min-width: 0; }
+        .network-item strong { flex: 0 0 auto; white-space: nowrap; font-size: 10px; text-align: right; }
         /* MEBİ & Biyoloji Laboratuvarı Sekmesi Stilleri */
         .biolab-section { display: none; }
         .mebi-badge { background: #e0f2fe; border-left: 5px solid #0284c7; padding: 10px; font-size: 11px; margin-bottom: 12px; color: #0369a1; font-weight: bold; border-radius: 0 10px 10px 0; line-height: 1.4; }
@@ -92,7 +94,7 @@
     <div id="lang-toggle" onclick="toggleLang()">Dil: Türkçe</div>
     <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;" data-i18n="schoolSub">Rize Fatih Anatolian High School</span></div>
     <h1>GLOBAL AGRO DOCTOR</h1>
-    <div class="author">Hazreti Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biyoloji Uzmanı & Proje Lideri</small></div>
+    <div class="author">Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biyoloji Uzmanı & Proje Lideri</small></div>
     <div style="background:#fff8e1; border:1px solid #ffca28; border-radius:10px; padding:8px 10px; margin: 8px auto 12px; max-width: 440px; font-size:9.5px; color:#5d4a0a; line-height:1.4; text-align:center;" data-i18n="privacyBanner">
         🔒 <strong>Veri Gizliliği:</strong> Bu projede toplanan fotoğraflar yalnızca bitki/yaprak görüntüleridir; kişi/yüz fotoğrafı çekilmemelidir. Veriler Rize Fatih Anadolu Lisesi Scientix projesi kapsamında eğitim amaçlı toplanmakta olup okul idaresinin bilgisi dahilindedir.
     </div>
@@ -418,7 +420,7 @@
             <button id="sync-net-btn" class="btn-main" style="margin-top: 15px; font-size: 13px; padding: 12px;" onclick="fetchSheetTotalRows()" data-i18n="btnUpdateNetwork">🔄 AĞI GÜNCELLE / UPDATE NETWORK</button>
         </div>
     </div>
-    <div class="footer">© 2026 Hazreti Yusuf İhsan HAMAMCI - Rize Fatih Anatolian High School</div>
+    <div class="footer">© 2026 Yusuf İhsan HAMAMCI - Rize Fatih Anatolian High School</div>
 </div>
 <div id="lightbox-modal" onclick="closeLightbox()">
     <button id="lightbox-close" onclick="closeLightbox()">&times;</button>
