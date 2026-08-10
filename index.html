@@ -990,7 +990,7 @@
     // metrikleri AYNI stres modelinden beslenir. Böylece sertifikadaki
     // yüzdeler artık girilen pH/klorofil değerine göre DEĞİŞİR; sabit
     // (hard-coded) sayılar değildir.
-    function computeStressModel(chlorophyllVal, phVal, regionKey) {
+    function computeStressModel(chlorophyllVal, phVal, regionKey, visualDamageRatio) {
         const range = cropRanges[regionKey] || { min: 6.0, max: 7.0 };
         const optimalPh = (range.min + range.max) / 2;
         const phDeviation = Math.abs(phVal - optimalPh);
@@ -998,17 +998,32 @@
         if (chlorophyllVal < 10) {
             chloStress = (10 - chlorophyllVal) * 5;
         }
-        let initialStress = 15 + (phDeviation * 20) + chloStress;
+        let chemicalStress = 15 + (phDeviation * 20) + chloStress;
+        chemicalStress = Math.min(90, Math.max(10, chemicalStress));
+
+        // GÖRSEL (fotoğraf tabanlı) BİLEŞEN: "Yaprak Hasar & Sağlık Analizi" skorunun
+        // tersi (100-skor). Bu değer SADECE fotoğrafın piksel analizinden gelir; pH/
+        // klorofil değişse bile AYNI fotoğraf için sabit kalır. Böylece reçete/stres
+        // modeli artık yalnızca girilen sayılara değil, gerçekten çekilen görüntüye de
+        // bağlı olarak değişir — aynı yaprak farklı pH ile "yeniden analiz edilemez".
+        const hasVisual = typeof visualDamageRatio === 'number' && !isNaN(visualDamageRatio);
+        const visualStress = hasVisual ? Math.min(90, Math.max(10, visualDamageRatio * 100)) : null;
+
+        // Kimyasal (toprak pH / klorofil) ve görsel (yaprak fotoğrafı) sinyalleri
+        // birlikte harmanlanıyor (%55 kimyasal / %45 görsel ağırlık).
+        let initialStress = hasVisual ? (chemicalStress * 0.55 + visualStress * 0.45) : chemicalStress;
         initialStress = Math.min(90, Math.max(10, initialStress));
 
-        // Eğrinin ŞEKLİ artık sabit değil: gerçek pH sapması + klorofil eksikliğinden
-        // hesaplanan "şiddet" (severity) değerine göre ölçekleniyor. Böylece iki farklı
-        // yaprak (biri hafif stresli, biri ağır stresli) sadece farklı bir başlangıç
-        // noktasından değil, farklı bir EĞİMDEN de başlıyor — daha ağır durumlarda
-        // müdahalesiz senaryo daha hızlı kötüleşiyor, müdahaleli senaryo ise daha
-        // sınırlı toparlanıyor (dokusu zaten daha çok zarar görmüş kabul ediliyor).
-        const rawSeverity = (phDeviation * 20) + chloStress; // kırpılmamış ham şiddet
-        const severity = Math.max(0, Math.min(1, rawSeverity / 60)); // 0 (hafif) - 1 (ağır)
+        // Eğrinin ŞEKLİ artık sabit değil: gerçek pH sapması + klorofil eksikliği +
+        // (varsa) fotoğraftaki görsel hasardan hesaplanan "şiddet" (severity)
+        // değerine göre ölçekleniyor. Böylece iki farklı yaprak (biri hafif stresli,
+        // biri ağır stresli) sadece farklı bir başlangıç noktasından değil, farklı
+        // bir EĞİMDEN de başlıyor — daha ağır durumlarda müdahalesiz senaryo daha
+        // hızlı kötüleşiyor, müdahaleli senaryo ise daha sınırlı toparlanıyor.
+        const rawSeverity = (phDeviation * 20) + chloStress; // kırpılmamış ham kimyasal şiddet
+        const chemicalSeverity = Math.max(0, Math.min(1, rawSeverity / 60)); // 0 (hafif) - 1 (ağır)
+        const visualSeverity = hasVisual ? Math.max(0, Math.min(1, visualDamageRatio)) : null;
+        const severity = hasVisual ? (chemicalSeverity * 0.55 + visualSeverity * 0.45) : chemicalSeverity;
 
         const baselineSlopeFactor = 0.6 + severity * 1.0; // 0.6x (hafif) – 1.6x (ağır)
         const baselineOffsets = [12, 25, 40, 50].map(v => v * baselineSlopeFactor);
@@ -2102,11 +2117,13 @@
                 `⚠️ Entegre Teşhis: Toprak pH sapması ve iklimsel koşullar nedeniyle klorofil a sentezinde blokaj oluştu.` : 
                 `⚠️ Integrated Diagnosis: Chlorophyll a synthesis blocked due to pH shift and climate factors.`;
         }
-        // --- ARTIK SABİT DEĞİL: Aşağıdaki üç yüzde, girilen pH/klorofil
-        // değerinden hesaplanan stres modeline (computeStressModel) göre
-        // değişir. Katsayılar (temel oran + etkinlik payı) illüstratif bir
-        // modeldir; gerçek saha/laboratuvar kalibrasyonu ile güncellenmelidir. ---
-        const stressModel = computeStressModel(chlorophyllVal, phVal, regionKey);
+        // --- Aşağıdaki üç yüzde, girilen pH/klorofil değeri VE çekilen fotoğraftan
+        // hesaplanan gerçek yaprak hasar skoruna göre değişir (bkz. computeStressModel
+        // içindeki "GÖRSEL BİLEŞEN" notu). Katsayılar (temel oran + etkinlik payı)
+        // illüstratif bir modeldir; gerçek saha/laboratuvar kalibrasyonu ile
+        // güncellenmelidir. ---
+        const visualDamageRatio = healthRes.ok ? (100 - healthRes.score) / 100 : null;
+        const stressModel = computeStressModel(chlorophyllVal, phVal, regionKey, visualDamageRatio);
         const eff = stressModel.effectivenessRatio; // 0-1 arası: reçetenin öngörülen etkisi
         const carbonReductionPct = (12 + eff * 18).toFixed(1);      // ör: %12 - %30 arası
         const fertilizerSavingPct = (10 + eff * 20).toFixed(1);     // ör: %10 - %30 arası
