@@ -2026,6 +2026,7 @@
         if(track) track.stop();
         document.getElementById('cam-box').style.display = 'none';
         document.getElementById('res-area').style.display = 'block';
+        document.getElementById('reset-btn').style.display = 'block';
         // --- Yaprak Hasar/Sağlık Analizi (arka plan ayrımı, renk sınıflandırma, leke ve kenar analizi) ---
         const healthRes = computeLeafHealthAnalysis(c);
         lastHealthRes = healthRes;
