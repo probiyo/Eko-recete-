@@ -15,7 +15,7 @@
         :root { --primary: #1b5e20; --accent: #ffd700; --danger: #d32f2f; --bg: #f4f7f5; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 10px; color: #333; }
         .container { max-width: 480px; margin: auto; background: white; padding: 20px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; position: relative; }
-        #lang-toggle { position: absolute; top: 20px; right: 20px; background: #eee; border: 1px solid #ccc; padding: 5px 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; }
+        #lang-toggle { background: #eee; border: 1px solid #ccc; padding: 5px 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; white-space: nowrap; align-self: flex-start; }
         .school-tag { font-size: 10px; color: #777; text-align: center; text-transform: uppercase; letter-spacing: 1.5px; line-height: 1.4; }
         h1 { text-align: center; color: var(--primary); font-size: 20px; margin: 5px 0; }
         .author { text-align: center; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 15px; }
@@ -100,8 +100,13 @@
 </head>
 <body onload="initApp()">
 <div class="container">
-    <div id="lang-toggle" onclick="toggleLang()">Dil: Türkçe</div>
-    <div class="school-tag">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;" data-i18n="schoolSub">Rize Fatih Anatolian High School</span></div>
+    <div style="display:flex; align-items:flex-start; gap:6px;">
+        <div style="flex:1;"></div>
+        <div class="school-tag" style="flex:3; min-width:0;">Rize Fatih Anadolu Lisesi<br><span style="font-size: 9px; opacity: 0.8;" data-i18n="schoolSub">Rize Fatih Anatolian High School</span></div>
+        <div style="flex:1; display:flex; justify-content:flex-end;">
+            <div id="lang-toggle" onclick="toggleLang()">Dil: Türkçe</div>
+        </div>
+    </div>
     <h1>GLOBAL AGRO DOCTOR</h1>
     <div class="author">Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biyoloji Uzmanı & Proje Lideri</small></div>
     <div style="background:#fff8e1; border:1px solid #ffca28; border-radius:10px; padding:8px 10px; margin: 8px auto 12px; max-width: 440px; font-size:9.5px; color:#5d4a0a; line-height:1.4; text-align:center;" data-i18n="privacyBanner">
