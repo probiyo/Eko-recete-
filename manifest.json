@@ -1,0 +1,16 @@
+{
+  "name": "Global Agro Doctor — Eko-Reçete",
+  "short_name": "Eko-Reçete",
+  "description": "Rize Fatih Anadolu Lisesi saha ve laboratuvar analiz aracı — Scientix projesi",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1b5e20",
+  "orientation": "portrait-primary",
+  "lang": "tr",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

@@ -6,6 +6,8 @@
     <title>GLOBAL AGRO DOCTOR | Brussels EU Terminal</title>
     <!-- PWA: Çevrimdışı çalışma desteği (saha/köy şartlarında internet kesintileri için) -->
     <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon-192.png" type="image/png">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <meta name="theme-color" content="#1b5e20">
     <!-- Chart.js Kütüphanesi -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -2097,22 +2099,22 @@
             `🇪🇺 AB Yeşil Mutabakatı: Öngörülen bu ekolojik ve hassas reçete uygulandığında, kimyasal sızıntı önlenir ve karbon ayak izi düşürülerek AB standartlarına uyulmuş olur. (Ölçülen pH/klorofil verisine göre hesaplanan tahmini etki: Karbon ayak izi -%${carbonReductionPct}, Gübre tasarrufu %${fertilizerSavingPct}, Pestisit optimizasyonu %${pesticideOptPct})` : 
             `🇪🇺 EU Green Deal: Applying this ecological prescription prevents chemical leakage, reduces carbon footprint, and ensures compliance with EU standards. (Estimated impact based on measured pH/chlorophyll data: Carbon footprint -${carbonReductionPct}%, Fertilizer saving ${fertilizerSavingPct}%, Pesticide optimization ${pesticideOptPct}%)`;
         certificateText = currentLang === 'TR' ? 
-            `📜 EU GREEN DEAL SUSTAINABILITY CERTIFICATE #EU-2026-RIZE<br>
+            `📊 AB YEŞİL MUTABAKATI SİMÜLASYON RAPORU / Proje Kodu: RIZE-EKO-2026<br>
+            <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ Bu bir SİMÜLASYON raporudur; resmî bir sertifika, ISO belgesi veya AB onayı DEĞİLDİR. Aşağıdaki yüzdeler sayfadaki basit stres modeline (bkz. Metodoloji sekmesi) dayalı öngörüsel/tahmini verilerdir; gerçek saha kalibrasyonu yerine geçmez ve hiçbir resmî ticari/hukuki geçerliliği yoktur. "Rize Fatih Anadolu Lisesi AB Proje Simülasyonu" kapsamında üretilmiştir.</span><br><br>
             • Doğrulanan Ürün / Verified Crop: ${cropDisplayName}<br>
             • Lab Klorofil a (663 nm) / Lab Chlorophyll a: ${labChlorophyll || 'N/A'} mg/L<br>
-            • Karbon Ayak İzi Azaltımı / Carbon Footprint Reduction: %${carbonReductionPct} (≈${carbonKgEstimate} kg CO₂ eşd./dönüm, ölçülen veriye göre hesaplandı)<br>
-            • Gübre Tasarrufu / Fertilizer Saving: %${fertilizerSavingPct}<br>
-            • Pestisit Optimizasyonu / Pesticide Optimization: %${pesticideOptPct}<br>
-            • Uyumluluk Durumu / Compliance Status: BRÜSSEL TERMİNALİ İÇİN ONAYLANDI / APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)<br><br>
-            <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ UYARI / CAUTION: Bu belge ve yüzdeler, sayfadaki basit stres modeline (bkz. Metodoloji sekmesi) dayalı öngörüsel/simüle edilmiş verilerdir; gerçek saha kalibrasyonu yerine geçmez. "Rize Fatih Anadolu Lisesi AB Proje Simülasyonu" kapsamında üretilmiştir ve resmî ticari veya hukuki geçerliliği yoktur.<br>This document and its percentages are predictive/simulated data based on the simple stress model on this page (see Methodology tab); they do not replace real field calibration. Generated within the scope of "Rize Fatih Anadolu Lisesi EU Project Simulation" and have no official commercial or legal validity.</span>` : 
-            `📜 EU GREEN DEAL SUSTAINABILITY CERTIFICATE #EU-2026-RIZE<br>
+            • Karbon Ayak İzi Azaltımı (tahmini) / Carbon Footprint Reduction (estimated): %${carbonReductionPct} (≈${carbonKgEstimate} kg CO₂ eşd./dönüm, ölçülen veriye göre hesaplandı)<br>
+            • Gübre Tasarrufu (tahmini) / Fertilizer Saving (estimated): %${fertilizerSavingPct}<br>
+            • Pestisit Optimizasyonu (tahmini) / Pesticide Optimization (estimated): %${pesticideOptPct}<br>
+            • Senaryo Değerlendirmesi / Scenario Assessment: AB Yeşil Mutabakatı hedefleriyle UYUMLU BİR SİMÜLASYON SENARYOSU (resmî onay değildir) / A SIMULATION SCENARIO ALIGNED WITH EU Green Deal targets (not an official approval)` : 
+            `📊 EU GREEN DEAL SIMULATION REPORT / Project Code: RIZE-EKO-2026<br>
+            <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ This is a SIMULATION report; it is NOT an official certificate, ISO document, or EU approval. The percentages below are predictive/estimated data based on the simple stress model on this page (see Methodology tab); they do not replace real field calibration and have no official commercial or legal validity. Generated within the scope of "Rize Fatih Anadolu Lisesi EU Project Simulation".</span><br><br>
             • Verified Crop: ${cropDisplayName}<br>
             • Lab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L<br>
-            • Carbon Footprint Reduction: ${carbonReductionPct}% (≈${carbonKgEstimate} kg CO₂ eq./decare, calculated from measured data)<br>
-            • Fertilizer Saving: ${fertilizerSavingPct}%<br>
-            • Pesticide Optimization: ${pesticideOptPct}%<br>
-            • Compliance Status: APPROVED FOR BRUSSELS TERMINAL (ISO-14001 & EU Green Deal Compliant)<br><br>
-            <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ CAUTION: This document and its percentages are predictive/simulated data based on the simple stress model on this page (see Methodology tab); they do not replace real field calibration. Generated within the scope of "Rize Fatih Anadolu Lisesi EU Project Simulation" and have no official commercial or legal validity.</span>`;
+            • Carbon Footprint Reduction (estimated): ${carbonReductionPct}% (≈${carbonKgEstimate} kg CO₂ eq./decare, calculated from measured data)<br>
+            • Fertilizer Saving (estimated): ${fertilizerSavingPct}%<br>
+            • Pesticide Optimization (estimated): ${pesticideOptPct}%<br>
+            • Scenario Assessment: A SIMULATION SCENARIO ALIGNED WITH EU Green Deal targets (not an official approval)`;
         document.getElementById('hybrid-output').innerHTML = statusText;
         document.getElementById('calibration-output').innerHTML = calibrationText;
         document.getElementById('green-deal-output').innerHTML = greenDealText;
