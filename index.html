@@ -984,26 +984,47 @@
         }
         let initialStress = 15 + (phDeviation * 20) + chloStress;
         initialStress = Math.min(90, Math.max(10, initialStress));
+
+        // Eğrinin ŞEKLİ artık sabit değil: gerçek pH sapması + klorofil eksikliğinden
+        // hesaplanan "şiddet" (severity) değerine göre ölçekleniyor. Böylece iki farklı
+        // yaprak (biri hafif stresli, biri ağır stresli) sadece farklı bir başlangıç
+        // noktasından değil, farklı bir EĞİMDEN de başlıyor — daha ağır durumlarda
+        // müdahalesiz senaryo daha hızlı kötüleşiyor, müdahaleli senaryo ise daha
+        // sınırlı toparlanıyor (dokusu zaten daha çok zarar görmüş kabul ediliyor).
+        const rawSeverity = (phDeviation * 20) + chloStress; // kırpılmamış ham şiddet
+        const severity = Math.max(0, Math.min(1, rawSeverity / 60)); // 0 (hafif) - 1 (ağır)
+
+        const baselineSlopeFactor = 0.6 + severity * 1.0; // 0.6x (hafif) – 1.6x (ağır)
+        const baselineOffsets = [12, 25, 40, 50].map(v => v * baselineSlopeFactor);
+
+        const recoveryFactor = 1.0 - severity * 0.5; // 1.0x (hafif) – 0.5x (ağır, zor toparlanır)
+        const interventionOffsets = [
+            5 * (0.7 + severity * 0.6), // müdahale gecikmesi ağır durumlarda biraz daha belirgin
+            -15 * recoveryFactor,
+            -30 * recoveryFactor,
+            -45 * recoveryFactor
+        ];
+
         const baselineStress = [
             initialStress,
-            Math.min(100, initialStress + 12),
-            Math.min(100, initialStress + 25),
-            Math.min(100, initialStress + 40),
-            Math.min(100, initialStress + 50)
+            Math.min(100, initialStress + baselineOffsets[0]),
+            Math.min(100, initialStress + baselineOffsets[1]),
+            Math.min(100, initialStress + baselineOffsets[2]),
+            Math.min(100, initialStress + baselineOffsets[3])
         ];
         const interventionStress = [
             initialStress,
-            Math.min(100, initialStress + 5),
-            Math.max(5, initialStress - 15),
-            Math.max(5, initialStress - 30),
-            Math.max(5, initialStress - 45)
+            Math.min(100, initialStress + interventionOffsets[0]),
+            Math.max(5, initialStress + interventionOffsets[1]),
+            Math.max(5, initialStress + interventionOffsets[2]),
+            Math.max(5, initialStress + interventionOffsets[3])
         ];
         // Müdahaleli/müdahalesiz senaryolar arasındaki 5. gün farkı, "reçetenin"
         // ne kadar etkili olduğunun tek bir göstergesi (0-1 arası) olarak kullanılır.
         const day5Baseline = baselineStress[4];
         const day5Intervention = interventionStress[4];
         const effectivenessRatio = Math.max(0, Math.min(1, (day5Baseline - day5Intervention) / day5Baseline));
-        return { initialStress, baselineStress, interventionStress, phDeviation, effectivenessRatio };
+        return { initialStress, baselineStress, interventionStress, phDeviation, effectivenessRatio, severity };
     }
     function renderStressChart(chlorophyllVal, phVal, regionKey) {
         const ctx = document.getElementById('stressChart').getContext('2d');
