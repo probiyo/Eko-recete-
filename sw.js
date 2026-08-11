@@ -3,13 +3,13 @@
 // (kayıt/AI yorumu) giden istekler ASLA önbellekten yanıtlanmaz — bu istekler her
 // zaman gerçek ağ isteği olarak gider; site zaten kendi offline-kuyruk mantığıyla
 // (sendToServer / IndexedDB veya localStorage kuyruğu) bunları yönetiyor.
-const CACHE_NAME = 'eko-recete-shell-v1';
+const CACHE_NAME = 'eko-recete-shell-v2'; // v2: ikonlar güncellendi — eski önbellek temizlenir
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.json',
-  './icon-192.png',
-  './icon-512.png'
+  './icon-192.png?v=2',
+  './icon-512.png?v=2'
 ];
 
 self.addEventListener('install', (event) => {
