@@ -440,16 +440,63 @@
                 </div>
             </div>
             <div id="stat-last-update" style="text-align:center; font-size:9px; color:#888; margin-top:6px;"></div>
-            <!-- Coğrafi Dağılım / Harita Modülü Mini Görselleştirmesi -->
-            <div class="chart-box" style="margin-bottom: 15px;">
-                <label style="text-align:center; margin-bottom:8px; font-size: 10px;" data-i18n="geoChartTitle">📊 Bölgesel Veri Dağılımı / Regional Data Distribution</label>
-                <div class="chart-container" style="min-height: 140px; height: 140px;">
-                   <canvas id="geoDistributionChart"></canvas>
-               </div>
-            </div>
-            <div id="partner-regions-lbl" style="font-size: 11px; font-weight: bold; margin-bottom: 5px; color: var(--primary);" data-i18n="partnerRegions">Katılımcı Pilot Bölgeler / Partner Regions:</div>
-            <div style="font-size:9px; color:#888; margin-bottom:6px;" data-i18n="partnerRegionsNote">ℹ️ Şu an yalnızca Rize Fatih Anadolu Lisesi düğümü canlı/gerçek veriyle çalışmaktadır. Diğer bölgeler, projenin planlanan genişleme vizyonunu gösteren örnek/hedef düğümlerdir; henüz bağlı değildir.</div>
-            <div class="network-list">
+<!-- Coğrafi Dağılım / Harita Modülü Mini Görselleştirmesi -->
+<div class="chart-box" style="margin-bottom: 15px; width: 100%; box-sizing: border-box;">
+
+    <label
+        style="
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+            margin-bottom: 8px;
+            font-size: 10px;
+            line-height: 1.3;
+            white-space: normal;
+        "
+        data-i18n="geoChartTitle">
+        📊 Bölgesel Veri Dağılımı / Regional Data Distribution
+    </label>
+
+    <div
+        class="chart-container"
+        style="
+            position: relative;
+            width: 100%;
+            height: 165px;
+            min-height: 165px;
+            box-sizing: border-box;
+        ">
+        <canvas
+            id="geoDistributionChart"
+            style="display: block; width: 100%; height: 100%;">
+        </canvas>
+    </div>
+
+</div>
+
+<div
+    id="partner-regions-lbl"
+    style="
+        font-size: 11px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: var(--primary);
+    "
+    data-i18n="partnerRegions">
+    Katılımcı Pilot Bölgeler / Partner Regions:
+</div>
+
+<div
+    style="
+        font-size: 9px;
+        color: #888;
+        margin-bottom: 6px;
+        line-height: 1.35;
+    "
+    data-i18n="partnerRegionsNote">
+    ℹ️ Şu an yalnızca Rize Fatih Anadolu Lisesi düğümü canlı/gerçek veriyle çalışmaktadır. Diğer bölgeler, projenin planlanan genişleme vizyonunu gösteren örnek/hedef düğümlerdir; henüz bağlı değildir.
+</div>            <div class="network-list">
                 <div class="network-item">
                     <span data-i18n="netRize">🌱 Rize Fatih Anadolu Lisesi - Çay (*Camellia sinensis*) [pH: 4.5-6.0]</span>
                     <strong style="color: #2e7d32;" data-i18n="netActive">Aktif Hub / Active Hub</strong>
