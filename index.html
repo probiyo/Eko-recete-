@@ -133,10 +133,32 @@
                 <select id="region" onchange="updatePHRangeInfo()">
                    <!-- Dinamik olarak doldurulacak -->
                 </select>
-                <div class="other-opt" onclick="document.getElementById('region').value='global-other'; updatePHRangeInfo();" data-i18n="lblManualSelect">
-                    + Global - Diğer / Other (Manual Selection)
-                </div>
-            </div>
+                <div class="other-opt" onclick="selectGlobalOther();" data-i18n="lblManualSelect">
+    + Global - Diğer / Other (Manual Selection)
+</div>
+
+<div id="custom-plant-box" style="display:none; margin-top:8px; padding:10px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px;">
+
+    <label for="custom-plant-name"
+           style="display:block; color:#166534; font-weight:bold; margin-bottom:5px;">
+        🌱 Bitki Türü / Plant Species
+    </label>
+
+    <input
+        type="text"
+        id="custom-plant-name"
+        maxlength="120"
+        autocomplete="off"
+        placeholder="Örn: Lavandula angustifolia"
+        style="width:100%; box-sizing:border-box; padding:10px; border:1px solid #86efac; border-radius:8px;"
+        oninput="updateCustomPlantName();"
+    >
+
+    <div id="custom-plant-status"
+         style="display:none; margin-top:6px; font-size:10px; color:#166534;">
+    </div>
+
+</div>            </div>
             <div class="card">
                <label id="ph-label" data-i18n="lblSoilPH">TOPRAK pH DEĞERİ / SOIL pH (3.0 - 9.0)</label>
                 <input type="number" id="ph" step="0.1" min="3.0" max="9.0" placeholder="Ex: 6.5" value="4.8" oninput="validatePH(this)">
@@ -1229,37 +1251,153 @@
         }, { timeout: 10000 });
     }
     function updatePHRangeInfo() {
-        const regionKey = document.getElementById('region').value;
-        const range = cropRanges[regionKey] || { min: 6.0, max: 7.0 };
-        const phLabel = document.getElementById('ph-label');
-        if(currentLang === 'TR') {
-            phLabel.innerHTML = `TOPRAK pH DEĞERİ / SOIL pH (İdeal Aralık / Ideal Range: ${range.min} - ${range.max}) [3.0 - 9.0]`;
-        } else {
-            phLabel.innerHTML = `SOIL pH VALUE (Ideal Range: ${range.min} - ${range.max}) [3.0 - 9.0]`;
+
+    const regionKey =
+        document.getElementById('region').value;
+
+    const phLabel =
+        document.getElementById('ph-label');
+
+    const customBox =
+        document.getElementById('custom-plant-box');
+
+    // ========================================================
+    // GLOBAL - DİĞER
+    // Öğrenci bitkiyi ve pH değerini kendisi belirler.
+    // ========================================================
+
+    if (regionKey === 'global-other') {
+
+        if (customBox) {
+            customBox.style.display = 'block';
         }
-        const phInput = document.getElementById('ph');
-        if(phInput.value) {
-            validatePH(phInput);
-        }
-    }
-    function validatePH(input) {
-        const val = parseFloat(input.value);
-        const warn = document.getElementById('ph-warn');
-        const regionKey = document.getElementById('region').value;
-        const range = cropRanges[regionKey] || { min: 6.0, max: 7.0 };
-        if(isNaN(val)) return;
-        if(val < range.min || val > range.max) {
-            warn.style.display = 'block';
-            if(currentLang === 'TR') {
-                warn.innerHTML = `⚠️ Girilen pH (${val}), seçilen bitki için ideal bilimsel aralığın (${range.min} - ${range.max}) dışında!`;
-            } else {
-                warn.innerHTML = `⚠️ Entered pH (${val}) is outside the ideal scientific range (${range.min} - ${range.max}) for this crop!`;
-            }
+
+        if (currentLang === 'TR') {
+
+            phLabel.innerHTML =
+                'TOPRAK pH DEĞERİ / SOIL pH ' +
+                '(Öğrenci Ölçümü / Student Measurement) ' +
+                '[3.0 - 9.0]';
+
         } else {
+
+            phLabel.innerHTML =
+                'SOIL pH VALUE ' +
+                '(Student Measurement) [3.0 - 9.0]';
+        }
+
+        const warn =
+            document.getElementById('ph-warn');
+
+        if (warn) {
             warn.style.display = 'none';
         }
+
+        return;
     }
-    function switchTab(tabName) {
+
+    // ========================================================
+    // MEVCUT BİTKİLER
+    // Eski sistem aynen devam ediyor.
+    // ========================================================
+
+    const range =
+        cropRanges[regionKey];
+
+    if (!range) return;
+
+    if (currentLang === 'TR') {
+
+        phLabel.innerHTML =
+            `TOPRAK pH DEĞERİ / SOIL pH ` +
+            `(İdeal Aralık / Ideal Range: ${range.min} - ${range.max}) ` +
+            `[3.0 - 9.0]`;
+
+    } else {
+
+        phLabel.innerHTML =
+            `SOIL pH VALUE ` +
+            `(Ideal Range: ${range.min} - ${range.max}) ` +
+            `[3.0 - 9.0]`;
+    }
+
+    const phInput =
+        document.getElementById('ph');
+
+    if (phInput && phInput.value) {
+        validatePH(phInput);
+    }
+}    function validatePH(input) {
+
+    const val =
+        parseFloat(input.value);
+
+    const warn =
+        document.getElementById('ph-warn');
+
+    const regionKey =
+        document.getElementById('region').value;
+
+    if (isNaN(val)) {
+        warn.style.display = 'none';
+        return;
+    }
+
+    // Genel pH giriş sınırı
+    if (val < 3.0 || val > 9.0) {
+
+        warn.style.display = 'block';
+
+        warn.innerHTML =
+            currentLang === 'TR'
+                ? '⚠️ pH değeri 3.0 - 9.0 arasında olmalıdır.'
+                : '⚠️ pH value must be between 3.0 and 9.0.';
+
+        return;
+    }
+
+    // ========================================================
+    // GLOBAL - DİĞER
+    // Sabit 6.0 - 7.0 aralığı YOK.
+    // ========================================================
+
+    if (regionKey === 'global-other') {
+
+        warn.style.display = 'none';
+
+        return;
+    }
+
+    // ========================================================
+    // MEVCUT BİTKİLER
+    // Eski sistem aynen devam.
+    // ========================================================
+
+    const range =
+        cropRanges[regionKey];
+
+    if (!range) {
+        warn.style.display = 'none';
+        return;
+    }
+
+    if (
+        val < range.min ||
+        val > range.max
+    ) {
+
+        warn.style.display = 'block';
+
+        warn.innerHTML =
+            currentLang === 'TR'
+                ? `⚠️ Girilen pH (${val}), seçilen bitki için ideal bilimsel aralığın (${range.min} - ${range.max}) dışında!`
+                : `⚠️ Entered pH (${val}) is outside the ideal scientific range (${range.min} - ${range.max}) for this crop!`;
+
+    } else {
+
+        warn.style.display = 'none';
+    }
+}    function switchTab(tabName) {
         const analysisSec = document.getElementById('analysis-section');
         const biolabSec = document.getElementById('biolab-section');
         const methodsSec = document.getElementById('methods-section');
@@ -2063,7 +2201,7 @@
         lastHealthRes = healthRes;
         renderLeafHealthBox(healthRes);
         const regionSelect = document.getElementById('region');
-        const cropName = regionSelect.options[regionSelect.selectedIndex] ? regionSelect.options[regionSelect.selectedIndex].text : regionSelect.value;
+        const cropName = getSelectedPlantName();
         const phVal = document.getElementById('ph').value;
         const weatherVal = document.getElementById('weather').value;
         const integratedInput = document.getElementById('integrated-chlorophyll');
@@ -2088,6 +2226,7 @@
         requestAIOpinion(lastAIContext);
         const formData = {
             region: cropName,
+            plantName: cropName,
             ph: phVal,
             weather: weatherVal,
             stress: 'Klorofil: ' + (ishChlorophylVal || 'N/A') + ' mg/L (663 nm), pH: ' + (phVal) + healthNote,
@@ -2210,6 +2349,105 @@
         lastAIResultText = null;
         if(track) { track.stop(); }
     }
+// ============================================================
+// GLOBAL - DİĞER / MANUEL BİTKİ
+// Öğrenci kendi bitkisinin adını girer.
+// pH ve klorofil değerleri mevcut sistem tarafından
+// öğrenciden alınmaya devam eder.
+// ============================================================
+
+function selectGlobalOther() {
+
+    const region = document.getElementById('region');
+    const customBox = document.getElementById('custom-plant-box');
+    const customInput = document.getElementById('custom-plant-name');
+
+    region.value = 'global-other';
+
+    if (customBox) {
+        customBox.style.display = 'block';
+    }
+
+    updatePHRangeInfo();
+
+    if (customInput) {
+        customInput.focus();
+    }
+}
+
+
+function updateCustomPlantName() {
+
+    const input = document.getElementById('custom-plant-name');
+    const status = document.getElementById('custom-plant-status');
+
+    if (!input || !status) return;
+
+    const plantName = input.value.trim();
+
+    if (!plantName) {
+        status.style.display = 'none';
+        return;
+    }
+
+    status.style.display = 'block';
+
+    status.innerHTML =
+        currentLang === 'TR'
+            ? '🌱 Analiz edilecek bitki: <strong>' +
+              escapeHtml(plantName) +
+              '</strong>'
+            : '🌱 Plant for analysis: <strong>' +
+              escapeHtml(plantName) +
+              '</strong>';
+}
+
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+
+function getSelectedPlantName() {
+
+    const regionKey =
+        document.getElementById('region').value;
+
+    // Manuel bitki
+    if (regionKey === 'global-other') {
+
+        const input =
+            document.getElementById('custom-plant-name');
+
+        if (input && input.value.trim()) {
+            return input.value.trim();
+        }
+
+        return currentLang === 'TR'
+            ? 'Bitki adı belirtilmedi'
+            : 'Plant name not specified';
+    }
+
+    // Mevcut sistemdeki bitkiler
+    const select =
+        document.getElementById('region');
+
+    if (
+        select &&
+        select.selectedIndex >= 0 &&
+        select.options[select.selectedIndex]
+    ) {
+        return select.options[select.selectedIndex].text;
+    }
+
+    return regionKey;
+}
 </script>
 </body>
 </html>
