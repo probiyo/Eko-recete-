@@ -993,8 +993,8 @@
         const ctx = document.getElementById('geoDistributionChart').getContext('2d');
         if(geoChart) { geoChart.destroy(); }
         const labelsArr = currentLang === 'TR' ? 
-            [cropRanges["tr-tea"].chartLabelTR, cropRanges["tr-antakya-citrus"].chartLabelTR, cropRanges["tr-ege-olive"].chartLabelTR, cropRanges["tr-ege-fig"].chartLabelTR, cropRanges["be-sugar"].chartLabelTR] : 
-            [cropRanges["tr-tea"].chartLabelEN, cropRanges["tr-antakya-citrus"].chartLabelEN, cropRanges["tr-ege-olive"].chartLabelEN, cropRanges["tr-ege-fig"].chartLabelEN, cropRanges["be-sugar"].chartLabelEN];
+            [cropRanges["tr-tea"].chartLabelTR, cropRanges["tr-antakya-citrus"].chartLabelTR, "Ege (Zeytin/İncir)", cropRanges["be-sugar"].chartLabelTR, "Diğer / Manuel Giriş"] : 
+            [cropRanges["tr-tea"].chartLabelEN, cropRanges["tr-antakya-citrus"].chartLabelEN, "Ege (Olive/Fig)", cropRanges["be-sugar"].chartLabelEN, "Other / Manual Entry"];
         geoChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
@@ -1005,8 +1005,8 @@
                         '#1b5e20',
                         '#ff9800',
                         '#8bc34a',
-                        '#4caf50',
-                        '#2196f3'
+                        '#2196f3',
+                        '#9e9e9e'
                     ],
                     borderWidth: 1
                 }]
@@ -1862,6 +1862,7 @@
             const formData = {
                 date: new Date().toLocaleString('tr-TR'),
                 region: `MEBİ Lab - ${plant}`,
+                plantType: plant,
                 ph: "N/A (Lab Test)",
                 weather: "Lab Ortamı / Environment",
                 stress: `Klorofil a: ${conc} mg/L (${sourceLabel})`,
@@ -2147,6 +2148,7 @@
         requestAIOpinion(lastAIContext);
         const formData = {
             region: cropName,
+            plantType: cropName,
             ph: phVal,
             weather: weatherVal,
             stress: 'Klorofil: ' + (ishChlorophylVal || 'N/A') + ' mg/L (663 nm), pH: ' + (phVal) + healthNote,
