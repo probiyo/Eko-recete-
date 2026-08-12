@@ -984,7 +984,108 @@
                 drawGeoDistributionChart([0, 0, 0, 0, 0]);
             });
     }
-    function drawGeoDistributionChart(dynamicData = [5, 0, 0, 0, 0]) {
+    function drawGeoDistributionChart(dynamicData = [0, 0, 0, 0, 0]) {
+
+    const canvas = document.getElementById('geoDistributionChart');
+
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+
+    if (geoChart) {
+        geoChart.destroy();
+    }
+
+    // ÖNEMLİ:
+    // dynamicData sırası:
+    // 0 = Rize
+    // 1 = Antakya
+    // 2 = Ege
+    // 3 = Brussels
+    // 4 = Diğer
+    //
+    // Etiketlerin sırası da BİREBİR aynı olmalıdır.
+
+    const labelsArr = currentLang === 'TR'
+        ? [
+            cropRanges["tr-tea"].chartLabelTR,
+            cropRanges["tr-antakya-citrus"].chartLabelTR,
+            "Ege (Zeytin / İncir)",
+            cropRanges["be-sugar"].chartLabelTR,
+            "Diğer / Manuel Bitki"
+          ]
+        : [
+            cropRanges["tr-tea"].chartLabelEN,
+            cropRanges["tr-antakya-citrus"].chartLabelEN,
+            "Aegean (Olive / Fig)",
+            cropRanges["be-sugar"].chartLabelEN,
+            "Other / Manual Plant"
+          ];
+
+    geoChart = new Chart(ctx, {
+
+        type: 'doughnut',
+
+        data: {
+
+            labels: labelsArr,
+
+            datasets: [{
+
+                data: dynamicData,
+
+                backgroundColor: [
+                    '#1b5e20',
+                    '#ff9800',
+                    '#8bc34a',
+                    '#2196f3',
+                    '#9e9e9e'
+                ],
+
+                borderWidth: 1
+            }]
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+
+                    position: 'bottom',
+
+                    labels: {
+                        boxWidth: 10,
+                        font: {
+                            size: 9
+                        }
+                    }
+                },
+
+                tooltip: {
+
+                    callbacks: {
+
+                        label: function(context) {
+
+                            const label =
+                                context.label || '';
+
+                            const value =
+                                context.raw || 0;
+
+                            return ` ${label}: ${value}`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
         const ctx = document.getElementById('geoDistributionChart').getContext('2d');
         if(geoChart) { geoChart.destroy(); }
         const labelsArr = currentLang === 'TR' ? 
