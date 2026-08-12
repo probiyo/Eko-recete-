@@ -130,35 +130,30 @@
         <div id="form-area">
             <div class="card">
                <label data-i18n="lblRegion">Bölge ve Ürün / Region & Crop</label>
-                <select id="region" onchange="updatePHRangeInfo()">
+                <select id="region" onchange="updatePHRangeInfo(); toggleManualCropFields();">
                    <!-- Dinamik olarak doldurulacak -->
                 </select>
-                <div class="other-opt" onclick="selectGlobalOther();" data-i18n="lblManualSelect">
-    + Global - Diğer / Other (Manual Selection)
-</div>
-
-<div id="custom-plant-box" style="display:none; margin-top:8px; padding:10px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px;">
-
-    <label for="custom-plant-name"
-           style="display:block; color:#166534; font-weight:bold; margin-bottom:5px;">
-        🌱 Bitki Türü / Plant Species
-    </label>
-
-    <input
-        type="text"
-        id="custom-plant-name"
-        maxlength="120"
-        autocomplete="off"
-        placeholder="Örn: Lavandula angustifolia"
-        style="width:100%; box-sizing:border-box; padding:10px; border:1px solid #86efac; border-radius:8px;"
-        oninput="updateCustomPlantName();"
-    >
-
-    <div id="custom-plant-status"
-         style="display:none; margin-top:6px; font-size:10px; color:#166534;">
-    </div>
-
-</div>            </div>
+                <div class="other-opt" onclick="document.getElementById('region').value='global-other'; updatePHRangeInfo(); toggleManualCropFields();" data-i18n="lblManualSelect">
+                    + Global - Diğer / Other (Manual Selection)
+                </div>
+                <div id="manual-crop-fields" style="display:none; margin-top:8px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:10px;">
+                    <label style="font-size:10px; margin-top:0;" data-i18n="lblManualSpecies">🔬 Bilimsel Tür Adı (Latince) / Scientific Species Name (Latin)</label>
+                    <input type="text" id="manual-species" placeholder="Örn: Vaccinium myrtillus" oninput="applyManualCropEntry()">
+                    <label style="font-size:10px;" data-i18n="lblManualCommon">Yerel/Genel Ad (opsiyonel) / Common Name (optional)</label>
+                    <input type="text" id="manual-common-name" placeholder="Örn: Yaban Mersini / Blueberry" oninput="applyManualCropEntry()">
+                    <div style="display:flex; gap:8px; margin-top:6px;">
+                        <div style="flex:1;">
+                            <label style="font-size:10px; margin-top:0;" data-i18n="lblManualPhMin">İdeal pH Min</label>
+                            <input type="number" id="manual-ph-min" step="0.1" value="6.0" oninput="applyManualCropEntry()">
+                        </div>
+                        <div style="flex:1;">
+                            <label style="font-size:10px; margin-top:0;" data-i18n="lblManualPhMax">İdeal pH Max</label>
+                            <input type="number" id="manual-ph-max" step="0.1" value="7.0" oninput="applyManualCropEntry()">
+                        </div>
+                    </div>
+                    <div style="font-size:9px; color:#166534; margin-top:6px;" data-i18n="manualCropNote">📌 Türünüzün ideal pH aralığını bilmiyorsanız 6.0-7.0 genel ortalama olarak bırakabilirsiniz; ancak mümkünse tarım/bahçecilik kaynaklarından türünüze özgü değeri bulup girmeniz analiz doğruluğunu artırır.</div>
+                </div>
+            </div>
             <div class="card">
                <label id="ph-label" data-i18n="lblSoilPH">TOPRAK pH DEĞERİ / SOIL pH (3.0 - 9.0)</label>
                 <input type="number" id="ph" step="0.1" min="3.0" max="9.0" placeholder="Ex: 6.5" value="4.8" oninput="validatePH(this)">
@@ -663,6 +658,11 @@
             tabCitizen: "🌍 CITIZEN",
             lblRegion: "Bölge ve Ürün / Region & Crop",
             lblManualSelect: "+ Global - Diğer / Other (Manuel Seçim)",
+            lblManualSpecies: "🔬 Bilimsel Tür Adı (Latince) / Scientific Species Name (Latin)",
+            lblManualCommon: "Yerel/Genel Ad (opsiyonel) / Common Name (optional)",
+            lblManualPhMin: "İdeal pH Min",
+            lblManualPhMax: "İdeal pH Max",
+            manualCropNote: "📌 Türünüzün ideal pH aralığını bilmiyorsanız 6.0-7.0 genel ortalama olarak bırakabilirsiniz; ancak mümkünse tarım/bahçecilik kaynaklarından türünüze özgü değeri bulup girmeniz analiz doğruluğunu artırır.",
             lblSoilPH: "TOPRAK pH DEĞERİ / SOIL pH (3.0 - 9.0)",
             phWarnText: "⚠️ Girilen pH değeri seçilen bitki için ideal bilimsel aralığın dışında! <br>⚠️ Entered pH value is out of the ideal scientific range for this crop!",
             lblIntegratedLab: "🧬 Laboratuvar Klorofil a (663 nm) Verisi Entegrasyonu",
@@ -781,6 +781,11 @@
             tabCitizen: "🌍 CITIZEN",
             lblRegion: "Region & Crop",
             lblManualSelect: "+ Global - Other (Manual Selection)",
+            lblManualSpecies: "🔬 Scientific Species Name (Latin)",
+            lblManualCommon: "Common Name (optional)",
+            lblManualPhMin: "Ideal pH Min",
+            lblManualPhMax: "Ideal pH Max",
+            manualCropNote: "📌 If you don't know your species' ideal pH range, you can leave 6.0-7.0 as a general average; but if possible, looking up the value specific to your species from agricultural/gardening sources improves analysis accuracy.",
             lblSoilPH: "SOIL pH VALUE (3.0 - 9.0)",
             phWarnText: "⚠️ Entered pH value is out of the ideal scientific range for this crop!",
             lblIntegratedLab: "🧬 Laboratory Chlorophyll a (663 nm) Integration",
@@ -984,92 +989,213 @@
                 drawGeoDistributionChart([0, 0, 0, 0, 0]);
             });
     }
-   function drawGeoDistributionChart(dynamicData = [0, 0, 0, 0, 0]) {
-
-    const canvas = document.getElementById('geoDistributionChart');
-
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-
-    if (geoChart) {
-        geoChart.destroy();
-    }
-
-    const labelsArr = currentLang === 'TR'
-        ? [
-            cropRanges["tr-tea"].chartLabelTR,
-            cropRanges["tr-antakya-citrus"].chartLabelTR,
-            cropRanges["tr-ege-olive"].chartLabelTR,
-            cropRanges["tr-ege-fig"].chartLabelTR,
-            "Diğer / Manuel Bitki"
-        ]
-        : [
-            cropRanges["tr-tea"].chartLabelEN,
-            cropRanges["tr-antakya-citrus"].chartLabelEN,
-            cropRanges["tr-ege-olive"].chartLabelEN,
-            cropRanges["tr-ege-fig"].chartLabelEN,
-            "Other / Manual Plant"
-        ];
-
-    geoChart = new Chart(ctx, {
-        type: 'doughnut',
-
-        data: {
-            labels: labelsArr,
-
-            datasets: [{
-                data: dynamicData,
-
-                backgroundColor: [
-                    '#1b5e20',
-                    '#ff9800',
-                    '#8bc34a',
-                    '#4caf50',
-                    '#9e9e9e'
-                ],
-
-                borderWidth: 1
-            }]
-        },
-
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-
-            plugins: {
-
-                legend: {
-                    position: 'bottom',
-
-                    labels: {
-                        boxWidth: 10,
-                        font: {
-                            size: 9
-                        }
-                    }
-                },
-
-                tooltip: {
-
-                    callbacks: {
-
-                        label: function(context) {
-
-                            const label =
-                                context.label || '';
-
-                            const value =
-                                context.raw || 0;
-
-                            return ` ${label}: ${value}`;
+    function drawGeoDistributionChart(dynamicData = [5, 0, 0, 0, 0]) {
+        const ctx = document.getElementById('geoDistributionChart').getContext('2d');
+        if(geoChart) { geoChart.destroy(); }
+        const labelsArr = currentLang === 'TR' ? 
+            [cropRanges["tr-tea"].chartLabelTR, cropRanges["tr-antakya-citrus"].chartLabelTR, cropRanges["tr-ege-olive"].chartLabelTR, cropRanges["tr-ege-fig"].chartLabelTR, cropRanges["be-sugar"].chartLabelTR] : 
+            [cropRanges["tr-tea"].chartLabelEN, cropRanges["tr-antakya-citrus"].chartLabelEN, cropRanges["tr-ege-olive"].chartLabelEN, cropRanges["tr-ege-fig"].chartLabelEN, cropRanges["be-sugar"].chartLabelEN];
+        geoChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labelsArr,
+                datasets: [{
+                    data: dynamicData,
+                    backgroundColor: [
+                        '#1b5e20',
+                        '#ff9800',
+                        '#8bc34a',
+                        '#4caf50',
+                        '#2196f3'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { boxWidth: 10, font: { size: 9 } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                let value = context.raw || 0;
+                                return ` ${label}: ${value}`;
+                            }
                         }
                     }
                 }
             }
+        });
+    }
+    // ORTAK HESAPLAMA FONKSİYONU: Hem grafik hem de Green Deal/sertifika
+    // metrikleri AYNI stres modelinden beslenir. Böylece sertifikadaki
+    // yüzdeler artık girilen pH/klorofil değerine göre DEĞİŞİR; sabit
+    // (hard-coded) sayılar değildir.
+    function computeStressModel(chlorophyllVal, phVal, regionKey, visualDamageRatio) {
+        const range = cropRanges[regionKey] || { min: 6.0, max: 7.0 };
+        const optimalPh = (range.min + range.max) / 2;
+        const phDeviation = Math.abs(phVal - optimalPh);
+        let chloStress = 0;
+        if (chlorophyllVal < 10) {
+            chloStress = (10 - chlorophyllVal) * 5;
         }
-    });
-}    function populateDropdowns() {
+        let chemicalStress = 15 + (phDeviation * 20) + chloStress;
+        chemicalStress = Math.min(90, Math.max(10, chemicalStress));
+
+        // GÖRSEL (fotoğraf tabanlı) BİLEŞEN: "Yaprak Hasar & Sağlık Analizi" skorunun
+        // tersi (100-skor). Bu değer SADECE fotoğrafın piksel analizinden gelir; pH/
+        // klorofil değişse bile AYNI fotoğraf için sabit kalır. Böylece reçete/stres
+        // modeli artık yalnızca girilen sayılara değil, gerçekten çekilen görüntüye de
+        // bağlı olarak değişir — aynı yaprak farklı pH ile "yeniden analiz edilemez".
+        const hasVisual = typeof visualDamageRatio === 'number' && !isNaN(visualDamageRatio);
+        const visualStress = hasVisual ? Math.min(90, Math.max(10, visualDamageRatio * 100)) : null;
+
+        // Kimyasal (toprak pH / klorofil) ve görsel (yaprak fotoğrafı) sinyalleri
+        // birlikte harmanlanıyor (%55 kimyasal / %45 görsel ağırlık).
+        let initialStress = hasVisual ? (chemicalStress * 0.55 + visualStress * 0.45) : chemicalStress;
+        initialStress = Math.min(90, Math.max(10, initialStress));
+
+        // Eğrinin ŞEKLİ artık sabit değil: gerçek pH sapması + klorofil eksikliği +
+        // (varsa) fotoğraftaki görsel hasardan hesaplanan "şiddet" (severity)
+        // değerine göre ölçekleniyor. Böylece iki farklı yaprak (biri hafif stresli,
+        // biri ağır stresli) sadece farklı bir başlangıç noktasından değil, farklı
+        // bir EĞİMDEN de başlıyor — daha ağır durumlarda müdahalesiz senaryo daha
+        // hızlı kötüleşiyor, müdahaleli senaryo ise daha sınırlı toparlanıyor.
+        const rawSeverity = (phDeviation * 20) + chloStress; // kırpılmamış ham kimyasal şiddet
+        const chemicalSeverity = Math.max(0, Math.min(1, rawSeverity / 60)); // 0 (hafif) - 1 (ağır)
+        const visualSeverity = hasVisual ? Math.max(0, Math.min(1, visualDamageRatio)) : null;
+        const severity = hasVisual ? (chemicalSeverity * 0.55 + visualSeverity * 0.45) : chemicalSeverity;
+
+        const baselineSlopeFactor = 0.6 + severity * 1.0; // 0.6x (hafif) – 1.6x (ağır)
+        const baselineOffsets = [12, 25, 40, 50].map(v => v * baselineSlopeFactor);
+
+        const recoveryFactor = 1.0 - severity * 0.5; // 1.0x (hafif) – 0.5x (ağır, zor toparlanır)
+        const interventionOffsets = [
+            5 * (0.7 + severity * 0.6), // müdahale gecikmesi ağır durumlarda biraz daha belirgin
+            -15 * recoveryFactor,
+            -30 * recoveryFactor,
+            -45 * recoveryFactor
+        ];
+
+        const baselineStress = [
+            initialStress,
+            Math.min(100, initialStress + baselineOffsets[0]),
+            Math.min(100, initialStress + baselineOffsets[1]),
+            Math.min(100, initialStress + baselineOffsets[2]),
+            Math.min(100, initialStress + baselineOffsets[3])
+        ];
+        const interventionStress = [
+            initialStress,
+            Math.min(100, initialStress + interventionOffsets[0]),
+            Math.max(5, initialStress + interventionOffsets[1]),
+            Math.max(5, initialStress + interventionOffsets[2]),
+            Math.max(5, initialStress + interventionOffsets[3])
+        ];
+        // Müdahaleli/müdahalesiz senaryolar arasındaki 5. gün farkı, "reçetenin"
+        // ne kadar etkili olduğunun tek bir göstergesi (0-1 arası) olarak kullanılır.
+        const day5Baseline = baselineStress[4];
+        const day5Intervention = interventionStress[4];
+        const effectivenessRatio = Math.max(0, Math.min(1, (day5Baseline - day5Intervention) / day5Baseline));
+        return { initialStress, baselineStress, interventionStress, phDeviation, effectivenessRatio, severity };
+    }
+    function renderStressChart(chlorophyllVal, phVal, regionKey) {
+        const ctx = document.getElementById('stressChart').getContext('2d');
+        if (stressChartInstance instanceof Chart) {
+            stressChartInstance.destroy();
+        }
+        const labelsArr = currentLang === 'TR' ? ['1. Gün', '2. Gün', '3. Gün', '4. Gün (Müdahale)', '5. Gün (Hasat)'] : ['Day 1', 'Day 2', 'Day 3', 'Day 4 (Intervention)', 'Day 5 (Harvest)'];
+        const model = computeStressModel(chlorophyllVal, phVal, regionKey);
+        const baselineStress = model.baselineStress;
+        const interventionStress = model.interventionStress;
+        stressChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labelsArr,
+                datasets: [
+                    {
+                        label: currentLang === 'TR' ? 'Müdahalesiz Senaryo (Kontrol)' : 'No Intervention (Control)',
+                        data: baselineStress,
+                        borderColor: '#d32f2f',
+                        backgroundColor: 'rgba(211, 47, 47, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: false
+                    },
+                    {
+                        label: currentLang === 'TR' ? 'Ekolojik Reçete Uygulanan (Proje)' : 'Integrated Ecological Prescription',
+                        data: interventionStress,
+                        borderColor: '#1b5e20',
+                        backgroundColor: 'rgba(27, 94, 32, 0.2)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: currentLang === 'TR' ? 'Stres İndeksi (%)' : 'Stress Index (%)',
+                            font: { size: 10 }
+                        }
+                    },
+                    x: {
+                        ticks: { font: { size: 9 } }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { boxWidth: 10, font: { size: 9 } }
+                    }
+                }
+            }
+        });
+    }
+    function toggleManualCropFields() {
+        const isOther = document.getElementById('region').value === 'global-other';
+        document.getElementById('manual-crop-fields').style.display = isOther ? 'block' : 'none';
+    }
+    // Öğrenci kendi bölgesindeki farklı bir bitkiyi (Latince tür adı + isteğe bağlı
+    // ideal pH aralığı) girdiğinde, cropRanges['global-other'] burada CANLI olarak
+    // güncellenir. Sistemin geri kalanı (pH uyarısı, rapor, AI Uzman Yorumu, grafik
+    // etiketleri) zaten cropRanges[regionKey] üzerinden okuduğu için, tek bu
+    // fonksiyonu güncellemek yeterli — her yeri ayrı ayrı değiştirmeye gerek yok.
+    function applyManualCropEntry() {
+        const species = (document.getElementById('manual-species').value || '').trim();
+        const common = (document.getElementById('manual-common-name').value || '').trim();
+        let phMin = parseFloat(document.getElementById('manual-ph-min').value);
+        let phMax = parseFloat(document.getElementById('manual-ph-max').value);
+        if (isNaN(phMin)) phMin = 6.0;
+        if (isNaN(phMax)) phMax = 7.0;
+        if (phMin > phMax) { const t = phMin; phMin = phMax; phMax = t; } // yanlışlıkla ters girilirse otomatik düzelt
+
+        const speciesLabel = species ? `*${species}*` : '*Belirtilmedi / Not specified*';
+        const commonLabel = common || (currentLang === 'TR' ? 'Manuel Giriş' : 'Manual Entry');
+
+        cropRanges['global-other'] = {
+            min: phMin, max: phMax,
+            TR: `${commonLabel} (${speciesLabel}) [İdeal pH: ${phMin} - ${phMax}]`,
+            EN: `${commonLabel} (${speciesLabel}) [Ideal pH: ${phMin} - ${phMax}]`,
+            chartLabelTR: commonLabel.substring(0, 18),
+            chartLabelEN: commonLabel.substring(0, 18)
+        };
+        populateDropdowns(); // dropdown metnini de güncelle
+        document.getElementById('region').value = 'global-other';
+        updatePHRangeInfo();
+    }
+    function populateDropdowns() {
         const selectRegion = document.getElementById('region');
         const selectBioPlant = document.getElementById('bio-plant');
         const currentRegionSelection = selectRegion.value || 'tr-tea';
@@ -1162,153 +1288,37 @@
         }, { timeout: 10000 });
     }
     function updatePHRangeInfo() {
-
-    const regionKey =
-        document.getElementById('region').value;
-
-    const phLabel =
-        document.getElementById('ph-label');
-
-    const customBox =
-        document.getElementById('custom-plant-box');
-
-    // ========================================================
-    // GLOBAL - DİĞER
-    // Öğrenci bitkiyi ve pH değerini kendisi belirler.
-    // ========================================================
-
-    if (regionKey === 'global-other') {
-
-        if (customBox) {
-            customBox.style.display = 'block';
-        }
-
-        if (currentLang === 'TR') {
-
-            phLabel.innerHTML =
-                'TOPRAK pH DEĞERİ / SOIL pH ' +
-                '(Öğrenci Ölçümü / Student Measurement) ' +
-                '[3.0 - 9.0]';
-
+        const regionKey = document.getElementById('region').value;
+        const range = cropRanges[regionKey] || { min: 6.0, max: 7.0 };
+        const phLabel = document.getElementById('ph-label');
+        if(currentLang === 'TR') {
+            phLabel.innerHTML = `TOPRAK pH DEĞERİ / SOIL pH (İdeal Aralık / Ideal Range: ${range.min} - ${range.max}) [3.0 - 9.0]`;
         } else {
-
-            phLabel.innerHTML =
-                'SOIL pH VALUE ' +
-                '(Student Measurement) [3.0 - 9.0]';
+            phLabel.innerHTML = `SOIL pH VALUE (Ideal Range: ${range.min} - ${range.max}) [3.0 - 9.0]`;
         }
-
-        const warn =
-            document.getElementById('ph-warn');
-
-        if (warn) {
+        const phInput = document.getElementById('ph');
+        if(phInput.value) {
+            validatePH(phInput);
+        }
+    }
+    function validatePH(input) {
+        const val = parseFloat(input.value);
+        const warn = document.getElementById('ph-warn');
+        const regionKey = document.getElementById('region').value;
+        const range = cropRanges[regionKey] || { min: 6.0, max: 7.0 };
+        if(isNaN(val)) return;
+        if(val < range.min || val > range.max) {
+            warn.style.display = 'block';
+            if(currentLang === 'TR') {
+                warn.innerHTML = `⚠️ Girilen pH (${val}), seçilen bitki için ideal bilimsel aralığın (${range.min} - ${range.max}) dışında!`;
+            } else {
+                warn.innerHTML = `⚠️ Entered pH (${val}) is outside the ideal scientific range (${range.min} - ${range.max}) for this crop!`;
+            }
+        } else {
             warn.style.display = 'none';
         }
-
-        return;
     }
-
-    // ========================================================
-    // MEVCUT BİTKİLER
-    // Eski sistem aynen devam ediyor.
-    // ========================================================
-
-    const range =
-        cropRanges[regionKey];
-
-    if (!range) return;
-
-    if (currentLang === 'TR') {
-
-        phLabel.innerHTML =
-            `TOPRAK pH DEĞERİ / SOIL pH ` +
-            `(İdeal Aralık / Ideal Range: ${range.min} - ${range.max}) ` +
-            `[3.0 - 9.0]`;
-
-    } else {
-
-        phLabel.innerHTML =
-            `SOIL pH VALUE ` +
-            `(Ideal Range: ${range.min} - ${range.max}) ` +
-            `[3.0 - 9.0]`;
-    }
-
-    const phInput =
-        document.getElementById('ph');
-
-    if (phInput && phInput.value) {
-        validatePH(phInput);
-    }
-}    function validatePH(input) {
-
-    const val =
-        parseFloat(input.value);
-
-    const warn =
-        document.getElementById('ph-warn');
-
-    const regionKey =
-        document.getElementById('region').value;
-
-    if (isNaN(val)) {
-        warn.style.display = 'none';
-        return;
-    }
-
-    // Genel pH giriş sınırı
-    if (val < 3.0 || val > 9.0) {
-
-        warn.style.display = 'block';
-
-        warn.innerHTML =
-            currentLang === 'TR'
-                ? '⚠️ pH değeri 3.0 - 9.0 arasında olmalıdır.'
-                : '⚠️ pH value must be between 3.0 and 9.0.';
-
-        return;
-    }
-
-    // ========================================================
-    // GLOBAL - DİĞER
-    // Sabit 6.0 - 7.0 aralığı YOK.
-    // ========================================================
-
-    if (regionKey === 'global-other') {
-
-        warn.style.display = 'none';
-
-        return;
-    }
-
-    // ========================================================
-    // MEVCUT BİTKİLER
-    // Eski sistem aynen devam.
-    // ========================================================
-
-    const range =
-        cropRanges[regionKey];
-
-    if (!range) {
-        warn.style.display = 'none';
-        return;
-    }
-
-    if (
-        val < range.min ||
-        val > range.max
-    ) {
-
-        warn.style.display = 'block';
-
-        warn.innerHTML =
-            currentLang === 'TR'
-                ? `⚠️ Girilen pH (${val}), seçilen bitki için ideal bilimsel aralığın (${range.min} - ${range.max}) dışında!`
-                : `⚠️ Entered pH (${val}) is outside the ideal scientific range (${range.min} - ${range.max}) for this crop!`;
-
-    } else {
-
-        warn.style.display = 'none';
-    }
-}    function switchTab(tabName) {
+    function switchTab(tabName) {
         const analysisSec = document.getElementById('analysis-section');
         const biolabSec = document.getElementById('biolab-section');
         const methodsSec = document.getElementById('methods-section');
@@ -2112,7 +2122,7 @@
         lastHealthRes = healthRes;
         renderLeafHealthBox(healthRes);
         const regionSelect = document.getElementById('region');
-        const cropName = getSelectedPlantName();
+        const cropName = regionSelect.options[regionSelect.selectedIndex] ? regionSelect.options[regionSelect.selectedIndex].text : regionSelect.value;
         const phVal = document.getElementById('ph').value;
         const weatherVal = document.getElementById('weather').value;
         const integratedInput = document.getElementById('integrated-chlorophyll');
@@ -2137,7 +2147,6 @@
         requestAIOpinion(lastAIContext);
         const formData = {
             region: cropName,
-            plantName: cropName,
             ph: phVal,
             weather: weatherVal,
             stress: 'Klorofil: ' + (ishChlorophylVal || 'N/A') + ' mg/L (663 nm), pH: ' + (phVal) + healthNote,
@@ -2260,105 +2269,6 @@
         lastAIResultText = null;
         if(track) { track.stop(); }
     }
-// ============================================================
-// GLOBAL - DİĞER / MANUEL BİTKİ
-// Öğrenci kendi bitkisinin adını girer.
-// pH ve klorofil değerleri mevcut sistem tarafından
-// öğrenciden alınmaya devam eder.
-// ============================================================
-
-function selectGlobalOther() {
-
-    const region = document.getElementById('region');
-    const customBox = document.getElementById('custom-plant-box');
-    const customInput = document.getElementById('custom-plant-name');
-
-    region.value = 'global-other';
-
-    if (customBox) {
-        customBox.style.display = 'block';
-    }
-
-    updatePHRangeInfo();
-
-    if (customInput) {
-        customInput.focus();
-    }
-}
-
-
-function updateCustomPlantName() {
-
-    const input = document.getElementById('custom-plant-name');
-    const status = document.getElementById('custom-plant-status');
-
-    if (!input || !status) return;
-
-    const plantName = input.value.trim();
-
-    if (!plantName) {
-        status.style.display = 'none';
-        return;
-    }
-
-    status.style.display = 'block';
-
-    status.innerHTML =
-        currentLang === 'TR'
-            ? '🌱 Analiz edilecek bitki: <strong>' +
-              escapeHtml(plantName) +
-              '</strong>'
-            : '🌱 Plant for analysis: <strong>' +
-              escapeHtml(plantName) +
-              '</strong>';
-}
-
-
-function escapeHtml(value) {
-
-    return String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-}
-
-
-function getSelectedPlantName() {
-
-    const regionKey =
-        document.getElementById('region').value;
-
-    // Manuel bitki
-    if (regionKey === 'global-other') {
-
-        const input =
-            document.getElementById('custom-plant-name');
-
-        if (input && input.value.trim()) {
-            return input.value.trim();
-        }
-
-        return currentLang === 'TR'
-            ? 'Bitki adı belirtilmedi'
-            : 'Plant name not specified';
-    }
-
-    // Mevcut sistemdeki bitkiler
-    const select =
-        document.getElementById('region');
-
-    if (
-        select &&
-        select.selectedIndex >= 0 &&
-        select.options[select.selectedIndex]
-    ) {
-        return select.options[select.selectedIndex].text;
-    }
-
-    return regionKey;
-}
 </script>
 </body>
 </html>
