@@ -111,7 +111,7 @@
     <h1>GLOBAL AGRO DOCTOR</h1>
     <div class="author">Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biyoloji Uzmanı & Proje Lideri</small></div>
     <div style="background:#fff8e1; border:1px solid #ffca28; border-radius:10px; padding:8px 10px; margin: 8px auto 12px; max-width: 440px; font-size:9.5px; color:#5d4a0a; line-height:1.4; text-align:center;" data-i18n="privacyBanner">
-        🔒 <strong>Veri Gizliliği:</strong> Bu projede toplanan fotoğraflar yalnızca bitki/yaprak görüntüleridir; kişi/yüz fotoğrafı çekilmemelidir. Veriler Rize Fatih Anadolu Lisesi Scientix projesi kapsamında eğitim amaçlı toplanmakta olup okul idaresinin bilgisi dahilindedir.
+        🔒 <strong>Veri Gizliliği:</strong> ANALİZ sekmesindeki bilimsel fotoğraflarda (yaprak/toprak) kesinlikle insan/yüz bulunmamalıdır. SAHA sekmesindeki genel dokümantasyon fotoğraflarında kişi varsa, veli/öğrenci izni alınmış olmalıdır. Veriler Rize Fatih Anadolu Lisesi Scientix projesi kapsamında eğitim amaçlı toplanmakta olup okul idaresinin bilgisi dahilindedir. Verilerinizin silinmesini talep etmek için okul idaresiyle iletişime geçebilirsiniz.
     </div>
     <div id="offline-banner" style="display:none; background:#fce4ec; border:1px solid #e57373; border-radius:10px; padding:8px 10px; margin: 0 auto 8px; max-width: 440px; font-size:10px; color:#b71c1c; text-align:center; font-weight:bold;" data-i18n="offlineBanner">
         📡 Çevrimdışısınız — veriler cihazda güvenle bekletilecek, bağlantı gelince otomatik gönderilecek.
@@ -478,6 +478,12 @@
 </div>
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxotD-WZ6OHiHNlbJb8zSe1eWBq_9_DPz9lBCa8AGqXZP5zwAhSLIZl4d_RGKXrRrv9/exec';
+    // Bu token, Apps Script'teki APP_TOKEN sabitiyle BİREBİR aynı olmalı.
+    // Otomatik/jenerik spam botlarına karşı bir ilk filtre katmanıdır; site
+    // kaynağı herkese açık olduğu için tek başına kesin bir güvenlik önlemi
+    // değildir — Apps Script tarafındaki oran sınırlama ve Gemini içerik
+    // moderasyonu ile birlikte katmanlı bir savunma oluşturur.
+    const APP_TOKEN = "RIZE-EKO-2026-9F3K";
     let currentLang = 'TR';
     let track;
     let stressChartInstance = null;
@@ -648,7 +654,7 @@
     const translations = {
         TR: {
             schoolSub: "Rize Fatih Anatolian High School",
-            privacyBanner: "🔒 <strong>Veri Gizliliği:</strong> Bu projede toplanan fotoğraflar yalnızca bitki/yaprak görüntüleridir; kişi/yüz fotoğrafı çekilmemelidir. Veriler Rize Fatih Anadolu Lisesi Scientix projesi kapsamında eğitim amaçlı toplanmakta olup okul idaresinin bilgisi dahilindedir.",
+            privacyBanner: "🔒 <strong>Veri Gizliliği:</strong> ANALİZ sekmesindeki bilimsel fotoğraflarda (yaprak/toprak) kesinlikle insan/yüz bulunmamalıdır. SAHA sekmesindeki genel dokümantasyon fotoğraflarında kişi varsa, veli/öğrenci izni alınmış olmalıdır. Veriler Rize Fatih Anadolu Lisesi Scientix projesi kapsamında eğitim amaçlı toplanmakta olup okul idaresinin bilgisi dahilindedir. Verilerinizin silinmesini talep etmek için okul idaresiyle iletişime geçebilirsiniz.",
             offlineBanner: "📡 Çevrimdışısınız — veriler cihazda güvenle bekletilecek, bağlantı gelince otomatik gönderilecek.",
             authorSub: "Biyoloji Uzmanı & Proje Lideri",
             tabAnalysis: "🌱 ANALİZ",
@@ -771,7 +777,7 @@
         },
         EN: {
             schoolSub: "Rize Fatih Anatolian High School",
-            privacyBanner: "🔒 <strong>Data Privacy:</strong> Photos collected in this project are of plants/leaves only; no photos of people/faces should be taken. Data is collected for educational purposes as part of the Rize Fatih Anadolu Lisesi Scientix project, with the knowledge of the school administration.",
+            privacyBanner: "🔒 <strong>Data Privacy:</strong> Scientific photos in the ANALYZE tab (leaf/soil) must never contain people/faces. In the FIELD tab's general documentation photos, if people appear, parental/student consent must have been obtained. Data is collected for educational purposes as part of the Rize Fatih Anadolu Lisesi Scientix project, with the knowledge of the school administration. To request deletion of your data, please contact the school administration.",
             offlineBanner: "📡 You are offline — data will be safely queued on this device and sent automatically once you reconnect.",
             authorSub: "Biology Expert & Project Lead",
             tabAnalysis: "🌱 ANALYSIS",
@@ -1861,6 +1867,7 @@
         if(sendToSheet) {
             const formData = {
                 date: new Date().toLocaleString('tr-TR'),
+                token: APP_TOKEN,
                 region: `MEBİ Lab - ${plant}`,
                 plantType: plant,
                 ph: "N/A (Lab Test)",
@@ -1926,6 +1933,7 @@
                 // Bağlantı yoksa (saha/köy şartları) veri sessizce kaybolmaz, kuyruğa alınır.
                 const formData = {
                     date: new Date().toLocaleString('tr-TR'),
+                    token: APP_TOKEN,
                     action: 'photo_only', // Excel'e satır yazılmaz, sadece Drive'a kaydedilir
                     photo: compressedDataUrl,
                     photoType: 'image/jpeg'
@@ -2073,6 +2081,7 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({
+                    token: APP_TOKEN,
                     action: 'ai_opinion',
                     photo: ctx.image,
                     photoType: 'image/jpeg',
@@ -2144,6 +2153,7 @@
         };
         requestAIOpinion(lastAIContext);
         const formData = {
+            token: APP_TOKEN,
             region: cropName,
             plantType: cropName,
             ph: phVal,
