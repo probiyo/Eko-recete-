@@ -396,12 +396,12 @@
             <label id="field-lbl-title" data-i18n="fieldTitle">📸 Saha ve Öğrenci Araştırma Fotoğrafları<br><span style="font-size:9px; font-weight:normal;">Field & Student Research Photos Gallery</span></label>
             <label style="display:flex; align-items:flex-start; gap:8px; background:#ffebee; border:1px solid #ef9a9a; border-radius:10px; padding:8px 10px; margin-bottom:8px; font-size:10.5px; color:#b71c1c; font-weight:bold; cursor:pointer;">
                 <input type="checkbox" id="no-face-confirm-field" style="margin-top:2px; width:16px; height:16px; flex-shrink:0;">
-                <span data-i18n="noFaceConfirmField">✅ Yükleyeceğim fotoğrafta insan/yüz YOK, yalnızca bitki/toprak/örnek görüntüsü var. (Zorunlu)</span>
+                <span data-i18n="noFaceConfirmField">✅ Bu fotoğrafta kişi(ler) varsa, veli/öğrenci izni alınmıştır. (Zorunlu)</span>
             </label>
             <div class="upload-zone" onclick="triggerFieldUpload()">
                 <div style="font-size: 24px; margin-bottom: 5px;">📁</div>
                 <div id="upload-txt-main" style="font-size: 12px; font-weight: bold; color: var(--primary);" data-i18n="uploadMain">Fotoğraf Seç veya Yükle / Choose Photo</div>
-                <div id="upload-txt-sub" style="font-size: 9px; color: #666; margin-top: 3px;" data-i18n="uploadSub">Laboratuvar ve arazi çalışması görüntüleri (yalnızca bitki/örnek — kişi fotoğrafı yüklemeyiniz)</div>
+                <div id="upload-txt-sub" style="font-size: 9px; color: #666; margin-top: 3px;" data-i18n="uploadSub">Laboratuvar ve arazi çalışması görüntüleri (kişi fotoğrafları için veli/öğrenci izni gereklidir)</div>
             </div>
             <input type="file" id="file-input" accept="image/*" style="display:none" onchange="handleFileUpload(event)">
             <div style="font-size: 9px; color: #999; text-align: center; margin-bottom: 4px;" data-i18n="fieldStorageNote">ℹ️ Fotoğraflar hem bu cihazda hem de okulun Google Drive/E-Tablo arşivinde saklanır.</div>
@@ -680,7 +680,7 @@
             camHint: "⚠️ Öneri: Ölçüm doğruluğu için yaprak yüzeyindeki toz/su damlalarını temizleyiniz.<br>⚠️ Tip: Clean dust/water drops on leaf for accuracy.",
             btnTakePhoto: "FOTOĞRAF ÇEK / TAKE PHOTO",
             noFaceConfirm: "✅ Bu karede insan/yüz YOK, yalnızca bitki/toprak/yaprak görüntüsü var. (Zorunlu)",
-            noFaceConfirmField: "✅ Yükleyeceğim fotoğrafta insan/yüz YOK, yalnızca bitki/toprak/örnek görüntüsü var. (Zorunlu)",
+            noFaceConfirmField: "✅ Bu fotoğrafta kişi(ler) varsa, veli/öğrenci izni alınmıştır. (Zorunlu)",
             errorPlant: "⚠️ BİTKİ ALGILANAMADI: Yeterli yaprak/klorofil (yeşil doku) tespit edilemedi. Lütfen yaprak görüntüsü çekiniz!<br>⚠️ NO PLANT DETECTED: Insufficient leaf/chlorophyll (green tissue) detected. Please capture a leaf image!",
             syncSuccess: "✨ Saha + Lab Entegre Analiz Tamamlandı & Excel'e Aktarıldı!<br><span style='font-size:9px; font-weight:normal;'>Integrated Field + Lab Analysis Completed & Synced to Excel!</span>",
             reportHeaderTitle: "BRÜSSEL PROJE RAPORU #EU-AGRO",
@@ -749,7 +749,7 @@
             mRefList: "<li>Arnon, D.I. (1949). Copper enzymes in isolated chloroplasts. Polyphenoloxidase in <em>Beta vulgaris</em>. <em>Plant Physiology</em>, 24(1), 1–15.</li><li>Avrupa Komisyonu — Avrupa Yeşil Mutabakatı (European Green Deal): <span style='word-break:break-all;'>https://commission.europa.eu/strategy-and-policy/priorities-2019-2024/european-green-deal_en</span></li><li>Avrupa Komisyonu — Tarladan Sofraya Stratejisi (Farm to Fork Strategy): <span style='word-break:break-all;'>https://food.ec.europa.eu/horizontal-topics/farm-fork-strategy_en</span></li><li>Scientix — The community for science education in Europe: <span style='word-break:break-all;'>https://www.scientix.eu</span></li><li>MEB Ortaöğretim Biyoloji Dersi Öğretim Programı (Fotosentez hızını etkileyen faktörler konusu).</li>",
             fieldTitle: "📸 Saha ve Öğrenci Araştırma Fotoğrafları<br><span style='font-size:9px; font-weight:normal;'>Field & Student Research Photos Gallery</span>",
             uploadMain: "Fotoğraf Seç veya Yükle / Choose Photo",
-            uploadSub: "Laboratuvar ve arazi çalışması görüntüleri (yalnızca bitki/örnek — kişi fotoğrafı yüklemeyiniz)",
+            uploadSub: "Laboratuvar ve arazi çalışması görüntüleri (kişi fotoğrafları için veli/öğrenci izni gereklidir)",
             fieldStorageNote: "ℹ️ Fotoğraflar hem bu cihazda hem de okulun Google Drive/E-Tablo arşivinde saklanır.",
             fieldSyncStatus: "✨ Fotoğraf okul arşivine (Drive) gönderildi.",
             citizenTitle: "🌍 Açık Kaynaklı Tarım Veritabanı<br><span style='font-size:9px; font-weight:normal;'>Citizen Science & International Network Hub</span>",
@@ -803,7 +803,7 @@
             camHint: "⚠️ Tip: Clean dust/water drops on leaf surface for measurement accuracy.",
             btnTakePhoto: "TAKE PHOTO",
             noFaceConfirm: "✅ There is NO person/face in this frame, only a plant/soil/leaf image. (Required)",
-            noFaceConfirmField: "✅ The photo I'm uploading has NO person/face, only a plant/soil/sample image. (Required)",
+            noFaceConfirmField: "✅ If there are people in this photo, parental/student consent has been obtained. (Required)",
             errorPlant: "⚠️ NO PLANT DETECTED: Insufficient leaf/chlorophyll tissue detected. Please capture a leaf image!",
             syncSuccess: "✨ Integrated Field + Lab Analysis Completed & Synced to Excel!<br><span style='font-size:9px; font-weight:normal;'>Integrated Field + Lab Analysis Completed & Synced to Excel!</span>",
             reportHeaderTitle: "BRUSSELS PROJECT REPORT #EU-AGRO",
@@ -872,7 +872,7 @@
             mRefList: "<li>Arnon, D.I. (1949). Copper enzymes in isolated chloroplasts. Polyphenoloxidase in <em>Beta vulgaris</em>. <em>Plant Physiology</em>, 24(1), 1–15.</li><li>European Commission — The European Green Deal: <span style='word-break:break-all;'>https://commission.europa.eu/strategy-and-policy/priorities-2019-2024/european-green-deal_en</span></li><li>European Commission — Farm to Fork Strategy: <span style='word-break:break-all;'>https://food.ec.europa.eu/horizontal-topics/farm-fork-strategy_en</span></li><li>Scientix — The community for science education in Europe: <span style='word-break:break-all;'>https://www.scientix.eu</span></li><li>Turkish Ministry of National Education (MEB) Secondary School Biology Curriculum (Factors affecting the rate of photosynthesis).</li>",
             fieldTitle: "📸 Field & Student Research Photos<br><span style='font-size:9px; font-weight:normal;'>Field & Student Research Photos Gallery</span>",
             uploadMain: "Choose or Upload Photo",
-            uploadSub: "Laboratory and field study images (plants/samples only — do not upload photos of people)",
+            uploadSub: "Laboratory and field study images (parental/student consent required for photos of people)",
             fieldStorageNote: "ℹ️ Photos are stored both on this device and in the school's Google Drive/Sheet archive.",
             fieldSyncStatus: "✨ Photo sent to the school archive (Drive).",
             citizenTitle: "🌍 Open Source Agriculture Database<br><span style='font-size:9px; font-weight:normal;'>Citizen Science & International Network Hub</span>",
@@ -1926,12 +1926,9 @@
                 // Bağlantı yoksa (saha/köy şartları) veri sessizce kaybolmaz, kuyruğa alınır.
                 const formData = {
                     date: new Date().toLocaleString('tr-TR'),
-                    region: currentLang === 'TR' ? 'Saha Fotoğrafları Galerisi' : 'Field Photo Gallery',
-                    ph: "N/A",
-                    weather: "N/A",
-                    stress: caption,
-                    notes: caption,
-                    photograph: compressedDataUrl
+                    action: 'photo_only', // Excel'e satır yazılmaz, sadece Drive'a kaydedilir
+                    photo: compressedDataUrl,
+                    photoType: 'image/jpeg'
                 };
                 sendToServer(formData, 'field-sync-status');
                 document.getElementById('file-input').value = '';
