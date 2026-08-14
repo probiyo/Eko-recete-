@@ -1384,14 +1384,22 @@
         const w = canvasEl.width, h = canvasEl.height;
         const imgData = ctx.getImageData(0, 0, w, h);
         const pixels = imgData.data;
-        let totalR = 0, totalG = 0, totalB = 0, greenPixelCount = 0, count = 0;
+        let totalR = 0, totalG = 0, totalB = 0, greenPixelCount = 0, skinPixelCount = 0, count = 0;
         for (let i = 0; i < pixels.length; i += 16) {
             const r = pixels[i], g = pixels[i+1], b = pixels[i+2];
             totalR += r; totalG += g; totalB += b;
             if (g > r * 1.05 && g > b * 1.05 && g > 40) greenPixelCount++;
+            // Standart RGB cilt tonu sezgiseli (kaynak: literatürde yaygın kullanılan
+            // basit bir eşik seti). Amaç: yeşil oran eşiği yanıltıcı çıksa bile
+            // (ör. sıcak iç mekan ışığı, cildi hafif yeşile kaydırabilir), el/yüz
+            // fotoğraflarını BAĞIMSIZ ikinci bir sinyalle yakalamak.
+            const maxC = Math.max(r, g, b), minC = Math.min(r, g, b);
+            if (r > 95 && g > 40 && b > 20 && (maxC - minC) > 15 && Math.abs(r - g) > 15 && r > g && r > b) {
+                skinPixelCount++;
+            }
             count++;
         }
-        return { avgR: totalR / count, avgG: totalG / count, avgB: totalB / count, greenRatio: greenPixelCount / count };
+        return { avgR: totalR / count, avgG: totalG / count, avgB: totalB / count, greenRatio: greenPixelCount / count, skinRatio: skinPixelCount / count };
     }
     function loadImageToCanvas(file, callback) {
         const reader = new FileReader();
@@ -1433,7 +1441,7 @@
         const scaleR = ref.r > 0 ? target / ref.r : 1;
         const scaleG = ref.g > 0 ? target / ref.g : 1;
         const scaleB = ref.b > 0 ? target / ref.b : 1;
-        return { avgR: stats.avgR * scaleR, avgG: stats.avgG * scaleG, avgB: stats.avgB * scaleB, greenRatio: stats.greenRatio };
+        return { avgR: stats.avgR * scaleR, avgG: stats.avgG * scaleG, avgB: stats.avgB * scaleB, greenRatio: stats.greenRatio, skinRatio: stats.skinRatio };
     }
     function updateWhiteRefStatus() {
         const el = document.getElementById('white-ref-status');
@@ -2026,7 +2034,7 @@
         const stats = normalizeStats(rawStats);
         const signal = computeColorSignal(stats);
         const result = estimateConcentrationFromSignal(signal);
-        return { greenRatio: rawStats.greenRatio, estimatedConc: result.value, calibrated: result.calibrated };
+        return { greenRatio: rawStats.greenRatio, skinRatio: rawStats.skinRatio, estimatedConc: result.value, calibrated: result.calibrated };
     }
     // ============================================================
     // AI UZMAN YORUMU (Beta) — Google Gemini API entegrasyonu
@@ -2111,8 +2119,15 @@
         // Görüntüyü analiz et: yeterli bitki/klorofil dokusu var mı?
         const leafAnalysis = analyzeLeafImage(c);
         document.getElementById('error-box').style.display = 'none';
-        if (leafAnalysis.greenRatio < 0.06) {
-            // Karede yeterli yeşil doku tespit edilemedi -> uyarıyı göster, devam etme
+        // İKİ BAĞIMSIZ SİNYAL birlikte kontrol edilir: (1) yeterli yeşil doku VAR MI,
+        // (2) baskın olarak cilt tonu MU. Tek başına yeşil oranı bazı ışık
+        // koşullarında yanıltıcı olabiliyordu (ör. sıcak iç mekan ışığında bir el/cilt
+        // fotoğrafı eşiği geçebiliyordu); cilt tonu sinyali bunu bağımsız olarak yakalar.
+        const notEnoughGreen = leafAnalysis.greenRatio < 0.06;
+        const looksLikeSkin = leafAnalysis.skinRatio > 0.35;
+        if (notEnoughGreen || looksLikeSkin) {
+            // Karede yeterli bitki dokusu tespit edilemedi (veya cilt/insan dokusu
+            // baskın) -> uyarıyı göster, devam etme
             document.getElementById('error-box').style.display = 'block';
             document.getElementById('cam-box').style.display = 'block';
             document.getElementById('res-area').style.display = 'none';
