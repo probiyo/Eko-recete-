@@ -2082,7 +2082,7 @@
     // Gerçek prompt metni artık Apps Script tarafında (handleAIOpinion)
     // oluşturuluyor; buradan yalnızca ölçülen/hesaplanan ham değerler
     // ve fotoğraf gönderilir — anahtar veya prompt mantığı istemcide yok.
-    async function requestAIOpinion(ctx) {
+    async function requestAIOpinion(ctx, isAutoRetry) {
         renderAILoading();
         try {
             const resp = await fetch(SCRIPT_URL, {
@@ -2108,6 +2108,14 @@
             renderAIResult(data.text.trim());
         } catch (err) {
             console.error('AI yorumu alınamadı:', err);
+            // Dakikalık hız sınırı (RPM) veya Apps Script "soğuk başlangıç" gecikmesi
+            // gibi geçici sorunlar çok yaygın olduğu için, kullanıcı hiç butona
+            // basmadan BİR KEZ otomatik olarak (4 sn sonra) tekrar denenir. İkinci
+            // deneme de başarısız olursa manuel "Tekrar Dene" seçeneği gösterilir.
+            if (!isAutoRetry) {
+                setTimeout(() => requestAIOpinion(ctx, true), 4000);
+                return;
+            }
             renderAIError();
         }
     }
