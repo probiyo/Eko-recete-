@@ -111,7 +111,7 @@
     <h1>GLOBAL AGRO DOCTOR</h1>
     <div class="author">Yusuf İhsan HAMAMCI <br><small data-i18n="authorSub">Biyoloji Uzmanı & Proje Lideri</small></div>
     <div style="background:#fff8e1; border:1px solid #ffca28; border-radius:10px; padding:8px 10px; margin: 8px auto 12px; max-width: 440px; font-size:9.5px; color:#5d4a0a; line-height:1.4; text-align:center;" data-i18n="privacyBanner">
-        🔒 <strong>Veri Gizliliği:</strong> ANALİZ sekmesindeki bilimsel fotoğraflarda (yaprak/toprak) kesinlikle insan/yüz bulunmamalıdır. SAHA sekmesindeki genel dokümantasyon fotoğraflarında kişi varsa, veli/öğrenci izni alınmış olmalıdır. Veriler Rize Fatih Anadolu Lisesi Scientix projesi kapsamında eğitim amaçlı toplanmakta olup okul idaresinin bilgisi dahilindedir. Verilerinizin silinmesini talep etmek için okul idaresiyle iletişime geçebilirsiniz.
+        🔒 <strong>Veri Gizliliği:</strong> Bu projede toplanan fotoğraflar yalnızca bitki/yaprak görüntüleridir; kişi/yüz fotoğrafı çekilmemelidir. Veriler Rize Fatih Anadolu Lisesi Scientix projesi kapsamında eğitim amaçlı toplanmakta olup okul idaresinin bilgisi dahilindedir.Verilerinizin silinmesini talep etmek için okul idaresiyle iletişime geçebilirsiniz.
     </div>
     <div id="offline-banner" style="display:none; background:#fce4ec; border:1px solid #e57373; border-radius:10px; padding:8px 10px; margin: 0 auto 8px; max-width: 440px; font-size:10px; color:#b71c1c; text-align:center; font-weight:bold;" data-i18n="offlineBanner">
         📡 Çevrimdışısınız — veriler cihazda güvenle bekletilecek, bağlantı gelince otomatik gönderilecek.
@@ -478,12 +478,6 @@
 </div>
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxotD-WZ6OHiHNlbJb8zSe1eWBq_9_DPz9lBCa8AGqXZP5zwAhSLIZl4d_RGKXrRrv9/exec';
-    // Bu token, Apps Script'teki APP_TOKEN sabitiyle BİREBİR aynı olmalı.
-    // Otomatik/jenerik spam botlarına karşı bir ilk filtre katmanıdır; site
-    // kaynağı herkese açık olduğu için tek başına kesin bir güvenlik önlemi
-    // değildir — Apps Script tarafındaki oran sınırlama ve Gemini içerik
-    // moderasyonu ile birlikte katmanlı bir savunma oluşturur.
-    const APP_TOKEN = "RIZE-EKO-2026-9F3K";
     let currentLang = 'TR';
     let track;
     let stressChartInstance = null;
@@ -654,7 +648,7 @@
     const translations = {
         TR: {
             schoolSub: "Rize Fatih Anatolian High School",
-            privacyBanner: "🔒 <strong>Veri Gizliliği:</strong> ANALİZ sekmesindeki bilimsel fotoğraflarda (yaprak/toprak) kesinlikle insan/yüz bulunmamalıdır. SAHA sekmesindeki genel dokümantasyon fotoğraflarında kişi varsa, veli/öğrenci izni alınmış olmalıdır. Veriler Rize Fatih Anadolu Lisesi Scientix projesi kapsamında eğitim amaçlı toplanmakta olup okul idaresinin bilgisi dahilindedir. Verilerinizin silinmesini talep etmek için okul idaresiyle iletişime geçebilirsiniz.",
+            privacyBanner: "🔒 <strong>Veri Gizliliği:</strong> Bu projede toplanan fotoğraflar yalnızca bitki/yaprak görüntüleridir; kişi/yüz fotoğrafı çekilmemelidir. Veriler Rize Fatih Anadolu Lisesi Scientix projesi kapsamında eğitim amaçlı toplanmakta olup okul idaresinin bilgisi dahilindedir.",
             offlineBanner: "📡 Çevrimdışısınız — veriler cihazda güvenle bekletilecek, bağlantı gelince otomatik gönderilecek.",
             authorSub: "Biyoloji Uzmanı & Proje Lideri",
             tabAnalysis: "🌱 ANALİZ",
@@ -777,7 +771,7 @@
         },
         EN: {
             schoolSub: "Rize Fatih Anatolian High School",
-            privacyBanner: "🔒 <strong>Data Privacy:</strong> Scientific photos in the ANALYZE tab (leaf/soil) must never contain people/faces. In the FIELD tab's general documentation photos, if people appear, parental/student consent must have been obtained. Data is collected for educational purposes as part of the Rize Fatih Anadolu Lisesi Scientix project, with the knowledge of the school administration. To request deletion of your data, please contact the school administration.",
+            privacyBanner: "🔒 <strong>Data Privacy:</strong> Photos collected in this project are of plants/leaves only; no photos of people/faces should be taken. Data is collected for educational purposes as part of the Rize Fatih Anadolu Lisesi Scientix project, with the knowledge of the school administration.",
             offlineBanner: "📡 You are offline — data will be safely queued on this device and sent automatically once you reconnect.",
             authorSub: "Biology Expert & Project Lead",
             tabAnalysis: "🌱 ANALYSIS",
@@ -1867,7 +1861,6 @@
         if(sendToSheet) {
             const formData = {
                 date: new Date().toLocaleString('tr-TR'),
-                token: APP_TOKEN,
                 region: `MEBİ Lab - ${plant}`,
                 plantType: plant,
                 ph: "N/A (Lab Test)",
@@ -1933,7 +1926,6 @@
                 // Bağlantı yoksa (saha/köy şartları) veri sessizce kaybolmaz, kuyruğa alınır.
                 const formData = {
                     date: new Date().toLocaleString('tr-TR'),
-                    token: APP_TOKEN,
                     action: 'photo_only', // Excel'e satır yazılmaz, sadece Drive'a kaydedilir
                     photo: compressedDataUrl,
                     photoType: 'image/jpeg'
@@ -2081,7 +2073,6 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({
-                    token: APP_TOKEN,
                     action: 'ai_opinion',
                     photo: ctx.image,
                     photoType: 'image/jpeg',
@@ -2103,19 +2094,166 @@
             renderAIError();
         }
     }
+    // FOTOĞRAF DOĞRULAMA: Analize yalnızca merkezde yeterli ve bağlantılı
+    // yaprak/bitki dokusu bulunan kareleri kabul eder. Mevcut analiz motoruna
+    // dokunmaz; yalnızca analize geçişten önce ek bir güvenlik filtresidir.
+    function validateLeafCapture(canvasEl) {
+        const ctx = canvasEl.getContext('2d', { willReadFrequently: true });
+        const w = canvasEl.width;
+        const h = canvasEl.height;
+        if (!w || !h || w < 200 || h < 200) {
+            return { ok: false, greenRatio: 0, centerRatio: 0, componentRatio: 0 };
+        }
+
+        // Hesap yükünü düşük tutmak için 6x6 örnekleme kullanılır.
+        const step = 6;
+        const cols = Math.ceil(w / step);
+        const rows = Math.ceil(h / step);
+        const mask = new Uint8Array(cols * rows);
+        let greenCount = 0;
+        let centerGreen = 0;
+        let centerCount = 0;
+
+        const image = ctx.getImageData(0, 0, w, h).data;
+        const centerLeft = w * 0.20;
+        const centerRight = w * 0.80;
+        const centerTop = h * 0.20;
+        const centerBottom = h * 0.80;
+
+        for (let gy = 0, y = 0; y < h; gy++, y += step) {
+            for (let gx = 0, x = 0; x < w; gx++, x += step) {
+                const i = (y * w + x) * 4;
+                const r = image[i];
+                const g = image[i + 1];
+                const b = image[i + 2];
+
+                const isGreen =
+                    g > 45 &&
+                    g > r * 1.08 &&
+                    g > b * 1.05 &&
+                    (g - r) > 8;
+
+                const inCenter =
+                    x >= centerLeft && x <= centerRight &&
+                    y >= centerTop && y <= centerBottom;
+
+                if (inCenter) centerCount++;
+
+                if (isGreen) {
+                    mask[gy * cols + gx] = 1;
+                    greenCount++;
+                    if (inCenter) centerGreen++;
+                }
+            }
+        }
+
+        const total = cols * rows;
+        const greenRatio = greenCount / total;
+        const centerRatio = centerCount ? centerGreen / centerCount : 0;
+
+        // En büyük bağlantılı yeşil bölgeyi bul.
+        // Dağınık birkaç yeşil piksel yerine gerçek bir yaprak alanı aranır.
+        const visited = new Uint8Array(mask.length);
+        let largest = 0;
+        let largestCx = 0;
+        let largestCy = 0;
+        let largestMinX = cols;
+        let largestMaxX = -1;
+        let largestMinY = rows;
+        let largestMaxY = -1;
+
+        for (let start = 0; start < mask.length; start++) {
+            if (!mask[start] || visited[start]) continue;
+
+            const queue = [start];
+            visited[start] = 1;
+            let count = 0;
+            let sumX = 0;
+            let sumY = 0;
+            let minX = cols, maxX = -1, minY = rows, maxY = -1;
+
+            for (let q = 0; q < queue.length; q++) {
+                const idx = queue[q];
+                const x = idx % cols;
+                const y = Math.floor(idx / cols);
+                count++;
+                sumX += x;
+                sumY += y;
+                if (x < minX) minX = x;
+                if (x > maxX) maxX = x;
+                if (y < minY) minY = y;
+                if (y > maxY) maxY = y;
+
+                const neighbors = [idx - 1, idx + 1, idx - cols, idx + cols];
+                for (const n of neighbors) {
+                    if (n < 0 || n >= mask.length || visited[n] || !mask[n]) continue;
+                    const nx = n % cols;
+                    const ny = Math.floor(n / cols);
+                    if (Math.abs(nx - x) + Math.abs(ny - y) !== 1) continue;
+                    visited[n] = 1;
+                    queue.push(n);
+                }
+            }
+
+            if (count > largest) {
+                largest = count;
+                largestCx = sumX / count;
+                largestCy = sumY / count;
+                largestMinX = minX;
+                largestMaxX = maxX;
+                largestMinY = minY;
+                largestMaxY = maxY;
+            }
+        }
+
+        const componentRatio = largest / total;
+        const bboxArea = largest > 0
+            ? (largestMaxX - largestMinX + 1) * (largestMaxY - largestMinY + 1)
+            : 0;
+        const fillRatio = bboxArea > 0 ? largest / bboxArea : 0;
+
+        const componentCenterX = cols ? largestCx / cols : 0.5;
+        const componentCenterY = rows ? largestCy / rows : 0.5;
+        const centered =
+            componentCenterX >= 0.15 && componentCenterX <= 0.85 &&
+            componentCenterY >= 0.15 && componentCenterY <= 0.85;
+
+        // Kabul şartları bilinçli olarak sıkıdır:
+        // 1) toplam yeşil alan, 2) merkezde yeşil alan,
+        // 3) tek ve bağlantılı büyük bir yeşil bölge,
+        // 4) bu bölgenin görüntü içinde makul doluluk oranı.
+        const ok =
+            greenRatio >= 0.12 &&
+            centerRatio >= 0.08 &&
+            componentRatio >= 0.08 &&
+            fillRatio >= 0.35 &&
+            centered;
+
+        return { ok, greenRatio, centerRatio, componentRatio, fillRatio };
+    }
+
     async function processAI() {
         c.width = v.videoWidth || 640; 
         c.height = v.videoHeight || 480;
         c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
         lastCapturedImage = c.toDataURL('image/jpeg', 0.7);
-        // Görüntüyü analiz et: yeterli bitki/klorofil dokusu var mı?
+        // Önce fotoğrafın gerçekten yeterli yaprak/bitki dokusu içerdiğini doğrula.
+        // Mevcut bilimsel analiz bundan sonra aynen çalışır.
+        const photoCheck = validateLeafCapture(c);
         const leafAnalysis = analyzeLeafImage(c);
-        document.getElementById('error-box').style.display = 'none';
-        if (leafAnalysis.greenRatio < 0.06) {
-            // Karede yeterli yeşil doku tespit edilemedi -> uyarıyı göster, devam etme
-            document.getElementById('error-box').style.display = 'block';
+        const errorBox = document.getElementById('error-box');
+        errorBox.style.display = 'none';
+
+        if (!photoCheck.ok || leafAnalysis.greenRatio < 0.12) {
+            errorBox.innerHTML = currentLang === 'TR'
+                ? '⚠️ GEÇERSİZ FOTOĞRAF: Yeterli yaprak/bitki dokusu algılanamadı. Lütfen yalnızca bir yaprak/bitki yaprağını kadrajın merkezine alıp tekrar çekiniz.'
+                : '⚠️ INVALID PHOTO: Sufficient leaf/plant tissue was not detected. Please center a plant leaf in the frame and try again.';
+            errorBox.style.display = 'block';
             document.getElementById('cam-box').style.display = 'block';
             document.getElementById('res-area').style.display = 'none';
+            if (track) {
+                // Kamera açık kalır; öğrenci yeni kare çekebilir.
+            }
             return;
         }
         document.getElementById('preview-img').src = lastCapturedImage;
@@ -2153,7 +2291,6 @@
         };
         requestAIOpinion(lastAIContext);
         const formData = {
-            token: APP_TOKEN,
             region: cropName,
             plantType: cropName,
             ph: phVal,
