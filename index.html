@@ -227,6 +227,7 @@
                 ⚠️ UZMAN GÖRÜŞÜ: Çözülemeyen sorunlarda acil uzman desteği alınmalıdır.<br>
                 ⚠️ EXPERT ADVICE: Seek immediate expert support for unresolved issues.
             </div>
+            <div id="quiz-box" style="display:none; margin:10px 0; background:#fff8e1; border:1px solid #ffe082; border-radius:12px; padding:12px; font-size:11px; color:#5d4037;"></div>
             <a href="https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/edit?usp=sharing" target="_blank" class="btn-excel" data-i18n="btnLiveSheet">📊 CANLI VERİ TABLOSU / LIVE DATA SHEET</a>
             <div class="btn-save" onclick="window.print()" data-i18n="btnPrintReport">📥 RAPORU YAZDIR / PDF KAYDET</div>
             <button id="reset-btn" class="btn-reset" onclick="resetSystem()" style="display:block;" data-i18n="btnNewAnalyze">YENİ ANALİZ / NEW ANALYZE</button>
@@ -489,6 +490,79 @@
     let stressChartInstance = null;
     let lastAIContext = null;
     let lastHealthRes = null; // computeLeafHealthAnalysis sonucu — updateDynamicReportTexts bunu okur
+    let currentQuizIndex = -1; // dil değişince aynı soruyu yeniden çizebilmek için
+
+    // ============================================================
+    // MİNİ EĞİTİM / BİLGİ TESTİ — MEB 10. Sınıf Biyoloji "Enerji" ve
+    // "Ekoloji" temalarıyla (fotosentez/klorofil, ekoloji/iklim) ilişkili
+    // kısa sorular. Her analiz sonrası rastgele bir soru gösterilir;
+    // amaç sorgulama temelli STEM öğrenimini pekiştirmektir, bilimsel
+    // rapordaki hesaplamaları etkilemez.
+    // ============================================================
+    const quizQuestions = [
+        { q_tr: "Klorofil ölçümünde kullanılan 663 nm dalga boyu neyi temsil eder?", q_en: "What does the 663 nm wavelength used in chlorophyll measurement represent?",
+          opts_tr: ["Kırmızı ışığın klorofil a tarafından emilimi", "Yeşil ışığın yansıması", "Toprağın nem oranı", "Bitkinin sıcaklığı"],
+          opts_en: ["Absorption of red light by chlorophyll a", "Reflection of green light", "Soil moisture ratio", "The plant's temperature"],
+          correct: 0, exp_tr: "Klorofil a, ~663 nm'de kırmızı ışığı güçlü şekilde emer; bu yüzden spektrofotometrik klorofil ölçümlerinde bu dalga boyu kullanılır.", exp_en: "Chlorophyll a strongly absorbs red light around 663 nm, which is why this wavelength is used in spectrophotometric chlorophyll measurements." },
+        { q_tr: "Fotosentezin ışığa bağlı reaksiyonları hücrenin hangi bölümünde gerçekleşir?", q_en: "In which part of the cell do the light-dependent reactions of photosynthesis occur?",
+          opts_tr: ["Mitokondri", "Tilakoid zar", "Çekirdek", "Golgi cisimciği"], opts_en: ["Mitochondria", "Thylakoid membrane", "Nucleus", "Golgi apparatus"],
+          correct: 1, exp_tr: "Işığa bağlı reaksiyonlar kloroplastın tilakoid zarında, klorofilin bulunduğu bölgede gerçekleşir.", exp_en: "Light-dependent reactions occur in the thylakoid membrane of the chloroplast, where chlorophyll is located." },
+        { q_tr: "Toprak pH'ı çok yüksek (alkalin) olduğunda bitkilerde en sık görülen belirti nedir?", q_en: "What is the most common symptom in plants when soil pH is very high (alkaline)?",
+          opts_tr: ["Demir eksikliğinden kaynaklanan yaprak sararması (kloroz)", "Aşırı hızlı büyüme", "Kesin kök çürümesi", "Fotosentezin hızlanması"], opts_en: ["Iron-deficiency leaf yellowing (chlorosis)", "Excessively fast growth", "Guaranteed root rot", "Accelerated photosynthesis"],
+          correct: 0, exp_tr: "Alkalin toprakta demir bitki tarafından alınabilir formda bulunmayabilir; bu da yapraklarda karakteristik sararmaya (demir kloroz) yol açar.", exp_en: "In alkaline soil, iron may not be available in a form plants can absorb, causing the characteristic yellowing known as iron chlorosis." },
+        { q_tr: "AB Yeşil Mutabakatı (EU Green Deal) öncelikle hangi amaç için oluşturulmuştur?", q_en: "What is the primary goal the EU Green Deal was created for?",
+          opts_tr: ["2050'ye kadar iklim nötrlüğüne ulaşmak", "Sadece tarımı yasaklamak", "Sadece enerji şirketlerini desteklemek", "Turizmi artırmak"], opts_en: ["Achieving climate neutrality by 2050", "Banning agriculture entirely", "Only supporting energy companies", "Increasing tourism"],
+          correct: 0, exp_tr: "AB Yeşil Mutabakatı, 2050'ye kadar iklim nötr bir Avrupa hedefleyen kapsamlı bir politika paketidir.", exp_en: "The EU Green Deal is a comprehensive policy package aiming for a climate-neutral Europe by 2050." },
+        { q_tr: "Arnon (1949) formülü hangi amaçla kullanılır?", q_en: "What is the Arnon (1949) formula used for?",
+          opts_tr: ["Klorofil a/b konsantrasyonunu hesaplamak", "Toprak pH'ını ölçmek", "Hava sıcaklığını hesaplamak", "Toprak nemini ölçmek"], opts_en: ["Calculating chlorophyll a/b concentration", "Measuring soil pH", "Calculating air temperature", "Measuring soil moisture"],
+          correct: 0, exp_tr: "Arnon'un 1949 tarihli denklemleri, aseton ekstraktının 645/663 nm'deki absorbansından klorofil a ve b konsantrasyonunu hesaplar.", exp_en: "Arnon's 1949 equations calculate chlorophyll a and b concentrations from the absorbance of an acetone extract at 645/663 nm." },
+        { q_tr: "Bir ekosistemde biyoçeşitlilik azaldığında genellikle ne olur?", q_en: "What generally happens when biodiversity decreases in an ecosystem?",
+          opts_tr: ["Ekosistemin dış etkenlere (hastalık, iklim değişikliği) direnci azalır", "Ekosistem her zaman güçlenir", "Hiçbir etkisi olmaz", "Sadece bitkiler etkilenir"], opts_en: ["The ecosystem's resilience to external stressors (disease, climate change) decreases", "The ecosystem always becomes stronger", "There is no effect at all", "Only plants are affected"],
+          correct: 0, exp_tr: "Düşük biyoçeşitlilik, ekosistemlerin hastalık, kuraklık veya iklim değişikliği gibi şoklara karşı direncini azaltır.", exp_en: "Low biodiversity reduces an ecosystem's resilience to shocks such as disease, drought, or climate change." },
+        { q_tr: "Fotosentez sırasında açığa çıkan gaz hangisidir?", q_en: "Which gas is released during photosynthesis?",
+          opts_tr: ["Oksijen", "Azot", "Metan", "Karbon monoksit"], opts_en: ["Oxygen", "Nitrogen", "Methane", "Carbon monoxide"],
+          correct: 0, exp_tr: "Fotosentezde su moleküllerinin parçalanmasıyla (fotoliz) oksijen açığa çıkar.", exp_en: "Oxygen is released during photosynthesis through the splitting of water molecules (photolysis)." },
+        { q_tr: "İklim değişikliği, çay gibi bitkilerin yetiştiği 'ideal pH aralığını' neden etkileyebilir?", q_en: "Why can climate change affect the 'ideal pH range' in which plants like tea grow?",
+          opts_tr: ["Artan yağış/asit yağmurları toprak pH'ını değiştirebilir", "İklim değişikliğinin toprakla hiçbir ilgisi yoktur", "Sadece sıcaklığı etkiler, toprağı asla etkilemez", "Bitkiler iklimden hiç etkilenmez"], opts_en: ["Increased rainfall/acid rain can shift soil pH", "Climate change has nothing to do with soil", "It only affects temperature, never soil", "Plants are never affected by climate"],
+          correct: 0, exp_tr: "Değişen yağış rejimleri ve asit yağmurları, zamanla toprağın pH dengesini kaydırarak bitkilerin ideal büyüme koşullarını etkileyebilir.", exp_en: "Changing precipitation patterns and acid rain can gradually shift soil pH balance, affecting the ideal growing conditions for plants." },
+        { q_tr: "'Citizen Science' (Vatandaş Bilimi) ne anlama gelir?", q_en: "What does 'Citizen Science' mean?",
+          opts_tr: ["Gönüllü halkın/öğrencilerin bilimsel veri toplama sürecine katılması", "Sadece profesyonel bilim insanlarının çalışması", "Bilimin gizli tutulması", "Devlet kurumlarının tekelinde bilim"], opts_en: ["Volunteer members of the public/students participating in scientific data collection", "Work done only by professional scientists", "Keeping science secret", "Science as a state monopoly"],
+          correct: 0, exp_tr: "Citizen Science, gönüllülerin (öğrenciler dahil) gerçek bilimsel veri toplama ve araştırma süreçlerine katılmasıdır — tam olarak bu projenin yaptığı şey!", exp_en: "Citizen Science is when volunteers (including students) participate in real scientific data collection and research — exactly what this project does!" },
+        { q_tr: "Yaprakların sarı-klorotik görünmesinin en yaygın nedenlerinden biri nedir?", q_en: "What is one of the most common causes of yellow-chlorotic leaf appearance?",
+          opts_tr: ["Besin/demir eksikliği veya stres", "Yalnızca aşırı sulama", "Çok fazla klorofil birikimi", "Yüksek karbon miktarı"], opts_en: ["Nutrient/iron deficiency or stress", "Overwatering alone", "Excessive chlorophyll buildup", "High carbon content"],
+          correct: 0, exp_tr: "Klorotik (sararan) yapraklar genellikle besin eksikliği, kök stresi veya pH kaynaklı emilim sorunlarını işaret eder.", exp_en: "Chlorotic (yellowing) leaves usually indicate nutrient deficiency, root stress, or pH-related uptake problems." }
+    ];
+    function renderQuizQuestion() {
+        const box = document.getElementById('quiz-box');
+        if (!box) return;
+        let idx;
+        do { idx = Math.floor(Math.random() * quizQuestions.length); } while (idx === currentQuizIndex && quizQuestions.length > 1);
+        currentQuizIndex = idx;
+        renderQuizByIndex(idx);
+    }
+    function renderQuizByIndex(idx) {
+        const box = document.getElementById('quiz-box');
+        if (!box) return;
+        const q = quizQuestions[idx];
+        const isTR = currentLang === 'TR';
+        const title = isTR ? '🧪 Mini Bilgi Testi (Bunu biliyor muydunuz?)' : '🧪 Mini Quiz (Did you know?)';
+        const opts = isTR ? q.opts_tr : q.opts_en;
+        box.style.display = 'block';
+        box.innerHTML = `<strong>${title}</strong><br><br>${isTR ? q.q_tr : q.q_en}<br><br>` +
+            opts.map((o, i) => `<button type="button" onclick="answerQuiz(${idx},${i})" style="display:block; width:100%; text-align:left; margin:4px 0; padding:7px 10px; border-radius:8px; border:1px solid #ffca28; background:#fff; cursor:pointer; font-size:11px;">${o}</button>`).join('') +
+            `<div id="quiz-feedback" style="margin-top:6px;"></div>`;
+    }
+    function answerQuiz(idx, chosenIndex) {
+        const q = quizQuestions[idx];
+        const isTR = currentLang === 'TR';
+        const feedback = document.getElementById('quiz-feedback');
+        const correct = chosenIndex === q.correct;
+        if (feedback) {
+            feedback.innerHTML = `<div style="color:${correct ? '#2e7d32' : '#c62828'}; font-weight:bold;">${correct ? (isTR ? '✅ Doğru!' : '✅ Correct!') : (isTR ? '❌ Yanlış.' : '❌ Not quite.')}</div>` +
+                `<div style="margin-top:4px;">${isTR ? q.exp_tr : q.exp_en}</div>` +
+                `<button type="button" onclick="renderQuizQuestion()" style="margin-top:8px; background:#ffca28; border:none; padding:6px 12px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:10px;">${isTR ? '🔄 Yeni Soru' : '🔄 New Question'}</button>`;
+        }
+    }
     let aiOpinionState = null; // 'loading' | 'result' | 'error'
     let lastAIResultText = null;
     // ============================================================
@@ -1253,6 +1327,7 @@
         if (aiOpinionState === 'error') renderAIError();
         else if (aiOpinionState === 'loading') renderAILoading();
         else if (aiOpinionState === 'result' && lastAIResultText) renderAIResult(lastAIResultText);
+        if (currentQuizIndex >= 0) renderQuizByIndex(currentQuizIndex);
     }
     function fetchCurrentWeather() {
         const statusEl = document.getElementById('loc-status');
@@ -2147,6 +2222,7 @@
         document.getElementById('cam-box').style.display = 'none';
         document.getElementById('res-area').style.display = 'block';
         document.getElementById('reset-btn').style.display = 'block';
+        renderQuizQuestion();
         // --- Yaprak Hasar/Sağlık Analizi (arka plan ayrımı, renk sınıflandırma, leke ve kenar analizi) ---
         const healthRes = computeLeafHealthAnalysis(c);
         lastHealthRes = healthRes;
@@ -2295,6 +2371,8 @@
         document.getElementById('error-box').style.display = 'none';
         document.getElementById('leaf-health-box').style.display = 'none';
         document.getElementById('ai-opinion-box').style.display = 'none';
+        document.getElementById('quiz-box').style.display = 'none';
+        currentQuizIndex = -1;
         lastAIContext = null;
         lastHealthRes = null;
         aiOpinionState = null;
