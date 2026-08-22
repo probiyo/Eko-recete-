@@ -210,6 +210,10 @@
             <img id="preview-img" class="captured-preview" src="" alt="Captured Leaf">
             <div id="leaf-health-box" style="display:none; margin: 10px 0; background:#fafdf8; border:1px solid #c8e6c9; border-radius:12px; padding:12px; font-size:11px; color:#1b3d1e; line-height:1.5;"></div>
             <div id="ai-opinion-box" class="ai-opinion-box" style="display:none;"></div>
+            <div id="tts-btn-wrap" style="margin:6px 0;">
+                <button type="button" id="tts-btn" onclick="speakReport()" style="background:#455a64; color:#fff; border:none; padding:7px 12px; border-radius:8px; font-weight:bold; font-size:10px; cursor:pointer;">🔊 <span id="tts-btn-label" data-i18n="ttsListen">Sesli Dinle</span></button>
+            </div>
+            <div id="comparison-box" style="display:none; margin:10px 0; background:#e3f2fd; border:1px solid #90caf9; border-radius:12px; padding:10px; font-size:11px; color:#0d47a1;"></div>
             <div id="hybrid-output" class="hybrid-note"></div>
             <div id="calibration-output" class="calibration-box"></div>
             <div id="green-deal-output" class="green-deal-box"></div>
@@ -436,12 +440,22 @@
                 </div>
             </div>
             <div id="stat-last-update" style="text-align:center; font-size:9px; color:#888; margin-top:6px;"></div>
+            <!-- Rozet/Teşvik Paneli: bu cihazdaki yerel katkı sayacı (localStorage) — E-Tablo verisinden bağımsız, sadece bu tarayıcıda kaydedilen ilerlemeyi gösterir -->
+            <div id="badge-panel" style="margin:12px 0; background:#fffde7; border:1px solid #ffe082; border-radius:12px; padding:10px; font-size:10px; color:#5d4037; text-align:center;"></div>
             <!-- Coğrafi Dağılım / Harita Modülü Mini Görselleştirmesi -->
             <div class="chart-box" style="margin-bottom: 15px;">
                 <label style="text-align:center; margin-bottom:8px; font-size: 10px;" data-i18n="geoChartTitle">📊 Bölgesel Veri Dağılımı / Regional Data Distribution</label>
                 <div class="chart-container" style="min-height: 140px; height: 140px;">
                    <canvas id="geoDistributionChart"></canvas>
                </div>
+            </div>
+            <!-- İklim Trendi: Open-Meteo geçmiş hava verisi — yüklenemezse tamamen gizlenir, akışı hiç etkilemez -->
+            <div id="climate-trend-box" class="chart-box" style="margin-bottom: 15px; display:none;">
+                <label id="climate-trend-title" style="text-align:center; margin-bottom:8px; font-size: 10px;"></label>
+                <div class="chart-container" style="min-height: 120px; height: 120px;">
+                   <canvas id="climateTrendChart"></canvas>
+               </div>
+               <div id="climate-trend-note" style="font-size:9px; color:#888; text-align:center; margin-top:4px;"></div>
             </div>
             <div id="partner-regions-lbl" style="font-size: 11px; font-weight: bold; margin-bottom: 5px; color: var(--primary);" data-i18n="partnerRegions">Katılımcı Pilot Bölgeler / Partner Regions:</div>
             <div style="font-size:9px; color:#888; margin-bottom:6px;" data-i18n="partnerRegionsNote">ℹ️ Şu an yalnızca Rize Fatih Anadolu Lisesi düğümü canlı/gerçek veriyle çalışmaktadır. Diğer bölgeler, projenin planlanan genişleme vizyonunu gösteren örnek/hedef düğümlerdir; henüz bağlı değildir.</div>
@@ -491,6 +505,8 @@
     let lastAIContext = null;
     let lastHealthRes = null; // computeLeafHealthAnalysis sonucu — updateDynamicReportTexts bunu okur
     let currentQuizIndex = -1; // dil değişince aynı soruyu yeniden çizebilmek için
+    let lastKnownLat = null, lastKnownLon = null; // hava durumu için alınan konum — iklim trendi burada yeniden kullanılır
+    const badgeThresholds = [1, 5, 10, 20, 50];
 
     // ============================================================
     // MİNİ EĞİTİM / BİLGİ TESTİ — MEB 10. Sınıf Biyoloji "Enerji" ve
@@ -561,6 +577,179 @@
             feedback.innerHTML = `<div style="color:${correct ? '#2e7d32' : '#c62828'}; font-weight:bold;">${correct ? (isTR ? '✅ Doğru!' : '✅ Correct!') : (isTR ? '❌ Yanlış.' : '❌ Not quite.')}</div>` +
                 `<div style="margin-top:4px;">${isTR ? q.exp_tr : q.exp_en}</div>` +
                 `<button type="button" onclick="renderQuizQuestion()" style="margin-top:8px; background:#ffca28; border:none; padding:6px 12px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:10px;">${isTR ? '🔄 Yeni Soru' : '🔄 New Question'}</button>`;
+        }
+    }
+
+    // ============================================================
+    // 1) BÖLGE ORTALAMASIYLA KARŞILAŞTIRMA
+    // Ayrı, kendi kendine yeten bir CSV çekme/parse mantığı kullanır
+    // (fetchSheetTotalRows'a hiç dokunmaz) — herhangi bir hata olursa
+    // kutu sessizce gizlenir, ana rapor asla etkilenmez.
+    // ============================================================
+    function fetchAndShowComparison(currentPh, currentChloroDisplay) {
+        const box = document.getElementById('comparison-box');
+        if (!box) return;
+        try {
+            const sheetCsvUrl = 'https://docs.google.com/spreadsheets/d/1Nd6NLzE74TFiJv1QSnnsWC2lqFt5bwKf2qaKEX6C2No/export?format=csv';
+            fetch(sheetCsvUrl)
+                .then(response => response.text())
+                .then(data => {
+                    const rows = data.split('\n').filter(row => row.trim().length > 0);
+                    let phValues = [], chloroValues = [];
+                    for (let i = 1; i < rows.length; i++) {
+                        const cols = rows[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                        if (cols.length > 2) {
+                            const phNum = parseFloat(cols[2]);
+                            if (!isNaN(phNum)) phValues.push(phNum);
+                        }
+                        if (cols.length > 4) {
+                            const chloroMatch = cols[4].match(/([\d.]+)\s*mg\/L/i);
+                            if (chloroMatch) {
+                                const chNum = parseFloat(chloroMatch[1]);
+                                if (!isNaN(chNum)) chloroValues.push(chNum);
+                            }
+                        }
+                    }
+                    if (phValues.length < 2) { box.style.display = 'none'; return; }
+                    const avgPh = phValues.reduce((a, b) => a + b, 0) / phValues.length;
+                    const avgChloro = chloroValues.length > 0 ? chloroValues.reduce((a, b) => a + b, 0) / chloroValues.length : null;
+                    const isTR = currentLang === 'TR';
+                    const n = phValues.length;
+                    let html = `<strong>${isTR ? '📊 Bölge Ortalamasıyla Karşılaştırma' : '📊 Comparison with Regional Average'}</strong><br>`;
+                    html += isTR
+                        ? `Sizin pH ölçümünüz: <strong>${currentPh}</strong> — şu ana kadarki ${n} ölçümün ortalaması: <strong>${avgPh.toFixed(2)}</strong>`
+                        : `Your pH measurement: <strong>${currentPh}</strong> — average of ${n} measurements so far: <strong>${avgPh.toFixed(2)}</strong>`;
+                    if (avgChloro !== null && currentChloroDisplay && currentChloroDisplay !== 'N/A') {
+                        html += `<br>` + (isTR
+                            ? `Sizin klorofil ölçümünüz: <strong>${currentChloroDisplay} mg/L</strong> — ortalama: <strong>${avgChloro.toFixed(2)} mg/L</strong>`
+                            : `Your chlorophyll measurement: <strong>${currentChloroDisplay} mg/L</strong> — average: <strong>${avgChloro.toFixed(2)} mg/L</strong>`);
+                    }
+                    box.innerHTML = html;
+                    box.style.display = 'block';
+                })
+                .catch(() => { box.style.display = 'none'; });
+        } catch (err) {
+            box.style.display = 'none';
+        }
+    }
+
+    // ============================================================
+    // 2) SESLİ OKUMA (Text-to-Speech) — tarayıcının kendi yerleşik
+    // SpeechSynthesis API'sini kullanır, ek maliyet/servis gerektirmez.
+    // ============================================================
+    function speakReport() {
+        try {
+            if (!('speechSynthesis' in window)) {
+                alert(currentLang === 'TR' ? 'Tarayıcınız sesli okumayı desteklemiyor.' : 'Your browser does not support text-to-speech.');
+                return;
+            }
+            window.speechSynthesis.cancel();
+            let text = '';
+            if (lastAIResultText) {
+                text = lastAIResultText;
+            } else if (lastHealthRes && lastHealthRes.ok) {
+                text = (currentLang === 'TR' ? 'Yaprak sağlık skoru: ' : 'Leaf health score: ') + lastHealthRes.score + (currentLang === 'TR' ? ' üzerinden 100.' : ' out of 100.');
+            } else {
+                text = currentLang === 'TR' ? 'Okunacak bir rapor bulunamadı.' : 'No report available to read.';
+            }
+            const cleanText = text.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+            const utter = new SpeechSynthesisUtterance(cleanText);
+            utter.lang = currentLang === 'TR' ? 'tr-TR' : 'en-US';
+            window.speechSynthesis.speak(utter);
+        } catch (err) {
+            console.error('Sesli okuma başlatılamadı:', err);
+        }
+    }
+
+    // ============================================================
+    // 3) ROZET / KATKI TEŞVİK SİSTEMİ — sadece bu cihazın yerel
+    // localStorage'ında tutulur; E-Tablo/Drive'a hiçbir şey göndermez,
+    // sunucu tarafını hiç etkilemez.
+    // ============================================================
+    function recordContributionAndCheckBadges(plantTypeName) {
+        try {
+            let count = parseInt(localStorage.getItem('agro_analysis_count') || '0', 10) + 1;
+            localStorage.setItem('agro_analysis_count', String(count));
+            let speciesSet = JSON.parse(localStorage.getItem('agro_species_set') || '[]');
+            if (plantTypeName && speciesSet.indexOf(plantTypeName) === -1) {
+                speciesSet.push(plantTypeName);
+                localStorage.setItem('agro_species_set', JSON.stringify(speciesSet));
+            }
+            renderBadgePanel();
+        } catch (err) {
+            console.error('Katkı kaydedilemedi:', err);
+        }
+    }
+    function renderBadgePanel() {
+        const panel = document.getElementById('badge-panel');
+        if (!panel) return;
+        try {
+            const count = parseInt(localStorage.getItem('agro_analysis_count') || '0', 10);
+            const speciesSet = JSON.parse(localStorage.getItem('agro_species_set') || '[]');
+            const isTR = currentLang === 'TR';
+            let badgesHtml = '';
+            badgeThresholds.forEach(t => {
+                const unlocked = count >= t;
+                badgesHtml += `<span style="display:inline-block; margin:3px; padding:5px 9px; border-radius:20px; font-size:9px; font-weight:bold; ${unlocked ? 'background:#ffd54f; color:#5d4037;' : 'background:#eee; color:#aaa;'}">${unlocked ? '🏅' : '🔒'} ${t} ${isTR ? 'Analiz' : 'Analyses'}</span>`;
+            });
+            const speciesBadge = speciesSet.length >= 3;
+            badgesHtml += `<span style="display:inline-block; margin:3px; padding:5px 9px; border-radius:20px; font-size:9px; font-weight:bold; ${speciesBadge ? 'background:#ffd54f; color:#5d4037;' : 'background:#eee; color:#aaa;'}">${speciesBadge ? '🌍' : '🔒'} ${isTR ? '3+ Farklı Tür' : '3+ Species'}</span>`;
+            panel.innerHTML = `<strong>${isTR ? '🏅 Sizin Katkılarınız (bu cihazda)' : '🏅 Your Contributions (this device)'}</strong><br>` +
+                `<span style="font-size:9px; color:#888;">${isTR ? `Toplam ${count} analiz, ${speciesSet.length} farklı tür.` : `${count} analyses, ${speciesSet.length} different species so far.`}</span><br>` +
+                badgesHtml;
+        } catch (err) {
+            panel.innerHTML = '';
+        }
+    }
+
+    // ============================================================
+    // 4) GEÇMİŞ İKLİM TRENDİ — Open-Meteo Arşiv API (ücretsiz, anahtar
+    // gerektirmez; site zaten aynı Open-Meteo ailesini hava durumu için
+    // kullanıyor). Konum yoksa/istek başarısız olursa kutu TAMAMEN
+    // gizli kalır — hiçbir hata mesajı göstermez, akışı bozmaz.
+    // ============================================================
+    let climateTrendChart = null;
+    function fetchClimateTrend() {
+        const box = document.getElementById('climate-trend-box');
+        if (!box) return;
+        try {
+            const lat = lastKnownLat !== null ? lastKnownLat : 41.02; // konum yoksa: Rize varsayılanı
+            const lon = lastKnownLon !== null ? lastKnownLon : 40.52;
+            const thisYear = new Date().getFullYear();
+            const startYear = thisYear - 5;
+            const startDate = startYear + '-01-01';
+            const endDate = (thisYear - 1) + '-12-31'; // tamamlanmış son 5 yıl
+            const url = `https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=${startDate}&end_date=${endDate}&daily=temperature_2m_mean&timezone=auto`;
+            fetch(url)
+                .then(res => { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+                .then(data => {
+                    if (!data || !data.daily || !data.daily.time || !data.daily.temperature_2m_mean) { box.style.display = 'none'; return; }
+                    const times = data.daily.time, temps = data.daily.temperature_2m_mean;
+                    const yearlySum = {}, yearlyCount = {};
+                    for (let i = 0; i < times.length; i++) {
+                        if (temps[i] === null || temps[i] === undefined) continue;
+                        const yr = times[i].substring(0, 4);
+                        yearlySum[yr] = (yearlySum[yr] || 0) + temps[i];
+                        yearlyCount[yr] = (yearlyCount[yr] || 0) + 1;
+                    }
+                    const years = Object.keys(yearlySum).sort();
+                    if (years.length < 2) { box.style.display = 'none'; return; }
+                    const yearlyAvgs = years.map(y => +(yearlySum[y] / yearlyCount[y]).toFixed(1));
+                    const isTR = currentLang === 'TR';
+                    document.getElementById('climate-trend-title').innerText = isTR ? '🌡️ Bölgenin Yıllık Ortalama Sıcaklık Trendi' : '🌡️ Regional Annual Average Temperature Trend';
+                    document.getElementById('climate-trend-note').innerText = isTR ? 'Kaynak: Open-Meteo Arşiv Verisi (son tamamlanmış yıllar)' : 'Source: Open-Meteo Archive Data (last completed years)';
+                    const ctx = document.getElementById('climateTrendChart').getContext('2d');
+                    if (climateTrendChart instanceof Chart) climateTrendChart.destroy();
+                    climateTrendChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: { labels: years, datasets: [{ label: isTR ? 'Ort. Sıcaklık (°C)' : 'Avg Temp (°C)', data: yearlyAvgs, backgroundColor: '#4fc3f7' }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: false } } }
+                    });
+                    box.style.display = 'block';
+                })
+                .catch(() => { box.style.display = 'none'; });
+        } catch (err) {
+            box.style.display = 'none';
         }
     }
     let aiOpinionState = null; // 'loading' | 'result' | 'error'
@@ -738,6 +927,7 @@
             tabCitizen: "🌍 CITIZEN",
             lblRegion: "Bölge ve Ürün / Region & Crop",
             lblManualSelect: "+ Global - Diğer / Other (Manuel Seçim)",
+            ttsListen: "Sesli Dinle",
             lblManualSpecies: "🔬 Bilimsel Tür Adı (Latince) / Scientific Species Name (Latin)",
             lblManualCommon: "Yerel/Genel Ad (opsiyonel) / Common Name (optional)",
             lblManualPhMin: "İdeal pH Min",
@@ -861,6 +1051,7 @@
             tabCitizen: "🌍 CITIZEN",
             lblRegion: "Region & Crop",
             lblManualSelect: "+ Global - Other (Manual Selection)",
+            ttsListen: "Listen",
             lblManualSpecies: "🔬 Scientific Species Name (Latin)",
             lblManualCommon: "Common Name (optional)",
             lblManualPhMin: "Ideal pH Min",
@@ -1328,6 +1519,15 @@
         else if (aiOpinionState === 'loading') renderAILoading();
         else if (aiOpinionState === 'result' && lastAIResultText) renderAIResult(lastAIResultText);
         if (currentQuizIndex >= 0) renderQuizByIndex(currentQuizIndex);
+        const badgePanel = document.getElementById('badge-panel');
+        if (badgePanel && document.getElementById('citizen-section').style.display === 'block') {
+            renderBadgePanel();
+        }
+        if (document.getElementById('climate-trend-box').style.display === 'block') {
+            const isTR = currentLang === 'TR';
+            document.getElementById('climate-trend-title').innerText = isTR ? '🌡️ Bölgenin Yıllık Ortalama Sıcaklık Trendi' : '🌡️ Regional Annual Average Temperature Trend';
+            document.getElementById('climate-trend-note').innerText = isTR ? 'Kaynak: Open-Meteo Arşiv Verisi (son tamamlanmış yıllar)' : 'Source: Open-Meteo Archive Data (last completed years)';
+        }
     }
     function fetchCurrentWeather() {
         const statusEl = document.getElementById('loc-status');
@@ -1339,6 +1539,7 @@
         navigator.geolocation.getCurrentPosition(position => {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
+            lastKnownLat = lat; lastKnownLon = lon; // iklim trendi grafiği için sakla
             fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=weathercode`)
                 .then(res => res.json())
                 .then(data => {
@@ -1448,6 +1649,8 @@
             document.getElementById('cam-box').style.display = 'none';
             document.getElementById('form-area').style.display = 'block';
             setTimeout(() => { fetchSheetTotalRows(); }, 200);
+            renderBadgePanel();
+            fetchClimateTrend();
         }
     }
     // ============================================================
@@ -2222,7 +2425,6 @@
         document.getElementById('cam-box').style.display = 'none';
         document.getElementById('res-area').style.display = 'block';
         document.getElementById('reset-btn').style.display = 'block';
-        renderQuizQuestion();
         // --- Yaprak Hasar/Sağlık Analizi (arka plan ayrımı, renk sınıflandırma, leke ve kenar analizi) ---
         const healthRes = computeLeafHealthAnalysis(c);
         lastHealthRes = healthRes;
@@ -2238,6 +2440,11 @@
             integratedInput.value = leafAnalysis.estimatedConc.toFixed(1);
         }
         const ishChlorophylVal = integratedInput.value;
+        // Yeni destekleyici özellikler: quiz, bölge karşılaştırması, katkı rozeti.
+        // Üçü de ana bilimsel akıştan tamamen bağımsız ve hataya dayanıklıdır.
+        renderQuizQuestion();
+        fetchAndShowComparison(phVal, ishChlorophylVal);
+        recordContributionAndCheckBadges(cropName);
         const healthNote = healthRes.ok ? `, Yaprak Sağlık Skoru: ${healthRes.score}/100 (${healthRes.label})` : '';
         // AI Uzman Yorumu: gerçek hesaplanan verileri kullanır, ana akışı
         // (senkronizasyon) HİÇBİR ZAMAN beklemez — bağımsız/paralel çalışır.
@@ -2372,6 +2579,8 @@
         document.getElementById('leaf-health-box').style.display = 'none';
         document.getElementById('ai-opinion-box').style.display = 'none';
         document.getElementById('quiz-box').style.display = 'none';
+        document.getElementById('comparison-box').style.display = 'none';
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
         currentQuizIndex = -1;
         lastAIContext = null;
         lastHealthRes = null;
