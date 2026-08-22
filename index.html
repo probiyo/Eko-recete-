@@ -732,18 +732,27 @@
                         yearlySum[yr] = (yearlySum[yr] || 0) + temps[i];
                         yearlyCount[yr] = (yearlyCount[yr] || 0) + 1;
                     }
-                    const years = Object.keys(yearlySum).sort();
-                    if (years.length < 2) { box.style.display = 'none'; return; }
-                    const yearlyAvgs = years.map(y => +(yearlySum[y] / yearlyCount[y]).toFixed(1));
+                    // Yalnızca yeterince tam veriye sahip yılları al (en az 300 gün) —
+                    // API'nin bir yıl için kısmi/eksik veri döndürdüğü durumlarda,
+                    // o yılı görünmez/yanıltıcı bir çubuk olarak göstermek yerine
+                    // tamamen atlıyoruz.
+                    const validYears = Object.keys(yearlySum).filter(y => yearlyCount[y] >= 300).sort();
+                    if (validYears.length < 2) { box.style.display = 'none'; return; }
+                    const yearlyAvgs = validYears.map(y => +(yearlySum[y] / yearlyCount[y]).toFixed(1));
                     const isTR = currentLang === 'TR';
                     document.getElementById('climate-trend-title').innerText = isTR ? '🌡️ Bölgenin Yıllık Ortalama Sıcaklık Trendi' : '🌡️ Regional Annual Average Temperature Trend';
                     document.getElementById('climate-trend-note').innerText = isTR ? 'Kaynak: Open-Meteo Arşiv Verisi (son tamamlanmış yıllar)' : 'Source: Open-Meteo Archive Data (last completed years)';
                     const ctx = document.getElementById('climateTrendChart').getContext('2d');
                     if (climateTrendChart instanceof Chart) climateTrendChart.destroy();
+                    // Y ekseninde her çubuğun her zaman net görünür olması için,
+                    // eksen aralığını veriye göre elle (bir miktar boşlukla) belirliyoruz —
+                    // otomatik ölçeklemenin bir çubuğu görünmez kılmasını önler.
+                    const minVal = Math.min(...yearlyAvgs), maxVal = Math.max(...yearlyAvgs);
+                    const pad = Math.max(0.5, (maxVal - minVal) * 0.3);
                     climateTrendChart = new Chart(ctx, {
                         type: 'bar',
-                        data: { labels: years, datasets: [{ label: isTR ? 'Ort. Sıcaklık (°C)' : 'Avg Temp (°C)', data: yearlyAvgs, backgroundColor: '#4fc3f7' }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: false } } }
+                        data: { labels: validYears, datasets: [{ label: isTR ? 'Ort. Sıcaklık (°C)' : 'Avg Temp (°C)', data: yearlyAvgs, backgroundColor: '#4fc3f7' }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: false, suggestedMin: +(minVal - pad).toFixed(1), suggestedMax: +(maxVal + pad).toFixed(1) } } }
                     });
                     box.style.display = 'block';
                 })
@@ -1663,6 +1672,7 @@
         const imgData = ctx.getImageData(0, 0, w, h);
         const pixels = imgData.data;
         let totalR = 0, totalG = 0, totalB = 0, greenPixelCount = 0, skinPixelCount = 0, count = 0;
+        let lumSum = 0, lumSqSum = 0;
         for (let i = 0; i < pixels.length; i += 16) {
             const r = pixels[i], g = pixels[i+1], b = pixels[i+2];
             totalR += r; totalG += g; totalB += b;
@@ -1675,9 +1685,21 @@
             if (r > 95 && g > 40 && b > 20 && (maxC - minC) > 15 && Math.abs(r - g) > 15 && r > g && r > b) {
                 skinPixelCount++;
             }
+            // ÜÇÜNCÜ, RENKTEN TAMAMEN BAĞIMSIZ SİNYAL: doku düzgünlüğü (parlaklık
+            // varyansı). Renk tabanlı iki kontrol de bazı aydınlatma koşullarında
+            // (soluk/soğuk ışıklı yüz fotoğrafları gibi) yanılabiliyordu. Gerçek bir
+            // yaprak fotoğrafında damarlar/lekeler/kenarlar yüzünden piksel-piksel
+            // parlaklık ÇOK değişkendir; bulanık bir cilt/yüz fotoğrafında bu
+            // değişkenlik düşüktür. Bu ölçüm rengi hiç dikkate almaz.
+            const lum = (r + g + b) / 3;
+            lumSum += lum;
+            lumSqSum += lum * lum;
             count++;
         }
-        return { avgR: totalR / count, avgG: totalG / count, avgB: totalB / count, greenRatio: greenPixelCount / count, skinRatio: skinPixelCount / count };
+        const lumMean = lumSum / count;
+        const lumVariance = Math.max(0, (lumSqSum / count) - (lumMean * lumMean));
+        const lumStdDev = Math.sqrt(lumVariance);
+        return { avgR: totalR / count, avgG: totalG / count, avgB: totalB / count, greenRatio: greenPixelCount / count, skinRatio: skinPixelCount / count, lumStdDev: lumStdDev };
     }
     function loadImageToCanvas(file, callback) {
         const reader = new FileReader();
@@ -1719,7 +1741,7 @@
         const scaleR = ref.r > 0 ? target / ref.r : 1;
         const scaleG = ref.g > 0 ? target / ref.g : 1;
         const scaleB = ref.b > 0 ? target / ref.b : 1;
-        return { avgR: stats.avgR * scaleR, avgG: stats.avgG * scaleG, avgB: stats.avgB * scaleB, greenRatio: stats.greenRatio, skinRatio: stats.skinRatio };
+        return { avgR: stats.avgR * scaleR, avgG: stats.avgG * scaleG, avgB: stats.avgB * scaleB, greenRatio: stats.greenRatio, skinRatio: stats.skinRatio, lumStdDev: stats.lumStdDev };
     }
     function updateWhiteRefStatus() {
         const el = document.getElementById('white-ref-status');
@@ -2312,7 +2334,7 @@
         const stats = normalizeStats(rawStats);
         const signal = computeColorSignal(stats);
         const result = estimateConcentrationFromSignal(signal);
-        return { greenRatio: rawStats.greenRatio, skinRatio: rawStats.skinRatio, estimatedConc: result.value, calibrated: result.calibrated };
+        return { greenRatio: rawStats.greenRatio, skinRatio: rawStats.skinRatio, lumStdDev: rawStats.lumStdDev, estimatedConc: result.value, calibrated: result.calibrated };
     }
     // ============================================================
     // AI UZMAN YORUMU (Beta) — Google Gemini API entegrasyonu
@@ -2405,13 +2427,16 @@
         // Görüntüyü analiz et: yeterli bitki/klorofil dokusu var mı?
         const leafAnalysis = analyzeLeafImage(c);
         document.getElementById('error-box').style.display = 'none';
-        // İKİ BAĞIMSIZ SİNYAL birlikte kontrol edilir: (1) yeterli yeşil doku VAR MI,
-        // (2) baskın olarak cilt tonu MU. Tek başına yeşil oranı bazı ışık
-        // koşullarında yanıltıcı olabiliyordu (ör. sıcak iç mekan ışığında bir el/cilt
-        // fotoğrafı eşiği geçebiliyordu); cilt tonu sinyali bunu bağımsız olarak yakalar.
+        // ÜÇ BAĞIMSIZ SİNYAL birlikte kontrol edilir: (1) yeterli yeşil doku VAR MI,
+        // (2) baskın olarak cilt tonu MU, (3) görüntü DOKU olarak çok mu düz/tekdüze
+        // (bulanık bir cilt/yüz fotoğrafının tipik özelliği). İlk iki sinyal bazı
+        // ışık koşullarında (soluk/soğuk ışıklı yüz fotoğrafları gibi) tek başına
+        // yetersiz kalabiliyordu; üçüncü sinyal renkten tamamen bağımsız olduğu için
+        // bu durumları da yakalar.
         const notEnoughGreen = leafAnalysis.greenRatio < 0.06;
         const looksLikeSkin = leafAnalysis.skinRatio > 0.35;
-        if (notEnoughGreen || looksLikeSkin) {
+        const tooUniform = leafAnalysis.lumStdDev < 15;
+        if (notEnoughGreen || looksLikeSkin || tooUniform) {
             // Karede yeterli bitki dokusu tespit edilemedi (veya cilt/insan dokusu
             // baskın) -> uyarıyı göster, devam etme
             document.getElementById('error-box').style.display = 'block';
