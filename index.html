@@ -506,6 +506,7 @@
     let lastHealthRes = null; // computeLeafHealthAnalysis sonucu — updateDynamicReportTexts bunu okur
     let currentQuizIndex = -1; // dil değişince aynı soruyu yeniden çizebilmek için
     let lastKnownLat = null, lastKnownLon = null; // hava durumu için alınan konum — iklim trendi burada yeniden kullanılır
+    let lastAnalysisPh = null, lastAnalysisChloro = null; // dil değişince "Bölge Karşılaştırması" kutusunu yeniden çizebilmek için
     const badgeThresholds = [1, 5, 10, 20, 50];
 
     // ============================================================
@@ -1526,8 +1527,14 @@
         }
         if (aiOpinionState === 'error') renderAIError();
         else if (aiOpinionState === 'loading') renderAILoading();
-        else if (aiOpinionState === 'result' && lastAIResultText) renderAIResult(lastAIResultText);
+        else if (aiOpinionState === 'result' && lastAIContext) requestAIOpinion(lastAIContext);
         if (currentQuizIndex >= 0) renderQuizByIndex(currentQuizIndex);
+        if (lastHealthRes && document.getElementById('leaf-health-box').style.display === 'block') {
+            renderLeafHealthBox(lastHealthRes);
+        }
+        if (lastAnalysisPh !== null && document.getElementById('comparison-box').style.display === 'block') {
+            fetchAndShowComparison(lastAnalysisPh, lastAnalysisChloro);
+        }
         const badgePanel = document.getElementById('badge-panel');
         if (badgePanel && document.getElementById('citizen-section').style.display === 'block') {
             renderBadgePanel();
@@ -2498,6 +2505,8 @@
         // Yeni destekleyici özellikler: quiz, bölge karşılaştırması, katkı rozeti.
         // Üçü de ana bilimsel akıştan tamamen bağımsız ve hataya dayanıklıdır.
         renderQuizQuestion();
+        lastAnalysisPh = phVal;
+        lastAnalysisChloro = ishChlorophylVal;
         fetchAndShowComparison(phVal, ishChlorophylVal);
         recordContributionAndCheckBadges(cropName);
         const healthNote = healthRes.ok ? `, Yaprak Sağlık Skoru: ${healthRes.score}/100 (${healthRes.label})` : '';
@@ -2637,6 +2646,8 @@
         document.getElementById('comparison-box').style.display = 'none';
         if ('speechSynthesis' in window) window.speechSynthesis.cancel();
         currentQuizIndex = -1;
+        lastAnalysisPh = null;
+        lastAnalysisChloro = null;
         lastAIContext = null;
         lastHealthRes = null;
         aiOpinionState = null;
