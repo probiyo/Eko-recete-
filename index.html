@@ -2444,6 +2444,36 @@
             document.getElementById('res-area').style.display = 'none';
             return;
         }
+        // 4. KATMAN — Rapor gösterilmeden ÖNCE Gemini AI ile hızlı bir görsel
+        // doğrulama daha yapılır. Yukarıdaki 3 renk/doku sinyali bazı kamera/ışık
+        // koşullarında hâlâ yanılabiliyordu; bu adım gerçek görsel anlama
+        // kullanarak son bir kontrol sağlar. Gemini'ye ulaşılamazsa (ağ/kota
+        // sorunu) İZİN VERİLİR (fail open) — kullanıcı asla mağdur edilmez.
+        const snapBtn = document.getElementById('snap-btn');
+        const originalBtnHTML = snapBtn.innerHTML;
+        snapBtn.disabled = true;
+        snapBtn.innerHTML = currentLang === 'TR' ? '🔍 Fotoğraf doğrulanıyor...' : '🔍 Verifying photo...';
+        try {
+            const verifyResp = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ token: APP_TOKEN, action: 'verify_plant', photo: lastCapturedImage, photoType: 'image/jpeg' })
+            });
+            if (verifyResp.ok) {
+                const verifyData = await verifyResp.json();
+                if (verifyData && verifyData.isPlant === false) {
+                    document.getElementById('error-box').style.display = 'block';
+                    document.getElementById('cam-box').style.display = 'block';
+                    document.getElementById('res-area').style.display = 'none';
+                    snapBtn.disabled = false;
+                    snapBtn.innerHTML = originalBtnHTML;
+                    return;
+                }
+            }
+        } catch (err) {
+            console.error('AI doğrulaması yapılamadı, yerel kontrole güveniliyor:', err);
+        }
+        snapBtn.innerHTML = originalBtnHTML;
         document.getElementById('preview-img').src = lastCapturedImage;
         document.getElementById('preview-img').style.display = 'block';
         if(track) track.stop();
