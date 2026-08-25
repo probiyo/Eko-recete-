@@ -203,6 +203,7 @@
             ⚠️ BİTKİ ALGILANAMADI: Yeterli yaprak/klorofil (yeşil doku) tespit edilemedi. Lütfen yaprak görüntüsü çekiniz!<br>
             ⚠️ NO PLANT DETECTED: Insufficient leaf/chlorophyll (green tissue) detected. Please capture a leaf image!
         </div>
+        <div id="verify-fail-box" class="error-msg" style="display:none;"></div>
         <div id="res-area">
             <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;"><span data-i18n="reportHeaderTitle">BRÜSSEL PROJE RAPORU #EU-AGRO</span><br><span style="font-size:9px; font-weight:normal;" data-i18n="reportHeaderSub">BRUSSELS PROJECT REPORT #EU-AGRO</span></div>
             <div id="sync-status" class="sync-status" data-i18n="syncSuccess">✨ Saha + Lab Entegre Analiz Tamamlandı & Excel'e Aktarıldı!<br><span style="font-size:9px; font-weight:normal;">Integrated Field + Lab Analysis Completed & Synced to Excel!</span></div>
@@ -2453,13 +2454,17 @@
         }
         // 4. KATMAN — Rapor gösterilmeden ÖNCE Gemini AI ile hızlı bir görsel
         // doğrulama daha yapılır. Yukarıdaki 3 renk/doku sinyali bazı kamera/ışık
-        // koşullarında hâlâ yanılabiliyordu; bu adım gerçek görsel anlama
-        // kullanarak son bir kontrol sağlar. Gemini'ye ulaşılamazsa (ağ/kota
-        // sorunu) İZİN VERİLİR (fail open) — kullanıcı asla mağdur edilmez.
+        // koşullarında hâlâ yanılabiliyordu. BU KONTROL ARTIK "FAIL-CLOSED":
+        // Gemini'ye ulaşılamazsa veya net bir cevap alınamazsa rapor
+        // GÖSTERİLMEZ, kullanıcıdan tekrar denemesi istenir — önceki "belirsizse
+        // izin ver" yaklaşımı, bu tam da yüz fotoğraflarının sızmasına neden
+        // olduğu için terk edildi.
         const snapBtn = document.getElementById('snap-btn');
         const originalBtnHTML = snapBtn.innerHTML;
+        const verifyFailBox = document.getElementById('verify-fail-box');
         snapBtn.disabled = true;
         snapBtn.innerHTML = currentLang === 'TR' ? '🔍 Fotoğraf doğrulanıyor...' : '🔍 Verifying photo...';
+        let verifiedAndAllowed = false;
         try {
             const verifyResp = await fetch(SCRIPT_URL, {
                 method: 'POST',
@@ -2468,18 +2473,38 @@
             });
             if (verifyResp.ok) {
                 const verifyData = await verifyResp.json();
-                if (verifyData && verifyData.isPlant === false) {
-                    document.getElementById('error-box').style.display = 'block';
-                    document.getElementById('cam-box').style.display = 'block';
-                    document.getElementById('res-area').style.display = 'none';
-                    snapBtn.disabled = false;
-                    snapBtn.innerHTML = originalBtnHTML;
-                    return;
+                if (verifyData && verifyData.status === 'success') {
+                    if (verifyData.verified === true && verifyData.isPlant === true) {
+                        verifiedAndAllowed = true;
+                    } else if (verifyData.verified === true && verifyData.isPlant === false) {
+                        // Gemini AÇIKÇA reddetti — kesin ret, tekrar denemenin anlamı yok.
+                        document.getElementById('error-box').style.display = 'block';
+                        document.getElementById('cam-box').style.display = 'block';
+                        document.getElementById('res-area').style.display = 'none';
+                        snapBtn.disabled = false;
+                        snapBtn.innerHTML = originalBtnHTML;
+                        return;
+                    }
+                    // verified === false ise (Gemini'ye ulaşılamadı) -> aşağıya düşer, tekrar dene mesajı gösterilir.
                 }
             }
         } catch (err) {
-            console.error('AI doğrulaması yapılamadı, yerel kontrole güveniliyor:', err);
+            console.error('AI doğrulaması yapılamadı:', err);
         }
+        if (!verifiedAndAllowed) {
+            // Gemini'den net bir "UYGUN" onayı alınamadı (ağ/kota sorunu olabilir) ->
+            // güvenli tarafta kal, raporu gösterme, kullanıcıdan tekrar denemesini iste.
+            verifyFailBox.innerHTML = currentLang === 'TR'
+                ? '⚠️ Fotoğraf doğrulanamadı (bağlantı/kota sorunu olabilir). Lütfen birkaç saniye sonra "FOTOĞRAF ÇEK" ile tekrar deneyin.'
+                : '⚠️ Could not verify the photo (connection/quota issue possible). Please try "TAKE PHOTO" again in a few seconds.';
+            verifyFailBox.style.display = 'block';
+            document.getElementById('cam-box').style.display = 'block';
+            document.getElementById('res-area').style.display = 'none';
+            snapBtn.disabled = false;
+            snapBtn.innerHTML = originalBtnHTML;
+            return;
+        }
+        verifyFailBox.style.display = 'none';
         snapBtn.innerHTML = originalBtnHTML;
         document.getElementById('preview-img').src = lastCapturedImage;
         document.getElementById('preview-img').style.display = 'block';
@@ -2640,6 +2665,7 @@
         document.getElementById('form-area').style.display = 'block';
         document.getElementById('reset-btn').style.display = 'none';
         document.getElementById('error-box').style.display = 'none';
+        document.getElementById('verify-fail-box').style.display = 'none';
         document.getElementById('leaf-health-box').style.display = 'none';
         document.getElementById('ai-opinion-box').style.display = 'none';
         document.getElementById('quiz-box').style.display = 'none';
