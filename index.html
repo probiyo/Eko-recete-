@@ -2452,30 +2452,50 @@
             document.getElementById('res-area').style.display = 'none';
             return;
         }
-        // 4. KATMAN — Rapor gösterilmeden ÖNCE Gemini AI ile hızlı bir görsel
-        // doğrulama daha yapılır. Yukarıdaki 3 renk/doku sinyali bazı kamera/ışık
-        // koşullarında hâlâ yanılabiliyordu. BU KONTROL ARTIK "FAIL-CLOSED":
-        // Gemini'ye ulaşılamazsa veya net bir cevap alınamazsa rapor
-        // GÖSTERİLMEZ, kullanıcıdan tekrar denemesi istenir — önceki "belirsizse
-        // izin ver" yaklaşımı, bu tam da yüz fotoğraflarının sızmasına neden
-        // olduğu için terk edildi.
+        // Rapor için gereken tüm bağlamı ÖNCEDEN hesaplıyoruz — böylece TEK
+        // Gemini isteğinde hem doğrulama hem yorum birlikte istenebilir.
+        const healthRes = computeLeafHealthAnalysis(c);
+        const regionSelect = document.getElementById('region');
+        const cropName = regionSelect.options[regionSelect.selectedIndex] ? regionSelect.options[regionSelect.selectedIndex].text : regionSelect.value;
+        const phVal = document.getElementById('ph').value;
+        const weatherVal = document.getElementById('weather').value;
+        const integratedInput = document.getElementById('integrated-chlorophyll');
+        if (!integratedInput.value) {
+            integratedInput.value = leafAnalysis.estimatedConc.toFixed(1);
+        }
+        const ishChlorophylVal = integratedInput.value;
+
+        // 4. KATMAN — Rapor gösterilmeden ÖNCE Gemini AI ile TEK bir istekte hem
+        // doğrulama hem (uygunsa) AI Uzman Yorumu birlikte alınır. Önceden bu üç
+        // ayrı Gemini isteğine bölünmüştü (ön-doğrulama + kayıt-sırasında-tekrar-
+        // doğrulama + ayrı yorum isteği); artık TEK istek — hem kota tüketimini
+        // ciddi şekilde azaltır hem de bekleme süresini kısaltır. BU KONTROL
+        // "FAIL-CLOSED": Gemini'ye ulaşılamazsa veya net bir cevap alınamazsa
+        // rapor GÖSTERİLMEZ, kullanıcıdan tekrar denemesi istenir.
         const snapBtn = document.getElementById('snap-btn');
         const originalBtnHTML = snapBtn.innerHTML;
         const verifyFailBox = document.getElementById('verify-fail-box');
         snapBtn.disabled = true;
         snapBtn.innerHTML = currentLang === 'TR' ? '🔍 Fotoğraf doğrulanıyor...' : '🔍 Verifying photo...';
         let verifiedAndAllowed = false;
+        let aiComment = '';
         try {
             const verifyResp = await fetch(SCRIPT_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ token: APP_TOKEN, action: 'verify_plant', photo: lastCapturedImage, photoType: 'image/jpeg' })
+                body: JSON.stringify({
+                    token: APP_TOKEN, action: 'verify_plant', photo: lastCapturedImage, photoType: 'image/jpeg',
+                    crop: cropName, ph: phVal, chlorophyll: ishChlorophylVal || 'N/A', weather: weatherVal,
+                    healthScore: healthRes.ok ? healthRes.score : null, healthLabel: healthRes.ok ? healthRes.label : '',
+                    lang: currentLang
+                })
             });
             if (verifyResp.ok) {
                 const verifyData = await verifyResp.json();
                 if (verifyData && verifyData.status === 'success') {
                     if (verifyData.verified === true && verifyData.isPlant === true) {
                         verifiedAndAllowed = true;
+                        aiComment = verifyData.comment || '';
                     } else if (verifyData.verified === true && verifyData.isPlant === false) {
                         // Gemini AÇIKÇA reddetti — kesin ret, tekrar denemenin anlamı yok.
                         document.getElementById('error-box').style.display = 'block';
@@ -2513,20 +2533,8 @@
         document.getElementById('res-area').style.display = 'block';
         document.getElementById('reset-btn').style.display = 'block';
         // --- Yaprak Hasar/Sağlık Analizi (arka plan ayrımı, renk sınıflandırma, leke ve kenar analizi) ---
-        const healthRes = computeLeafHealthAnalysis(c);
         lastHealthRes = healthRes;
         renderLeafHealthBox(healthRes);
-        const regionSelect = document.getElementById('region');
-        const cropName = regionSelect.options[regionSelect.selectedIndex] ? regionSelect.options[regionSelect.selectedIndex].text : regionSelect.value;
-        const phVal = document.getElementById('ph').value;
-        const weatherVal = document.getElementById('weather').value;
-        const integratedInput = document.getElementById('integrated-chlorophyll');
-        // Kullanıcı MEBİ LAB'dan veya elle bir değer girmediyse, fotoğraftan
-        // hesaplanan tahmini kullan; girdiyse kullanıcının değerine dokunma.
-        if (!integratedInput.value) {
-            integratedInput.value = leafAnalysis.estimatedConc.toFixed(1);
-        }
-        const ishChlorophylVal = integratedInput.value;
         // Yeni destekleyici özellikler: quiz, bölge karşılaştırması, katkı rozeti.
         // Üçü de ana bilimsel akıştan tamamen bağımsız ve hataya dayanıklıdır.
         renderQuizQuestion();
@@ -2535,8 +2543,10 @@
         fetchAndShowComparison(phVal, ishChlorophylVal);
         recordContributionAndCheckBadges(cropName);
         const healthNote = healthRes.ok ? `, Yaprak Sağlık Skoru: ${healthRes.score}/100 (${healthRes.label})` : '';
-        // AI Uzman Yorumu: gerçek hesaplanan verileri kullanır, ana akışı
-        // (senkronizasyon) HİÇBİR ZAMAN beklemez — bağımsız/paralel çalışır.
+        // lastAIContext, "Tekrar Dene" butonu ve dil değişince yeniden üretme için
+        // saklanır (requestAIOpinion o durumlarda ayrıca çağrılabilir); ama normal
+        // akışta artık AYRI bir Gemini isteği YOK — yorum, doğrulamayla birlikte
+        // yukarıdaki TEK istekte zaten geldi, doğrudan gösteriliyor.
         lastAIContext = {
             image: lastCapturedImage,
             crop: cropName,
@@ -2546,7 +2556,11 @@
             healthScore: healthRes.ok ? healthRes.score : null,
             healthLabel: healthRes.ok ? healthRes.label : ''
         };
-        requestAIOpinion(lastAIContext);
+        if (aiComment) {
+            renderAIResult(aiComment);
+        } else {
+            requestAIOpinion(lastAIContext);
+        }
         const formData = {
             token: APP_TOKEN,
             region: cropName,
