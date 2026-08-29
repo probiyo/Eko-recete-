@@ -2494,24 +2494,17 @@
         snapBtn.disabled = true;
         snapBtn.innerHTML = currentLang === 'TR' ? '🔍 Fotoğraf doğrulanıyor...' : '🔍 Verifying photo...';
         let verifiedAndAllowed = false;
-        let aiComment = '';
         try {
             const verifyResp = await fetch(SCRIPT_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({
-                    token: APP_TOKEN, action: 'verify_plant', photo: lastCapturedImage, photoType: 'image/jpeg',
-                    crop: cropName, ph: phVal, chlorophyll: ishChlorophylVal || 'N/A', weather: weatherVal,
-                    healthScore: healthRes.ok ? healthRes.score : null, healthLabel: healthRes.ok ? healthRes.label : '',
-                    lang: currentLang
-                })
+                body: JSON.stringify({ token: APP_TOKEN, action: 'verify_plant', photo: lastCapturedImage, photoType: 'image/jpeg' })
             });
             if (verifyResp.ok) {
                 const verifyData = await verifyResp.json();
                 if (verifyData && verifyData.status === 'success') {
                     if (verifyData.verified === true && verifyData.isPlant === true) {
                         verifiedAndAllowed = true;
-                        aiComment = verifyData.comment || '';
                     } else if (verifyData.verified === true && verifyData.isPlant === false) {
                         // Gemini AÇIKÇA reddetti — kesin ret, tekrar denemenin anlamı yok.
                         document.getElementById('error-box').style.display = 'block';
@@ -2572,11 +2565,7 @@
             healthScore: healthRes.ok ? healthRes.score : null,
             healthLabel: healthRes.ok ? healthRes.label : ''
         };
-        if (aiComment) {
-            renderAIResult(aiComment);
-        } else {
-            requestAIOpinion(lastAIContext);
-        }
+        requestAIOpinion(lastAIContext);
         const formData = {
             token: APP_TOKEN,
             region: cropName,
