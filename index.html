@@ -2492,34 +2492,48 @@
         const originalBtnHTML = snapBtn.innerHTML;
         const verifyFailBox = document.getElementById('verify-fail-box');
         snapBtn.disabled = true;
-        snapBtn.innerHTML = currentLang === 'TR' ? '🔍 Fotoğraf doğrulanıyor...' : '🔍 Verifying photo...';
-        let verifiedAndAllowed = false;
-        try {
-            const verifyResp = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ token: APP_TOKEN, action: 'verify_plant', photo: lastCapturedImage, photoType: 'image/jpeg' })
-            });
-            if (verifyResp.ok) {
-                const verifyData = await verifyResp.json();
-                if (verifyData && verifyData.status === 'success') {
-                    if (verifyData.verified === true && verifyData.isPlant === true) {
-                        verifiedAndAllowed = true;
-                    } else if (verifyData.verified === true && verifyData.isPlant === false) {
-                        // Gemini AÇIKÇA reddetti — kesin ret, tekrar denemenin anlamı yok.
-                        document.getElementById('error-box').style.display = 'block';
-                        document.getElementById('cam-box').style.display = 'block';
-                        document.getElementById('res-area').style.display = 'none';
-                        snapBtn.disabled = false;
-                        snapBtn.innerHTML = originalBtnHTML;
-                        return;
+
+        // Tek bir doğrulama denemesi yapan yardımcı fonksiyon. Apps Script web
+        // uygulamasının "soğuk başlangıç" gecikmesi yüzünden ilk deneme sıkça
+        // başarısız oluyordu — kullanıcı elle tekrar fotoğraf çekmek zorunda
+        // kalmasın diye artık bu OTOMATİK olarak bir kez daha denenir.
+        async function attemptVerify() {
+            try {
+                const verifyResp = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ token: APP_TOKEN, action: 'verify_plant', photo: lastCapturedImage, photoType: 'image/jpeg' })
+                });
+                if (verifyResp.ok) {
+                    const verifyData = await verifyResp.json();
+                    if (verifyData && verifyData.status === 'success') {
+                        if (verifyData.verified === true && verifyData.isPlant === true) return 'allowed';
+                        if (verifyData.verified === true && verifyData.isPlant === false) return 'rejected';
                     }
-                    // verified === false ise (Gemini'ye ulaşılamadı) -> aşağıya düşer, tekrar dene mesajı gösterilir.
                 }
+            } catch (err) {
+                console.error('AI doğrulaması yapılamadı:', err);
             }
-        } catch (err) {
-            console.error('AI doğrulaması yapılamadı:', err);
+            return 'unverified';
         }
+
+        snapBtn.innerHTML = currentLang === 'TR' ? '🔍 Fotoğraf doğrulanıyor...' : '🔍 Verifying photo...';
+        let verifyOutcome = await attemptVerify();
+        if (verifyOutcome === 'unverified') {
+            snapBtn.innerHTML = currentLang === 'TR' ? '🔍 Tekrar doğrulanıyor...' : '🔍 Verifying again...';
+            await new Promise(r => setTimeout(r, 1500));
+            verifyOutcome = await attemptVerify();
+        }
+        if (verifyOutcome === 'rejected') {
+            // Gemini AÇIKÇA reddetti — kesin ret, tekrar denemenin anlamı yok.
+            document.getElementById('error-box').style.display = 'block';
+            document.getElementById('cam-box').style.display = 'block';
+            document.getElementById('res-area').style.display = 'none';
+            snapBtn.disabled = false;
+            snapBtn.innerHTML = originalBtnHTML;
+            return;
+        }
+        const verifiedAndAllowed = (verifyOutcome === 'allowed');
         if (!verifiedAndAllowed) {
             // Gemini'den net bir "UYGUN" onayı alınamadı (ağ/kota sorunu olabilir) ->
             // güvenli tarafta kal, raporu gösterme, kullanıcıdan tekrar denemesini iste.
@@ -2599,6 +2613,22 @@
         if (chlorophyll < 2) {
             recipeTextTR += " Ek Not: Klorofil-a seviyesi düşük, fotosentez verimliliği için azot ve magnezyum takviyesi önceliklendirilmelidir.";
             recipeTextEN += " Additional Note: Low chlorophyll-a level; nitrogen and magnesium supplementation should be prioritized for photosynthesis efficiency.";
+        }
+        // YENİ: Reçete artık sadece pH/klorofile değil, ÇEKİLEN FOTOĞRAFIN gerçek
+        // hasar skoruna (lastHealthRes) da bağlı — aynı pH/klorofille farklı bir
+        // yaprak fotoğrafı çekilirse reçete de buna göre değişir.
+        if (lastHealthRes && lastHealthRes.ok) {
+            const s = lastHealthRes.score;
+            if (s < 50) {
+                recipeTextTR += ` 3. Fotoğraf analizinde CİDDİ doku hasarı tespit edildi (Sağlık Skoru: ${s}/100) — etkilenen yaprak/dalların budanması, bölgesel mantar/bakteri kontrolü ve numune incelemesi öncelikli olarak önerilir.`;
+                recipeTextEN += ` 3. Photo analysis detected SEVERE tissue damage (Health Score: ${s}/100) — pruning affected leaves/branches, regional fungal/bacterial control, and sample inspection are recommended as priority.`;
+            } else if (s < 75) {
+                recipeTextTR += ` 3. Fotoğrafta hafif-orta düzeyde doku stresi görülüyor (Sağlık Skoru: ${s}/100) — yakın takip ve erken müdahale önerilir.`;
+                recipeTextEN += ` 3. Photo shows mild-to-moderate tissue stress (Health Score: ${s}/100) — close monitoring and early intervention are recommended.`;
+            } else {
+                recipeTextTR += ` 3. Fotoğraf analizi yaprağın görsel olarak sağlıklı olduğunu doğruluyor (Sağlık Skoru: ${s}/100) — mevcut bakım rejimi sürdürülebilir.`;
+                recipeTextEN += ` 3. Photo analysis confirms the leaf is visually healthy (Health Score: ${s}/100) — current care regimen can be maintained.`;
+            }
         }
         const recipeBox = document.getElementById('prescription-output');
         if (recipeBox) {
