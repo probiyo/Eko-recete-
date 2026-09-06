@@ -203,7 +203,6 @@
             ⚠️ BİTKİ ALGILANAMADI: Yeterli yaprak/klorofil (yeşil doku) tespit edilemedi. Lütfen yaprak görüntüsü çekiniz!<br>
             ⚠️ NO PLANT DETECTED: Insufficient leaf/chlorophyll (green tissue) detected. Please capture a leaf image!
         </div>
-        <div id="verify-fail-box" class="error-msg" style="display:none;"></div>
         <div id="res-area">
             <div style="border-bottom: 2px solid #eee; margin-bottom: 10px; font-weight: bold;"><span data-i18n="reportHeaderTitle">BRÜSSEL PROJE RAPORU #EU-AGRO</span><br><span style="font-size:9px; font-weight:normal;" data-i18n="reportHeaderSub">BRUSSELS PROJECT REPORT #EU-AGRO</span></div>
             <div id="sync-status" class="sync-status" data-i18n="syncSuccess">✨ Saha + Lab Entegre Analiz Tamamlandı & Excel'e Aktarıldı!<br><span style="font-size:9px; font-weight:normal;">Integrated Field + Lab Analysis Completed & Synced to Excel!</span></div>
@@ -2458,33 +2457,105 @@
             renderAIError();
         }
     }
+    // ============================================================
+    // FOTOĞRAF ÖN KONTROLÜ — TAMAMEN YEREL / ÇEVRİMDIŞI
+    // Gemini, Apps Script veya ağ isteği kullanılmaz.
+    // Amaç: "Bu kare analiz yapılabilecek makul miktarda bitki/yaprak
+    // dokusu içeriyor mu?" sorusunu hızlı ve toleranslı biçimde yanıtlamak.
+    // ============================================================
+    function validateLeafCapture(canvasEl, leafAnalysis) {
+        try {
+            const ctx = canvasEl.getContext('2d', { willReadFrequently: true });
+            const w = canvasEl.width, h = canvasEl.height;
+            const sampleW = Math.min(120, w);
+            const sampleH = Math.min(120, h);
+            const tmp = document.createElement('canvas');
+            tmp.width = sampleW; tmp.height = sampleH;
+            const tctx = tmp.getContext('2d', { willReadFrequently: true });
+            tctx.drawImage(canvasEl, 0, 0, sampleW, sampleH);
+            const data = tctx.getImageData(0, 0, sampleW, sampleH).data;
+
+            let total = 0, green = 0, centerGreen = 0, bright = 0, dark = 0;
+            let greenClusters = 0, prevGreen = false;
+            const cx0 = sampleW * 0.20, cx1 = sampleW * 0.80;
+            const cy0 = sampleH * 0.20, cy1 = sampleH * 0.80;
+
+            for (let y = 0; y < sampleH; y++) {
+                for (let x = 0; x < sampleW; x++) {
+                    const i = (y * sampleW + x) * 4;
+                    const r = data[i], g = data[i + 1], b = data[i + 2];
+                    const max = Math.max(r, g, b);
+                    const min = Math.min(r, g, b);
+                    const chroma = max - min;
+                    const isGreen = g > r * 1.03 && g > b * 1.02 && g > 35 && chroma > 12;
+                    total++;
+                    if (isGreen) {
+                        green++;
+                        if (x >= cx0 && x <= cx1 && y >= cy0 && y <= cy1) centerGreen++;
+                        if (!prevGreen) greenClusters++;
+                    }
+                    prevGreen = isGreen;
+                    if (max > 245) bright++;
+                    if (max < 18) dark++;
+                }
+            }
+
+            const greenRatio = total ? green / total : 0;
+            const centerArea = Math.max(1, (cx1 - cx0) * (cy1 - cy0));
+            const centerGreenRatio = centerGreen / centerArea;
+            const brightRatio = bright / Math.max(1, total);
+            const darkRatio = dark / Math.max(1, total);
+
+            // Existing analysis engine remains authoritative for health scoring.
+            // We deliberately use permissive thresholds here so lighting, shade,
+            // yellow-green leaves and partial leaf framing do not cause needless retries.
+            const enoughByGlobal = greenRatio >= 0.025;
+            const enoughByCenter = centerGreenRatio >= 0.055;
+            const enoughByExisting = leafAnalysis.greenRatio >= 0.025;
+            const hasStructure = greenClusters >= 2 || (leafAnalysis.lumStdDev || 0) >= 5;
+            const notJustBlankFrame = brightRatio < 0.985 && darkRatio < 0.985;
+
+            // Skin detection is only a strong rejection when it is overwhelmingly
+            // dominant AND there is very little green plant signal.
+            const obviousSkin = leafAnalysis.skinRatio > 0.72 && leafAnalysis.greenRatio < 0.02;
+
+            const allowed = !obviousSkin && notJustBlankFrame &&
+                (enoughByGlobal || enoughByCenter || enoughByExisting) && hasStructure;
+
+            return {
+                allowed,
+                greenRatio,
+                centerGreenRatio,
+                obviousSkin
+            };
+        } catch (err) {
+            // A local validation error must never create a network-dependent block.
+            console.warn('Yerel fotoğraf ön kontrolü atlandı:', err);
+            return { allowed: true, greenRatio: 0, centerGreenRatio: 0, obviousSkin: false };
+        }
+    }
+
     async function processAI() {
-        c.width = v.videoWidth || 640; 
+        c.width = v.videoWidth || 640;
         c.height = v.videoHeight || 480;
         c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
         lastCapturedImage = c.toDataURL('image/jpeg', 0.7);
-        // Görüntüyü analiz et: yeterli bitki/klorofil dokusu var mı?
-        const leafAnalysis = analyzeLeafImage(c);
+
         document.getElementById('error-box').style.display = 'none';
-        // ÜÇ BAĞIMSIZ SİNYAL birlikte kontrol edilir: (1) yeterli yeşil doku VAR MI,
-        // (2) baskın olarak cilt tonu MU, (3) görüntü DOKU olarak çok mu düz/tekdüze
-        // (bulanık bir cilt/yüz fotoğrafının tipik özelliği). İlk iki sinyal bazı
-        // ışık koşullarında (soluk/soğuk ışıklı yüz fotoğrafları gibi) tek başına
-        // yetersiz kalabiliyordu; üçüncü sinyal renkten tamamen bağımsız olduğu için
-        // bu durumları da yakalar.
-        const notEnoughGreen = leafAnalysis.greenRatio < 0.06;
-        const looksLikeSkin = leafAnalysis.skinRatio > 0.35;
-        const tooUniform = leafAnalysis.lumStdDev < 15;
-        if (notEnoughGreen || looksLikeSkin || tooUniform) {
-            // Karede yeterli bitki dokusu tespit edilemedi (veya cilt/insan dokusu
-            // baskın) -> uyarıyı göster, devam etme
+
+        // Fotoğraf doğrulaması artık TAMAMEN yerel. verify_plant / Gemini
+        // ön-doğrulaması / tekrar doğrulama / 1500 ms bekleme YOK.
+        const leafAnalysis = analyzeLeafImage(c);
+        const captureCheck = validateLeafCapture(c, leafAnalysis);
+
+        if (!captureCheck.allowed) {
             document.getElementById('error-box').style.display = 'block';
             document.getElementById('cam-box').style.display = 'block';
             document.getElementById('res-area').style.display = 'none';
             return;
         }
-        // Rapor için gereken tüm bağlamı ÖNCEDEN hesaplıyoruz — böylece TEK
-        // Gemini isteğinde hem doğrulama hem yorum birlikte istenebilir.
+
+        // Bilimsel/yerel yaprak sağlık analizi mevcut motorla aynen devam eder.
         const healthRes = computeLeafHealthAnalysis(c);
         const regionSelect = document.getElementById('region');
         const cropName = regionSelect.options[regionSelect.selectedIndex] ? regionSelect.options[regionSelect.selectedIndex].text : regionSelect.value;
@@ -2496,95 +2567,30 @@
         }
         const ishChlorophylVal = integratedInput.value;
 
-        // 4. KATMAN — Rapor gösterilmeden ÖNCE Gemini AI ile TEK bir istekte hem
-        // doğrulama hem (uygunsa) AI Uzman Yorumu birlikte alınır. Önceden bu üç
-        // ayrı Gemini isteğine bölünmüştü (ön-doğrulama + kayıt-sırasında-tekrar-
-        // doğrulama + ayrı yorum isteği); artık TEK istek — hem kota tüketimini
-        // ciddi şekilde azaltır hem de bekleme süresini kısaltır. BU KONTROL
-        // "FAIL-CLOSED": Gemini'ye ulaşılamazsa veya net bir cevap alınamazsa
-        // rapor GÖSTERİLMEZ, kullanıcıdan tekrar denemesi istenir.
         const snapBtn = document.getElementById('snap-btn');
         const originalBtnHTML = snapBtn.innerHTML;
-        const verifyFailBox = document.getElementById('verify-fail-box');
         snapBtn.disabled = true;
+        snapBtn.innerHTML = currentLang === 'TR' ? '🔬 Analiz hazırlanıyor...' : '🔬 Preparing analysis...';
 
-        // Tek bir doğrulama denemesi yapan yardımcı fonksiyon. Apps Script web
-        // uygulamasının "soğuk başlangıç" gecikmesi yüzünden ilk deneme sıkça
-        // başarısız oluyordu — kullanıcı elle tekrar fotoğraf çekmek zorunda
-        // kalmasın diye artık bu OTOMATİK olarak bir kez daha denenir.
-        async function attemptVerify() {
-            try {
-                const verifyResp = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ token: APP_TOKEN, action: 'verify_plant', photo: lastCapturedImage, photoType: 'image/jpeg' })
-                });
-                if (verifyResp.ok) {
-                    const verifyData = await verifyResp.json();
-                    if (verifyData && verifyData.status === 'success') {
-                        if (verifyData.verified === true && verifyData.isPlant === true) return 'allowed';
-                        if (verifyData.verified === true && verifyData.isPlant === false) return 'rejected';
-                    }
-                }
-            } catch (err) {
-                console.error('AI doğrulaması yapılamadı:', err);
-            }
-            return 'unverified';
-        }
-
-        snapBtn.innerHTML = currentLang === 'TR' ? '🔍 Fotoğraf doğrulanıyor...' : '🔍 Verifying photo...';
-        let verifyOutcome = await attemptVerify();
-        if (verifyOutcome === 'unverified') {
-            snapBtn.innerHTML = currentLang === 'TR' ? '🔍 Tekrar doğrulanıyor...' : '🔍 Verifying again...';
-            await new Promise(r => setTimeout(r, 1500));
-            verifyOutcome = await attemptVerify();
-        }
-        if (verifyOutcome === 'rejected') {
-            // Gemini AÇIKÇA reddetti — kesin ret, tekrar denemenin anlamı yok.
-            document.getElementById('error-box').style.display = 'block';
-            document.getElementById('cam-box').style.display = 'block';
-            document.getElementById('res-area').style.display = 'none';
-            snapBtn.disabled = false;
-            snapBtn.innerHTML = originalBtnHTML;
-            return;
-        }
-        const verifiedAndAllowed = (verifyOutcome === 'allowed');
-        if (!verifiedAndAllowed) {
-            // Gemini'den net bir "UYGUN" onayı alınamadı (ağ/kota sorunu olabilir) ->
-            // güvenli tarafta kal, raporu gösterme, kullanıcıdan tekrar denemesini iste.
-            verifyFailBox.innerHTML = currentLang === 'TR'
-                ? '⚠️ Fotoğraf doğrulanamadı (bağlantı/kota sorunu olabilir). Lütfen birkaç saniye sonra "FOTOĞRAF ÇEK" ile tekrar deneyin.'
-                : '⚠️ Could not verify the photo (connection/quota issue possible). Please try "TAKE PHOTO" again in a few seconds.';
-            verifyFailBox.style.display = 'block';
-            document.getElementById('cam-box').style.display = 'block';
-            document.getElementById('res-area').style.display = 'none';
-            snapBtn.disabled = false;
-            snapBtn.innerHTML = originalBtnHTML;
-            return;
-        }
-        verifyFailBox.style.display = 'none';
-        snapBtn.innerHTML = originalBtnHTML;
         document.getElementById('preview-img').src = lastCapturedImage;
         document.getElementById('preview-img').style.display = 'block';
         if(track) track.stop();
         document.getElementById('cam-box').style.display = 'none';
         document.getElementById('res-area').style.display = 'block';
         document.getElementById('reset-btn').style.display = 'block';
-        // --- Yaprak Hasar/Sağlık Analizi (arka plan ayrımı, renk sınıflandırma, leke ve kenar analizi) ---
+
+        // --- Yaprak Hasar/Sağlık Analizi ---
         lastHealthRes = healthRes;
         renderLeafHealthBox(healthRes);
-        // Yeni destekleyici özellikler: quiz, bölge karşılaştırması, katkı rozeti.
-        // Üçü de ana bilimsel akıştan tamamen bağımsız ve hataya dayanıklıdır.
         renderQuizQuestion();
         lastAnalysisPh = phVal;
         lastAnalysisChloro = ishChlorophylVal;
         fetchAndShowComparison(phVal, ishChlorophylVal);
         recordContributionAndCheckBadges(cropName);
         const healthNote = healthRes.ok ? `, Yaprak Sağlık Skoru: ${healthRes.score}/100 (${healthRes.label})` : '';
-        // lastAIContext, "Tekrar Dene" butonu ve dil değişince yeniden üretme için
-        // saklanır (requestAIOpinion o durumlarda ayrıca çağrılabilir); ama normal
-        // akışta artık AYRI bir Gemini isteği YOK — yorum, doğrulamayla birlikte
-        // yukarıdaki TEK istekte zaten geldi, doğrudan gösteriliyor.
+
+        // AI Uzman Yorumu bağımsızdır: raporun açılmasını BEKLETMEZ ve
+        // fotoğraf ön-doğrulamasının yerine geçmez.
         lastAIContext = {
             image: lastCapturedImage,
             crop: cropName,
@@ -2595,6 +2601,7 @@
             healthLabel: healthRes.ok ? healthRes.label : ''
         };
         requestAIOpinion(lastAIContext);
+
         const formData = {
             token: APP_TOKEN,
             region: cropName,
@@ -2603,15 +2610,20 @@
             weather: weatherVal,
             stress: 'Klorofil: ' + (ishChlorophylVal || 'N/A') + ' mg/L (663 nm), pH: ' + (phVal) + healthNote,
             notes: 'Saha Analiz Raporu - Rize Fatih Anadolu Lisesi',
-            photo: lastCapturedImage, // Base64 formatındaki fotoğraf
+            photo: lastCapturedImage,
             photoType: 'image/jpeg',
             date: new Date().toLocaleString()
         };
-        // Merkezi, çevrimdışı-dayanıklı gönderim: bağlantı yoksa veya istek
-        // başarısız olursa veri kaybolmaz, kuyruğa alınır ve otomatik tekrar denenir.
+
+        // Kayıt/senkronizasyon sistemi korunur; yalnızca fotoğraf ÖN DOĞRULAMASI
+        // ağdan bağımsız hale getirilmiştir.
         await sendToServer(formData, 'sync-status');
         updateDynamicReportTexts();
+
+        snapBtn.disabled = false;
+        snapBtn.innerHTML = originalBtnHTML;
     }
+
     function updateAnalysis(pH, chlorophyll, weather) {
         let recipeTextTR = "";
         let recipeTextEN = "";
@@ -2730,7 +2742,6 @@
         document.getElementById('form-area').style.display = 'block';
         document.getElementById('reset-btn').style.display = 'none';
         document.getElementById('error-box').style.display = 'none';
-        document.getElementById('verify-fail-box').style.display = 'none';
         document.getElementById('leaf-health-box').style.display = 'none';
         document.getElementById('ai-opinion-box').style.display = 'none';
         document.getElementById('quiz-box').style.display = 'none';
