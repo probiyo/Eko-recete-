@@ -161,9 +161,10 @@
             </div>
             <!-- Lab Verisini Analiz Ekranına Entegre Etme Alanı -->
             <div class="card" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
-               <label style="color: #166534;" data-i18n="lblIntegratedLab">🧬 Laboratuvar Klorofil a (663 nm) Verisi Entegrasyonu</label>
-               <div style="font-size: 10px; color: #555; margin-bottom: 6px;" data-i18n="lblIntegratedLabDesc">MEBİ Lab modülünden elde edilen konsantrasyon değerini giriniz (Opsiyonel):</div>
-               <input type="number" id="integrated-chlorophyll" step="0.1" placeholder="Örn: 6.5 mg/L" value="6.5">
+               <label style="color: #166534;" data-i18n="lblIntegratedLab">🧪 Laboratuvar Klorofil Ekstraktı / Referans Verisi</label>
+               <div style="font-size: 10px; color: #555; margin-bottom: 6px;" data-i18n="lblIntegratedLabDesc">MEBİ Lab'da hazırlanan yaprak ekstraktından elde edilen doğrulanmış referans değeri varsa giriniz (Opsiyonel). Spektrofotometre yoksa bu alan boş bırakılabilir.</div>
+               <div style="font-size: 9.5px; color:#166534; background:#ecfdf5; border:1px solid #bbf7d0; padding:7px; border-radius:8px; margin-bottom:6px;" data-i18n="lblSamplePairNote">📌 Bilimsel örnekleme: Fotoğrafı çekilen yaprak ezilmemelidir. Ekstrakt için aynı bitkiden, benzer gelişim düzeyinde ayrı bir yaprak kullanılmalıdır. Böylece fotoğraf örneği ile laboratuvar referansı eşleştirilir; aynı yaprağın iki kez ölçüldüğü iddia edilmez.</div>
+               <input type="number" id="integrated-chlorophyll" step="0.1" min="0" placeholder="Örn: doğrulanmış referans 6.5 mg/L (isteğe bağlı)">
             </div>
             <div class="card">
                <label><span data-i18n="lblWeather">Hava Durumu / Weather Condition</span> <span id="loc-status" style="font-size:9px; color:#2e7d32; font-weight:normal;" data-i18n="locStatusWaiting">(Otomatik Konum Bekleniyor...)</span> <span id="current-temp-badge" style="display:none; font-size:10px; font-weight:bold; color:#0277bd; background:#e1f5fe; padding:2px 6px; border-radius:8px;"></span></label>
@@ -240,7 +241,7 @@
     <!-- MEBİ & BİYOLOJİ LABORATUVARI SEKMESİ -->
     <div id="biolab-section" class="biolab-section">
         <div class="card">
-            <label data-i18n="bioLabTitle">🧬 MEBİ & Biyoloji Laboratuvarı Modülü<br><span style="font-size:9px; font-weight:normal;">Klorofil a Ekstraksiyonu & Akıllı Kalorimetre Analizi</span></label>
+            <label data-i18n="bioLabTitle">🧬 MEBİ & Biyoloji Laboratuvarı Modülü<br><span style="font-size:9px; font-weight:normal;">Yaprak Ekstraktı & Akıllı Renk Analizi</span></label>
             <div class="mebi-badge" data-i18n="bioBadge">
                 📚 <strong>MEB Güncel Kazanım Uyumlu:</strong> Fotosentez hızını etkileyen faktörler ve düşük maliyetli akıllı telefon kalorimetresi protokolü. (Brüksel STEM & Citizen Science Uyumlu)
             </div>
@@ -267,9 +268,10 @@
             <select id="bio-plant">
                <!-- Dinamik olarak doldurulacak -->
             </select>
-            <label data-i18n="lblWavelength">Spektrofotometre / Kalorimetre Dalga Boyu</label>
-            <select id="bio-wavelength" disabled>
-                <option value="663" data-i18n="optWavelength">663 nm (Klorofil a - Maksimum Absorpsiyon)</option>
+            <label data-i18n="lblWavelength">Ölçüm Yöntemi</label>
+            <select id="bio-wavelength">
+                <option value="extract-camera" data-i18n="optExtractCamera">Yaprak ekstraktı + telefon renk analizi (spektrofotometre yoksa)</option>
+                <option value="spectro" data-i18n="optSpectro">Spektrofotometre (varsa; A663/A645)</option>
             </select>
             <!-- BEYAZ / GRİ REFERANS KARTI: IŞIK NORMALİZASYONU -->
             <div style="margin-top: 12px; border: 1px solid #90a4ae; padding: 10px; border-radius: 10px; background: #fafafa;">
@@ -328,8 +330,9 @@
                 <button type="button" style="margin-top:6px; font-size:9px; padding:6px; background:#eee; color:#555; border:none; border-radius:8px; width:100%; cursor:pointer;" onclick="clearCalibration()" data-i18n="btnCalibClear">🗑️ Kalibrasyonu Sıfırla</button>
                 <div id="calib-status" style="margin-top:8px; font-size:10px; font-weight:bold;"></div>
             </div>
-            <label style="margin-top:12px;" data-i18n="lblAbsorbance">Ölçüden / Hesaplanan Klorofil a Konsantrasyonu (mg/L)</label>
-            <input type="number" id="bio-absorbance" step="0.1" placeholder="Örn: 6.5" value="6.5" oninput="markManualEntry()">
+            <label style="margin-top:12px;" data-i18n="lblAbsorbance">Doğrulanmış Klorofil Ekstraktı Referans Değeri (mg/L, opsiyonel)</label>
+            <input type="number" id="bio-absorbance" step="0.1" min="0" placeholder="Spektrofotometre/kalibrasyon varsa örn. 6.5" oninput="markManualEntry()">
+            <div style="font-size:9px;color:#666;margin-top:4px;" data-i18n="lblNoSpectroNote">Spektrofotometre yoksa yalnızca ekstraktın renk sinyali kaydedilir; kalibrasyon olmadan bu sinyal mg/L olarak gösterilmez.</div>
             <button class="btn-main" style="margin-top: 12px; font-size: 13px; padding: 12px;" onclick="calculateBiolab(true)" data-i18n="btnBioCalc">KLOROFİL a VERİSİNİ KAYDET & ANALİZE AKTAR</button>
             <div id="bio-sync-status" class="sync-status" style="margin-top: 10px;" data-i18n="bioSyncSuccess">✨ MEB Lab Verisi Canlı Veri Tablosuna ve Analiz Modülüne Aktarıldı!</div>
             <div id="bio-result-box" style="display:none; margin-top:12px; background:#f0fdf4; border:1px solid #bbf7d0; padding:12px; border-radius:10px; font-size:11px; color:#166534; line-height:1.4;">
@@ -349,15 +352,15 @@
                 <h3 data-i18n="mSampleTitle">2. Materyaller ve Örneklem (Materials and Sample)</h3>
                 <p data-i18n="mSampleDesc">Araştırmada rasyonel tarım pilot bölgelerinden temin edilen bitki yaprak örnekleri (*Camellia sinensis*, *Citrus sinensis*, *Olea europaea* vb.) ile spektrofotometrik analizler için standart aseton ekstraktı çözeltileri kullanılmıştır.</p>
                 <h3 data-i18n="mCollectionTitle">3. Veri Toplama Süreci (Data Collection)</h3>
-                <p data-i18n="mCollectionDesc">Spektrofotometre dalga boyu seçimi klorofil a için optimize edilerek 663 nm absorpsiyon değerleri kaydedilir. pH ölçümleri hassas elektrotlu pH metrelerle veya alternatif ekstraksiyon protokolleriyle yapılır.</p>
+                <p data-i18n="mCollectionDesc">Önce sağlam yaprak fotoğraflanır. Klorofil referansı için aynı bitkiden benzer özellikte ayrı bir yaprak alınır ve ekstrakt hazırlanır. Spektrofotometre varsa A663/A645 gibi ölçümler yapılabilir; yoksa ekstraktın renk sinyali yalnızca kalibrasyon varsa konsantrasyona çevrilir.</p>
                 <h3 data-i18n="mAnalysisTitle">4. Veri Analizi ve AB Yeşil Mutabakatı Canlı Mekanizması</h3>
                 <p data-i18n="mAnalysisDesc">Elde edilen optik yoğunluk ve pH sapma verileri, tarladan sofraya stratejisi çerçevesinde kimyasal girdi optimizasyonuna dönüştürülmektedir.</p>
                 <!-- Somut, Sayısal ve Yaşayan Regülasyon Mekanizması ve Algoritma Formülleri -->
                 <div class="regulation-metrics" data-i18n="regMetricsBox">
                     🇪🇺 <strong>EU Green Deal & Farm to Fork (Tarladan Sofraya) Canlı Optimizasyon Mekanizması:</strong><br><br>
                     <strong>• Stres Skoru Hesaplama Formülü:</strong>
-                    <div class="formula-box">Stress_Score = w₁ · |pH_optimum - pH_measured| + w₂ · (A_reference - A_sample)</div>
-                    <div style="font-size:10px; margin-top:2px; color:#555;" data-i18n="regFormulaDesc1">(pH sapmasını ve klorofil absorpsiyon düşüşünü ağırlıklı katsayılarla birleştirerek bitkinin fizyolojik stres seviyesini sayısal bir değere dönüştürüyoruz.)</div><br>
+                    <div class="formula-box">Stress_Score = pH_stress + optional_chlorophyll_reference_stress + visual_leaf_stress</div>
+                    <div style="font-size:10px; margin-top:2px; color:#555;" data-i18n="regFormulaDesc1">(pH sapması temel kimyasal bileşendir; laboratuvar klorofil referansı varsa eklenir, yoksa klorofil için varsayılan değer kullanılmaz. Görsel yaprak skoru ayrıca modele dahil edilir.)</div><br>
                     <strong>• Kimyasal Girdi Optimizasyonu ve Gübre Tasarrufu:</strong>
                     <div class="formula-box">Saving_%_fertilizers = (1 - (Input_optimize / Input_traditional)) · 100</div>
                     <div style="font-size:10px; margin-top:2px; color:#555;" data-i18n="regFormulaDesc2">(Campbell Biology ve Guyton & Hall ilkelerine göre iyon/pH dinamiklerinin klorofil sentezi üzerindeki etkisini baz alarak aşırı gübrelemeyi önleyen oran.)</div><br>
@@ -374,7 +377,7 @@
                 <h3 data-i18n="mImageTitle">5. Görüntü İşleme ve Yaprak Hasar Skoru (Image Processing & Leaf Damage Score)</h3>
                 <p data-i18n="mImageDesc">Raporun en üstünde gösterilen "Yaprak Hasar & Sağlık Analizi" skoru (0-100), tarafımızca geliştirilen bir görüntü işleme algoritmasıyla hesaplanır — bu, yayımlanmış bir makaleden alınmış değil, projemize özgü orijinal bir yöntemdir ve bu şekilde sunulur. Adımlar: (1) Fotoğraf, arka planı (masa/toprak/gökyüzü) yapraktan ayırmak için basit bir yeşillik/doku eşiklemesiyle segmente edilir. (2) Yaprak bölgesindeki her piksel HSV (Hue-Saturation-Value) renk uzayına çevrilerek dört sınıfa ayrılır: yeşil (sağlıklı doku), sarı (klorotik), kahverengi (nekrotik) ve koyu/ölü doku — sınıflandırma, ön denemelerle belirlenmiş sabit hue/saturation eşik aralıklarına dayanır. (3) Küçük leke sayısı, bağlantılı bileşen (connected-component) analiziyle sayılır. (4) Kenar/merkez hasar oranı, yaprağın dış %25'lik kenar şeridi ile iç bölgesindeki hasarlı piksel yüzdeleri karşılaştırılarak hesaplanır. (5) Nihai 0-100 skor, bu bileşenlerin ağırlıklı bir toplamıdır. Bu yöntem hızlı, düşük maliyetli bir ön tarama/karar-destek aracıdır; kesin agronomik veya fitopatolojik teşhis (örn. laboratuvar kültürü, PCR) yerine geçmez.</p>
                 <h3 data-i18n="mCalibTitle">6. Kamera Kalibrasyonu, Arnon Formülü ve Ölçüm Belirsizliği</h3>
-                <p data-i18n="mCalibDesc">Akıllı telefon kamerasıyla renk (RGB) analizi düşük maliyetli bir "kalorimetre" olarak kullanılabilir, ancak kalibre edilmemiş bir kamera ölçümü tek başına bilimsel olarak savunulabilir değildir. Bu nedenle sistemde üç ayrı güvenilirlik seviyesi sunulmaktadır: (1) Gerçek bir spektrofotometre ile ölçülen A663/A645 absorbans değerleri, klasik Arnon (1949) denklemleriyle klorofil a/b konsantrasyonuna çevrilir — bu en güvenilir yöntemdir. (2) Bilinen konsantrasyonlu numunelerle (seyreltme serisi) oluşturulan kullanıcı kalibrasyon eğrisi (doğrusal regresyon, R² ile raporlanır), kamera ölçümünü gerçek referans noktalarına bağlar. (3) Kalibrasyon yapılmadıysa sistem, açıkça "kalibre edilmemiş kaba tahmin" olarak etiketlenen genel bir formül kullanır. Ayrıca, ölçümler arasında ortam ışığı farklarını azaltmak için beyaz/gri referans kartı ile normalizasyon uygulanabilir. Kaynak: Arnon, D.I. (1949). Copper enzymes in isolated chloroplasts. Plant Physiology, 24(1), 1–15.</p>
+                <p data-i18n="mCalibDesc">Akıllı telefon kamerası hazırlanmış yaprak ekstraktının renk sinyalini düşük maliyetli bir ölçüm aracı olarak kaydedebilir; ancak kalibrasyonsuz renk sinyali tek başına mg/L klorofil değeri değildir. Bu nedenle sistemde üç ayrı güvenilirlik seviyesi sunulmaktadır: (1) Gerçek bir spektrofotometre ile ölçülen A663/A645 absorbans değerleri, klasik Arnon (1949) denklemleriyle klorofil a/b konsantrasyonuna çevrilir — bu en güvenilir yöntemdir. (2) Bilinen konsantrasyonlu numunelerle (seyreltme serisi) oluşturulan kullanıcı kalibrasyon eğrisi (doğrusal regresyon, R² ile raporlanır), kamera ölçümünü gerçek referans noktalarına bağlar. (3) Kalibrasyon yapılmadıysa sistem, açıkça "kalibre edilmemiş kaba tahmin" olarak etiketlenen genel bir formül kullanır. Ayrıca, ölçümler arasında ortam ışığı farklarını azaltmak için beyaz/gri referans kartı ile normalizasyon uygulanabilir. Kaynak: Arnon, D.I. (1949). Copper enzymes in isolated chloroplasts. Plant Physiology, 24(1), 1–15.</p>
                 <p data-i18n="mNoSpecNote">📌 <strong>Uygulama Notu:</strong> Okulumuzda bir spektrofotometre bulunmadığından, projede esas olarak (2) numaralı yöntem (kullanıcı kalibrasyon eğrisi) kullanılmaktadır. Bunun için tartım bazlı bir seyreltme serisi önerilir: sabit bir oranla (ör. 1 g yaprak : 10 mL aseton) hazırlanan stok ekstrakt "1x" kabul edilir; bu stoktan yapılan 1/2x, 1/4x, 1/8x gibi seri seyreltmeler, kütle/hacim oranına dayalı bilinen ve tekrarlanabilir göreli konsantrasyon değerleri sağlar (mg/L yerine "g yaprak eşdeğeri/mL" birimiyle). Bu, bir spektrofotometre olmadan da savunulabilir, tekrarlanabilir bir kalibrasyon imkânı sunar.</p>
                 <h3 data-i18n="mLimitTitle">7. Sınırlılıklar (Limitations)</h3>
                 <ul style="font-size: 11px; color: #333; line-height:1.6; padding-left:18px; margin:0;" data-i18n="mLimitList">
@@ -970,8 +973,10 @@
             manualCropNote: "📌 Türünüzün ideal pH aralığını bilmiyorsanız 6.0-7.0 genel ortalama olarak bırakabilirsiniz; ancak mümkünse tarım/bahçecilik kaynaklarından türünüze özgü değeri bulup girmeniz analiz doğruluğunu artırır.",
             lblSoilPH: "TOPRAK pH DEĞERİ / SOIL pH (3.0 - 9.0)",
             phWarnText: "⚠️ Girilen pH değeri seçilen bitki için ideal bilimsel aralığın dışında! <br>⚠️ Entered pH value is out of the ideal scientific range for this crop!",
-            lblIntegratedLab: "🧬 Laboratuvar Klorofil a (663 nm) Verisi Entegrasyonu",
-            lblIntegratedLabDesc: "MEBİ Lab modülünden elde edilen konsantrasyon değerini giriniz (Opsiyonel):",
+            lblIntegratedLab: "🧪 Laboratuvar Klorofil Ekstraktı / Referans Verisi",
+            lblIntegratedLabDesc: "MEBİ Lab ekstraktından elde edilen doğrulanmış referans değeri varsa giriniz (Opsiyonel). Spektrofotometre yoksa boş bırakılabilir.",
+            lblSamplePairNote: "📌 Scientific sampling: Do not crush the photographed leaf. Use a separate, similar leaf from the same plant for the extract/reference so the image sample and laboratory reference can be paired without claiming they are the same leaf.",
+            lblNoSpectroNote: "Spektrofotometre yoksa yalnızca ekstraktın renk sinyali kaydedilir; kalibrasyon olmadan bu sinyal mg/L klorofil olarak gösterilmez.",
             lblWeather: "Hava Durumu / Weather Condition",
             locStatusWaiting: "(Otomatik Konum Bekleniyor...)",
             optSunny: "Güneşli / Sunny",
@@ -1001,14 +1006,14 @@
             btnLiveSheet: "📊 CANLI VERİ TABLOSU / LIVE DATA SHEET",
             btnPrintReport: "📥 RAPORU YAZDIR / PDF KAYDET",
             btnNewAnalyze: "YENİ ANALİZ / NEW ANALYZE",
-            bioLabTitle: "🧬 MEBİ & Biyoloji Laboratuvarı Modülü<br><span style='font-size:9px; font-weight:normal;'>Klorofil a Ekstraksiyonu & Akıllı Kalorimetre Analizi</span>",
+            bioLabTitle: "🧬 MEBİ & Biyoloji Laboratuvarı Modülü<br><span style='font-size:9px; font-weight:normal;'>Yaprak Ekstraktı & Akıllı Renk Analizi</span>",
             bioBadge: "📚 <strong>MEB Güncel Kazanım Uyumlu:</strong> Fotosentez hızını etkileyen faktörler ve düşük maliyetli akıllı telefon kalorimetresi protokolü. (Brüksel STEM & Citizen Science Uyumlu)",
             bioAlternativePhBox: "🧪 <strong>Alternatif Toprak pH Ölçüm Protokolü (Saha & Okul Lab):</strong><br>• <strong>1. Adım:</strong> Toprak örneği saf su ile karıştırılarak 15-30 dakika boyunca iyice çalkalanır.<br>• <strong>2. Adım:</strong> Çözelti süzgeç kâğıdından geçirilerek berrak sıvı faz elde edilir.<br>• <strong>3. Adım:</strong> Elde edilen berrak sıvıya pH çubuğu/kağıdı batırılır veya kırmızı lahana suyu indikatörü damlatılarak renk değişim sklasıyla pH tespiti gerçekleştirilir.",
             bioCalibTipBox: "💡 <strong>Kalibrasyon & Ölçüm İpuçları (Calibration Tip):</strong><br>1. Telefon kamerasını yaprağa veya tüpe sabit bir açıyla (dik) tutun.<br>2. Ortam ışığını sabitlemek için gölgede veya standart ışık kaynağı altında çekim yapın.<br>3. Yaprak yüzeyindeki toz veya su damlalarını önceden kurulayın.",
             bioExtractGuideBox: "🌿 <strong>Yaprak Ekstraktı Nasıl Hazırlanır? (Basit Protokol):</strong><br>• <strong>1. Adım:</strong> 1 gram taze yaprak örneğini ince kıyıp havan veya tüp içerisine alın.<br>• <strong>2. Adım:</strong> Üzerine 10 ml %95'lik Aseton (veya saf etil alkol) ekleyin.<br>• <strong>3. Adım:</strong> İyice ezip süzerek berrak yeşil sıvı ekstraktı elde edin ve kamerayla ölçün.",
             lblSamplePlant: "Numune Bitki Türü / Sample Plant",
             lblWavelength: "Spektrofotometre / Kalorimetre Dalga Boyu",
-            optWavelength: "663 nm (Klorofil a - Maksimum Absorpsiyon)",
+            optWavelength: "663 nm (yalnızca spektrofotometre varsa)",
             whiteRefHeader: "⚪ Beyaz/Gri Referans Kartı (Işık Normalizasyonu)",
             whiteRefDesc: "Ölçüme başlamadan önce, aynı ışık altında düz beyaz/gri bir kağıdın fotoğrafını çekip referans olarak kaydedin. Bu, farklı gün/ışık koşullarında çekilen fotoğrafların karşılaştırılabilir olmasını sağlar.",
             btnWhiteRefCam: "📸 Referans Çek",
@@ -1029,7 +1034,7 @@
             bioCamDesc: "Kameradan canlı çekim yapın veya cihazınızdan fotoğraf/dosya yükleyin:",
             btnBioCamDirect: "📸 Kamera ile Çek",
             btnBioFileSelect: "📁 Dosya / Galeri Seç",
-            lblAbsorbance: "Ölçülen / Hesaplanan Klorofil a Konsantrasyonu (mg/L)",
+            lblAbsorbance: "Doğrulanmış Klorofil Ekstraktı Referans Değeri (mg/L, opsiyonel)",
             btnBioCalc: "KLOROFİL a VERİSİNİ KAYDET & ANALİZE AKTAR",
             bioSyncSuccess: "✨ MEB Lab Verisi Canlı Veri Tablosuna ve Analiz Modülüne Aktarıldı!",
             methodsMainTitle: "📖 Bilimsel Metodoloji & Whitepaper (Scientific Rigor)<br><span style='font-size:9px; font-weight:normal;'>Campbell Biology, Guyton & EU Green Deal Standartları</span>",
@@ -1039,14 +1044,14 @@
             mSampleTitle: "2. Materyaller ve Örneklem (Materials and Sample)",
             mSampleDesc: "Araştırmada rasyonel tarım pilot bölgelerinden temin edilen bitki yaprak örnekleri (*Camellia sinensis*, *Citrus sinensis*, *Olea europaea* vb.) ile spektrofotometrik analizler için standart aseton ekstraktı çözeltileri kullanılmıştır.",
             mCollectionTitle: "3. Veri Toplama Süreci (Data Collection)",
-            mCollectionDesc: "Spektrofotometre dalga boyu seçimi klorofil a için optimize edilerek 663 nm absorpsiyon değerleri kaydedilir. pH ölçümleri hassas elektrotlu pH metrelerle veya alternatif ekstraksiyon protokolleriyle yapılır.",
+            mCollectionDesc: "Önce sağlam yaprak fotoğraflanır. Klorofil referansı için aynı bitkiden benzer özellikte ayrı bir yaprak alınır ve ekstrakt hazırlanır. Spektrofotometre varsa A663/A645 gibi ölçümler yapılabilir; yoksa ekstraktın renk sinyali yalnızca kalibrasyon varsa konsantrasyona çevrilir.",
             mAnalysisTitle: "4. Veri Analizi ve AB Yeşil Mutabakatı Canlı Mekanizması",
             mAnalysisDesc: "Elde edilen optik yoğunluk ve pH sapma verileri, tarladan sofraya stratejisi çerçevesinde kimyasal girdi optimizasyonuna dönüştürülmektedir.",
-            regMetricsBox: "🇪🇺 <strong>EU Green Deal & Farm to Fork (Tarladan Sofraya) Canlı Optimizasyon Mekanizması:</strong><br><br><strong>• Stres Skoru Hesaplama Formülü:</strong><div class='formula-box'>Stress_Score = w₁ · |pH_optimum - pH_measured| + w₂ · (A_reference - A_sample)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(pH sapmasını ve klorofil absorpsiyon düşüşünü ağırlıklı katsayılarla birleştirerek bitkinin fizyolojik stres seviyesini sayısal bir değere dönüştürüyoruz.)</div><br><strong>• Kimyasal Girdi Optimizasyonu ve Gübre Tasarrufu:</strong><div class='formula-box'>Saving_%_fertilizers = (1 - (Input_optimize / Input_traditional)) · 100</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Campbell Biology ve Guyton & Hall ilkelerine göre iyon/pH dinamiklerinin klorofil sentezi üzerindeki etkisini baz alarak aşırı gübrelemeyi önleyen oran.)</div><br><strong>• Karbon Ayak İzi Düşüşü:</strong><div class='formula-box'>CO₂_Reduction = Σ (Input_reduced · EF_chemical)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Hassas tarım rejimiyle azaltılan kimyasal miktarının emisyon faktörü ile çarpımı sonucu dönüm başına sağlanan yıllık tasarruf.)</div><br><strong>• Pestisit Optimizasyonu:</strong><div class='formula-box'>Pest_Opt = (Threshold_standard / Alert_early_stage) · 30%</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Erken uyarı algoritmaları sayesinde gereksiz kimyasal ilaçlamanın önlendiği sınır değer matrisi. NOT: Analiz raporundaki yüzdeler artık girilen pH/klorofil verisine göre bu modelden anlık hesaplanır; sabit değerler değildir.)</div><br><strong>• Görsel (Fotoğraf) ve Kimyasal (pH/Klorofil) Sinyal Harmanlaması:</strong><div class='formula-box'>Stress_initial = 0.55 · Stress_chemical + 0.45 · (100 − Leaf_Health_Score)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Analiz raporundaki başlangıç stres değeri ve 5 günlük eğri artık yalnızca girilen pH/klorofil sayısına değil, çekilen yaprak fotoğrafından HSV renk analiziyle hesaplanan gerçek hasar skoruna da bağlıdır — %55 kimyasal / %45 görsel ağırlıkla harmanlanır.)</div>",
+            regMetricsBox: "🇪🇺 <strong>EU Green Deal & Farm to Fork (Tarladan Sofraya) Canlı Optimizasyon Mekanizması:</strong><br><br><strong>• Stres Skoru Hesaplama Formülü:</strong><div class='formula-box'>Stress_Score = pH_stress + optional_chlorophyll_reference_stress + visual_leaf_stress</div><div style='font-size:10px; margin-top:2px; color:#555;'>(pH sapması temel kimyasal bileşendir; laboratuvar klorofil referansı varsa eklenir, yoksa klorofil için varsayılan değer kullanılmaz. Görsel yaprak skoru ayrıca modele dahil edilir.)</div><br><strong>• Kimyasal Girdi Optimizasyonu ve Gübre Tasarrufu:</strong><div class='formula-box'>Saving_%_fertilizers = (1 - (Input_optimize / Input_traditional)) · 100</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Campbell Biology ve Guyton & Hall ilkelerine göre iyon/pH dinamiklerinin klorofil sentezi üzerindeki etkisini baz alarak aşırı gübrelemeyi önleyen oran.)</div><br><strong>• Karbon Ayak İzi Düşüşü:</strong><div class='formula-box'>CO₂_Reduction = Σ (Input_reduced · EF_chemical)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Hassas tarım rejimiyle azaltılan kimyasal miktarının emisyon faktörü ile çarpımı sonucu dönüm başına sağlanan yıllık tasarruf.)</div><br><strong>• Pestisit Optimizasyonu:</strong><div class='formula-box'>Pest_Opt = (Threshold_standard / Alert_early_stage) · 30%</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Erken uyarı algoritmaları sayesinde gereksiz kimyasal ilaçlamanın önlendiği sınır değer matrisi. NOT: Analiz raporundaki yüzdeler artık girilen pH/klorofil verisine göre bu modelden anlık hesaplanır; sabit değerler değildir.)</div><br><strong>• Görsel (Fotoğraf) ve Kimyasal (pH/Klorofil) Sinyal Harmanlaması:</strong><div class='formula-box'>Stress_initial = 0.55 · Stress_chemical + 0.45 · (100 − Leaf_Health_Score)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Analiz raporundaki başlangıç stres değeri ve 5 günlük eğri artık yalnızca girilen pH/klorofil sayısına değil, çekilen yaprak fotoğrafından HSV renk analiziyle hesaplanan gerçek hasar skoruna da bağlıdır — %55 kimyasal / %45 görsel ağırlıkla harmanlanır.)</div>",
             mCalibTitle: "6. Kamera Kalibrasyonu, Arnon Formülü ve Ölçüm Belirsizliği",
             mImageTitle: "5. Görüntü İşleme ve Yaprak Hasar Skoru (Image Processing & Leaf Damage Score)",
             mImageDesc: "Raporun en üstünde gösterilen \"Yaprak Hasar & Sağlık Analizi\" skoru (0-100), tarafımızca geliştirilen bir görüntü işleme algoritmasıyla hesaplanır — bu, yayımlanmış bir makaleden alınmış değil, projemize özgü orijinal bir yöntemdir ve bu şekilde sunulur. Adımlar: (1) Fotoğraf, arka planı (masa/toprak/gökyüzü) yapraktan ayırmak için basit bir yeşillik/doku eşiklemesiyle segmente edilir. (2) Yaprak bölgesindeki her piksel HSV (Hue-Saturation-Value) renk uzayına çevrilerek dört sınıfa ayrılır: yeşil (sağlıklı doku), sarı (klorotik), kahverengi (nekrotik) ve koyu/ölü doku — sınıflandırma, ön denemelerle belirlenmiş sabit hue/saturation eşik aralıklarına dayanır. (3) Küçük leke sayısı, bağlantılı bileşen (connected-component) analiziyle sayılır. (4) Kenar/merkez hasar oranı, yaprağın dış %25'lik kenar şeridi ile iç bölgesindeki hasarlı piksel yüzdeleri karşılaştırılarak hesaplanır. (5) Nihai 0-100 skor, bu bileşenlerin ağırlıklı bir toplamıdır. Bu yöntem hızlı, düşük maliyetli bir ön tarama/karar-destek aracıdır; kesin agronomik veya fitopatolojik teşhis (örn. laboratuvar kültürü, PCR) yerine geçmez.",
-            mCalibDesc: "Akıllı telefon kamerasıyla renk (RGB) analizi düşük maliyetli bir \"kalorimetre\" olarak kullanılabilir, ancak kalibre edilmemiş bir kamera ölçümü tek başına bilimsel olarak savunulabilir değildir. Bu nedenle sistemde üç ayrı güvenilirlik seviyesi sunulmaktadır: (1) Gerçek bir spektrofotometre ile ölçülen A663/A645 absorbans değerleri, klasik Arnon (1949) denklemleriyle klorofil a/b konsantrasyonuna çevrilir — bu en güvenilir yöntemdir. (2) Bilinen konsantrasyonlu numunelerle (seyreltme serisi) oluşturulan kullanıcı kalibrasyon eğrisi (doğrusal regresyon, R² ile raporlanır), kamera ölçümünü gerçek referans noktalarına bağlar. (3) Kalibrasyon yapılmadıysa sistem, açıkça \"kalibre edilmemiş kaba tahmin\" olarak etiketlenen genel bir formül kullanır. Ayrıca, ölçümler arasında ortam ışığı farklarını azaltmak için beyaz/gri referans kartı ile normalizasyon uygulanabilir. Kaynak: Arnon, D.I. (1949). Copper enzymes in isolated chloroplasts. Plant Physiology, 24(1), 1–15.",
+            mCalibDesc: "Akıllı telefon kamerası, hazırlanmış yaprak ekstraktının renk sinyalini düşük maliyetli bir ölçüm aracı olarak kaydedebilir; ancak kalibrasyonsuz renk sinyali tek başına mg/L klorofil değeri değildir. Bu nedenle sistemde üç ayrı güvenilirlik seviyesi sunulmaktadır: (1) Gerçek bir spektrofotometre ile ölçülen A663/A645 absorbans değerleri, klasik Arnon (1949) denklemleriyle klorofil a/b konsantrasyonuna çevrilir — bu en güvenilir yöntemdir. (2) Bilinen konsantrasyonlu numunelerle (seyreltme serisi) oluşturulan kullanıcı kalibrasyon eğrisi (doğrusal regresyon, R² ile raporlanır), kamera ölçümünü gerçek referans noktalarına bağlar. (3) Kalibrasyon yapılmadıysa sistem, açıkça \"kalibre edilmemiş kaba tahmin\" olarak etiketlenen genel bir formül kullanır. Ayrıca, ölçümler arasında ortam ışığı farklarını azaltmak için beyaz/gri referans kartı ile normalizasyon uygulanabilir. Kaynak: Arnon, D.I. (1949). Copper enzymes in isolated chloroplasts. Plant Physiology, 24(1), 1–15.",
             mNoSpecNote: "📌 <strong>Uygulama Notu:</strong> Okulumuzda bir spektrofotometre bulunmadığından, projede esas olarak (2) numaralı yöntem (kullanıcı kalibrasyon eğrisi) kullanılmaktadır. Bunun için tartım bazlı bir seyreltme serisi önerilir: sabit bir oranla (ör. 1 g yaprak : 10 mL aseton) hazırlanan stok ekstrakt \"1x\" kabul edilir; bu stoktan yapılan 1/2x, 1/4x, 1/8x gibi seri seyreltmeler, kütle/hacim oranına dayalı bilinen ve tekrarlanabilir göreli konsantrasyon değerleri sağlar (mg/L yerine \"g yaprak eşdeğeri/mL\" birimiyle). Bu, bir spektrofotometre olmadan da savunulabilir, tekrarlanabilir bir kalibrasyon imkânı sunar.",
             mLimitTitle: "7. Sınırlılıklar (Limitations)",
             mLimitList: "<li>Akıllı telefon kamerasıyla yapılan renk analizi, laboratuvar tipi bir spektrofotometrenin yerini tutmaz; kalibre edilmiş haliyle bile göreli/yaklaşık bir tahmindir.</li><li>Kamera modeli, otomatik pozlama/beyaz dengesi ve ortam ışığı sonuçları etkileyebilir; beyaz referans normalizasyonu bu etkiyi azaltır ama tamamen ortadan kaldırmaz.</li><li>Kalibrasyon eğrisi yalnızca eklenen kalibrasyon noktalarının kapsadığı aralık için güvenilirdir; bu aralığın dışındaki değerler için ekstrapolasyon (dışa taşan tahmin) hatalı olabilir.</li><li>Green Deal / sertifika bölümündeki karbon ayak izi, gübre tasarrufu ve pestisit optimizasyonu yüzdeleri, sayfadaki basit stres modeline dayalı bir simülasyondur; resmi bir çevresel etki değerlendirmesi veya ticari/hukuki geçerliliği yoktur.</li><li>Numune sayısı (n) sınırlıdır; istatistiksel olarak genellenebilir sonuçlar için daha uzun süreli ve daha çok tekrarlı veri toplanması gerekir.</li><li>Yaprak Hasar Skoru'ndaki HSV eşik değerleri ön denemelerle belirlenmiştir; farklı ışık/kamera koşullarında yeniden kalibrasyon gerekebilir.</li>",
@@ -1094,8 +1099,10 @@
             manualCropNote: "📌 If you don't know your species' ideal pH range, you can leave 6.0-7.0 as a general average; but if possible, looking up the value specific to your species from agricultural/gardening sources improves analysis accuracy.",
             lblSoilPH: "SOIL pH VALUE (3.0 - 9.0)",
             phWarnText: "⚠️ Entered pH value is out of the ideal scientific range for this crop!",
-            lblIntegratedLab: "🧬 Laboratory Chlorophyll a (663 nm) Integration",
-            lblIntegratedLabDesc: "Enter concentration value obtained from MEB Lab module (Optional):",
+            lblIntegratedLab: "🧬 Laboratory Chlorophyll Extract / Reference Data",
+            lblIntegratedLabDesc: "Enter a validated reference value from the leaf extract (optional). Leave blank if no spectrophotometer/calibration is available.",
+            lblSamplePairNote: "📌 Scientific sampling: Do not crush the photographed leaf. Use a separate, similar leaf from the same plant for the extract/reference.",
+            lblNoSpectroNote: "If no spectrophotometer is available, only the extract color signal is recorded; without calibration it is not reported as chlorophyll mg/L.",
             lblWeather: "Weather Condition",
             locStatusWaiting: "(Fetching Location...)",
             optSunny: "Sunny",
@@ -1121,18 +1128,18 @@
             aiLoading: "Preparing AI commentary...",
             aiError: "⚠️ Could not get AI commentary (connection issue). The scientific measurements above are not affected.",
             aiRetryBtn: "🔄 Retry",
-            aiDisclaimer: "⚠️ This text is AI-generated commentary interpreting the real measured pH/chlorophyll/leaf-health data above; it is a supplementary opinion and does not replace the scientific calculations above (Arnon formula, calibration curve, stress model).",
+            aiDisclaimer: "⚠️ This text is AI-generated commentary interpreting the measured pH, optional laboratory extract reference, and leaf-health data above; it is a supplementary opinion and does not replace the scientific calculations above (Arnon formula, calibration curve, stress model).",
             btnLiveSheet: "📊 LIVE DATA SHEET",
             btnPrintReport: "📥 PRINT REPORT / SAVE PDF",
             btnNewAnalyze: "NEW ANALYSIS",
-            bioLabTitle: "🧬 MEB Lab & Biology Laboratory Module<br><span style='font-size:9px; font-weight:normal;'>Chlorophyll a Extraction & Smart Colorimeter Analysis</span>",
+            bioLabTitle: "🧬 MEB Lab & Biology Laboratory Module<br><span style='font-size:9px; font-weight:normal;'>Leaf Extract & Smart Color Analysis</span>",
             bioBadge: "📚 <strong>MEB Curriculum Aligned:</strong> Factors affecting photosynthesis rate and low-cost smartphone colorimetry protocol. (Brussels STEM & Citizen Science Compliant)",
             bioAlternativePhBox: "🧪 <strong>Alternative Soil pH Measurement Protocol (Field & School Lab):</strong><br>• <strong>Step 1:</strong> Soil sample is mixed with pure water and shaken thoroughly for 15-30 minutes.<br>• <strong>Step 2:</strong> The solution is filtered through filter paper to obtain a clear liquid phase.<br>• <strong>Step 3:</strong> A pH strip/paper is dipped into the clear liquid or red cabbage juice indicator is added to determine pH via color scale.",
             bioCalibTipBox: "💡 <strong>Calibration Tip:</strong><br>1. Hold the phone camera perpendicular to the leaf or tube.<br>2. Shoot in shade or under a standard light source to fix ambient light.<br>3. Pre-dry dust or water drops on the leaf surface.",
             bioExtractGuideBox: "🌿 <strong>How to Prepare Leaf Extract? (Simple Protocol):</strong><br>• <strong>Step 1:</strong> Chop 1 gram of fresh leaf sample finely into a mortar or tube.<br>• <strong>Step 2:</strong> Add 10 ml of 95% Acetone (or pure ethyl alcohol).<br>• <strong>Step 3:</strong> Mash well and filter to obtain clear green liquid extract and measure with camera.",
             lblSamplePlant: "Sample Plant Type",
             lblWavelength: "Spectrophotometer / Colorimeter Wavelength",
-            optWavelength: "663 nm (Chlorophyll a - Maximum Absorption)",
+            optWavelength: "663 nm (spectrophotometer only)",
             whiteRefHeader: "⚪ White/Gray Reference Card (Light Normalization)",
             whiteRefDesc: "Before measuring, photograph a plain white/gray card under the same light and save it as a reference. This makes photos taken on different days/light conditions comparable.",
             btnWhiteRefCam: "📸 Capture Reference",
@@ -1153,7 +1160,7 @@
             bioCamDesc: "Take a live photo with camera or upload a photo/file from your device:",
             btnBioCamDirect: "📸 Capture via Camera",
             btnBioFileSelect: "📁 Select File / Gallery",
-            lblAbsorbance: "Measured / Calculated Chlorophyll a Concentration (mg/L)",
+            lblAbsorbance: "Validated Chlorophyll Extract Reference (mg/L, optional)",
             btnBioCalc: "SAVE CHLOROPHYLL a DATA & SEND TO ANALYSIS",
             bioSyncSuccess: "✨ MEB Lab Data Successfully Sent to Live Data Sheet & Analysis Module!",
             methodsMainTitle: "📖 Scientific Methodology & Whitepaper (Scientific Rigor)<br><span style='font-size:9px; font-weight:normal;'>Campbell Biology, Guyton & EU Green Deal Standards</span>",
@@ -1163,10 +1170,10 @@
             mSampleTitle: "2. Materials and Sample",
             mSampleDesc: "Leaf samples (*Camellia sinensis*, *Citrus sinensis*, *Olea europaea*, etc.) procured from rational agriculture pilot regions and standard acetone extract solutions for spectrophotometric analyses.",
             mCollectionTitle: "3. Data Collection",
-            mCollectionDesc: "Spectrophotometer wavelength optimized at 663 nm for chlorophyll a absorption. pH measurements performed with precise electrode pH meters or alternative extraction protocols.",
+            mCollectionDesc: "First photograph an intact leaf. Use a separate, similar leaf from the same plant for the chlorophyll extract/reference. If a spectrophotometer is available, A663/A645 measurements may be used; otherwise the extract color signal is converted to concentration only when a real calibration is available.",
             mAnalysisTitle: "4. Data Analysis & EU Green Deal Live Mechanism",
             mAnalysisDesc: "Obtained optical density and pH deviation data are converted into chemical input optimization within the framework of the Farm to Fork strategy.",
-            regMetricsBox: "🇪🇺 <strong>EU Green Deal & Farm to Fork Live Optimization Mechanism:</strong><br><br><strong>• Stress Score Calculation Formula:</strong><div class='formula-box'>Stress_Score = w₁ · |pH_optimum - pH_measured| + w₂ · (A_reference - A_sample)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Converting plant physiological stress level into a numerical value by combining pH deviation and chlorophyll absorption drop with weighted coefficients.)</div><br><strong>• Chemical Input Optimization & Fertilizer Saving:</strong><div class='formula-box'>Saving_%_fertilizers = (1 - (Input_optimize / Input_traditional)) · 100</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Ratio preventing over-fertilization based on ion/pH dynamics effects on chlorophyll synthesis according to Campbell Biology and Guyton & Hall principles.)</div><br><strong>• Carbon Footprint Reduction:</strong><div class='formula-box'>CO₂_Reduction = Σ (Input_reduced · EF_chemical)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Annual savings per decare resulting from multiplying the chemical amount reduced through precision agriculture regime by emission factor.)</div><br><strong>• Pesticide Optimization:</strong><div class='formula-box'>Pest_Opt = (Threshold_standard / Alert_early_stage) · 30%</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Threshold limit matrix preventing unnecessary chemical spraying thanks to early warning algorithms. NOTE: Percentages in the analysis report are now computed live from this model based on the entered pH/chlorophyll data; they are not fixed values.)</div><br><strong>• Visual (Photo) and Chemical (pH/Chlorophyll) Signal Blending:</strong><div class='formula-box'>Stress_initial = 0.55 · Stress_chemical + 0.45 · (100 − Leaf_Health_Score)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(The initial stress value and 5-day curve in the analysis report now depend not only on the entered pH/chlorophyll numbers but also on the real damage score computed from the captured leaf photo via HSV color analysis — blended at 55% chemical / 45% visual weight.)</div>",
+            regMetricsBox: "🇪🇺 <strong>EU Green Deal & Farm to Fork Live Optimization Mechanism:</strong><br><br><strong>• Stress Score Calculation Formula:</strong><div class='formula-box'>Stress_Score = pH_stress + optional_chlorophyll_reference_stress + visual_leaf_stress</div><div style='font-size:10px; margin-top:2px; color:#555;'>(pH deviation is the base chemical component; an optional laboratory chlorophyll reference is added only when available. Visual leaf health is also included.)</div><br><strong>• Chemical Input Optimization & Fertilizer Saving:</strong><div class='formula-box'>Saving_%_fertilizers = (1 - (Input_optimize / Input_traditional)) · 100</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Ratio preventing over-fertilization based on ion/pH dynamics effects on chlorophyll synthesis according to Campbell Biology and Guyton & Hall principles.)</div><br><strong>• Carbon Footprint Reduction:</strong><div class='formula-box'>CO₂_Reduction = Σ (Input_reduced · EF_chemical)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Annual savings per decare resulting from multiplying the chemical amount reduced through precision agriculture regime by emission factor.)</div><br><strong>• Pesticide Optimization:</strong><div class='formula-box'>Pest_Opt = (Threshold_standard / Alert_early_stage) · 30%</div><div style='font-size:10px; margin-top:2px; color:#555;'>(Threshold limit matrix preventing unnecessary chemical spraying thanks to early warning algorithms. NOTE: Percentages in the analysis report are now computed live from this model based on the entered pH/chlorophyll data; they are not fixed values.)</div><br><strong>• Visual (Photo) and Chemical (pH/Chlorophyll) Signal Blending:</strong><div class='formula-box'>Stress_initial = 0.55 · Stress_chemical + 0.45 · (100 − Leaf_Health_Score)</div><div style='font-size:10px; margin-top:2px; color:#555;'>(The initial stress value and 5-day curve in the analysis report now depend not only on the entered pH/chlorophyll numbers but also on the real damage score computed from the captured leaf photo via HSV color analysis — blended at 55% chemical / 45% visual weight.)</div>",
             mCalibTitle: "6. Camera Calibration, the Arnon Formula, and Measurement Uncertainty",
             mImageTitle: "5. Image Processing and Leaf Damage Score",
             mImageDesc: "The \"Leaf Damage & Health Analysis\" score (0-100) shown at the top of the report is calculated using an image-processing algorithm we developed ourselves — this is presented as our project's own original method, not something taken from a published paper. Steps: (1) The photo is segmented with a simple greenery/texture threshold to separate the background (table/soil/sky) from the leaf. (2) Every pixel in the leaf region is converted to HSV (Hue-Saturation-Value) color space and classified into four classes: green (healthy tissue), yellow (chlorotic), brown (necrotic), and dark/dead tissue — classification relies on fixed hue/saturation threshold ranges determined through preliminary trials. (3) Small spot count is measured via connected-component analysis. (4) The edge/center damage ratio is computed by comparing the percentage of damaged pixels in the leaf's outer 25% rim versus its inner region. (5) The final 0-100 score is a weighted sum of these components. This method is a fast, low-cost pre-screening/decision-support tool; it does not replace definitive agronomic or phytopathological diagnosis (e.g., lab culture, PCR).",
@@ -1347,8 +1354,10 @@
         const optimalPh = (range.min + range.max) / 2;
         const phDeviation = Math.abs(phVal - optimalPh);
         let chloStress = 0;
-        if (chlorophyllVal < 10) {
-            chloStress = (10 - chlorophyllVal) * 5;
+        // Klorofil referansı yoksa bu bileşen hesaba katılmaz; uydurma varsayılan
+        // değer kullanılmaz. Stres modeli bu durumda pH + görsel sağlık sinyaline dayanır.
+        if (typeof chlorophyllVal === 'number' && !isNaN(chlorophyllVal)) {
+            if (chlorophyllVal < 10) chloStress = (10 - chlorophyllVal) * 5;
         }
         let chemicalStress = 15 + (phDeviation * 20) + chloStress;
         chemicalStress = Math.min(90, Math.max(10, chemicalStress));
@@ -1415,7 +1424,7 @@
             stressChartInstance.destroy();
         }
         const labelsArr = currentLang === 'TR' ? ['1. Gün', '2. Gün', '3. Gün', '4. Gün (Müdahale)', '5. Gün (Hasat)'] : ['Day 1', 'Day 2', 'Day 3', 'Day 4 (Intervention)', 'Day 5 (Harvest)'];
-        const model = computeStressModel(chlorophyllVal, phVal, regionKey);
+        const model = computeStressModel(chlorophyllVal, phVal, regionKey, (lastHealthRes && lastHealthRes.ok) ? (100-lastHealthRes.score)/100 : null);
         const baselineStress = model.baselineStress;
         const interventionStress = model.interventionStress;
         stressChartInstance = new Chart(ctx, {
@@ -2018,13 +2027,10 @@
         if (model && typeof model.slope === 'number') {
             let conc = model.slope * signal + model.intercept;
             if (conc < 0) conc = 0;
-            if (conc > 100) conc = 100;
             return { value: conc, calibrated: true, model };
         }
-        let estimatedConc = signal * 12.5; // kaba varsayılan; bilimsel olarak doğrulanmamıştır
-        if (estimatedConc > 25.0) estimatedConc = 25.0;
-        if (estimatedConc < 1.0) estimatedConc = 1.0;
-        return { value: estimatedConc, calibrated: false, model: null };
+        // Kalibrasyon yoksa mg/L üretmek yerine yalnızca optik sinyali döndür.
+        return { value: null, signal, calibrated: false, model: null };
     }
     function renderCalibrationPoints() {
         const list = document.getElementById('calib-points-list');
@@ -2157,16 +2163,22 @@
             const stats = normalizeStats(rawStats);
             const signal = computeColorSignal(stats);
             const result = estimateConcentrationFromSignal(signal);
-            document.getElementById('bio-absorbance').value = result.value.toFixed(1);
+            const concInput = document.getElementById('bio-absorbance');
+            if (result.calibrated) {
+                concInput.value = result.value.toFixed(2);
+                window._lastConcSource = 'camera-calibrated';
+                alert(currentLang === 'TR' ?
+                    `📱 Ekstrakt renk analizi tamamlandı. Kalibrasyon modeli kullanılarak tahmini referans değer: ${result.value.toFixed(2)} mg/L (R²=${result.model.r2.toFixed(2)}).` :
+                    `📱 Extract color analysis complete. Calibrated reference estimate: ${result.value.toFixed(2)} mg/L (R²=${result.model.r2.toFixed(2)}).`);
+            } else {
+                concInput.value = '';
+                window._lastConcSource = 'extract-camera-signal';
+                alert(currentLang === 'TR' ?
+                    `📱 Ekstrakt renk analizi tamamlandı. Optik renk sinyali: ${signal.toFixed(4)}. Kalibrasyon olmadığı için bu değer mg/L klorofil olarak yorumlanmadı.` :
+                    `📱 Extract color analysis complete. Optical color signal: ${signal.toFixed(4)}. Without calibration, this is not reported as chlorophyll mg/L.`);
+            }
             document.getElementById('bio-cam-input').value = '';
             document.getElementById('bio-file-input').value = '';
-            window._lastConcSource = result.calibrated ? 'camera-calibrated' : 'camera-rough';
-            const sourceNote = result.calibrated ?
-                (currentLang === 'TR' ? `\n(Kalibre edilmiş model kullanıldı: R²=${result.model.r2.toFixed(2)})` : `\n(Calibrated model used: R²=${result.model.r2.toFixed(2)})`) :
-                (currentLang === 'TR' ? '\n⚠️ Kalibrasyon yapılmadı, kaba tahmindir — kesin sonuç için Kalibrasyon modülünü kullanın.' : '\n⚠️ Not calibrated, this is a rough estimate — use the Calibration module for a defensible result.');
-            alert((currentLang === 'TR' ? 
-                `📱 Kalorimetre Analizi Tamamlandı!\nTahmini Klorofil a Konsantrasyonu: ${result.value.toFixed(1)} mg/L.` : 
-                `📱 Colorimeter Analysis Complete!\nEstimated Chlorophyll a Concentration: ${result.value.toFixed(1)} mg/L.`) + sourceNote);
         });
     }
     function describeConcSource() {
@@ -2176,8 +2188,8 @@
             return currentLang === 'TR' ? 'Gerçek spektrofotometre verisi (Arnon 1949 formülü)' : 'Real spectrophotometer data (Arnon 1949 formula)';
         } else if (source === 'camera-calibrated' && model) {
             return currentLang === 'TR' ? `Kamera + kullanıcı kalibrasyon eğrisi (R²=${model.r2.toFixed(2)}, n=${model.n})` : `Camera + user calibration curve (R²=${model.r2.toFixed(2)}, n=${model.n})`;
-        } else if (source === 'camera-rough') {
-            return currentLang === 'TR' ? '⚠️ Kamera - kalibre edilmemiş kaba tahmin' : '⚠️ Camera - uncalibrated rough estimate';
+        } else if (source === 'extract-camera-signal') {
+            return currentLang === 'TR' ? 'Ekstrakt kamera renk sinyali (kalibrasyonsuz; mg/L değil)' : 'Extract camera color signal (uncalibrated; not mg/L)';
         }
         return currentLang === 'TR' ? 'Manuel giriş' : 'Manual entry';
     }
@@ -2188,25 +2200,23 @@
         const concInput = document.getElementById('bio-absorbance');
         const conc = parseFloat(concInput.value);
         const resBox = document.getElementById('bio-result-box');
-        if(isNaN(conc)) {
-            alert(currentLang === 'TR' ? 'Lütfen geçerli bir klorofil konsantrasyonu giriniz!' : 'Please enter a valid chlorophyll concentration!');
-            return;
-        }
-        document.getElementById('integrated-chlorophyll').value = conc;
+        const hasValidatedReference = !isNaN(conc) && conc >= 0;
+        if (hasValidatedReference) document.getElementById('integrated-chlorophyll').value = conc;
+        else document.getElementById('integrated-chlorophyll').value = '';
         resBox.style.display = 'block';
         const sourceLabel = describeConcSource();
         if(currentLang === 'TR') {
-            resBox.innerHTML = `✅ <strong>MEBİ Lab & Kalorimetre Sonucu:</strong><br>
+            resBox.innerHTML = `✅ <strong>MEBİ Lab & Ekstrakt Analizi Sonucu:</strong><br>
             • Bitki: ${plant}<br>
-            • Spektrofotometre Dalga Boyu: 663 nm (Klorofil a)<br>
-            • Hesaplanan Konsantrasyon: <strong>${conc} mg/L</strong><br>
+            • Yöntem: Yaprak ekstraktı renk analizi / varsa spektrofotometrik referans<br>
+            • Doğrulanmış konsantrasyon: <strong>${hasValidatedReference ? conc + ' mg/L' : 'Yok — yalnızca renk sinyali'}</strong><br>
             • Veri Kaynağı: ${sourceLabel}<br>
             <em>Durum: Veri Ana Analiz Modülüne ve Canlı Veri Tablosuna aktarılmak üzere hazırlandı.</em>`;
         } else {
-            resBox.innerHTML = `✅ <strong>MEB Lab & Colorimeter Result:</strong><br>
+            resBox.innerHTML = `✅ <strong>MEB Lab & Extract Analysis Result:</strong><br>
             • Plant: ${plant}<br>
-            • Wavelength: 663 nm (Chlorophyll a)<br>
-            • Calculated Concentration: <strong>${conc} mg/L</strong><br>
+            • Method: Leaf extract color analysis / spectrophotometric reference if available<br>
+            • Validated concentration: <strong>${hasValidatedReference ? conc + ' mg/L' : 'None — color signal only'}</strong><br>
             • Data Source: ${sourceLabel}<br>
             <em>Status: Data prepared for Main Analysis Module and Live Data Sheet.</em>`;
         }
@@ -2218,7 +2228,7 @@
                 plantType: plant,
                 ph: "N/A (Lab Test)",
                 weather: "Lab Ortamı / Environment",
-                stress: `Klorofil a: ${conc} mg/L (${sourceLabel})`,
+                stress: `Klorofil ekstraktı referansı: ${hasValidatedReference ? conc + ' mg/L' : 'yok'} (${sourceLabel})`,
                 notes: resBox.innerText.replace(/\n/g, " "),
                 photograph: ""
             };
@@ -2359,20 +2369,13 @@
             resetSystem();
         });
     }
-    // Yakalanan kare üzerinde basit RGB analizi yaparak (a) yeterli yeşil doku
-    // var mı (yaprak algılandı mı) ve (b) kaba bir klorofil tahmini hesaplar.
-    // NOT: Bu, gerçek bir spektrofotometre ölçümünün YERİNE GEÇMEZ; düşük
-    // maliyetli bir "akıllı telefon kalorimetresi" yaklaşımıdır (MEBİ LAB
-    // sekmesindeki yöntemle aynı mantık, tutarlılık için).
-    // Artık getPixelStats/normalizeStats/computeColorSignal/estimateConcentrationFromSignal
-    // paylaşılan fonksiyonlarını kullanır (MEBİ LAB sekmesiyle aynı bilimsel altyapı ve,
-    // varsa, kullanıcının oluşturduğu gerçek kalibrasyon modelini).
+    // Ana analizde çekilen yaprak fotoğrafı SADECE yaprak sağlık/görsel analizinde kullanılır.
+    // Fotoğraftan klorofil konsantrasyonu üretilmez. Klorofil referansı, aynı bitkiden
+    // alınan ayrı yaprakla hazırlanan ekstrakttan gelir. Bu ayrım bilimsel örnekleme
+    // hatasını önler: ezilmiş/ekstrakte edilmiş yaprak artık aynı fotoğraf örneği değildir.
     function analyzeLeafImage(canvasEl) {
         const rawStats = getPixelStats(canvasEl);
-        const stats = normalizeStats(rawStats);
-        const signal = computeColorSignal(stats);
-        const result = estimateConcentrationFromSignal(signal);
-        return { greenRatio: rawStats.greenRatio, skinRatio: rawStats.skinRatio, lumStdDev: rawStats.lumStdDev, estimatedConc: result.value, calibrated: result.calibrated };
+        return { greenRatio: rawStats.greenRatio, skinRatio: rawStats.skinRatio, lumStdDev: rawStats.lumStdDev };
     }
     // ============================================================
     // AI UZMAN YORUMU (Beta) — Google Gemini API entegrasyonu
@@ -2562,10 +2565,9 @@
         const phVal = document.getElementById('ph').value;
         const weatherVal = document.getElementById('weather').value;
         const integratedInput = document.getElementById('integrated-chlorophyll');
-        if (!integratedInput.value) {
-            integratedInput.value = leafAnalysis.estimatedConc.toFixed(1);
-        }
-        const ishChlorophylVal = integratedInput.value;
+        // KRİTİK BİLİMSEL DÜZELTME: Fotoğrafı çekilen yapraktan otomatik klorofil
+        // konsantrasyonu çıkarılmaz. Alan boşsa klorofil verisi "yok" olarak kalır.
+        const ishChlorophylVal = integratedInput.value.trim();
 
         const snapBtn = document.getElementById('snap-btn');
         const originalBtnHTML = snapBtn.innerHTML;
@@ -2608,7 +2610,7 @@
             plantType: cropName,
             ph: phVal,
             weather: weatherVal,
-            stress: 'Klorofil: ' + (ishChlorophylVal || 'N/A') + ' mg/L (663 nm), pH: ' + (phVal) + healthNote,
+            stress: 'Klorofil ekstraktı referansı: ' + (ishChlorophylVal ? ishChlorophylVal + ' mg/L' : 'yok') + ', pH: ' + (phVal) + healthNote,
             notes: 'Saha Analiz Raporu - Rize Fatih Anadolu Lisesi',
             photo: lastCapturedImage,
             photoType: 'image/jpeg',
@@ -2637,9 +2639,9 @@
             recipeTextTR = "1. Toprak pH seviyesi ideal aralıkta (4.5 - 6.0). Mevcut dengenin korunması için standart organik kompost desteği yeterlidir. 2. 663 nm bandındaki pigment aktivitesini ve bitki direncini artırmak için dengeli NPK ve eser element takviyesi sağlanmalı.";
             recipeTextEN = "1. Soil pH level is within the ideal range (4.5 - 6.0). Standard organic compost support is sufficient to maintain current balance. 2. Provide balanced NPK and trace element supplementation to increase pigment activity and plant resistance in the 663 nm band.";
         }
-        if (chlorophyll < 2) {
-            recipeTextTR += " Ek Not: Klorofil-a seviyesi düşük, fotosentez verimliliği için azot ve magnezyum takviyesi önceliklendirilmelidir.";
-            recipeTextEN += " Additional Note: Low chlorophyll-a level; nitrogen and magnesium supplementation should be prioritized for photosynthesis efficiency.";
+        if (typeof chlorophyll === 'number' && !isNaN(chlorophyll) && chlorophyll < 2) {
+            recipeTextTR += " Ek Not: Laboratuvar referansında düşük klorofil değeri görülüyor; besin eksikliği yorumu toprak/yaprak analizi ile doğrulanmalıdır."
+            recipeTextEN += " Additional Note: The laboratory reference shows a low chlorophyll value; any nutrient-deficiency interpretation should be confirmed with soil/leaf analysis.";
         }
         // YENİ: Reçete artık sadece pH/klorofile değil, ÇEKİLEN FOTOĞRAFIN gerçek
         // hasar skoruna (lastHealthRes) da bağlı — aynı pH/klorofille farklı bir
@@ -2671,26 +2673,26 @@
         const range = cropRanges[regionKey] || { min: 6.0, max: 7.0 };
         const cropDisplayName = range[currentLang];
         const phVal = parseFloat(ph);
-        const chlorophyllVal = parseFloat(labChlorophyll) || 5.0;
+        const chlorophyllVal = labChlorophyll.trim() !== '' && !isNaN(parseFloat(labChlorophyll)) ? parseFloat(labChlorophyll) : null;
         let statusText = "";
         let calibrationText = "";
         let greenDealText = "";
         let certificateText = "";
         let isPhOptimal = (phVal >= range.min && phVal <= range.max);
-        let labTextInfo = labChlorophyll ? ` [Lab Chlorophyll a: ${labChlorophyll} mg/L]` : "";
+        let labTextInfo = labChlorophyll ? ` [Laboratuvar ekstraktı referansı: ${labChlorophyll} mg/L]` : " [Klorofil referansı girilmedi]";
         if(isPhOptimal) {
             statusText = currentLang === 'TR' ? 
                 `[OK] ${cropDisplayName} için ideal pH aralığında (${range.min}-${range.max}).${labTextInfo}` : 
                 `[OK] Optimal pH range for ${cropDisplayName} (${range.min}-${range.max}).${labTextInfo}`;
             calibrationText = currentLang === 'TR' ? 
-                `🔬 Saha & Lab Entegre Durum: Mikro element alımı dengeli, 663 nm klorofil sentezi kararlı.` : 
-                `🔬 Integrated Field & Lab Status: Balanced nutrient uptake, stable 663 nm chlorophyll synthesis.`;
+                `🔬 Saha & Lab Entegre Durum: pH uygun. Laboratuvar klorofil referansı mevcutsa görsel bulgularla birlikte değerlendirilir; referans yoksa klorofil düzeyi varsayılmaz.` : 
+                `🔬 Integrated Field & Lab Status: pH is within the target range. If a laboratory extract reference exists it is considered with the visual findings; otherwise chlorophyll is not assumed.`;
         } else {
             statusText = currentLang === 'TR' ? 
                 `[UYARI] pH (${phVal}) hedef aralıkta (${range.min}-${range.max}) değil! Stres gözlendi.${labTextInfo}` : 
                 `[WARNING] pH (${phVal}) out of target range (${range.min}-${range.max})! Stress observed.${labTextInfo}`;
             calibrationText = currentLang === 'TR' ? 
-                `⚠️ Entegre Teşhis: Toprak pH sapması ve iklimsel koşullar nedeniyle klorofil a sentezinde blokaj oluştu.` : 
+                `⚠️ Entegre Değerlendirme: Toprak pH değeri hedef aralığın dışında. Klorofil sentezinin kesin olarak bloklandığı sonucu yalnızca bu veriden çıkarılamaz.` : 
                 `⚠️ Integrated Diagnosis: Chlorophyll a synthesis blocked due to pH shift and climate factors.`;
         }
         // --- Aşağıdaki üç yüzde, girilen pH/klorofil değeri VE çekilen fotoğraftan
@@ -2712,7 +2714,7 @@
             `📊 AB YEŞİL MUTABAKATI SİMÜLASYON RAPORU / Proje Kodu: RIZE-EKO-2026<br>
             <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ Bu bir SİMÜLASYON raporudur; resmî bir sertifika, ISO belgesi veya AB onayı DEĞİLDİR. Aşağıdaki yüzdeler sayfadaki basit stres modeline (bkz. Metodoloji sekmesi) dayalı öngörüsel/tahmini verilerdir; gerçek saha kalibrasyonu yerine geçmez ve hiçbir resmî ticari/hukuki geçerliliği yoktur. "Rize Fatih Anadolu Lisesi AB Proje Simülasyonu" kapsamında üretilmiştir.</span><br><br>
             • Doğrulanan Ürün / Verified Crop: ${cropDisplayName}<br>
-            • Lab Klorofil a (663 nm) / Lab Chlorophyll a: ${labChlorophyll || 'N/A'} mg/L<br>
+            • Laboratuvar ekstraktı klorofil referansı / Chlorophyll extract reference: ${labChlorophyll || 'N/A'}${labChlorophyll ? ' mg/L' : ''}<br>
             • Karbon Ayak İzi Azaltımı (tahmini) / Carbon Footprint Reduction (estimated): %${carbonReductionPct} (≈${carbonKgEstimate} kg CO₂ eşd./dönüm, ölçülen veriye göre hesaplandı)<br>
             • Gübre Tasarrufu (tahmini) / Fertilizer Saving (estimated): %${fertilizerSavingPct}<br>
             • Pestisit Optimizasyonu (tahmini) / Pesticide Optimization (estimated): %${pesticideOptPct}<br>
@@ -2720,7 +2722,7 @@
             `📊 EU GREEN DEAL SIMULATION REPORT / Project Code: RIZE-EKO-2026<br>
             <span style="font-size:9px; font-weight:normal; color:#555;">⚠️ This is a SIMULATION report; it is NOT an official certificate, ISO document, or EU approval. The percentages below are predictive/estimated data based on the simple stress model on this page (see Methodology tab); they do not replace real field calibration and have no official commercial or legal validity. Generated within the scope of "Rize Fatih Anadolu Lisesi EU Project Simulation".</span><br><br>
             • Verified Crop: ${cropDisplayName}<br>
-            • Lab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L<br>
+            • Chlorophyll extract reference: ${labChlorophyll || 'N/A'}${labChlorophyll ? ' mg/L' : ''}<br>
             • Carbon Footprint Reduction (estimated): ${carbonReductionPct}% (≈${carbonKgEstimate} kg CO₂ eq./decare, calculated from measured data)<br>
             • Fertilizer Saving (estimated): ${fertilizerSavingPct}%<br>
             • Pesticide Optimization (estimated): ${pesticideOptPct}%<br>
@@ -2731,7 +2733,7 @@
         document.getElementById('certificate-output').innerHTML = certificateText;
         updateAnalysis(phVal, chlorophyllVal, weather);
         const tempLine = (lastKnownTemp !== null) ? `\nAir Temp / Hava Sıcaklığı: ${lastKnownTemp.toFixed(1)}°C` : '';
-        document.getElementById('res-output').innerText = `Integrated Analysis / Entegre Analiz Raporu\nRegion & Crop: ${cropDisplayName}\npH: ${ph}\nWeather: ${weather}${tempLine}\nLab Chlorophyll a (663 nm): ${labChlorophyll || 'N/A'} mg/L`;
+        document.getElementById('res-output').innerText = `Integrated Analysis / Entegre Analiz Raporu\nRegion & Crop: ${cropDisplayName}\npH: ${ph}\nWeather: ${weather}${tempLine}\nLaboratuvar klorofil ekstraktı referansı: ${labChlorophyll ? labChlorophyll + ' mg/L' : 'Girilmedi'}`;
         // Parametreleri ekleyerek grafik çizimini çağır
         setTimeout(() => {
             renderStressChart(chlorophyllVal, phVal, regionKey);
